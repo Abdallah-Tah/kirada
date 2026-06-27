@@ -30,6 +30,7 @@ use App\Livewire\Tenants\Index as TenantIndex;
 use App\Livewire\Units\Create as UnitCreate;
 use App\Livewire\Units\Edit as UnitEdit;
 use App\Livewire\Units\Index as UnitIndex;
+use App\Livewire\AiAssistant\Index as AiAssistantIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -134,6 +135,11 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant'])->group(fun
 // Subscription status — landlord only
 Route::middleware(['auth', 'verified', 'role:landlord'])->group(function () {
     Route::get('/subscription', SubscriptionStatus::class)->name('subscription.status');
+});
+
+// AI Assistant — all roles (read-only, scoped by role)
+Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance'])->group(function () {
+    Route::get('/ai-assistant', AiAssistantIndex::class)->name('ai-assistant.index');
 });
 
 require __DIR__.'/settings.php';
