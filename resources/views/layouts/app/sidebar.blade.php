@@ -34,6 +34,9 @@
                     <flux:sidebar.item icon="document-text" :href="route('leases.index')" :current="request()->routeIs('leases.*')" wire:navigate>
                         {{ __('Leases') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="receipt-percent" :href="route('rent-invoices.index')" :current="request()->routeIs('rent-invoices.*')" wire:navigate>
+                        {{ __('Rent Invoices') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="credit-card" href="#">
                         {{ __('Subscriptions') }}
                     </flux:sidebar.item>
@@ -60,7 +63,7 @@
                     <flux:sidebar.item icon="document-text" :href="route('leases.index')" :current="request()->routeIs('leases.*')" wire:navigate>
                         {{ __('Leases') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="receipt-percent" href="#">
+                    <flux:sidebar.item icon="receipt-percent" :href="route('rent-invoices.index')" :current="request()->routeIs('rent-invoices.*')" wire:navigate>
                         {{ __('Rent Invoices') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="wrench-screwdriver" href="#">
