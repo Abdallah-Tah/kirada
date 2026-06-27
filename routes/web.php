@@ -4,6 +4,9 @@ use App\Http\Controllers\DashboardController;
 use App\Livewire\Properties\Create as PropertyCreate;
 use App\Livewire\Properties\Edit as PropertyEdit;
 use App\Livewire\Properties\Index as PropertyIndex;
+use App\Livewire\Leases\Create as LeaseCreate;
+use App\Livewire\Leases\Edit as LeaseEdit;
+use App\Livewire\Leases\Index as LeaseIndex;
 use App\Livewire\Tenants\Create as TenantCreate;
 use App\Livewire\Tenants\Edit as TenantEdit;
 use App\Livewire\Tenants\Index as TenantIndex;
@@ -57,6 +60,13 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
     Route::get('/tenants', TenantIndex::class)->name('tenants.index');
     Route::get('/tenants/create', TenantCreate::class)->name('tenants.create');
     Route::get('/tenants/{tenant}/edit', TenantEdit::class)->name('tenants.edit');
+});
+
+// Leases — admin + landlord only
+Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+    Route::get('/leases', LeaseIndex::class)->name('leases.index');
+    Route::get('/leases/create', LeaseCreate::class)->name('leases.create');
+    Route::get('/leases/{lease}/edit', LeaseEdit::class)->name('leases.edit');
 });
 
 require __DIR__.'/settings.php';

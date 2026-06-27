@@ -31,6 +31,9 @@
                     <flux:sidebar.item icon="users" :href="route('tenants.index')" :current="request()->routeIs('tenants.*')" wire:navigate>
                         {{ __('Tenants') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="document-text" :href="route('leases.index')" :current="request()->routeIs('leases.*')" wire:navigate>
+                        {{ __('Leases') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="credit-card" href="#">
                         {{ __('Subscriptions') }}
                     </flux:sidebar.item>
@@ -54,7 +57,7 @@
                     <flux:sidebar.item icon="users" :href="route('tenants.index')" :current="request()->routeIs('tenants.*')" wire:navigate>
                         {{ __('Tenants') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="document-text" href="#">
+                    <flux:sidebar.item icon="document-text" :href="route('leases.index')" :current="request()->routeIs('leases.*')" wire:navigate>
                         {{ __('Leases') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="receipt-percent" href="#">
