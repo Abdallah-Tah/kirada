@@ -14,9 +14,9 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <flux:navlink :href="route('login')" wire:navigate>
+                    <flux:link :href="route('login')" wire:navigate>
                         {{ __('Log in') }}
-                    </flux:navlink>
+                    </flux:link>
 
                     <flux:button :href="route('register')" wire:navigate variant="primary">
                         {{ __('Register') }}
@@ -28,18 +28,18 @@
         <!-- Hero -->
         <main class="mx-auto max-w-7xl px-6 py-16">
             <div class="text-center">
-                <flux:heading size="3xl" class="mb-4">
+                <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-4">
                     {{ __('Rent Management for Djibouti') }}
-                </flux:heading>
-                <flux:subheading size="lg" class="mb-8">
+                </h1>
+                <p class="text-lg text-zinc-500 dark:text-zinc-400 mb-8 max-w-2xl mx-auto">
                     {{ __('Simplify the relationship between landlords and tenants. Track rent, manage maintenance, communicate, and store documents — all in one platform.') }}
-                </flux:subheading>
+                </p>
 
                 <div class="flex justify-center gap-4">
-                    <flux:button :href="route('register')" wire:navigate variant="primary" size="lg">
+                    <flux:button :href="route('register')" wire:navigate variant="primary">
                         {{ __('Get Started') }}
                     </flux:button>
-                    <flux:button :href="route('login')" wire:navigate variant="ghost" size="lg">
+                    <flux:button :href="route('login')" wire:navigate variant="ghost">
                         {{ __('Log in') }}
                     </flux:button>
                 </div>
@@ -47,45 +47,29 @@
 
             <!-- Features -->
             <div class="mt-20 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                <flux:card>
-                    <flux:card.content>
-                        <flux:icon.building-office class="mb-3 size-8 text-blue-500" />
-                        <flux:heading size="lg">{{ __('Property Management') }}</flux:heading>
-                        <flux:text class="mt-1 text-sm text-zinc-500">
-                            {{ __('Manage properties, buildings, and units with ease.') }}
-                        </flux:text>
-                    </flux:card.content>
-                </flux:card>
+                <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                    <flux:icon.building-office class="mb-3 size-8 text-blue-500" />
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ __('Property Management') }}</h3>
+                    <p class="mt-1 text-sm text-zinc-500">{{ __('Manage properties, buildings, and units with ease.') }}</p>
+                </div>
 
-                <flux:card>
-                    <flux:card.content>
-                        <flux:icon.receipt class="mb-3 size-8 text-green-500" />
-                        <flux:heading size="lg">{{ __('Rent Tracking') }}</flux:heading>
-                        <flux:text class="mt-1 text-sm text-zinc-500">
-                            {{ __('Monthly invoices, payment tracking, and receipts.') }}
-                        </flux:text>
-                    </flux:card.content>
-                </flux:card>
+                <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                    <flux:icon.receipt-percent class="mb-3 size-8 text-green-500" />
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ __('Rent Tracking') }}</h3>
+                    <p class="mt-1 text-sm text-zinc-500">{{ __('Monthly invoices, payment tracking, and receipts.') }}</p>
+                </div>
 
-                <flux:card>
-                    <flux:card.content>
-                        <flux:icon.wrench-screwdriver class="mb-3 size-8 text-orange-500" />
-                        <flux:heading size="lg">{{ __('Maintenance') }}</flux:heading>
-                        <flux:text class="mt-1 text-sm text-zinc-500">
-                            {{ __('Submit and track maintenance requests with photos.') }}
-                        </flux:text>
-                    </flux:card.content>
-                </flux:card>
+                <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                    <flux:icon.wrench-screwdriver class="mb-3 size-8 text-orange-500" />
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ __('Maintenance') }}</h3>
+                    <p class="mt-1 text-sm text-zinc-500">{{ __('Submit and track maintenance requests with photos.') }}</p>
+                </div>
 
-                <flux:card>
-                    <flux:card.content>
-                        <flux:icon.chat-bubble-left-right class="mb-3 size-8 text-purple-500" />
-                        <flux:heading size="lg">{{ __('Communication') }}</flux:heading>
-                        <flux:text class="mt-1 text-sm text-zinc-500">
-                            {{ __('Built-in messaging between landlords and tenants.') }}
-                        </flux:text>
-                    </flux:card.content>
-                </flux:card>
+                <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                    <flux:icon.chat-bubble-left-right class="mb-3 size-8 text-purple-500" />
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ __('Communication') }}</h3>
+                    <p class="mt-1 text-sm text-zinc-500">{{ __('Built-in messaging between landlords and tenants.') }}</p>
+                </div>
             </div>
         </main>
 

@@ -79,7 +79,8 @@ class Index extends Component
 
         $unit->delete();
 
-        $this->dispatch('unit-deleted');
+        unset($this->units);
+
         Flux::toast('Unit deleted.', 'success');
     }
 

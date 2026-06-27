@@ -54,7 +54,7 @@
                     <flux:sidebar.item icon="document-text" href="#">
                         {{ __('Leases') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="receipt" href="#">
+                    <flux:sidebar.item icon="receipt-percent" href="#">
                         {{ __('Rent Invoices') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="wrench-screwdriver" href="#">
@@ -65,7 +65,7 @@
 
                 @hasrole('tenant')
                 <flux:sidebar.group :heading="__('My Account')" class="grid">
-                    <flux:sidebar.item icon="receipt" href="#" wire:navigate>
+                    <flux:sidebar.item icon="receipt-percent" href="#" wire:navigate>
                         {{ __('My Rent') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="wrench-screwdriver" href="#" wire:navigate>

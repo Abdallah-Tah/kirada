@@ -63,7 +63,8 @@ class Index extends Component
 
         $property->delete();
 
-        $this->dispatch('property-deleted');
+        unset($this->properties);
+
         Flux::toast('Property deleted.', 'success');
     }
 
