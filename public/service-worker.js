@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kirada-v2';
+const CACHE_NAME = 'kirada-v3';
 const OFFLINE_URL = '/offline';
 
 // Assets to cache on install (app shell only — no dynamic/auth pages)

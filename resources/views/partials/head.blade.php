@@ -34,4 +34,8 @@ if ('serviceWorker' in navigator) {
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance
-<script>window.Flux.applyAppearance('light')</script>
+<script>
+// Force light theme as Kirada default (dark mode toggle can be added later)
+window.localStorage.setItem('flux.appearance', 'light');
+window.Flux.applyAppearance('light');
+</script>
