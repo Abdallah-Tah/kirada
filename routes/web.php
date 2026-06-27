@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentController;
+use App\Livewire\Documents\Create as DocumentCreate;
+use App\Livewire\Documents\Index as DocumentIndex;
 use App\Livewire\Properties\Create as PropertyCreate;
 use App\Livewire\Properties\Edit as PropertyEdit;
 use App\Livewire\Properties\Index as PropertyIndex;
@@ -115,6 +118,13 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance']
 Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance'])->group(function () {
     Route::get('/messages', MessageIndex::class)->name('messages.index');
     Route::get('/messages/{conversation}', MessageShow::class)->name('messages.show');
+});
+
+// Documents — admin, landlord, tenant (no maintenance)
+Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant'])->group(function () {
+    Route::get('/documents', DocumentIndex::class)->name('documents.index');
+    Route::get('/documents/create', DocumentCreate::class)->name('documents.create');
+    Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
 });
 
 require __DIR__.'/settings.php';

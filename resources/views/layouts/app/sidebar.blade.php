@@ -43,6 +43,15 @@
                     <flux:sidebar.item icon="envelope" :href="route('tenant-invitations.index')" :current="request()->routeIs('tenant-invitations.index')" wire:navigate>
                         {{ __('Invitations') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
+                        {{ __('Maintenance') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
+                        {{ __('Messages') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
+                        {{ __('Documents') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="credit-card" href="#">
                         {{ __('Subscriptions') }}
                     </flux:sidebar.item>
@@ -81,6 +90,12 @@
                     <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
+                        {{ __('Messages') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
+                        {{ __('Documents') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole
 
@@ -92,7 +107,7 @@
                     <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="document-text" href="#" wire:navigate>
+                    <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
