@@ -34,6 +34,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
+// Offline fallback page (PWA)
+Route::view('/offline', 'offline')->name('offline');
+
 // Role-based dashboard dispatcher
 Route::middleware(['auth', 'verified'])
     ->get('/dashboard', DashboardController::class)

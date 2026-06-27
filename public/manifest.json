@@ -1,24 +1,57 @@
 {
     "name": "Kirada — Rent Management",
     "short_name": "Kirada",
-    "description": "Rent management platform for Djibouti",
+    "description": "Rent management platform for Djibouti and beyond",
     "start_url": "/dashboard",
+    "scope": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#0f172a",
     "orientation": "portrait-primary",
+    "background_color": "#ffffff",
+    "theme_color": "#0ea5e9",
+    "categories": ["business", "finance", "productivity"],
+    "lang": "en",
+    "dir": "ltr",
     "icons": [
         {
             "src": "/icons/icon-192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         },
         {
             "src": "/icons/icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-192-maskable.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/icons/icon-512-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Dashboard",
+            "url": "/dashboard",
+            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "Properties",
+            "url": "/properties",
+            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "Maintenance",
+            "url": "/maintenance-requests",
+            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
         }
     ]
 }
