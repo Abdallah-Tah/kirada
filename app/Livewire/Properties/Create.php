@@ -2,7 +2,10 @@
 
 namespace App\Livewire\Properties;
 
+use App\Models\Country;
+use App\Models\Currency;
 use App\Models\Property;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Create extends Component
@@ -17,6 +20,8 @@ class Create extends Component
     public string $country = 'Djibouti';
     public ?string $description = null;
     public bool $is_active = true;
+    public ?int $country_id = null;
+    public ?int $currency_id = null;
 
     protected function rules(): array
     {
@@ -31,6 +36,8 @@ class Create extends Component
             'country'        => 'required|string|max:100',
             'description'    => 'nullable|string|max:2000',
             'is_active'      => 'boolean',
+            'country_id'     => 'required|exists:countries,id',
+            'currency_id'    => 'required|exists:currencies,id',
         ];
     }
 
@@ -48,6 +55,35 @@ class Create extends Component
         Flux::toast('Property created successfully.', 'success');
 
         $this->redirect(route('properties.index'), navigate: true);
+    }
+
+    #[Computed]
+    public function countries()
+    {
+        return Country::active()->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function currencies()
+    {
+        return Currency::active()->orderBy('code')->get();
+    }
+
+    /**
+     * When a country is selected, auto-set the default currency.
+     */
+    public function updatedCountryId(): void
+    {
+        if (!$this->country_id) {
+            return;
+        }
+
+        $country = Country::find($this->country_id);
+        $default = $country?->defaultCurrency();
+
+        if ($default) {
+            $this->currency_id = $default->id;
+        }
     }
 
     public function render()

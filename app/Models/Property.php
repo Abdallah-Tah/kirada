@@ -27,6 +27,8 @@ class Property extends Model
         'latitude',
         'longitude',
         'is_active',
+        'country_id',
+        'currency_id',
     ];
 
     protected $casts = [
@@ -40,6 +42,16 @@ class Property extends Model
     public function landlord(): BelongsTo
     {
         return $this->belongsTo(User::class, 'landlord_id');
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class);
     }
 
     public function buildings(): HasMany

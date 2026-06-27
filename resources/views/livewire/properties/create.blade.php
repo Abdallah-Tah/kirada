@@ -62,6 +62,30 @@
                 <flux:error name="country" />
             </div>
 
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <flux:label>{{ __('Country (system)') }}</flux:label>
+                    <flux:select wire:model.live="country_id" required class="mt-1">
+                        <option value="">{{ __('Select...') }}</option>
+                        @foreach ($this->countries as $c)
+                            <option value="{{ $c->id }}">{{ $c->name }} ({{ $c->code }})</option>
+                        @endforeach
+                    </flux:select>
+                    <flux:error name="country_id" />
+                </div>
+
+                <div>
+                    <flux:label>{{ __('Currency') }}</flux:label>
+                    <flux:select wire:model="currency_id" required class="mt-1">
+                        <option value="">{{ __('Select...') }}</option>
+                        @foreach ($this->currencies as $cur)
+                            <option value="{{ $cur->id }}">{{ $cur->code }} — {{ $cur->name }}</option>
+                        @endforeach
+                    </flux:select>
+                    <flux:error name="currency_id" />
+                </div>
+            </div>
+
             <div>
                 <flux:label>{{ __('Description') }}</flux:label>
                 <flux:textarea wire:model="description" rows="3" class="mt-1" />
