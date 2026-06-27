@@ -7,6 +7,8 @@ use App\Livewire\Properties\Index as PropertyIndex;
 use App\Livewire\RentPayments\Create as RentPaymentCreate;
 use App\Livewire\RentPayments\Edit as RentPaymentEdit;
 use App\Livewire\RentPayments\Index as RentPaymentIndex;
+use App\Livewire\TenantInvitations\Accept as TenantInvitationAccept;
+use App\Livewire\TenantInvitations\Index as TenantInvitationIndex;
 use App\Livewire\RentInvoices\Create as RentInvoiceCreate;
 use App\Livewire\RentInvoices\Edit as RentInvoiceEdit;
 use App\Livewire\RentInvoices\Index as RentInvoiceIndex;
@@ -88,5 +90,13 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
     Route::get('/rent-payments/create', RentPaymentCreate::class)->name('rent-payments.create');
     Route::get('/rent-payments/{rentPayment}/edit', RentPaymentEdit::class)->name('rent-payments.edit');
 });
+
+// Tenant Invitations — admin + landlord management
+Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+    Route::get('/tenant-invitations', TenantInvitationIndex::class)->name('tenant-invitations.index');
+});
+
+// Public invitation acceptance (no auth required)
+Route::get('/tenant-invitations/{token}', TenantInvitationAccept::class)->name('tenant-invitations.accept');
 
 require __DIR__.'/settings.php';

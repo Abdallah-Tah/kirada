@@ -40,6 +40,9 @@
                     <flux:sidebar.item icon="banknotes" :href="route('rent-payments.index')" :current="request()->routeIs('rent-payments.*')" wire:navigate>
                         {{ __('Rent Payments') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="envelope" :href="route('tenant-invitations.index')" :current="request()->routeIs('tenant-invitations.index')" wire:navigate>
+                        {{ __('Invitations') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="credit-card" href="#">
                         {{ __('Subscriptions') }}
                     </flux:sidebar.item>
@@ -71,6 +74,9 @@
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="banknotes" :href="route('rent-payments.index')" :current="request()->routeIs('rent-payments.*')" wire:navigate>
                         {{ __('Rent Payments') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="envelope" :href="route('tenant-invitations.index')" :current="request()->routeIs('tenant-invitations.index')" wire:navigate>
+                        {{ __('Invitations') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="wrench-screwdriver" href="#">
                         {{ __('Maintenance') }}
