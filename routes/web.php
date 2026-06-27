@@ -31,9 +31,13 @@ use App\Livewire\Units\Create as UnitCreate;
 use App\Livewire\Units\Edit as UnitEdit;
 use App\Livewire\Units\Index as UnitIndex;
 use App\Livewire\AiAssistant\Index as AiAssistantIndex;
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+
+// Language switcher (works for both guests and authenticated users)
+Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
 
 // Offline fallback page (PWA)
 Route::view('/offline', 'offline')->name('offline');

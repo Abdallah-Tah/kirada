@@ -1,8 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 42" {{ $attributes }}>
-    <path 
-        fill="currentColor" 
-        fill-rule="evenodd" 
-        clip-rule="evenodd"
-        d="M17.2 5.633 8.6.855 0 5.633v26.51l16.2 9 16.2-9v-8.442l7.6-4.223V9.856l-8.6-4.777-8.6 4.777V18.3l-5.6 3.111V5.633ZM38 18.301l-5.6 3.11v-6.157l5.6-3.11V18.3Zm-1.06-7.856-5.54 3.078-5.54-3.079 5.54-3.078 5.54 3.079ZM24.8 18.3v-6.157l5.6 3.111v6.158L24.8 18.3Zm-1 1.732 5.54 3.078-13.14 7.302-5.54-3.078 13.14-7.3v-.002Zm-16.2 7.89 7.6 4.222V38.3L2 30.966V7.92l5.6 3.111v16.892ZM8.6 9.3 3.06 6.222 8.6 3.143l5.54 3.08L8.6 9.3Zm21.8 15.51-13.2 7.334V38.3l13.2-7.334v-6.156ZM9.6 11.034l5.6-3.11v14.6l-5.6 3.11v-14.6Z"
-    />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" {{ $attributes }}>
+    <!-- Kirada logo: house with key notch = rent management -->
+    <defs>
+        <linearGradient id="kirada-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0d9488"/>
+            <stop offset="100%" stop-color="#0284c7"/>
+        </linearGradient>
+    </defs>
+    <!-- House roof -->
+    <path d="M24 4 L6 18 L6 42 L42 42 L42 18 Z" fill="url(#kirada-grad)"/>
+    <!-- House body outline -->
+    <path d="M24 6 L8 19 L8 40 L40 40 L40 19 Z" fill="#ffffff" fill-opacity="0.12"/>
+    <!-- Key circle (rent symbol) -->
+    <circle cx="24" cy="28" r="7" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+    <!-- Key stem -->
+    <path d="M24 28 L24 36 M22 36 L26 36 M22 33 L25 33" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- Door base line -->
+    <path d="M8 40 L40 40" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
 </svg>

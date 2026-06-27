@@ -7,7 +7,7 @@
 
 {{-- PWA --}}
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0ea5e9">
+<meta name="theme-color" content="#0d9488">
 <meta name="application-name" content="Kirada">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">

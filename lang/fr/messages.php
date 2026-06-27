@@ -1,0 +1,36 @@
+<?php
+
+return [
+    // Landing page
+    'Built for Djibouti first, ready for regional and global landlords.' => 'Conçu pour Djibouti d\'abord, prêt pour les propriétaires régionaux et mondiaux.',
+    'Smart Rent Management for Landlords and Tenants' => 'Gestion locative intelligente pour propriétaires et locataires',
+    'Track rent, manage maintenance, communicate with tenants, and store documents — all in one platform.' => 'Suivez les loyers, gérez l\'entretien, communiquez avec les locataires et stockez les documents — le tout sur une seule plateforme.',
+    'Get Started' => 'Commencer',
+    'Log in' => 'Connexion',
+    'Register' => 'S\'inscrire',
+    'Create Your Free Account' => 'Créez votre compte gratuit',
+    'Landlords get a 30-day free trial. No credit card required.' => 'Les propriétaires bénéficient d\'un essai gratuit de 30 jours. Aucune carte de crédit requise.',
+    'Start in Djibouti. Scale anywhere.' => 'Commencez à Djibouti. Développez-vous partout.',
+    'Kirada supports multiple currencies, languages, and regional formats. Built for the Horn of Africa, designed for the world.' => 'Kirada prend en charge plusieurs devises, langues et formats régionaux. Conçu pour la Corne de l\'Afrique, pensé pour le monde.',
+    'All rights reserved.' => 'Tous droits réservés.',
+
+    // Feature cards
+    'Property Management' => 'Gestion immobilière',
+    'Manage properties, buildings, and units with ease.' => 'Gérez les propriétés, les bâtiments et les unités en toute simplicité.',
+    'Rent Tracking' => 'Suivi des loyers',
+    'Monthly invoices, payment tracking, and receipts.' => 'Factures mensuelles, suivi des paiements et reçus.',
+    'Maintenance' => 'Entretien',
+    'Submit and track maintenance requests with photos.' => 'Soumettez et suivez les demandes d\'entretien avec photos.',
+    'Communication' => 'Communication',
+    'Built-in messaging between landlords and tenants.' => 'Messagerie intégrée entre propriétaires et locataires.',
+
+    // Navigation
+    'Dashboard' => 'Tableau de bord',
+    'Settings' => 'Paramètres',
+
+    // Auth
+    'Email' => 'E-mail',
+    'Password' => 'Mot de passe',
+    'Remember me' => 'Se souvenir de moi',
+    'Forgot your password?' => 'Mot de passe oublié ?',
+];

@@ -1,57 +1,76 @@
 {
-    "name": "Kirada — Rent Management",
-    "short_name": "Kirada",
-    "description": "Rent management platform for Djibouti and beyond",
-    "start_url": "/dashboard",
-    "scope": "/",
-    "display": "standalone",
-    "orientation": "portrait-primary",
-    "background_color": "#ffffff",
-    "theme_color": "#0ea5e9",
-    "categories": ["business", "finance", "productivity"],
-    "lang": "en",
-    "dir": "ltr",
-    "icons": [
+  "name": "Kirada \u2014 Rent Management",
+  "short_name": "Kirada",
+  "description": "Rent management platform for Djibouti and beyond",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8fafc",
+  "theme_color": "#0d9488",
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/dashboard",
+      "icons": [
         {
-            "src": "/icons/icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "/icons/icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "/icons/icon-192-maskable.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "maskable"
-        },
-        {
-            "src": "/icons/icon-512-maskable.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
         }
-    ],
-    "shortcuts": [
+      ]
+    },
+    {
+      "name": "Properties",
+      "url": "/properties",
+      "icons": [
         {
-            "name": "Dashboard",
-            "url": "/dashboard",
-            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
-        },
-        {
-            "name": "Properties",
-            "url": "/properties",
-            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
-        },
-        {
-            "name": "Maintenance",
-            "url": "/maintenance-requests",
-            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
         }
-    ]
+      ]
+    },
+    {
+      "name": "Maintenance",
+      "url": "/maintenance-requests",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
 }
