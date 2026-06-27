@@ -4,6 +4,9 @@ use App\Http\Controllers\DashboardController;
 use App\Livewire\Properties\Create as PropertyCreate;
 use App\Livewire\Properties\Edit as PropertyEdit;
 use App\Livewire\Properties\Index as PropertyIndex;
+use App\Livewire\RentPayments\Create as RentPaymentCreate;
+use App\Livewire\RentPayments\Edit as RentPaymentEdit;
+use App\Livewire\RentPayments\Index as RentPaymentIndex;
 use App\Livewire\RentInvoices\Create as RentInvoiceCreate;
 use App\Livewire\RentInvoices\Edit as RentInvoiceEdit;
 use App\Livewire\RentInvoices\Index as RentInvoiceIndex;
@@ -77,6 +80,13 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
     Route::get('/rent-invoices', RentInvoiceIndex::class)->name('rent-invoices.index');
     Route::get('/rent-invoices/create', RentInvoiceCreate::class)->name('rent-invoices.create');
     Route::get('/rent-invoices/{rentInvoice}/edit', RentInvoiceEdit::class)->name('rent-invoices.edit');
+});
+
+// Rent Payments — admin + landlord only
+Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+    Route::get('/rent-payments', RentPaymentIndex::class)->name('rent-payments.index');
+    Route::get('/rent-payments/create', RentPaymentCreate::class)->name('rent-payments.create');
+    Route::get('/rent-payments/{rentPayment}/edit', RentPaymentEdit::class)->name('rent-payments.edit');
 });
 
 require __DIR__.'/settings.php';
