@@ -33,6 +33,10 @@
     --color-accent: var(--color-kirada-ocean);
     --color-accent-content: var(--color-kirada-ocean);
     --color-accent-foreground: var(--color-white);
+
+    /* Apple-inspired motion curves: a calm, spring-like deceleration */
+    --ease-kirada: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-kirada-soft: cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 @layer theme {
@@ -81,8 +85,15 @@ select:focus[data-flux-control] {
         @apply rounded-lg border border-slate-200 bg-white p-5 shadow-sm;
     }
 
+    .kirada-card {
+        transition: transform 0.4s var(--ease-kirada), box-shadow 0.4s var(--ease-kirada),
+            border-color 0.4s var(--ease-kirada);
+    }
+
     .kirada-stat-card {
-        @apply rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-kirada-sky hover:shadow-md;
+        @apply rounded-lg border border-slate-200 bg-white p-5 shadow-sm hover:-translate-y-1 hover:border-kirada-sky hover:shadow-lg hover:shadow-kirada-sky/10;
+        transition: transform 0.4s var(--ease-kirada), box-shadow 0.4s var(--ease-kirada),
+            border-color 0.4s var(--ease-kirada);
     }
 
     .kirada-stat-label {
@@ -98,15 +109,145 @@ select:focus[data-flux-control] {
     }
 
     .kirada-primary-button {
-        @apply inline-flex items-center justify-center rounded-lg bg-kirada-ocean px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-kirada-ocean/20 transition hover:bg-kirada-navy;
+        @apply inline-flex items-center justify-center rounded-lg bg-kirada-ocean px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-kirada-ocean/20 hover:bg-kirada-navy hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-[0.97];
+        transition: transform 0.25s var(--ease-kirada), box-shadow 0.25s var(--ease-kirada),
+            background-color 0.25s var(--ease-kirada);
     }
 
     .kirada-primary-button-lg {
-        @apply inline-flex items-center justify-center rounded-xl bg-kirada-ocean px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-kirada-ocean/25 transition hover:bg-kirada-navy;
+        @apply inline-flex items-center justify-center rounded-xl bg-kirada-ocean px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-kirada-ocean/25 hover:bg-kirada-navy hover:-translate-y-0.5 hover:shadow-xl hover:shadow-kirada-ocean/30 active:translate-y-0 active:scale-[0.98];
+        transition: transform 0.25s var(--ease-kirada), box-shadow 0.25s var(--ease-kirada),
+            background-color 0.25s var(--ease-kirada);
     }
 
     .kirada-brand-badge {
         @apply inline-flex items-center gap-2 rounded-full border border-kirada-sky/45 bg-kirada-soft px-4 py-1.5 text-sm font-medium text-kirada-navy;
+    }
+}
+
+/* ----------------------------------------------------------------------------
+   Motion system — Apple-inspired, purposeful, and accessibility-aware.
+   Every animation is gated behind `prefers-reduced-motion: no-preference`
+   so motion-sensitive users get a calm, instant experience.
+---------------------------------------------------------------------------- */
+
+@keyframes kirada-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes kirada-float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes kirada-gradient-pan {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes kirada-pulse-ring {
+    0% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-kirada-ocean) 55%, transparent);
+    }
+    70% {
+        box-shadow: 0 0 0 10px transparent;
+    }
+    100% {
+        box-shadow: 0 0 0 0 transparent;
+    }
+}
+
+/* Scroll-reveal: elements rise and fade as they enter the viewport.
+   JS adds `.is-visible`; without JS or with reduced motion they are visible. */
+.kirada-reveal {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .kirada-reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.7s var(--ease-kirada), transform 0.7s var(--ease-kirada);
+        will-change: opacity, transform;
+    }
+
+    .kirada-reveal.is-visible {
+        opacity: 1;
+        transform: none;
+    }
+
+    .kirada-reveal-delay-1 {
+        transition-delay: 0.09s;
+    }
+    .kirada-reveal-delay-2 {
+        transition-delay: 0.18s;
+    }
+    .kirada-reveal-delay-3 {
+        transition-delay: 0.27s;
+    }
+    .kirada-reveal-delay-4 {
+        transition-delay: 0.36s;
+    }
+    .kirada-reveal-delay-5 {
+        transition-delay: 0.45s;
+    }
+
+    .kirada-float {
+        animation: kirada-float 6s var(--ease-kirada-soft) infinite;
+    }
+
+    .kirada-gradient-animate {
+        background-size: 200% 200%;
+        animation: kirada-gradient-pan 9s ease infinite;
+    }
+
+    .kirada-pulse-dot {
+        animation: kirada-pulse-ring 2.4s var(--ease-kirada-soft) infinite;
+    }
+}
+
+/* A reusable hover-lift for marketing cards with a smooth icon flourish.
+   This transition also governs the `.kirada-reveal` entrance for these cards
+   (it includes opacity), so the two classes never fight over `transition`. */
+.kirada-feature-card {
+    transition: opacity 0.6s var(--ease-kirada), transform 0.5s var(--ease-kirada),
+        box-shadow 0.4s var(--ease-kirada), border-color 0.4s var(--ease-kirada);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .kirada-feature-card:hover {
+        transform: translateY(-6px);
+    }
+
+    .kirada-feature-card .kirada-feature-icon {
+        transition: transform 0.4s var(--ease-kirada);
+    }
+
+    .kirada-feature-card:hover .kirada-feature-icon {
+        transform: scale(1.08) rotate(-3deg);
     }
 }
 
