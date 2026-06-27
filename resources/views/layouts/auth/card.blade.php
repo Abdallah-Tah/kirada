@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <body class="min-h-screen bg-white text-slate-900 antialiased">
         <div class="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
             <div class="flex w-full max-w-md flex-col gap-6">
                 <a href="{{ route('home') }}" class="flex justify-center font-medium" wire:navigate>

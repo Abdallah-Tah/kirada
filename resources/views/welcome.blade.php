@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <body class="min-h-screen bg-white text-slate-900 antialiased">
 
         <!-- Header -->
         <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur-md">
@@ -28,7 +28,7 @@
 
         <!-- Hero Section -->
         <main>
-            <section class="relative overflow-hidden border-b border-slate-200 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_58%,#eefdf7_100%)]">
+            <section class="relative overflow-hidden border-b border-slate-200 bg-white">
                 <div class="mx-auto max-w-7xl px-6 py-16 text-center sm:py-20">
                     <!-- Regional badge -->
                     <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-sky-50 border border-sky-200 px-4 py-1.5 text-sm font-medium text-sky-700">
@@ -198,7 +198,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="border-t border-slate-200 bg-slate-50">
+        <footer class="border-t border-slate-200 bg-white">
             <div class="mx-auto max-w-7xl px-6 py-8">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-2">
