@@ -12,6 +12,8 @@ use App\Livewire\TenantInvitations\Index as TenantInvitationIndex;
 use App\Livewire\MaintenanceRequests\Create as MaintenanceRequestCreate;
 use App\Livewire\MaintenanceRequests\Index as MaintenanceRequestIndex;
 use App\Livewire\MaintenanceRequests\Show as MaintenanceRequestShow;
+use App\Livewire\Messages\Index as MessageIndex;
+use App\Livewire\Messages\Show as MessageShow;
 use App\Livewire\RentInvoices\Create as RentInvoiceCreate;
 use App\Livewire\RentInvoices\Edit as RentInvoiceEdit;
 use App\Livewire\RentInvoices\Index as RentInvoiceIndex;
@@ -107,6 +109,12 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance']
     Route::get('/maintenance-requests', MaintenanceRequestIndex::class)->name('maintenance-requests.index');
     Route::get('/maintenance-requests/create', MaintenanceRequestCreate::class)->name('maintenance-requests.create');
     Route::get('/maintenance-requests/{maintenanceRequest}', MaintenanceRequestShow::class)->name('maintenance-requests.show');
+});
+
+// Messages — admin, landlord, tenant, maintenance
+Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance'])->group(function () {
+    Route::get('/messages', MessageIndex::class)->name('messages.index');
+    Route::get('/messages/{conversation}', MessageShow::class)->name('messages.show');
 });
 
 require __DIR__.'/settings.php';
