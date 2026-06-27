@@ -28,6 +28,9 @@
                     <flux:sidebar.item icon="home-modern" :href="route('units.index')" :current="request()->routeIs('units.*')" wire:navigate>
                         {{ __('Units') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="users" :href="route('tenants.index')" :current="request()->routeIs('tenants.*')" wire:navigate>
+                        {{ __('Tenants') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="credit-card" href="#">
                         {{ __('Subscriptions') }}
                     </flux:sidebar.item>
@@ -48,7 +51,7 @@
                     <flux:sidebar.item icon="home-modern" :href="route('units.index')" :current="request()->routeIs('units.*')" wire:navigate>
                         {{ __('Units') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="users" href="#">
+                    <flux:sidebar.item icon="users" :href="route('tenants.index')" :current="request()->routeIs('tenants.*')" wire:navigate>
                         {{ __('Tenants') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document-text" href="#">
