@@ -207,11 +207,8 @@
         <footer class="border-t border-slate-200 bg-white">
             <div class="mx-auto max-w-7xl px-6 py-8">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="flex items-center gap-2">
-                        <div class="flex aspect-square size-7 items-center justify-center rounded bg-kirada-navy">
-                            <x-app-logo-icon class="size-5" />
-                        </div>
-                        <span class="font-bold text-slate-900">Kirada</span>
+                    <div class="flex items-center">
+                        <x-brand-logo class="h-12 w-auto max-w-[180px]" />
                     </div>
                     <p class="text-sm text-slate-500">
                         {{ __('Smart Rent Management for Landlords and Tenants') }}

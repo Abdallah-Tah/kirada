@@ -6,8 +6,7 @@
             <stop offset="100%" stop-color="#67D3E6"/>
         </linearGradient>
     </defs>
-    <!-- Black rounded squircle background -->
-    <rect width="48" height="48" rx="12" fill="#000000"/>
+    <rect width="48" height="48" rx="12" fill="#FFFFFF"/>
     <!-- Roof -->
     <path d="M8 24 L24 8 L40 24" fill="none" stroke="url(#fav-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
     <!-- Key bow (circle) -->
