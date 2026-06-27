@@ -44,19 +44,19 @@ Route::middleware(['auth', 'verified'])
 
 // Role-specific dashboards
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('/admin/dashboard', 'dashboards.admin')
+    Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
         ->middleware('role:admin')
         ->name('admin.dashboard');
 
-    Route::view('/landlord/dashboard', 'dashboards.landlord')
+    Route::get('/landlord/dashboard', [DashboardController::class, 'landlord'])
         ->middleware('role:landlord')
         ->name('landlord.dashboard');
 
-    Route::view('/tenant/dashboard', 'dashboards.tenant')
+    Route::get('/tenant/dashboard', [DashboardController::class, 'tenant'])
         ->middleware('role:tenant')
         ->name('tenant.dashboard');
 
-    Route::view('/maintenance/dashboard', 'dashboards.maintenance')
+    Route::get('/maintenance/dashboard', [DashboardController::class, 'maintenance'])
         ->middleware('role:maintenance')
         ->name('maintenance.dashboard');
 });

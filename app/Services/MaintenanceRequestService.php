@@ -32,6 +32,10 @@ class MaintenanceRequestService
 
         $data['reported_by'] = $reporter->id;
 
+        if (!isset($data['status'])) {
+            $data['status'] = 'open';
+        }
+
         return MaintenanceRequest::create($data);
     }
 
