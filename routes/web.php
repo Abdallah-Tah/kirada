@@ -9,6 +9,9 @@ use App\Livewire\RentPayments\Edit as RentPaymentEdit;
 use App\Livewire\RentPayments\Index as RentPaymentIndex;
 use App\Livewire\TenantInvitations\Accept as TenantInvitationAccept;
 use App\Livewire\TenantInvitations\Index as TenantInvitationIndex;
+use App\Livewire\MaintenanceRequests\Create as MaintenanceRequestCreate;
+use App\Livewire\MaintenanceRequests\Index as MaintenanceRequestIndex;
+use App\Livewire\MaintenanceRequests\Show as MaintenanceRequestShow;
 use App\Livewire\RentInvoices\Create as RentInvoiceCreate;
 use App\Livewire\RentInvoices\Edit as RentInvoiceEdit;
 use App\Livewire\RentInvoices\Index as RentInvoiceIndex;
@@ -98,5 +101,12 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
 
 // Public invitation acceptance (no auth required)
 Route::get('/tenant-invitations/{token}', TenantInvitationAccept::class)->name('tenant-invitations.accept');
+
+// Maintenance Requests — admin, landlord, tenant, maintenance
+Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance'])->group(function () {
+    Route::get('/maintenance-requests', MaintenanceRequestIndex::class)->name('maintenance-requests.index');
+    Route::get('/maintenance-requests/create', MaintenanceRequestCreate::class)->name('maintenance-requests.create');
+    Route::get('/maintenance-requests/{maintenanceRequest}', MaintenanceRequestShow::class)->name('maintenance-requests.show');
+});
 
 require __DIR__.'/settings.php';

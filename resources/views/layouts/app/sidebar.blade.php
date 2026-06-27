@@ -78,7 +78,7 @@
                     <flux:sidebar.item icon="envelope" :href="route('tenant-invitations.index')" :current="request()->routeIs('tenant-invitations.index')" wire:navigate>
                         {{ __('Invitations') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="wrench-screwdriver" href="#">
+                    <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
@@ -89,7 +89,7 @@
                     <flux:sidebar.item icon="receipt-percent" href="#" wire:navigate>
                         {{ __('My Rent') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="wrench-screwdriver" href="#" wire:navigate>
+                    <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document-text" href="#" wire:navigate>
@@ -103,7 +103,7 @@
 
                 @hasrole('maintenance')
                 <flux:sidebar.group :heading="__('Work Orders')" class="grid">
-                    <flux:sidebar.item icon="wrench-screwdriver" href="#" wire:navigate>
+                    <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
                         {{ __('Assigned Requests') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" href="#" wire:navigate>
