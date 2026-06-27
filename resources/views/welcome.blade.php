@@ -9,13 +9,7 @@
         <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur-md">
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
                 <div class="flex min-w-0 items-center">
-                    <div class="flex items-center gap-2 sm:hidden">
-                        <span class="flex aspect-square size-9 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-slate-200">
-                            <x-app-logo-icon class="size-7" />
-                        </span>
-                        <span class="text-xl font-bold text-kirada-navy">Kirada</span>
-                    </div>
-                    <x-brand-logo class="hidden h-12 w-auto max-w-[190px] sm:block" />
+                    <x-brand-logo class="h-10 w-auto max-w-[120px] sm:h-12 sm:max-w-[190px]" />
                 </div>
 
                 <div class="flex shrink-0 items-center gap-2 sm:gap-3">

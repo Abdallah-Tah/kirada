@@ -6,7 +6,7 @@
 </title>
 
 {{-- PWA --}}
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/manifest.json?v=kirada-approved-20260627">
 <meta name="theme-color" content="#0EA5E9">
 <meta name="application-name" content="Kirada">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,10 +15,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 {{-- Icons --}}
-<link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="shortcut icon" href="/favicon.ico">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="icon" href="/icons/favicon-32.png?v=kirada-approved-20260627" sizes="32x32" type="image/png">
+<link rel="shortcut icon" href="/favicon.ico?v=kirada-approved-20260627">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=kirada-approved-20260627">
+<link rel="icon" href="/icons/icon-192.png?v=kirada-approved-20260627" sizes="192x192" type="image/png">
 
 {{-- Service Worker Registration --}}
 <script>
