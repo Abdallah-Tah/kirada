@@ -52,7 +52,7 @@
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="credit-card" href="#">
+                    <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
                         {{ __('Subscriptions') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chart-bar" href="#">
@@ -95,6 +95,9 @@
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
+                        {{ __('Subscription') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole

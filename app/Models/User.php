@@ -63,4 +63,58 @@ class User extends Authenticatable implements PasskeyUser
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
     }
+
+    // ── Role helpers ────────────────────────────────────
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function isLandlord(): bool
+    {
+        return $this->hasRole('landlord');
+    }
+
+    public function isTenant(): bool
+    {
+        return $this->hasRole('tenant');
+    }
+
+    public function isMaintenance(): bool
+    {
+        return $this->hasRole('maintenance');
+    }
+
+    // ── Subscription helpers ────────────────────────────
+
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class)->latestOfMany();
+    }
+
+    public function onTrial(): bool
+    {
+        $sub = $this->subscription;
+        return $sub && $sub->trialIsActive();
+    }
+
+    public function hasActiveSubscription(): bool
+    {
+        $sub = $this->subscription;
+        return $sub && $sub->isActive();
+    }
+
+    public function trialExpired(): bool
+    {
+        $sub = $this->subscription;
+        return $sub && $sub->trialHasExpired();
+    }
+
+    public function needsSubscription(): bool
+    {
+        return $this->isLandlord()
+            && !$this->onTrial()
+            && !$this->hasActiveSubscription();
+    }
 }

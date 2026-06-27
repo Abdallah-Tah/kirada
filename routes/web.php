@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Livewire\Subscriptions\Status as SubscriptionStatus;
 use App\Http\Controllers\DocumentController;
 use App\Livewire\Documents\Create as DocumentCreate;
 use App\Livewire\Documents\Index as DocumentIndex;
@@ -125,6 +126,11 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant'])->group(fun
     Route::get('/documents', DocumentIndex::class)->name('documents.index');
     Route::get('/documents/create', DocumentCreate::class)->name('documents.create');
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+});
+
+// Subscription status — landlord only
+Route::middleware(['auth', 'verified', 'role:landlord'])->group(function () {
+    Route::get('/subscription', SubscriptionStatus::class)->name('subscription.status');
 });
 
 require __DIR__.'/settings.php';

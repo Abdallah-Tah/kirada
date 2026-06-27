@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Country;
 use App\Models\User;
+use App\Services\SubscriptionService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -50,6 +51,11 @@ class AdminUserSeeder extends Seeder
             );
 
             $user->assignRole($u['role']);
+
+            // Start trial for landlord accounts
+            if ($u['role'] === 'landlord') {
+                app(SubscriptionService::class)->startTrial($user);
+            }
         }
     }
 }
