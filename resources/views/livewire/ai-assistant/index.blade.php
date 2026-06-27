@@ -58,13 +58,13 @@
             <div class="@if($msg->role === 'user') flex justify-end @else flex justify-start @endif">
                 <div class="max-w-[80%] rounded-2xl px-4 py-3
                     @if($msg->role === 'user')
-                        bg-sky-500 text-white
+                        bg-kirada-ocean text-white
                     @else
                         bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white
                     @endif">
                     <p class="text-sm whitespace-pre-wrap">{{ $msg->content }}</p>
                     @if($msg->role === 'assistant' && ($msg->input_tokens || $msg->output_tokens))
-                    <p class="text-xs mt-1 @if($msg->role === 'user') text-sky-100 @else text-zinc-400 @endif">
+                    <p class="text-xs mt-1 @if($msg->role === 'user') text-white/75 @else text-zinc-400 @endif">
                         @if($msg->input_tokens) {{ $msg->input_tokens }} in @endif
                         @if($msg->output_tokens) {{ $msg->output_tokens }} out @endif
                     </p>

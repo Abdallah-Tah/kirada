@@ -1,13 +1,13 @@
 <x-layouts::app :title="__('Tenant Dashboard')">
     <flux:main class="kirada-shell">
         <div class="kirada-page-header">
-            <flux:heading size="xl" class="text-slate-950">{{ __('Tenant Dashboard') }}</flux:heading>
+            <flux:heading size="xl" class="text-kirada-navy">{{ __('Tenant Dashboard') }}</flux:heading>
             <flux:subheading class="mt-1 text-slate-500">{{ __('Your rent, lease, maintenance, and documents at a glance.') }}</flux:subheading>
         </div>
 
         @if($active_lease)
             <div class="mt-6 kirada-card">
-                <h3 class="font-semibold text-slate-950">{{ __('Active Lease') }}</h3>
+                <h3 class="font-semibold text-kirada-navy">{{ __('Active Lease') }}</h3>
                 <div class="mt-3 grid gap-3 text-sm sm:grid-cols-2">
                     <div>
                         <span class="text-slate-500">{{ __('Property') }}</span>
@@ -36,7 +36,7 @@
         <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Current Invoice') }}</p>
-                <p class="mt-2 text-lg font-semibold {{ $current_invoice ? 'text-amber-600' : 'text-emerald-600' }}">
+                <p class="mt-2 text-lg font-semibold {{ $current_invoice ? 'text-amber-600' : 'text-kirada-green' }}">
                     @if($current_invoice)
                         {{ ucfirst($current_invoice->status) }}
                     @else
@@ -50,7 +50,7 @@
             </div>
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Open Maintenance') }}</p>
-                <p class="kirada-stat-value text-sky-600">{{ $open_maintenance }}</p>
+                <p class="kirada-stat-value text-kirada-ocean">{{ $open_maintenance }}</p>
             </div>
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Documents') }}</p>
@@ -59,8 +59,8 @@
         </div>
 
         @if($unread_messages > 0)
-        <div class="mt-4 rounded-lg border border-sky-200 bg-sky-50 p-4">
-            <p class="text-sm font-medium text-sky-700">
+        <div class="mt-4 rounded-lg border border-kirada-sky/45 bg-kirada-soft p-4">
+            <p class="text-sm font-medium text-kirada-navy">
                 {{ $unread_messages }} {{ __('unread message(s)') }}
                 — <a href="{{ route('messages.index') }}" wire:navigate class="underline">{{ __('View messages') }}</a>
             </p>
@@ -69,7 +69,7 @@
 
         @if($recent_invoices->isNotEmpty())
         <div class="mt-6 kirada-card">
-            <h3 class="font-semibold text-slate-950">{{ __('Recent Invoices') }}</h3>
+            <h3 class="font-semibold text-kirada-navy">{{ __('Recent Invoices') }}</h3>
             <div class="mt-4 divide-y divide-slate-100">
                 @foreach($recent_invoices as $invoice)
                     <div class="flex items-center justify-between gap-4 py-3 text-sm">

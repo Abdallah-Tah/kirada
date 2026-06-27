@@ -1,7 +1,7 @@
 <x-layouts::app :title="__('Admin Dashboard')">
     <flux:main class="kirada-shell">
         <div class="kirada-page-header">
-            <flux:heading size="xl" class="text-slate-950">{{ __('Admin Dashboard') }}</flux:heading>
+            <flux:heading size="xl" class="text-kirada-navy">{{ __('Admin Dashboard') }}</flux:heading>
             <flux:subheading class="mt-1 text-slate-500">{{ __('System overview, portfolio health, and recent platform activity.') }}</flux:subheading>
         </div>
 
@@ -35,17 +35,17 @@
             </div>
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Open Maintenance') }}</p>
-                <p class="kirada-stat-value text-sky-600">{{ $open_maintenance }}</p>
+                <p class="kirada-stat-value text-kirada-ocean">{{ $open_maintenance }}</p>
             </div>
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Active Subscriptions') }}</p>
-                <p class="kirada-stat-value text-emerald-600">{{ $active_subscriptions }}</p>
+                <p class="kirada-stat-value text-kirada-green">{{ $active_subscriptions }}</p>
             </div>
         </div>
 
         @if($recent_properties->isNotEmpty())
         <div class="mt-6 kirada-card">
-            <h3 class="font-semibold text-slate-950">{{ __('Recent Properties') }}</h3>
+            <h3 class="font-semibold text-kirada-navy">{{ __('Recent Properties') }}</h3>
             <div class="mt-4 divide-y divide-slate-100">
                 @foreach($recent_properties as $property)
                     <div class="flex items-center justify-between gap-4 py-3 text-sm">
@@ -59,7 +59,7 @@
 
         @if($recent_maintenance->isNotEmpty())
         <div class="mt-4 kirada-card">
-            <h3 class="font-semibold text-slate-950">{{ __('Recent Maintenance Requests') }}</h3>
+            <h3 class="font-semibold text-kirada-navy">{{ __('Recent Maintenance Requests') }}</h3>
             <div class="mt-4 divide-y divide-slate-100">
                 @foreach($recent_maintenance as $request)
                     <div class="flex items-center justify-between gap-4 py-3 text-sm">
