@@ -33,4 +33,12 @@ return [
     'Password' => 'Mot de passe',
     'Remember me' => 'Se souvenir de moi',
     'Forgot your password?' => 'Mot de passe oublié ?',
+    'Secure and Reliable' => 'Sécurisé et Fiable',
+    'Powerful and Simple' => 'Puissant et Simple',
+    'Global and Local' => 'Global et Local',
+    'Maintenance Requests' => 'Demandes d'entretien',
+    'Documents and Receipts' => 'Documents et Reçus',
+    'Store lease agreements, payment proofs, and receipts securely.' => 'Stockez les contrats de bail, les preuves de paiement et les reçus en toute sécurité.',
+    'Multi-Country Support' => 'Support Multi-Pays',
+    'Ready to get started?' => 'Prêt à commencer ?',
 ];

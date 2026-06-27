@@ -33,4 +33,12 @@ return [
     'Password' => 'كلمة المرور',
     'Remember me' => 'تذكرني',
     'Forgot your password?' => 'نسيت كلمة المرور؟',
+    'Secure and Reliable' => 'آمن وموثوق',
+    'Powerful and Simple' => 'قوي وبسيط',
+    'Global and Local' => 'عالمي ومحلي',
+    'Maintenance Requests' => 'طلبات الصيانة',
+    'Documents and Receipts' => 'المستندات والإيصالات',
+    'Store lease agreements, payment proofs, and receipts securely.' => 'اختبرن عقود الإيجار وإثباتات الدفع والإيصالات بأمان.',
+    'Multi-Country Support' => 'دعم متعدد الدول',
+    'Ready to get started?' => 'جاهز للبدء؟',
 ];

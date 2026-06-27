@@ -33,4 +33,12 @@ return [
     'Password' => 'ሚስጥር ቃል',
     'Remember me' => 'አስታውሰኝ',
     'Forgot your password?' => 'ሚስጥር ቃልዎን ረሱ?',
+    'Secure and Reliable' => 'ደህንነት ያለው እና አስተማማኝ',
+    'Powerful and Simple' => 'ኃይለኛ እና ቀላል',
+    'Global and Local' => 'ዓለም አቀፍ እና አካባቢያዊ',
+    'Maintenance Requests' => 'የጥገና ጥያቄዎች',
+    'Documents and Receipts' => 'ሰነዶች እና ደረሰኞች',
+    'Store lease agreements, payment proofs, and receipts securely.' => 'የኪራይ ውሎችን፣ የክፍያ ማረጋገጫዎችን እና ደረሰኞችን በደህንነት ያከማቹ።',
+    'Multi-Country Support' => 'ባለብዙ ሀገር ድጋፍ',
+    'Ready to get started?' => 'ለመጀመር ዝግጁ ነዎት?',
 ];

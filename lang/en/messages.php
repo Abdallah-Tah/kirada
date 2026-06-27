@@ -34,4 +34,12 @@ return [
     'Remember me' => 'Remember me',
     'Forgot your password?' => 'Forgot your password?',
     'Log in' => 'Log in',
+    'Secure and Reliable' => 'Secure and Reliable',
+    'Powerful and Simple' => 'Powerful and Simple',
+    'Global and Local' => 'Global and Local',
+    'Maintenance Requests' => 'Maintenance Requests',
+    'Documents and Receipts' => 'Documents and Receipts',
+    'Store lease agreements, payment proofs, and receipts securely.' => 'Store lease agreements, payment proofs, and receipts securely.',
+    'Multi-Country Support' => 'Multi-Country Support',
+    'Ready to get started?' => 'Ready to get started?',
 ];

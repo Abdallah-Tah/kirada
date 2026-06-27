@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if(app()->getLocale() === 'ar') dir="rtl" @endif>
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-slate-50 dark:bg-slate-950">
-        <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <body class="min-h-screen bg-slate-50 text-slate-900">
+        <flux:header container class="border-b border-slate-200 bg-white">
             <flux:sidebar.toggle class="lg:hidden mr-2" icon="bars-2" inset="left" />
 
             <x-app-logo href="{{ route('dashboard') }}" wire:navigate />
@@ -17,16 +17,13 @@
 
             <flux:spacer />
 
-            <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
-            </flux:navbar>
-
             <x-language-switcher />
 
             <x-desktop-user-menu />
         </flux:header>
 
         <!-- Mobile Menu -->
-        <flux:sidebar collapsible="mobile" sticky class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:sidebar collapsible="mobile" sticky class="lg:hidden border-e border-slate-200 bg-white">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <x-language-switcher />
@@ -36,15 +33,15 @@
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Platform')">
                     <flux:sidebar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard')  }}
+                        {{ __('Dashboard') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
             <flux:spacer />
+        </flux:sidebar>
 
-
-            {{ $slot }}
+        {{ $slot }}
 
         @persist('toast')
             <flux:toast.group>

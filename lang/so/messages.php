@@ -33,4 +33,12 @@ return [
     'Password' => 'Eray sir ah',
     'Remember me' => 'I xasuus',
     'Forgot your password?' => 'Ma ilowtay eraygaaga sirka ah?',
+    'Secure and Reliable' => 'Ammi ah oo La xiriirsan',
+    'Powerful and Simple' => 'Awood badan oo Fudud',
+    'Global and Local' => 'Caalami oo Goboleed',
+    'Maintenance Requests' => 'Codsiyada Dayactirka',
+    'Documents and Receipts' => 'Qoraalada iyo Wisikhada',
+    'Store lease agreements, payment proofs, and receipts securely.' => 'Kaydi heshiisyada kireynta, cadayn bixinta, iyo wisikhada si amaan ah.',
+    'Multi-Country Support' => 'Taageero Wadado Badan',
+    'Ready to get started?' => 'Diyaar ma bilowday?',
 ];
