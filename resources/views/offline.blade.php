@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +8,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: system-ui, -apple-system, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
+            background: #f8fafc;
+            color: #0f172a;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -24,8 +24,8 @@
             width: 64px;
             height: 64px;
             margin: 0 auto 1.5rem;
-            background: #0ea5e9;
-            border-radius: 12px;
+            background: #000;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -34,7 +34,7 @@
             color: white;
         }
         h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        p { color: #94a3b8; font-size: 0.875rem; line-height: 1.5; margin-bottom: 1.5rem; }
+        p { color: #64748b; font-size: 0.875rem; line-height: 1.5; margin-bottom: 1.5rem; }
         button {
             background: #0ea5e9;
             color: white;

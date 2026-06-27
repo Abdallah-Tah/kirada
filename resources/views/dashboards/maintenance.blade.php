@@ -1,31 +1,33 @@
 <x-layouts::app :title="__('Maintenance Dashboard')">
-    <flux:main>
-        <flux:heading size="xl">{{ __('Maintenance Dashboard') }}</flux:heading>
-        <flux:subheading>{{ __('Assigned maintenance requests') }}</flux:subheading>
+    <flux:main class="kirada-shell">
+        <div class="kirada-page-header">
+            <flux:heading size="xl" class="text-slate-950">{{ __('Maintenance Dashboard') }}</flux:heading>
+            <flux:subheading class="mt-1 text-slate-500">{{ __('Assigned work orders, active jobs, and recent resolutions.') }}</flux:subheading>
+        </div>
 
         <div class="mt-6 grid gap-4 sm:grid-cols-3">
-            <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
-                <p class="text-sm text-zinc-500">{{ __('Assigned Open') }}</p>
-                <p class="mt-2 text-3xl font-semibold text-blue-500">{{ $assigned_open }}</p>
+            <div class="kirada-stat-card">
+                <p class="kirada-stat-label">{{ __('Assigned Open') }}</p>
+                <p class="kirada-stat-value text-sky-600">{{ $assigned_open }}</p>
             </div>
-            <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
-                <p class="text-sm text-zinc-500">{{ __('In Progress') }}</p>
-                <p class="mt-2 text-3xl font-semibold text-orange-500">{{ $in_progress }}</p>
+            <div class="kirada-stat-card">
+                <p class="kirada-stat-label">{{ __('In Progress') }}</p>
+                <p class="kirada-stat-value text-amber-600">{{ $in_progress }}</p>
             </div>
-            <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
-                <p class="text-sm text-zinc-500">{{ __('Resolved This Month') }}</p>
-                <p class="mt-2 text-3xl font-semibold text-green-500">{{ $resolved_this_month }}</p>
+            <div class="kirada-stat-card">
+                <p class="kirada-stat-label">{{ __('Resolved This Month') }}</p>
+                <p class="kirada-stat-value text-emerald-600">{{ $resolved_this_month }}</p>
             </div>
         </div>
 
         @if($recent_assigned->isNotEmpty())
-        <div class="mt-6 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
-            <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Recent Assigned Requests') }}</h3>
-            <div class="mt-3 space-y-2">
+        <div class="mt-6 kirada-card">
+            <h3 class="font-semibold text-slate-950">{{ __('Recent Assigned Requests') }}</h3>
+            <div class="mt-4 divide-y divide-slate-100">
                 @foreach($recent_assigned as $request)
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="font-medium">{{ $request->title }}</span>
-                        <span class="text-zinc-400">
+                    <div class="flex items-center justify-between gap-4 py-3 text-sm">
+                        <span class="font-medium text-slate-800">{{ $request->title }}</span>
+                        <span class="text-right text-slate-500">
                             {{ $request->property?->name }}
                             @if($request->unit) — {{ $request->unit->unit_number }} @endif
                             · {{ ucfirst($request->status) }}
@@ -35,8 +37,8 @@
             </div>
         </div>
         @else
-            <div class="mt-6 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
-                <p class="text-sm text-zinc-500">{{ __('No assigned requests yet.') }}</p>
+            <div class="mt-6 kirada-card">
+                <p class="text-sm text-slate-500">{{ __('No assigned requests yet.') }}</p>
             </div>
         @endif
     </flux:main>
