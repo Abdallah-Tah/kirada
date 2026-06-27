@@ -19,19 +19,22 @@
 
                 @hasrole('admin')
                 <flux:sidebar.group :heading="__('Administration')" class="grid">
-                    <flux:sidebar.item icon="users" href="#" wire:navigate>
+                    <flux:sidebar.item icon="users" href="#">
                         {{ __('Users') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="building-office" href="#" wire:navigate>
-                        {{ __('Landlords') }}
+                    <flux:sidebar.item icon="building-office" :href="route('properties.index')" :current="request()->routeIs('properties.*')" wire:navigate>
+                        {{ __('Properties') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="credit-card" href="#" wire:navigate>
+                    <flux:sidebar.item icon="home-modern" :href="route('units.index')" :current="request()->routeIs('units.*')" wire:navigate>
+                        {{ __('Units') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="credit-card" href="#">
                         {{ __('Subscriptions') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="chart-bar" href="#" wire:navigate>
+                    <flux:sidebar.item icon="chart-bar" href="#">
                         {{ __('Reports') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="cog-6-tooth" href="#" wire:navigate>
+                    <flux:sidebar.item icon="cog-6-tooth" href="#">
                         {{ __('Settings') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
@@ -39,22 +42,22 @@
 
                 @hasrole('landlord')
                 <flux:sidebar.group :heading="__('Management')" class="grid">
-                    <flux:sidebar.item icon="building-office" href="#" wire:navigate>
+                    <flux:sidebar.item icon="building-office" :href="route('properties.index')" :current="request()->routeIs('properties.*')" wire:navigate>
                         {{ __('Properties') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="home-modern" href="#" wire:navigate>
+                    <flux:sidebar.item icon="home-modern" :href="route('units.index')" :current="request()->routeIs('units.*')" wire:navigate>
                         {{ __('Units') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="users" href="#" wire:navigate>
+                    <flux:sidebar.item icon="users" href="#">
                         {{ __('Tenants') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="document-text" href="#" wire:navigate>
+                    <flux:sidebar.item icon="document-text" href="#">
                         {{ __('Leases') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="receipt" href="#" wire:navigate>
+                    <flux:sidebar.item icon="receipt" href="#">
                         {{ __('Rent Invoices') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="wrench-screwdriver" href="#" wire:navigate>
+                    <flux:sidebar.item icon="wrench-screwdriver" href="#">
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
