@@ -4,8 +4,11 @@ namespace App\Actions\Fortify;
 
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
+use App\Models\Plan;
 use App\Models\User;
+use App\Services\SubscriptionService;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
 class CreateNewUser implements CreatesNewUsers
@@ -22,12 +25,27 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
+            'selected_plan' => [
+                'nullable',
+                'string',
+                Rule::exists('plans', 'slug')->where('is_active', true),
+            ],
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
+
+        $user->assignRole('landlord');
+
+        $plan = isset($input['selected_plan'])
+            ? Plan::active()->where('slug', $input['selected_plan'])->first()
+            : null;
+
+        app(SubscriptionService::class)->startTrial($user, $plan);
+
+        return $user;
     }
 }

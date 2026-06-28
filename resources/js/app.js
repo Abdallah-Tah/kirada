@@ -54,3 +54,291 @@ if (document.readyState === 'loading') {
 }
 
 document.addEventListener('livewire:navigated', initScrollReveal);
+
+const googleMapsApiKey = window.KIRADA_GOOGLE_MAPS_API_KEY || import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+let googleMapsPromise;
+
+function loadGoogleMaps() {
+    if (!googleMapsApiKey) {
+        console.warn('[Kirada] Google address autocomplete disabled: missing VITE_GOOGLE_MAPS_API_KEY.');
+        return Promise.resolve(false);
+    }
+
+    if (window.google?.maps?.places) {
+        return Promise.resolve(true);
+    }
+
+    if (googleMapsPromise) {
+        return googleMapsPromise;
+    }
+
+    googleMapsPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        const params = new URLSearchParams({
+            key: googleMapsApiKey,
+            libraries: 'places',
+            loading: 'async',
+        });
+
+        script.src = `https://maps.googleapis.com/maps/api/js?${params.toString()}`;
+        script.async = true;
+        script.defer = true;
+        script.addEventListener('load', () => resolve(true), { once: true });
+        script.addEventListener('error', reject, { once: true });
+        document.head.appendChild(script);
+    });
+
+    return googleMapsPromise;
+}
+
+function addressPart(place, type, format = 'long_name') {
+    return place.address_components?.find((component) => component.types.includes(type))?.[format] ?? '';
+}
+
+function normalizePlace(place) {
+    const streetNumber = addressPart(place, 'street_number');
+    const route = addressPart(place, 'route');
+    const addressLine = [streetNumber, route].filter(Boolean).join(' ') || place.formatted_address || '';
+    const city = addressPart(place, 'locality')
+        || addressPart(place, 'postal_town')
+        || addressPart(place, 'administrative_area_level_2');
+
+    return {
+        address_line_1: addressLine,
+        city,
+        region: addressPart(place, 'administrative_area_level_1'),
+        postal_code: addressPart(place, 'postal_code'),
+        country_code: addressPart(place, 'country', 'short_name'),
+        latitude: place.geometry?.location?.lat(),
+        longitude: place.geometry?.location?.lng(),
+    };
+}
+
+function initGoogleAddressAutocomplete() {
+    const inputs = document.querySelectorAll('[data-google-address]:not([data-google-address-ready])');
+
+    if (inputs.length === 0) {
+        return;
+    }
+
+    loadGoogleMaps()
+        .then((loaded) => {
+            if (!loaded) {
+                return;
+            }
+
+            inputs.forEach((input) => {
+                if (input.dataset.googleAddressReady) {
+                    return;
+                }
+
+                input.dataset.googleAddressReady = 'true';
+                const livewireMethod = input.dataset.googleAddressMethod || 'applyGoogleAddress';
+                const nextSelector = input.dataset.googleAddressNext;
+
+                const autocomplete = new window.google.maps.places.Autocomplete(input, {
+                    fields: ['address_components', 'formatted_address', 'geometry'],
+                    types: ['address'],
+                });
+
+                autocomplete.addListener('place_changed', () => {
+                    const place = autocomplete.getPlace();
+                    const componentId = input.closest('[wire\\:id]')?.getAttribute('wire:id');
+                    const component = componentId ? window.Livewire?.find(componentId) : null;
+
+                    if (component && place) {
+                        component.call(livewireMethod, normalizePlace(place));
+                    }
+
+                    if (nextSelector) {
+                        const nextInput = input.closest('form')?.querySelector(nextSelector);
+
+                        if (nextInput instanceof HTMLElement) {
+                            window.requestAnimationFrame(() => nextInput.focus());
+                        }
+                    }
+                });
+            });
+        })
+        .catch((error) => console.warn('[Kirada] Google address autocomplete failed to load.', error));
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGoogleAddressAutocomplete);
+} else {
+    initGoogleAddressAutocomplete();
+}
+
+document.addEventListener('livewire:navigated', initGoogleAddressAutocomplete);
+
+let pendingConfirmedAction = null;
+
+function splitWireArguments(argsString) {
+    const args = [];
+    let current = '';
+    let quote = null;
+    let escaped = false;
+
+    for (const char of argsString) {
+        if (escaped) {
+            current += char;
+            escaped = false;
+            continue;
+        }
+
+        if (char === '\\') {
+            current += char;
+            escaped = true;
+            continue;
+        }
+
+        if (quote) {
+            current += char;
+
+            if (char === quote) {
+                quote = null;
+            }
+
+            continue;
+        }
+
+        if (char === '\'' || char === '"') {
+            current += char;
+            quote = char;
+            continue;
+        }
+
+        if (char === ',') {
+            args.push(current.trim());
+            current = '';
+            continue;
+        }
+
+        current += char;
+    }
+
+    if (current.trim() !== '') {
+        args.push(current.trim());
+    }
+
+    return args;
+}
+
+function parseWireValue(value) {
+    if ((value.startsWith('\'') && value.endsWith('\'')) || (value.startsWith('"') && value.endsWith('"'))) {
+        return value.slice(1, -1).replace(/\\(['"\\])/g, '$1');
+    }
+
+    if (value === 'true') {
+        return true;
+    }
+
+    if (value === 'false') {
+        return false;
+    }
+
+    if (value === 'null') {
+        return null;
+    }
+
+    if (/^-?\d+(\.\d+)?$/.test(value)) {
+        return Number(value);
+    }
+
+    return value;
+}
+
+function parseWireClick(expression) {
+    const match = expression.trim().match(/^([\w$]+)(?:\((.*)\))?$/);
+
+    if (!match) {
+        return null;
+    }
+
+    const argsString = match[2]?.trim();
+
+    return {
+        method: match[1],
+        args: argsString ? splitWireArguments(argsString).map(parseWireValue) : [],
+    };
+}
+
+function closeConfirmationModal() {
+    const modal = document.getElementById('kirada-confirmation-modal');
+
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    pendingConfirmedAction = null;
+}
+
+function openConfirmationModal({ message, confirmText, action }) {
+    const modal = document.getElementById('kirada-confirmation-modal');
+    const messageEl = document.getElementById('kirada-confirmation-message');
+    const continueButton = modal?.querySelector('[data-confirm-continue]');
+
+    if (!modal || !messageEl || !continueButton) {
+        return false;
+    }
+
+    pendingConfirmedAction = action;
+    messageEl.textContent = message || 'Are you sure you want to continue?';
+    continueButton.textContent = confirmText || 'Confirm';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    continueButton.focus();
+
+    return true;
+}
+
+document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-confirm]');
+
+    if (!trigger) {
+        return;
+    }
+
+    const wireClick = trigger.getAttribute('wire:click');
+    const componentId = trigger.closest('[wire\\:id]')?.getAttribute('wire:id');
+    const component = componentId ? window.Livewire?.find(componentId) : null;
+    const parsed = wireClick ? parseWireClick(wireClick) : null;
+
+    if (!component || !parsed) {
+        return;
+    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const triggerText = trigger.textContent.trim();
+    const confirmText = trigger.getAttribute('data-confirm-button')
+        || (triggerText.length > 0 && triggerText.length <= 24 ? triggerText : 'Confirm');
+
+    openConfirmationModal({
+        message: trigger.getAttribute('data-confirm'),
+        confirmText,
+        action: () => component.call(parsed.method, ...parsed.args),
+    });
+}, true);
+
+document.addEventListener('click', (event) => {
+    if (event.target.closest('[data-confirm-cancel]')) {
+        closeConfirmationModal();
+    }
+
+    if (event.target.closest('[data-confirm-continue]') && pendingConfirmedAction) {
+        const action = pendingConfirmedAction;
+
+        closeConfirmationModal();
+        action();
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        closeConfirmationModal();
+    }
+});

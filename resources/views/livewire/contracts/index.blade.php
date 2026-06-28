@@ -56,7 +56,7 @@
 
                 <div class="flex shrink-0 flex-wrap items-center gap-2">
                     @if ($contract->isDraft())
-                        <flux:button size="sm" variant="primary" wire:click="send({{ $contract->id }})">{{ __('Send') }}</flux:button>
+                        <flux:button size="sm" variant="primary" wire:click="send({{ $contract->id }})" data-confirm="{{ __('Send this contract for signature?') }}">{{ __('Send') }}</flux:button>
                     @endif
                     @if ($contract->isCompleted())
                         <a href="{{ route('contracts.download', $contract) }}" class="kirada-pill border-green-200 bg-green-50 text-kirada-green">{{ __('Download') }}</a>

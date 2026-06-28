@@ -37,6 +37,9 @@ if ('serviceWorker' in navigator) {
 {{-- Mark JS as available before CSS paints, so scroll-reveal's hidden state
      only applies when JS can play it back (no blank page if JS is disabled). --}}
 <script>document.documentElement.classList.add('kirada-motion');</script>
+<script>
+window.KIRADA_GOOGLE_MAPS_API_KEY = @js(env('VITE_GOOGLE_MAPS_API_KEY'));
+</script>
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 <style>

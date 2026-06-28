@@ -27,6 +27,11 @@ return [
     // Navigation
     'Dashboard' => 'لوحة التحكم',
     'Settings' => 'الإعدادات',
+    'Messages' => 'الرسائل',
+    'Documents' => 'المستندات',
+    'Subscription' => 'الاشتراك',
+    'Subscriptions' => 'الاشتراكات',
+    'AI Assistant' => 'المساعد الذكي',
 
     // Auth
     'Email' => 'البريد الإلكتروني',

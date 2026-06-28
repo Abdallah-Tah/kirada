@@ -27,6 +27,11 @@ return [
     // Navigation
     'Dashboard' => 'ዳሽቦርድ',
     'Settings' => 'ቅንብሮች',
+    'Messages' => 'መልዕክቶች',
+    'Documents' => 'ሰነዶች',
+    'Subscription' => 'ምዝገባ',
+    'Subscriptions' => 'ምዝገባዎች',
+    'AI Assistant' => 'ኤአይ ረዳት',
 
     // Auth
     'Email' => 'ኢሜይል',

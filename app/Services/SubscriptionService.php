@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 
 class SubscriptionService
 {
@@ -14,21 +13,26 @@ class SubscriptionService
     /**
      * Start a 30-day trial for a landlord.
      */
-    public function startTrial(User $user): Subscription
+    public function startTrial(User $user, ?Plan $plan = null): Subscription
     {
-        if (!$user->isLandlord()) {
+        if (! $user->isLandlord()) {
             throw new \DomainException('Only landlord accounts can start a trial.');
         }
 
         // Check if already has a subscription
         $existing = Subscription::where('user_id', $user->id)->first();
         if ($existing) {
-            return $existing;
+            if ($plan && $existing->isTrialing()) {
+                $existing->update(['plan_id' => $plan->id]);
+            }
+
+            return $existing->fresh();
         }
 
         return Subscription::create([
-            'user_id'      => $user->id,
-            'status'       => 'trialing',
+            'user_id' => $user->id,
+            'plan_id' => $plan?->id,
+            'status' => 'trialing',
             'trial_ends_at' => now()->addDays(self::TRIAL_DAYS),
         ]);
     }
@@ -40,15 +44,15 @@ class SubscriptionService
     {
         $sub = Subscription::where('user_id', $user->id)->first();
 
-        if (!$sub) {
+        if (! $sub) {
             $sub = new Subscription(['user_id' => $user->id]);
         }
 
         $sub->fill([
-            'plan_id'        => $plan->id,
-            'status'         => 'active',
-            'starts_at'      => now(),
-            'ends_at'        => now()->addMonth(),
+            'plan_id' => $plan->id,
+            'status' => 'active',
+            'starts_at' => now(),
+            'ends_at' => now()->addMonth(),
             'payment_method' => $paymentMethod,
         ]);
 
@@ -63,6 +67,7 @@ class SubscriptionService
     public function cancelSubscription(Subscription $subscription): Subscription
     {
         $subscription->update(['status' => 'cancelled']);
+
         return $subscription->fresh();
     }
 
@@ -91,52 +96,52 @@ class SubscriptionService
     {
         $sub = $user->subscription;
 
-        if (!$sub) {
+        if (! $sub) {
             return [
-                'state'         => 'none',
-                'subscription'  => null,
-                'plan'          => null,
+                'state' => 'none',
+                'subscription' => null,
+                'plan' => null,
                 'trial_ends_at' => null,
-                'days_left'     => null,
+                'days_left' => null,
             ];
         }
 
         if ($sub->trialIsActive()) {
             return [
-                'state'         => 'trialing',
-                'subscription'  => $sub,
-                'plan'          => $sub->plan,
+                'state' => 'trialing',
+                'subscription' => $sub,
+                'plan' => $sub->plan,
                 'trial_ends_at' => $sub->trial_ends_at,
-                'days_left'     => (int) now()->diffInDays($sub->trial_ends_at, false),
+                'days_left' => (int) now()->diffInDays($sub->trial_ends_at, false),
             ];
         }
 
         if ($sub->trialHasExpired()) {
             return [
-                'state'         => 'trial_expired',
-                'subscription'  => $sub,
-                'plan'          => $sub->plan,
+                'state' => 'trial_expired',
+                'subscription' => $sub,
+                'plan' => $sub->plan,
                 'trial_ends_at' => $sub->trial_ends_at,
-                'days_left'     => 0,
+                'days_left' => 0,
             ];
         }
 
         if ($sub->isActive()) {
             return [
-                'state'         => 'active',
-                'subscription'  => $sub,
-                'plan'          => $sub->plan,
+                'state' => 'active',
+                'subscription' => $sub,
+                'plan' => $sub->plan,
                 'trial_ends_at' => null,
-                'days_left'     => null,
+                'days_left' => null,
             ];
         }
 
         return [
-            'state'         => $sub->status,
-            'subscription'  => $sub,
-            'plan'          => $sub->plan,
+            'state' => $sub->status,
+            'subscription' => $sub,
+            'plan' => $sub->plan,
             'trial_ends_at' => null,
-            'days_left'     => null,
+            'days_left' => null,
         ];
     }
 }

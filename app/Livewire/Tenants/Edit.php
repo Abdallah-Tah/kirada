@@ -52,9 +52,20 @@ class Edit extends Component
 
         $this->tenant->update($validated);
 
-        Flux::toast('Tenant updated successfully.', 'success');
+        \Flux\Flux::toast('Tenant updated successfully.', 'success');
 
         $this->redirect(route('tenants.index'), navigate: true);
+    }
+
+    /**
+     * Browser address autocomplete sends normalized Google address parts here.
+     *
+     * @param  array<string, mixed>  $address
+     */
+    public function applyGoogleAddress(array $address): void
+    {
+        $this->address = (string) ($address['address_line_1'] ?? $this->address);
+        $this->city = ! empty($address['city']) ? (string) $address['city'] : $this->city;
     }
 
     public function render()

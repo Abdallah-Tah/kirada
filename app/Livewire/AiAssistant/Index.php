@@ -92,7 +92,7 @@ class Index extends Component
     {
         $conversations = AiConversation::where('user_id', auth()->id())
             ->latest('last_message_at')
-            ->paginate(10, page: 'conv-page');
+            ->paginate(10, pageName: 'conv-page');
 
         return view('livewire.ai-assistant.index', [
             'conversations' => $conversations,

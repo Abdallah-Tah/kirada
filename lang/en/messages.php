@@ -27,6 +27,11 @@ return [
     // Navigation
     'Dashboard' => 'Dashboard',
     'Settings' => 'Settings',
+    'Messages' => 'Messages',
+    'Documents' => 'Documents',
+    'Subscription' => 'Subscription',
+    'Subscriptions' => 'Subscriptions',
+    'AI Assistant' => 'AI Assistant',
 
     // Auth
     'Email' => 'Email',

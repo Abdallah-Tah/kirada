@@ -1,8 +1,10 @@
 <div>
-    <flux:heading size="xl">{{ __('Maintenance Requests') }}</flux:heading>
+    <div class="kirada-page-header kirada-reveal">
+        <flux:heading size="xl">{{ __('Maintenance Requests') }}</flux:heading>
     <flux:subheading>{{ __('Track and manage maintenance issues') }}</flux:subheading>
+    </div>
 
-    <div class="mt-6 flex flex-wrap items-center gap-3">
+    <div class="kirada-toolbar mt-6">
         <flux:input
             wire:model.live="search"
             type="search"
@@ -37,7 +39,7 @@
         @endcan
     </div>
 
-    <div class="mt-4 overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+    <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
             <thead class="bg-zinc-50 dark:bg-zinc-900">
                 <tr>

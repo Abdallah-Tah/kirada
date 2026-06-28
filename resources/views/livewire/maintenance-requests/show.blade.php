@@ -1,6 +1,6 @@
 <div>
     {{-- Header --}}
-    <div class="flex items-start justify-between gap-4">
+    <div class="kirada-page-header kirada-reveal flex items-start justify-between gap-4">
         <div>
             <flux:heading size="xl">{{ $maintenanceRequest->title }}</flux:heading>
             <flux:subheading>
@@ -29,7 +29,7 @@
     </div>
 
     {{-- Meta info --}}
-    <div class="mt-4 rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 grid gap-3 text-sm sm:grid-cols-3">
+    <div class="kirada-card mt-4 grid gap-3 text-sm sm:grid-cols-3">
         <div>
             <span class="text-zinc-400">{{ __('Reported by') }}</span>
             <p class="font-medium">{{ $maintenanceRequest->reporter?->name }}</p>
@@ -70,7 +70,7 @@
 
     @can('update', $maintenanceRequest)
     {{-- Management actions --}}
-    <div class="mt-6 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 grid gap-4">
+    <div class="kirada-form-card mt-6 grid gap-4">
         <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Manage') }}</h3>
 
         @if($this->canManage)
@@ -86,7 +86,7 @@
                     </flux:select>
                 </div>
                 <div class="flex items-end">
-                    <flux:button wire:click="assign" variant="primary" class="w-full">
+                    <flux:button wire:click="assign" data-confirm="{{ __('Assign this maintenance request?') }}" variant="primary" class="w-full">
                         {{ __('Assign') }}
                     </flux:button>
                 </div>
@@ -106,7 +106,7 @@
                     </flux:select>
                 </div>
                 <div class="flex items-end">
-                    <flux:button wire:click="changeStatus" variant="primary" class="w-full">
+                    <flux:button wire:click="changeStatus" data-confirm="{{ __('Update this maintenance request status?') }}" variant="primary" class="w-full">
                         {{ __('Update Status') }}
                     </flux:button>
                 </div>
@@ -138,7 +138,7 @@
 
         {{-- Add comment --}}
         @can('view', $maintenanceRequest)
-            <div class="mt-4 rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 grid gap-3">
+            <div class="kirada-card mt-4 grid gap-3">
                 <flux:label>{{ __('Add Comment') }}</flux:label>
                 <flux:textarea wire:model="newComment" rows="3" :placeholder="__('Write a comment...')" />
                 @if($this->canManage)

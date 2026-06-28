@@ -17,7 +17,7 @@ class DashboardRedirectService
             'landlord'    => 'landlord.dashboard',
             'tenant'      => 'tenant.dashboard',
             'maintenance' => 'maintenance.dashboard',
-            default       => 'dashboard',
+            default       => 'home',
         };
     }
 }

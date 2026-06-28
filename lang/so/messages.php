@@ -27,6 +27,11 @@ return [
     // Navigation
     'Dashboard' => 'Sarfaha',
     'Settings' => 'Dejimaha',
+    'Messages' => 'Farriimaha',
+    'Documents' => 'Qoraalada',
+    'Subscription' => 'Isdiiwaangelin',
+    'Subscriptions' => 'Isdiiwaangelinnada',
+    'AI Assistant' => 'Kaaliyaha AI',
 
     // Auth
     'Email' => 'Iimayl',

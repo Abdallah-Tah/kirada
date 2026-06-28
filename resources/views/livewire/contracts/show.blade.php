@@ -19,10 +19,10 @@
             <div class="flex flex-wrap items-center gap-2">
                 @can('update', $contract)
                     @if ($contract->isDraft())
-                        <flux:button variant="primary" wire:click="send">{{ __('Send for signature') }}</flux:button>
+                        <flux:button variant="primary" wire:click="send" data-confirm="{{ __('Send this contract for signature?') }}">{{ __('Send for signature') }}</flux:button>
                     @endif
                     @if (! $contract->isCompleted() && ! $contract->isCancelled())
-                        <flux:button variant="ghost" wire:click="cancel" wire:confirm="{{ __('Cancel this contract?') }}">{{ __('Cancel') }}</flux:button>
+                        <flux:button variant="ghost" wire:click="cancel" data-confirm="{{ __('Cancel this contract?') }}">{{ __('Cancel') }}</flux:button>
                     @endif
                 @endcan
                 <a href="{{ route('contracts.print', $contract) }}" target="_blank" class="kirada-pill border-slate-200 bg-white text-slate-600 hover:border-kirada-sky">{{ __('Print / PDF') }}</a>
@@ -78,6 +78,7 @@
                                     </div>
                                     @if ($sig->email)
                                         <button type="button" wire:click="resend({{ $sig->id }})" wire:loading.attr="disabled" wire:target="resend({{ $sig->id }})"
+                                            data-confirm="{{ __('Email this signing link again?') }}"
                                             class="mt-2 text-xs font-medium text-kirada-ocean hover:text-kirada-navy">
                                             {{ __('Email signing link to :email', ['email' => $sig->email]) }}
                                         </button>

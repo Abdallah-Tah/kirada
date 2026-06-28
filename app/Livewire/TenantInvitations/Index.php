@@ -115,7 +115,7 @@ class Index extends Component
             return;
         }
 
-        Flux::toast('Invitation created. Share the link with the tenant.', 'success');
+        \Flux\Flux::toast('Invitation created. Share the link with the tenant.', 'success');
 
         $this->reset(['tenant_id', 'email', 'phone']);
         unset($this->invitations);
@@ -130,11 +130,11 @@ class Index extends Component
         try {
             app(TenantInvitationService::class)->resendInvitation($invitation);
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            \Flux\Flux::toast($e->getMessage(), 'error');
             return;
         }
 
-        Flux::toast('Invitation resent with a new link.', 'success');
+        \Flux\Flux::toast('Invitation resent with a new link.', 'success');
         unset($this->invitations);
     }
 
@@ -146,11 +146,11 @@ class Index extends Component
         try {
             app(TenantInvitationService::class)->cancelInvitation($invitation);
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            \Flux\Flux::toast($e->getMessage(), 'error');
             return;
         }
 
-        Flux::toast('Invitation cancelled.', 'success');
+        \Flux\Flux::toast('Invitation cancelled.', 'success');
         unset($this->invitations);
     }
 
@@ -161,7 +161,7 @@ class Index extends Component
 
         $invitation->delete();
 
-        Flux::toast('Invitation deleted.', 'success');
+        \Flux\Flux::toast('Invitation deleted.', 'success');
         unset($this->invitations);
     }
 
@@ -171,7 +171,7 @@ class Index extends Component
         $this->authorize('view', $invitation);
 
         $this->copiedId = $id;
-        Flux::toast('Link: ' . $invitation->accept_url, 'success');
+        \Flux\Flux::toast('Link: ' . $invitation->accept_url, 'success');
     }
 
     public function render()

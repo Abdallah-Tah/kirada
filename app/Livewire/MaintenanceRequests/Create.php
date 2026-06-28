@@ -138,7 +138,7 @@ class Create extends Component
             auth()->user(),
         );
 
-        Flux::toast('Maintenance request submitted.', 'success');
+        \Flux\Flux::toast('Maintenance request submitted.', 'success');
 
         $this->redirect(route('maintenance-requests.show', $request), navigate: true);
     }

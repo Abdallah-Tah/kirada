@@ -1,9 +1,11 @@
 <div>
-    <flux:heading size="xl">{{ __('Edit Tenant') }}</flux:heading>
+    <div class="kirada-page-header kirada-reveal">
+        <flux:heading size="xl">{{ __('Edit Tenant') }}</flux:heading>
     <flux:subheading>{{ $tenant->full_name }}</flux:subheading>
+    </div>
 
     <form wire:submit="save" class="mt-6 grid gap-6">
-        <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 grid gap-4">
+        <div class="kirada-form-card grid gap-4">
             <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Tenant Information') }}</h3>
 
             <div class="grid gap-4 sm:grid-cols-2">
@@ -43,7 +45,15 @@
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
                     <flux:label>{{ __('Address') }}</flux:label>
-                    <flux:input wire:model="address" type="text" class="mt-1" />
+                    <flux:input
+                        wire:model="address"
+                        type="text"
+                        autocomplete="street-address"
+                        data-google-address
+                        data-google-address-method="applyGoogleAddress"
+                        data-google-address-next="[wire\\:model='city'] input, [wire\\:model='city']"
+                        class="mt-1"
+                    />
                     <flux:error name="address" />
                 </div>
 

@@ -24,7 +24,7 @@
                 </button>
                 <button
                     wire:click="deleteConversation({{ $conv->id }})"
-                    wire:confirm="{{ __('Delete this conversation?') }}"
+                    data-confirm="{{ __('Delete this conversation?') }}"
                     class="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 px-2">
                     <flux:icon.trash class="size-4" />
                 </button>

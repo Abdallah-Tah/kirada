@@ -1,9 +1,11 @@
 <div>
-    <flux:heading size="xl">{{ __('New Maintenance Request') }}</flux:heading>
+    <div class="kirada-page-header kirada-reveal">
+        <flux:heading size="xl">{{ __('New Maintenance Request') }}</flux:heading>
     <flux:subheading>{{ __('Report a maintenance issue') }}</flux:subheading>
+    </div>
 
     <form wire:submit="save" class="mt-6 grid gap-6">
-        <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 grid gap-4">
+        <div class="kirada-form-card grid gap-4">
             <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Details') }}</h3>
 
             <div>

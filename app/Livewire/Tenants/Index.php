@@ -56,7 +56,7 @@ class Index extends Component
 
         unset($this->tenants);
 
-        Flux::toast('Tenant deleted.', 'success');
+        \Flux\Flux::toast('Tenant deleted.', 'success');
     }
 
     public function render()

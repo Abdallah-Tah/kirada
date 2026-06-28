@@ -27,6 +27,11 @@ return [
     // Navigation
     'Dashboard' => 'Tableau de bord',
     'Settings' => 'Paramètres',
+    'Messages' => 'Messages',
+    'Documents' => 'Documents',
+    'Subscription' => 'Abonnement',
+    'Subscriptions' => 'Abonnements',
+    'AI Assistant' => 'Assistant IA',
 
     // Auth
     'Email' => 'E-mail',

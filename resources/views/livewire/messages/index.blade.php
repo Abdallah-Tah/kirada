@@ -1,8 +1,10 @@
 <div>
-    <flux:heading size="xl">{{ __('Messages') }}</flux:heading>
+    <div class="kirada-page-header kirada-reveal">
+        <flux:heading size="xl">{{ __('messages.Messages') }}</flux:heading>
     <flux:subheading>{{ __('Conversations with your tenants and landlord') }}</flux:subheading>
+    </div>
 
-    <div class="mt-6 flex flex-wrap items-center gap-3">
+    <div class="kirada-toolbar mt-6">
         <flux:input
             wire:model.live="search"
             type="search"
@@ -21,7 +23,7 @@
     </div>
 
     @if ($showNewForm)
-        <div class="mt-4 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 grid gap-4" wire:key="new-conversation-form">
+        <div class="kirada-form-card mt-4 grid gap-4" wire:key="new-conversation-form">
             <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Start a Conversation') }}</h3>
 
             <div>
@@ -59,7 +61,7 @@
     @endif
 
     {{-- Conversations List --}}
-    <div class="mt-4 overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+    <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
             <thead class="bg-zinc-50 dark:bg-zinc-900">
                 <tr>

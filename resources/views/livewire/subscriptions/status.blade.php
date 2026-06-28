@@ -1,11 +1,19 @@
 <div>
-    <flux:heading size="xl">{{ __('Subscription') }}</flux:heading>
+    <div class="kirada-page-header kirada-reveal">
+        <flux:heading size="xl">{{ __('messages.Subscription') }}</flux:heading>
     <flux:subheading>{{ __('Manage your Kirada subscription') }}</flux:subheading>
+    </div>
 
     @php $summary = $this->summary; @endphp
 
+    @if (session('status'))
+        <div class="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-700 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-300">
+            {{ session('status') }}
+        </div>
+    @endif
+
     {{-- Status Card --}}
-    <div class="mt-6 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
+    <div class="kirada-form-card mt-6">
         @if($summary['state'] === 'none')
             <div class="flex items-center gap-3">
                 <flux:icon.exclamation-triangle class="text-zinc-400" />
@@ -66,7 +74,8 @@
             <h3 class="font-semibold text-zinc-900 dark:text-white mb-4">{{ __('Available Plans') }}</h3>
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($this->plans as $plan)
-                    <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 grid gap-3">
+                    @php $isCurrentPlan = $summary['plan']?->id === $plan->id; @endphp
+                    <div class="kirada-stat-card grid gap-3">
                         <h4 class="font-semibold text-lg text-zinc-900 dark:text-white">{{ $plan->name }}</h4>
                         <p class="text-2xl font-bold text-zinc-900 dark:text-white">{{ $plan->formattedPrice }}</p>
                         <p class="text-xs text-zinc-400">{{ __('per month') }}</p>
@@ -74,15 +83,28 @@
                         @if($plan->description)
                             <p class="text-xs text-zinc-400">{{ $plan->description }}</p>
                         @endif
-                        {{-- Plan selection will be wired when payment gateway is built --}}
-                        <flux:button variant="ghost" class="w-full" disabled>
-                            {{ __('Coming Soon') }}
+                        <flux:button
+                            wire:click="selectPlan('{{ $plan->slug }}')"
+                            data-confirm="{{ __('Select this subscription plan?') }}"
+                            variant="{{ $isCurrentPlan ? 'ghost' : 'primary' }}"
+                            class="w-full"
+                            @if($isCurrentPlan) disabled @endif
+                        >
+                            @if($isCurrentPlan)
+                                {{ __('Current Plan') }}
+                            @elseif($summary['state'] === 'none')
+                                {{ __('Start 30-day trial') }}
+                            @elseif($summary['state'] === 'trialing')
+                                {{ __('Select Plan') }}
+                            @else
+                                {{ __('Activate Plan') }}
+                            @endif
                         </flux:button>
                     </div>
                 @endforeach
             </div>
             <p class="mt-4 text-xs text-zinc-400">
-                {{ __('Payment gateway integration coming soon. For now, subscriptions are managed manually.') }}
+                {{ __('Payment gateway integration is still manual for now. Plan selection is recorded immediately.') }}
             </p>
         </div>
     @endif

@@ -1,8 +1,10 @@
 <div>
-    <flux:heading size="xl">{{ __('Rent Payments') }}</flux:heading>
+    <div class="kirada-page-header kirada-reveal">
+        <flux:heading size="xl">{{ __('Rent Payments') }}</flux:heading>
     <flux:subheading>{{ __('Track and confirm tenant payments') }}</flux:subheading>
+    </div>
 
-    <div class="mt-6 flex flex-wrap items-center gap-3">
+    <div class="kirada-toolbar mt-6">
         <flux:input
             wire:model.live="search"
             type="search"
@@ -25,7 +27,7 @@
         </flux:button>
     </div>
 
-    <div class="mt-4 overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+    <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
             <thead class="bg-zinc-50 dark:bg-zinc-900">
                 <tr>
@@ -70,14 +72,14 @@
                                         <flux:menu.separator />
                                         <flux:menu.item
                                             wire:click="confirmPayment({{ $payment->id }})"
-                                            wire:confirm="{{ __('Confirm this payment?') }}"
+                                            data-confirm="{{ __('Confirm this payment?') }}"
                                             icon="check-circle"
                                         >
                                             {{ __('Confirm') }}
                                         </flux:menu.item>
                                         <flux:menu.item
                                             wire:click="rejectPayment({{ $payment->id }})"
-                                            wire:confirm="{{ __('Reject this payment?') }}"
+                                            data-confirm="{{ __('Reject this payment?') }}"
                                             icon="x-circle"
                                             variant="danger"
                                         >
@@ -87,7 +89,7 @@
                                     <flux:menu.separator />
                                     <flux:menu.item
                                         wire:click="delete({{ $payment->id }})"
-                                        wire:confirm="{{ __('Are you sure you want to delete this payment?') }}"
+                                        data-confirm="{{ __('Are you sure you want to delete this payment?') }}"
                                         icon="trash"
                                         variant="danger"
                                     >

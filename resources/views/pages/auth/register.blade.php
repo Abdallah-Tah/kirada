@@ -7,6 +7,11 @@
 
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
+            @php $selectedPlan = old('selected_plan', request('plan')); @endphp
+            @if($selectedPlan)
+                <input type="hidden" name="selected_plan" value="{{ $selectedPlan }}">
+            @endif
+
             <!-- Name -->
             <flux:input
                 name="name"

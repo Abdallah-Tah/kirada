@@ -1,9 +1,11 @@
 <div>
-    <flux:heading size="xl">{{ __('Edit Property') }}</flux:heading>
+    <div class="kirada-page-header kirada-reveal">
+        <flux:heading size="xl">{{ __('Edit Property') }}</flux:heading>
     <flux:subheading>{{ $property->name }}</flux:subheading>
+    </div>
 
     <form wire:submit="save" class="mt-6 grid gap-6">
-        <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 grid gap-4">
+        <div class="kirada-form-card grid gap-4">
             <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Details') }}</h3>
 
             <div class="grid gap-4 sm:grid-cols-2">
@@ -26,7 +28,16 @@
 
             <div>
                 <flux:label>{{ __('Address Line 1') }}</flux:label>
-                <flux:input wire:model="address_line_1" type="text" required class="mt-1" />
+                <flux:input
+                    wire:model="address_line_1"
+                    type="text"
+                    required
+                    autocomplete="street-address"
+                    data-google-address
+                    data-google-address-method="applyGoogleAddress"
+                    data-google-address-next="[wire\\:model='address_line_2'] input, [wire\\:model='address_line_2']"
+                    class="mt-1"
+                />
                 <flux:error name="address_line_1" />
             </div>
 
@@ -56,15 +67,9 @@
                 </div>
             </div>
 
-            <div>
-                <flux:label>{{ __('Country') }}</flux:label>
-                <flux:input wire:model="country" type="text" required class="mt-1" />
-                <flux:error name="country" />
-            </div>
-
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <flux:label>{{ __('Country (system)') }}</flux:label>
+                    <flux:label>{{ __('Country') }}</flux:label>
                     <flux:select wire:model.live="country_id" required class="mt-1">
                         <option value="">{{ __('Select...') }}</option>
                         @foreach ($this->countries as $c)
@@ -85,6 +90,10 @@
                     <flux:error name="currency_id" />
                 </div>
             </div>
+
+            <input type="hidden" wire:model="country">
+            <input type="hidden" wire:model="latitude">
+            <input type="hidden" wire:model="longitude">
 
             <div>
                 <flux:label>{{ __('Description') }}</flux:label>

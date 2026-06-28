@@ -6,7 +6,7 @@
                 {{ __('You\'ve been invited to join Kirada as a tenant.') }}
             </flux:subheading>
 
-            <div class="mt-6 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 grid gap-2 text-sm">
+            <div class="kirada-form-card mt-6 grid gap-2 text-sm">
                 <div class="flex justify-between">
                     <span class="text-zinc-400">{{ __('Tenant') }}</span>
                     <span class="font-medium">{{ $invitation->tenant?->first_name }} {{ $invitation->tenant?->last_name }}</span>

@@ -101,7 +101,7 @@ class Index extends Component
             ->first();
 
         if ($existing) {
-            Flux::toast('An open conversation with this tenant already exists.', 'error');
+            \Flux\Flux::toast('An open conversation with this tenant already exists.', 'error');
             return;
         }
 
@@ -118,7 +118,7 @@ class Index extends Component
 
         app(MessagingService::class)->sendMessage($conversation, $user, $this->firstMessage);
 
-        Flux::toast('Conversation started.', 'success');
+        \Flux\Flux::toast('Conversation started.', 'success');
 
         $this->reset(['selectedTenantId', 'subject', 'firstMessage', 'showNewForm']);
         unset($this->conversations);

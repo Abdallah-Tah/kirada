@@ -1,6 +1,6 @@
 <div>
     {{-- Header --}}
-    <div class="flex items-start justify-between gap-4">
+    <div class="kirada-page-header kirada-reveal flex items-start justify-between gap-4">
         <div>
             <flux:heading size="xl">{{ $conversation->subject }}</flux:heading>
             <flux:subheading>
@@ -26,7 +26,7 @@
     @endif
 
     {{-- Messages Thread --}}
-    <div class="mt-6 flex flex-col gap-3 max-h-[500px] overflow-y-auto rounded-xl border border-zinc-200 dark:border-zinc-700 p-4">
+    <div class="kirada-card mt-6 flex max-h-[500px] flex-col gap-3 overflow-y-auto">
         @forelse ($this->messages as $message)
             @php
                 $isMine = $message->user_id === auth()->id();
@@ -68,18 +68,18 @@
     @endcan
 
     {{-- Actions --}}
-    <div class="mt-6 flex items-center gap-3">
+    <div class="kirada-toolbar mt-6">
         <flux:button :href="route('messages.index')" wire:navigate variant="ghost" icon="arrow-left">
             {{ __('Back to Messages') }}
         </flux:button>
 
         @can('update', $conversation)
             @if($conversation->isOpen())
-                <flux:button wire:click="closeConversation" variant="ghost" icon="lock-closed">
+                <flux:button wire:click="closeConversation" data-confirm="{{ __('Close this conversation?') }}" variant="ghost" icon="lock-closed">
                     {{ __('Close') }}
                 </flux:button>
             @else
-                <flux:button wire:click="reopenConversation" variant="ghost" icon="lock-open">
+                <flux:button wire:click="reopenConversation" data-confirm="{{ __('Reopen this conversation?') }}" variant="ghost" icon="lock-open">
                     {{ __('Reopen') }}
                 </flux:button>
             @endif

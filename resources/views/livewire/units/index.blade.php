@@ -1,9 +1,11 @@
 <div>
-    <flux:heading size="xl">{{ __('Units') }}</flux:heading>
+    <div class="kirada-page-header kirada-reveal">
+        <flux:heading size="xl">{{ __('Units') }}</flux:heading>
     <flux:subheading>{{ __('Manage rental units across your properties') }}</flux:subheading>
+    </div>
 
     {{-- Toolbar --}}
-    <div class="mt-6 flex flex-wrap items-center gap-3">
+    <div class="kirada-toolbar mt-6">
         <flux:select wire:model.live="propertyId" :placeholder="__('All properties')" class="w-48">
             <option value="">{{ __('All properties') }}</option>
             @foreach ($this->properties as $property)
@@ -43,7 +45,7 @@
     </div>
 
     {{-- Table --}}
-    <div class="mt-4 overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+    <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
             <thead class="bg-zinc-50 dark:bg-zinc-900">
                 <tr>
@@ -85,7 +87,7 @@
                                     <flux:menu.separator />
                                     <flux:menu.item
                                         wire:click="delete({{ $unit->id }})"
-                                        wire:confirm="{{ __('Are you sure you want to delete this unit?') }}"
+                                        data-confirm="{{ __('Are you sure you want to delete this unit?') }}"
                                         icon="trash"
                                         variant="danger"
                                     >

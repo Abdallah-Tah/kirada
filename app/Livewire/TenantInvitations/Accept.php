@@ -54,7 +54,7 @@ class Accept extends Component
     public function accept(): void
     {
         if (!$this->invitation || !$this->invitation->isPending()) {
-            Flux::toast('This invitation is no longer valid.', 'error');
+            \Flux\Flux::toast('This invitation is no longer valid.', 'error');
             return;
         }
 
@@ -71,7 +71,7 @@ class Accept extends Component
             // Log the user in
             auth()->login($user);
 
-            Flux::toast('Welcome! Your tenant account is ready.', 'success');
+            \Flux\Flux::toast('Welcome! Your tenant account is ready.', 'success');
 
             $this->redirect(route('dashboard'), navigate: true);
         } catch (\DomainException $e) {

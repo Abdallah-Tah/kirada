@@ -53,7 +53,7 @@
                 <p class="kirada-stat-value text-kirada-ocean">{{ $open_maintenance }}</p>
             </div>
             <div class="kirada-stat-card">
-                <p class="kirada-stat-label">{{ __('Documents') }}</p>
+                <p class="kirada-stat-label">{{ __('messages.Documents') }}</p>
                 <p class="kirada-stat-value">{{ $documents_count }}</p>
             </div>
         </div>

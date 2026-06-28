@@ -75,7 +75,7 @@ class Show extends Component
 
         unset($this->visibleComments);
 
-        Flux::toast('Comment added.', 'success');
+        \Flux\Flux::toast('Comment added.', 'success');
     }
 
     public function assign(): void
@@ -95,9 +95,9 @@ class Show extends Component
             unset($this->maintenanceRequest);
             $this->maintenanceRequest = MaintenanceRequest::find($this->maintenanceRequest->id);
 
-            Flux::toast('Request assigned.', 'success');
+            \Flux\Flux::toast('Request assigned.', 'success');
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            \Flux\Flux::toast($e->getMessage(), 'error');
         }
     }
 
@@ -120,9 +120,9 @@ class Show extends Component
 
             unset($this->allowedTransitions);
 
-            Flux::toast('Status updated.', 'success');
+            \Flux\Flux::toast('Status updated.', 'success');
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            \Flux\Flux::toast($e->getMessage(), 'error');
         }
     }
 

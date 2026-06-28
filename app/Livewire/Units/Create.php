@@ -82,7 +82,7 @@ class Create extends Component
 
         Unit::create($validated);
 
-        Flux::toast('Unit created successfully.', 'success');
+        \Flux\Flux::toast('Unit created successfully.', 'success');
 
         $this->redirect(route('units.index'), navigate: true);
     }

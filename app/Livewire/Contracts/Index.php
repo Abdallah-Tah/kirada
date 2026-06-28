@@ -61,7 +61,7 @@ class Index extends Component
         app(ContractService::class)->send($contract);
         unset($this->contracts);
 
-        Flux::toast(__('Contract sent for signature.'), 'success');
+        \Flux\Flux::toast(__('Contract sent for signature.'), 'success');
     }
 
     public function cancel(int $id): void
@@ -72,7 +72,7 @@ class Index extends Component
         app(ContractService::class)->cancel($contract);
         unset($this->contracts);
 
-        Flux::toast(__('Contract cancelled.'), 'success');
+        \Flux\Flux::toast(__('Contract cancelled.'), 'success');
     }
 
     public function render()

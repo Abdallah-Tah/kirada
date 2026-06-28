@@ -101,7 +101,7 @@ class Edit extends Component
 
         app(RentPaymentService::class)->updatePayment($this->payment, $data, $this->proof);
 
-        Flux::toast('Payment updated successfully.', 'success');
+        \Flux\Flux::toast('Payment updated successfully.', 'success');
 
         $this->redirect(route('rent-payments.index'), navigate: true);
     }

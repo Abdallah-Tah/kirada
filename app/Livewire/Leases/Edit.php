@@ -133,7 +133,7 @@ class Edit extends Component
 
         app(LeaseService::class)->updateLease($this->lease, $validated);
 
-        Flux::toast('Lease updated successfully.', 'success');
+        \Flux\Flux::toast('Lease updated successfully.', 'success');
 
         $this->redirect(route('leases.index'), navigate: true);
     }
