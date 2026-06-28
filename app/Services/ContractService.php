@@ -2,15 +2,17 @@
 
 namespace App\Services;
 
+use App\Mail\ContractSignatureRequest;
 use App\Models\Contract;
 use App\Models\ContractSignature;
 use App\Models\Document;
 use App\Models\Lease;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 /**
@@ -23,9 +25,7 @@ use Illuminate\Support\Str;
  */
 class ContractService
 {
-    public function __construct(private ContractTemplateService $templates)
-    {
-    }
+    public function __construct(private ContractTemplateService $templates) {}
 
     /**
      * Build a draft contract (and its signer rows) from a lease.
@@ -38,10 +38,10 @@ class ContractService
 
         return $this->create([
             'landlord_id' => $lease->landlord_id,
-            'lease_id'    => $lease->id,
+            'lease_id' => $lease->id,
             'property_id' => $lease->property_id,
-            'unit_id'     => $lease->unit_id,
-            'tenant_id'   => $lease->tenant_id,
+            'unit_id' => $lease->unit_id,
+            'tenant_id' => $lease->tenant_id,
         ], $merged, $creator, $type);
     }
 
@@ -57,13 +57,13 @@ class ContractService
             $contract = Contract::create([
                 ...$attributes,
                 'created_by' => $creator->id,
-                'reference'  => $this->generateReference($type),
-                'type'       => $type,
-                'title'      => $variables['title'] ?? $this->defaultTitle($type, $variables),
-                'locale'     => 'fr',
-                'status'     => 'draft',
-                'body_html'  => $this->templates->render($type, $variables),
-                'variables'  => $variables,
+                'reference' => $this->generateReference($type),
+                'type' => $type,
+                'title' => $variables['title'] ?? $this->defaultTitle($type, $variables),
+                'locale' => 'fr',
+                'status' => 'draft',
+                'body_html' => $this->templates->render($type, $variables),
+                'variables' => $variables,
             ]);
 
             $this->createSigner($contract, 'bailleur', $variables['bailleur_name'] ?? '', $variables['bailleur_email'] ?? null, 1);
@@ -74,7 +74,8 @@ class ContractService
     }
 
     /**
-     * Move a draft into the "awaiting signatures" state.
+     * Move a draft into the "awaiting signatures" state and email each pending
+     * signer their unique signing link.
      */
     public function send(Contract $contract): Contract
     {
@@ -83,11 +84,38 @@ class ContractService
         }
 
         $contract->update([
-            'status'  => 'sent',
+            'status' => 'sent',
             'sent_at' => Carbon::now(),
         ]);
 
+        $this->dispatchSignatureRequests($contract->fresh('signatures'));
+
         return $contract->fresh();
+    }
+
+    /**
+     * Email every pending signer (with an address) their signing link.
+     */
+    public function dispatchSignatureRequests(Contract $contract): int
+    {
+        $sent = 0;
+
+        foreach ($contract->signatures as $signature) {
+            if ($signature->status === 'pending' && filled($signature->email)) {
+                $this->sendSignatureRequest($signature);
+                $sent++;
+            }
+        }
+
+        return $sent;
+    }
+
+    /**
+     * (Re)send the signing link to a single signer.
+     */
+    public function sendSignatureRequest(ContractSignature $signature): void
+    {
+        Mail::to($signature->email)->send(new ContractSignatureRequest($signature));
     }
 
     public function cancel(Contract $contract): Contract
@@ -106,11 +134,11 @@ class ContractService
         $signedAt = Carbon::now();
 
         $signature->update([
-            'status'            => 'signed',
-            'signature_data'    => $signatureData,
-            'signature_hash'    => $this->signatureHash($signature, $signatureData, $signedAt),
-            'signed_at'         => $signedAt,
-            'signed_ip'         => $ip,
+            'status' => 'signed',
+            'signature_data' => $signatureData,
+            'signature_hash' => $this->signatureHash($signature, $signatureData, $signedAt),
+            'signed_at' => $signedAt,
+            'signed_ip' => $ip,
             'signed_user_agent' => $userAgent,
         ]);
 
@@ -131,7 +159,7 @@ class ContractService
     public function decline(ContractSignature $signature, ?string $reason = null): ContractSignature
     {
         $signature->update([
-            'status'         => 'declined',
+            'status' => 'declined',
             'decline_reason' => $reason,
         ]);
 
@@ -155,41 +183,50 @@ class ContractService
         $document = $this->generateSignedDocument($contract);
 
         $contract->update([
-            'status'       => 'completed',
+            'status' => 'completed',
             'completed_at' => Carbon::now(),
-            'document_id'  => $document->id,
+            'document_id' => $document->id,
         ]);
     }
 
     /**
      * Render the fully signed contract (body + signatures + audit certificate)
-     * and store it as a Document on the private disk.
+     * to a PDF and store it as a Document on the private disk.
      */
     public function generateSignedDocument(Contract $contract): Document
     {
         $contract->loadMissing(['signatures', 'landlord', 'tenant']);
 
-        $html = View::make('contracts.document', [
-            'contract'  => $contract,
-            'finalized' => true,
-        ])->render();
+        $pdf = $this->renderPdf($contract);
 
-        $path = 'contracts/'.$contract->reference.'.html';
-        Storage::disk('private')->put($path, $html);
+        $path = 'contracts/'.$contract->reference.'.pdf';
+        Storage::disk('private')->put($path, $pdf);
 
         return Document::create([
-            'landlord_id'       => $contract->landlord_id,
-            'tenant_id'         => $contract->tenant_id,
-            'lease_id'          => $contract->lease_id,
-            'uploaded_by'       => $contract->created_by ?? $contract->landlord_id,
-            'title'             => $contract->title.' — '.$contract->reference,
-            'type'              => 'lease_agreement',
-            'file_path'         => $path,
-            'original_filename' => $contract->reference.'.html',
-            'mime_type'         => 'text/html',
-            'size'              => strlen($html),
-            'visibility'        => 'tenant_visible',
+            'landlord_id' => $contract->landlord_id,
+            'tenant_id' => $contract->tenant_id,
+            'lease_id' => $contract->lease_id,
+            'uploaded_by' => $contract->created_by ?? $contract->landlord_id,
+            'title' => $contract->title.' — '.$contract->reference,
+            'type' => 'lease_agreement',
+            'file_path' => $path,
+            'original_filename' => $contract->reference.'.pdf',
+            'mime_type' => 'application/pdf',
+            'size' => strlen($pdf),
+            'visibility' => 'tenant_visible',
         ]);
+    }
+
+    /**
+     * Render a contract to a PDF binary string using the dompdf engine.
+     */
+    public function renderPdf(Contract $contract): string
+    {
+        $contract->loadMissing(['signatures', 'landlord', 'tenant']);
+
+        return Pdf::loadView('contracts.document-pdf', ['contract' => $contract])
+            ->setPaper('a4')
+            ->output();
     }
 
     // ── Internals ──────────────────────────────────────
@@ -198,11 +235,11 @@ class ContractService
     {
         return $contract->signatures()->create([
             'party_role' => $role,
-            'name'       => $name !== '' ? $name : ucfirst($role),
-            'email'      => $email,
+            'name' => $name !== '' ? $name : ucfirst($role),
+            'email' => $email,
             'sign_order' => $order,
-            'token'      => $this->uniqueToken(),
-            'status'     => 'pending',
+            'token' => $this->uniqueToken(),
+            'status' => 'pending',
         ]);
     }
 
@@ -230,7 +267,7 @@ class ContractService
     {
         $label = match ($type) {
             'bail_commercial' => 'Bail commercial',
-            default           => 'Contrat',
+            default => 'Contrat',
         };
 
         $who = $variables['preneur_name'] ?? null;

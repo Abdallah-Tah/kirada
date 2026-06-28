@@ -130,13 +130,13 @@ class Contract extends Model
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
-            'draft'     => 'Draft',
-            'sent'      => 'Awaiting signatures',
-            'signed'    => 'Partially signed',
+            'draft' => 'Draft',
+            'sent' => 'Awaiting signatures',
+            'signed' => 'Partially signed',
             'completed' => 'Completed',
             'cancelled' => 'Cancelled',
-            'declined'  => 'Declined',
-            default     => ucfirst($this->status),
+            'declined' => 'Declined',
+            default => ucfirst($this->status),
         };
     }
 

@@ -37,6 +37,21 @@ class Show extends Component
         Flux::toast(__('Contract cancelled.'), 'success');
     }
 
+    public function resend(int $signatureId): void
+    {
+        $this->authorize('update', $this->contract);
+
+        $signature = $this->contract->signatures()->whereKey($signatureId)->firstOrFail();
+
+        if ($signature->status !== 'pending' || blank($signature->email)) {
+            return;
+        }
+
+        app(ContractService::class)->sendSignatureRequest($signature);
+
+        Flux::toast(__('Signing link emailed to :name.', ['name' => $signature->name]), 'success');
+    }
+
     public function signingUrl(string $token): string
     {
         return route('contracts.sign', $token);

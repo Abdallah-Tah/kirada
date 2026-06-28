@@ -2,11 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\Contract;
+use App\Mail\ContractSignatureRequest;
 use App\Models\User;
 use App\Services\ContractService;
 use App\Services\ContractTemplateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -33,16 +34,16 @@ class ContractTest extends TestCase
     private function sampleVariables(): array
     {
         return array_merge(app(ContractTemplateService::class)->defaultVariables(), [
-            'bailleur_name'        => 'Jean Bailleur',
-            'bailleur_email'       => 'jean@example.dj',
-            'preneur_name'         => 'Sara Preneur',
-            'preneur_email'        => 'sara@example.dj',
+            'bailleur_name' => 'Jean Bailleur',
+            'bailleur_email' => 'jean@example.dj',
+            'preneur_name' => 'Sara Preneur',
+            'preneur_email' => 'sara@example.dj',
             'premises_designation' => 'Immeuble Marina — Local 4',
-            'premises_address'     => '12 Avenue Hassan, Djibouti',
-            'monthly_rent'         => 120000,
-            'annual_rent'          => 1440000,
-            'deposit'              => 240000,
-            'city_signed'          => 'Djibouti',
+            'premises_address' => '12 Avenue Hassan, Djibouti',
+            'monthly_rent' => 120000,
+            'annual_rent' => 1440000,
+            'deposit' => 240000,
+            'city_signed' => 'Djibouti',
         ]);
     }
 
@@ -95,11 +96,14 @@ class ContractTest extends TestCase
 
         $document = $contract->document;
         $this->assertSame('lease_agreement', $document->type);
+        $this->assertSame('application/pdf', $document->mime_type);
+        $this->assertStringEndsWith('.pdf', $document->file_path);
         Storage::disk('private')->assertExists($document->file_path);
 
-        $html = Storage::disk('private')->get($document->file_path);
-        $this->assertStringContainsString('Certificat de signature', $html);
-        $this->assertStringContainsString('data:image/png;base64', $html);
+        // A real PDF binary starts with the %PDF- magic header.
+        $bytes = Storage::disk('private')->get($document->file_path);
+        $this->assertStringStartsWith('%PDF-', $bytes);
+        $this->assertGreaterThan(1000, strlen($bytes));
     }
 
     public function test_recording_a_signature_is_rejected_without_image_data_validation(): void
@@ -126,6 +130,46 @@ class ContractTest extends TestCase
         ]));
 
         $this->assertSame($expected, $signature->fresh()->signature_hash);
+    }
+
+    public function test_sending_a_contract_emails_signing_links_to_signers(): void
+    {
+        Mail::fake();
+
+        $service = app(ContractService::class);
+        $contract = $service->create(
+            ['landlord_id' => $this->landlord->id],
+            $this->sampleVariables(),
+            $this->landlord,
+        );
+
+        $service->send($contract);
+
+        Mail::assertQueued(ContractSignatureRequest::class, 2);
+        Mail::assertQueued(
+            ContractSignatureRequest::class,
+            fn (ContractSignatureRequest $mail) => $mail->hasTo('sara@example.dj'),
+        );
+    }
+
+    public function test_signers_without_an_email_are_skipped(): void
+    {
+        Mail::fake();
+
+        $vars = $this->sampleVariables();
+        $vars['preneur_email'] = '';
+
+        $service = app(ContractService::class);
+        $contract = $service->create(
+            ['landlord_id' => $this->landlord->id],
+            $vars,
+            $this->landlord,
+        );
+
+        $service->send($contract);
+
+        // Only the bailleur has an address.
+        Mail::assertQueued(ContractSignatureRequest::class, 1);
     }
 
     public function test_guests_cannot_access_contracts_index(): void

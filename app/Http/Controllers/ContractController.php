@@ -10,9 +10,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContractController extends Controller
 {
-    public function __construct(private ContractService $contracts)
-    {
-    }
+    public function __construct(private ContractService $contracts) {}
 
     /**
      * Render the contract as a standalone, printable HTML document
@@ -25,14 +23,14 @@ class ContractController extends Controller
         $contract->load(['signatures', 'landlord', 'tenant']);
 
         return response()->view('contracts.document', [
-            'contract'  => $contract,
+            'contract' => $contract,
             'finalized' => $contract->isCompleted(),
         ]);
     }
 
     /**
-     * Download the archived signed document, or a freshly rendered copy if the
-     * contract is completed but the file is missing.
+     * Download the archived signed PDF, or a freshly rendered PDF if the
+     * contract has not been finalised yet.
      */
     public function download(Contract $contract): StreamedResponse|Response
     {
@@ -48,13 +46,12 @@ class ContractController extends Controller
             );
         }
 
-        // Fallback: regenerate on the fly so a download is always available.
-        $contract->load(['signatures', 'landlord', 'tenant']);
-        $html = view('contracts.document', ['contract' => $contract, 'finalized' => $contract->isCompleted()])->render();
+        // Fallback: render the current state to a PDF so a download is always available.
+        $pdf = $this->contracts->renderPdf($contract);
 
-        return response($html, 200, [
-            'Content-Type'        => 'text/html',
-            'Content-Disposition' => 'attachment; filename="'.$contract->reference.'.html"',
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$contract->reference.'.pdf"',
         ]);
     }
 }

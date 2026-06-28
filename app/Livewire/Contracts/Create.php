@@ -12,7 +12,9 @@ use Livewire\Component;
 class Create extends Component
 {
     public string $type = 'bail_commercial';
+
     public ?int $lease_id = null;
+
     public string $title = '';
 
     /**
@@ -71,25 +73,25 @@ class Create extends Component
     protected function rules(): array
     {
         return [
-            'type'              => 'required|string',
-            'lease_id'          => 'nullable|exists:leases,id',
-            'title'             => 'nullable|string|max:200',
-            'v.bailleur_name'   => 'required|string|max:200',
-            'v.bailleur_email'  => 'nullable|email|max:200',
-            'v.preneur_name'    => 'required|string|max:200',
-            'v.preneur_email'   => 'nullable|email|max:200',
+            'type' => 'required|string',
+            'lease_id' => 'nullable|exists:leases,id',
+            'title' => 'nullable|string|max:200',
+            'v.bailleur_name' => 'required|string|max:200',
+            'v.bailleur_email' => 'nullable|email|max:200',
+            'v.preneur_name' => 'required|string|max:200',
+            'v.preneur_email' => 'nullable|email|max:200',
             'v.premises_designation' => 'required|string|max:500',
-            'v.premises_address'     => 'nullable|string|max:500',
-            'v.destination'     => 'nullable|string|max:300',
-            'v.duration_years'  => 'nullable|integer|min:1|max:99',
-            'v.start_date'      => 'nullable|date',
-            'v.end_date'        => 'nullable|date|after_or_equal:v.start_date',
-            'v.monthly_rent'    => 'nullable|numeric|min:0|max:99999999',
-            'v.annual_rent'     => 'nullable|numeric|min:0|max:999999999',
-            'v.deposit'         => 'nullable|numeric|min:0|max:99999999',
-            'v.charges'         => 'nullable|string|max:500',
+            'v.premises_address' => 'nullable|string|max:500',
+            'v.destination' => 'nullable|string|max:300',
+            'v.duration_years' => 'nullable|integer|min:1|max:99',
+            'v.start_date' => 'nullable|date',
+            'v.end_date' => 'nullable|date|after_or_equal:v.start_date',
+            'v.monthly_rent' => 'nullable|numeric|min:0|max:99999999',
+            'v.annual_rent' => 'nullable|numeric|min:0|max:999999999',
+            'v.deposit' => 'nullable|numeric|min:0|max:99999999',
+            'v.charges' => 'nullable|string|max:500',
             'v.special_conditions' => 'nullable|string|max:3000',
-            'v.city_signed'     => 'nullable|string|max:120',
+            'v.city_signed' => 'nullable|string|max:120',
         ];
     }
 

@@ -14,8 +14,11 @@ class Sign extends Component
     public int $signatureId;
 
     public string $signatureData = '';
+
     public string $typedName = '';
+
     public bool $agreed = false;
+
     public bool $justSigned = false;
 
     public function mount(string $token): void
@@ -44,12 +47,12 @@ class Sign extends Component
 
         $this->validate([
             'signatureData' => ['required', 'string', 'starts_with:data:image/'],
-            'typedName'     => ['required', 'string', 'max:200'],
-            'agreed'        => ['accepted'],
+            'typedName' => ['required', 'string', 'max:200'],
+            'agreed' => ['accepted'],
         ], [
-            'signatureData.required'   => __('Please draw your signature before signing.'),
-            'signatureData.starts_with'=> __('The signature image is invalid.'),
-            'agreed.accepted'          => __('You must consent to sign electronically.'),
+            'signatureData.required' => __('Please draw your signature before signing.'),
+            'signatureData.starts_with' => __('The signature image is invalid.'),
+            'agreed.accepted' => __('You must consent to sign electronically.'),
         ]);
 
         app(ContractService::class)->recordSignature(
@@ -70,7 +73,7 @@ class Sign extends Component
     {
         return view('livewire.contracts.sign', [
             'signature' => $this->signature,
-            'contract'  => $this->signature->contract,
+            'contract' => $this->signature->contract,
         ])
             ->layout('layouts.public')
             ->title(__('Sign contract'));

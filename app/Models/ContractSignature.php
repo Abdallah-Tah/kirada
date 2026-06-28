@@ -57,9 +57,9 @@ class ContractSignature extends Model
     {
         return match ($this->party_role) {
             'bailleur' => 'Bailleur (Landlord)',
-            'preneur'  => 'Preneur (Tenant)',
-            'temoin'   => 'Témoin (Witness)',
-            default    => ucfirst($this->party_role),
+            'preneur' => 'Preneur (Tenant)',
+            'temoin' => 'Témoin (Witness)',
+            default => ucfirst($this->party_role),
         };
     }
 }

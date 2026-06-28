@@ -76,6 +76,12 @@
                                             <span x-text="copied ? @js(__('Copied!')) : @js(__('Copy'))"></span>
                                         </button>
                                     </div>
+                                    @if ($sig->email)
+                                        <button type="button" wire:click="resend({{ $sig->id }})" wire:loading.attr="disabled" wire:target="resend({{ $sig->id }})"
+                                            class="mt-2 text-xs font-medium text-kirada-ocean hover:text-kirada-navy">
+                                            {{ __('Email signing link to :email', ['email' => $sig->email]) }}
+                                        </button>
+                                    @endif
                                 </div>
                             @endif
                         </div>

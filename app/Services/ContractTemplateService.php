@@ -41,35 +41,35 @@ class ContractTemplateService
     public function defaultVariables(): array
     {
         return [
-            'city_signed'         => '',
-            'date_signed'         => Carbon::now()->format('Y-m-d'),
+            'city_signed' => '',
+            'date_signed' => Carbon::now()->format('Y-m-d'),
             // Bailleur (landlord)
-            'bailleur_name'       => '',
-            'bailleur_email'      => '',
-            'bailleur_address'    => '',
+            'bailleur_name' => '',
+            'bailleur_email' => '',
+            'bailleur_address' => '',
             // Preneur (tenant)
-            'preneur_name'        => '',
-            'preneur_email'       => '',
-            'preneur_address'     => '',
-            'preneur_id'          => '',
+            'preneur_name' => '',
+            'preneur_email' => '',
+            'preneur_address' => '',
+            'preneur_id' => '',
             // Premises
             'premises_designation' => '',
-            'premises_address'    => '',
-            'premises_area'       => '',
-            'destination'         => 'Activité commerciale',
+            'premises_address' => '',
+            'premises_area' => '',
+            'destination' => 'Activité commerciale',
             // Term
-            'duration_years'      => 9,
-            'start_date'          => Carbon::now()->format('Y-m-d'),
-            'end_date'            => '',
+            'duration_years' => 9,
+            'start_date' => Carbon::now()->format('Y-m-d'),
+            'end_date' => '',
             // Money
-            'currency'            => 'DJF',
-            'annual_rent'         => '',
-            'monthly_rent'        => '',
-            'charges'             => '',
-            'deposit'             => '',
-            'payment_terms'       => "mensuellement et d'avance, le premier de chaque mois",
-            'index_ref'           => 'Indice des Loyers Commerciaux (ILC)',
-            'special_conditions'  => '',
+            'currency' => 'DJF',
+            'annual_rent' => '',
+            'monthly_rent' => '',
+            'charges' => '',
+            'deposit' => '',
+            'payment_terms' => "mensuellement et d'avance, le premier de chaque mois",
+            'index_ref' => 'Indice des Loyers Commerciaux (ILC)',
+            'special_conditions' => '',
         ];
     }
 
@@ -104,23 +104,23 @@ class ContractTemplateService
         $monthlyRent = (float) $lease->monthly_rent;
 
         return array_merge($this->defaultVariables(), array_filter([
-            'city_signed'          => $property?->city,
-            'bailleur_name'        => $lease->landlord?->name,
-            'bailleur_email'       => $lease->landlord?->email,
-            'preneur_name'         => $tenant?->full_name,
-            'preneur_email'        => $tenant?->email,
-            'preneur_address'      => $tenant?->address,
-            'preneur_id'           => $tenant?->national_id,
+            'city_signed' => $property?->city,
+            'bailleur_name' => $lease->landlord?->name,
+            'bailleur_email' => $lease->landlord?->email,
+            'preneur_name' => $tenant?->full_name,
+            'preneur_email' => $tenant?->email,
+            'preneur_address' => $tenant?->address,
+            'preneur_id' => $tenant?->national_id,
             'premises_designation' => $designation,
-            'premises_address'     => $premisesAddress,
-            'premises_area'        => $unit?->area_sqm ? (string) $unit->area_sqm : null,
-            'currency'             => $property?->currency?->code,
-            'start_date'           => optional($lease->start_date)->format('Y-m-d'),
-            'end_date'             => optional($lease->end_date)->format('Y-m-d'),
-            'monthly_rent'         => $monthlyRent ? (string) $monthlyRent : null,
-            'annual_rent'          => $monthlyRent ? (string) ($monthlyRent * 12) : null,
-            'deposit'              => $lease->security_deposit ? (string) $lease->security_deposit : null,
-            'special_conditions'   => $lease->notes,
+            'premises_address' => $premisesAddress,
+            'premises_area' => $unit?->area_sqm ? (string) $unit->area_sqm : null,
+            'currency' => $property?->currency?->code,
+            'start_date' => optional($lease->start_date)->format('Y-m-d'),
+            'end_date' => optional($lease->end_date)->format('Y-m-d'),
+            'monthly_rent' => $monthlyRent ? (string) $monthlyRent : null,
+            'annual_rent' => $monthlyRent ? (string) ($monthlyRent * 12) : null,
+            'deposit' => $lease->security_deposit ? (string) $lease->security_deposit : null,
+            'special_conditions' => $lease->notes,
         ], fn ($value) => $value !== null && $value !== ''));
     }
 
