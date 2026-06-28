@@ -9,7 +9,9 @@
         <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-md">
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
                 <div class="flex min-w-0 items-center">
-                    <x-brand-logo class="h-10 w-auto max-w-[120px] sm:h-12 sm:max-w-[190px]" />
+                    <div class="rounded-xl bg-white px-3 py-1.5 shadow-sm border border-slate-200">
+                        <x-brand-logo class="h-8 w-auto max-w-[100px] sm:h-10 sm:max-w-[160px]" />
+                    </div>
                 </div>
                 <div class="flex shrink-0 items-center gap-2 sm:gap-3">
                     <x-language-switcher />
@@ -295,7 +297,9 @@
             <div class="mx-auto max-w-7xl px-6 py-8">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="flex items-center">
-                        <x-brand-logo class="h-12 w-auto max-w-[180px]" />
+                        <div class="rounded-xl bg-white px-3 py-1.5 shadow-sm border border-slate-200">
+                            <x-brand-logo class="h-10 w-auto max-w-[150px]" />
+                        </div>
                     </div>
                     <p class="text-sm text-slate-500">
                         {{ __('Smart Rent Management for Landlords and Tenants') }}
