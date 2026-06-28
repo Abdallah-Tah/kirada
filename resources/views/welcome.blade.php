@@ -9,9 +9,9 @@
         <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-md">
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
                 <div class="flex min-w-0 items-center">
-                    <div class="rounded-xl bg-white px-3 py-1.5 shadow-sm border border-slate-200">
-                        <x-brand-logo class="h-10 w-auto" />
-                    </div>
+                    <a href="{{ route('home') }}" class="inline-flex items-center transition duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:opacity-80" wire:navigate>
+                        <x-brand-logo class="h-9 w-auto" />
+                    </a>
                 </div>
 
                 <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
@@ -93,11 +93,46 @@
                             </div>
                         </div>
 
-                        {{-- Right: Building image --}}
+                        {{-- Right: Building image with layered glass preview --}}
                         <div class="kirada-reveal kirada-reveal-delay-2 relative">
-                            <div class="relative overflow-hidden rounded-2xl shadow-2xl shadow-slate-300/50">
+                            {{-- Soft glow behind the composition --}}
+                            <div class="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-tr from-kirada-ocean/10 via-kirada-sky/10 to-kirada-green/10 blur-2xl"></div>
+
+                            <div class="relative overflow-hidden rounded-[1.75rem] border border-white/60 shadow-2xl shadow-slate-300/50 ring-1 ring-slate-900/5">
                                 <img src="{{ asset('brand/building-hero.jpg') }}?v=1" alt="Modern apartment building" class="h-full w-full object-cover aspect-[4/3] lg:aspect-[5/4]" loading="lazy">
-                                <div class="absolute inset-0 bg-gradient-to-t from-kirada-navy/20 via-transparent to-transparent"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-kirada-navy/35 via-kirada-navy/5 to-transparent"></div>
+                            </div>
+
+                            {{-- Floating glass "portfolio health" preview card --}}
+                            <div class="kirada-float absolute -bottom-6 -left-4 w-56 rounded-2xl border border-white/70 bg-white/85 p-4 shadow-xl shadow-slate-300/40 backdrop-blur-md sm:-left-8 sm:w-64">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-xs font-semibold text-kirada-navy">{{ __('Portfolio Health') }}</p>
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-kirada-green">
+                                        <span class="kirada-pulse-dot size-1.5 rounded-full bg-kirada-green"></span>{{ __('On track') }}
+                                    </span>
+                                </div>
+                                <div class="mt-3 grid grid-cols-3 gap-2 text-center">
+                                    <div class="rounded-lg bg-kirada-soft/70 py-2">
+                                        <p class="text-sm font-bold text-kirada-green">98%</p>
+                                        <p class="text-[10px] text-slate-500">{{ __('Collected') }}</p>
+                                    </div>
+                                    <div class="rounded-lg bg-kirada-soft/70 py-2">
+                                        <p class="text-sm font-bold text-kirada-navy">24</p>
+                                        <p class="text-[10px] text-slate-500">{{ __('Units') }}</p>
+                                    </div>
+                                    <div class="rounded-lg bg-kirada-soft/70 py-2">
+                                        <p class="text-sm font-bold text-kirada-ocean">3</p>
+                                        <p class="text-[10px] text-slate-500">{{ __('Open Jobs') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Floating "e-signature" pill --}}
+                            <div class="kirada-float absolute -top-4 -right-3 hidden items-center gap-2 rounded-full border border-white/70 bg-white/85 px-3 py-2 shadow-lg shadow-slate-300/40 backdrop-blur-md sm:flex" style="animation-delay: -2.5s">
+                                <span class="flex size-7 items-center justify-center rounded-full bg-kirada-soft">
+                                    <svg class="size-4 text-kirada-ocean" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z"/></svg>
+                                </span>
+                                <span class="text-xs font-semibold text-kirada-navy">{{ __('Signed in seconds') }}</span>
                             </div>
                         </div>
                     </div>
@@ -172,10 +207,25 @@
             </section>
 
             {{-- ============================================================ --}}
+            {{-- TRUST STRIP                                                  --}}
+            {{-- ============================================================ --}}
+            <section class="mx-auto max-w-7xl px-6 pt-16">
+                <div class="kirada-reveal flex flex-wrap items-center justify-center gap-x-8 gap-y-3 rounded-2xl border border-slate-200 bg-white/70 px-6 py-4 text-sm font-medium text-slate-600 shadow-sm backdrop-blur">
+                    @foreach (['30-Day Free Trial', 'No credit card required', 'Cancel anytime', '6 regions supported'] as $point)
+                        <span class="inline-flex items-center gap-2">
+                            <svg class="size-4 shrink-0 text-kirada-green" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                            {{ __($point) }}
+                        </span>
+                    @endforeach
+                </div>
+            </section>
+
+            {{-- ============================================================ --}}
             {{-- FEATURE CARDS SECTION                                        --}}
             {{-- ============================================================ --}}
             <section id="features" class="mx-auto max-w-7xl px-6 py-20">
                 <div class="kirada-reveal mb-14 text-center">
+                    <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-kirada-ocean">{{ __('Features') }}</p>
                     <h2 class="text-3xl font-bold text-kirada-navy mb-3 sm:text-4xl">{{ __('Everything you need to run your rental business') }}</h2>
                     <p class="text-slate-500 max-w-2xl mx-auto">{{ __('Powerful tools for property management, rent collection, contracts, and more.') }}</p>
                 </div>
@@ -289,17 +339,44 @@
             {{-- PRICING                                                       --}}
             {{-- ============================================================ --}}
             <section id="pricing" class="border-y border-slate-200 bg-kirada-soft/40">
-                <div class="mx-auto max-w-3xl px-6 py-20 text-center">
-                    <div class="kirada-reveal mb-6 inline-flex items-center gap-2 rounded-full bg-white border border-kirada-sky/45 px-4 py-1.5 text-sm font-medium text-kirada-navy shadow-sm">
-                        <svg class="size-4 text-kirada-green" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                        {{ __('30-Day Free Trial') }}
+                <div class="mx-auto max-w-3xl px-6 py-20">
+                    <div class="kirada-reveal mb-10 text-center">
+                        <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-kirada-ocean">{{ __('Pricing') }}</p>
+                        <h2 class="text-3xl font-bold text-kirada-navy sm:text-4xl">{{ __('Start free. Upgrade when you grow.') }}</h2>
                     </div>
-                    <h2 class="kirada-reveal kirada-reveal-delay-1 text-3xl font-bold text-kirada-navy mb-4 sm:text-4xl">{{ __('No credit card required.') }}</h2>
-                    <p class="kirada-reveal kirada-reveal-delay-2 text-lg text-slate-600 mb-8">{{ __("Choose a plan when you're ready to grow.") }}</p>
-                    <a href="{{ route('register') }}" wire:navigate class="kirada-reveal kirada-reveal-delay-3 kirada-primary-button-lg">
-                        {{ __('Start Free Trial') }}
-                        <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
-                    </a>
+
+                    {{-- Trial card --}}
+                    <div class="kirada-reveal kirada-reveal-delay-1 relative mx-auto max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60">
+                        {{-- Accent ribbon --}}
+                        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-kirada-ocean via-kirada-sky to-kirada-green"></div>
+
+                        <div class="inline-flex items-center gap-2 rounded-full border border-kirada-sky/45 bg-kirada-soft px-3 py-1 text-xs font-semibold text-kirada-navy">
+                            <span class="kirada-pulse-dot size-1.5 rounded-full bg-kirada-green"></span>
+                            {{ __('30-Day Free Trial') }}
+                        </div>
+
+                        <div class="mt-5 flex items-end gap-2">
+                            <span class="text-5xl font-bold tracking-tight text-kirada-navy">{{ __('Free') }}</span>
+                            <span class="mb-1.5 text-sm text-slate-500">{{ __('for 30 days') }}</span>
+                        </div>
+                        <p class="mt-2 text-sm text-slate-500">{{ __("No credit card required. Choose a plan when you're ready to grow.") }}</p>
+
+                        <ul class="mt-6 space-y-3">
+                            @foreach (['All features included', 'Unlimited properties during trial', 'Digital contracts & e-signature', 'No credit card required', 'Cancel anytime'] as $perk)
+                                <li class="flex items-center gap-3 text-sm text-slate-700">
+                                    <span class="flex size-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                                        <svg class="size-3.5 text-kirada-green" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                                    </span>
+                                    {{ __($perk) }}
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        <a href="{{ route('register') }}" wire:navigate class="kirada-primary-button-lg mt-8 w-full">
+                            {{ __('Start Free Trial') }}
+                            <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                        </a>
+                    </div>
                 </div>
             </section>
 
@@ -336,25 +413,58 @@
         </main>
 
         <!-- Footer -->
-        <footer class="border-t border-slate-200 bg-white">
-            <div class="mx-auto max-w-7xl px-6 py-8">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="flex items-center">
-                        <div class="rounded-xl bg-white px-3 py-1.5 shadow-sm border border-slate-200">
-                            <x-brand-logo class="h-10 w-auto" />
-                        </div>
+        <footer class="border-t border-slate-200 bg-kirada-soft/30">
+            <div class="mx-auto max-w-7xl px-6 py-14">
+                <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+                    {{-- Brand column --}}
+                    <div>
+                        <x-brand-logo class="h-10 w-auto" />
+                        <p class="mt-4 max-w-xs text-sm text-slate-500">
+                            {{ __('Smart Rent Management for Landlords and Tenants') }}
+                        </p>
+                        <p class="mt-4 inline-flex items-center gap-1.5 rounded-full border border-kirada-sky/45 bg-white px-3 py-1 text-xs font-medium text-kirada-navy shadow-sm">
+                            <span class="kirada-pulse-dot size-1.5 rounded-full bg-kirada-green"></span>
+                            {{ __('Built for Djibouti first') }}
+                        </p>
                     </div>
-                    <p class="text-sm text-slate-500">
-                        {{ __('Smart Rent Management for Landlords and Tenants') }}
-                    </p>
-                    <div class="flex gap-4 text-sm">
-                        <a href="{{ route('login') }}" wire:navigate class="text-slate-500 hover:text-kirada-ocean transition">{{ __('Log in') }}</a>
-                        <a href="{{ route('register') }}" wire:navigate class="text-slate-500 hover:text-kirada-ocean transition">{{ __('Register') }}</a>
+
+                    {{-- Product links --}}
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ __('Product') }}</h3>
+                        <ul class="mt-4 space-y-2.5 text-sm">
+                            <li><a href="#features" class="text-slate-600 transition hover:text-kirada-ocean">{{ __('Features') }}</a></li>
+                            <li><a href="#pricing" class="text-slate-600 transition hover:text-kirada-ocean">{{ __('Pricing') }}</a></li>
+                            <li><a href="#contact" class="text-slate-600 transition hover:text-kirada-ocean">{{ __('Book a Demo') }}</a></li>
+                        </ul>
+                    </div>
+
+                    {{-- Audience links --}}
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ __('Who it is for') }}</h3>
+                        <ul class="mt-4 space-y-2.5 text-sm">
+                            <li><a href="#landlords" class="text-slate-600 transition hover:text-kirada-ocean">{{ __('For Landlords') }}</a></li>
+                            <li><a href="#tenants" class="text-slate-600 transition hover:text-kirada-ocean">{{ __('For Tenants') }}</a></li>
+                            <li><a href="#about" class="text-slate-600 transition hover:text-kirada-ocean">{{ __('About Us') }}</a></li>
+                        </ul>
+                    </div>
+
+                    {{-- Account / CTA --}}
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ __('Get started') }}</h3>
+                        <ul class="mt-4 space-y-2.5 text-sm">
+                            <li><a href="{{ route('login') }}" wire:navigate class="text-slate-600 transition hover:text-kirada-ocean">{{ __('Log in') }}</a></li>
+                            <li><a href="{{ route('register') }}" wire:navigate class="text-slate-600 transition hover:text-kirada-ocean">{{ __('Register') }}</a></li>
+                        </ul>
+                        <a href="{{ route('register') }}" wire:navigate class="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-kirada-ocean px-4 py-2 text-sm font-semibold text-white shadow-sm transition duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:bg-kirada-navy active:translate-y-0">
+                            {{ __('Start Free Trial') }}
+                        </a>
                     </div>
                 </div>
-                <p class="mt-4 text-center text-xs text-slate-400">
-                    &copy; {{ date('Y') }} Kirada. {{ __('All rights reserved.') }}
-                </p>
+
+                <div class="mt-12 flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-6 sm:flex-row">
+                    <p class="text-xs text-slate-400">&copy; {{ date('Y') }} Kirada. {{ __('All rights reserved.') }}</p>
+                    <p class="text-xs text-slate-400">{{ __('Manage. Communicate. Grow.') }}</p>
+                </div>
             </div>
         </footer>
 
