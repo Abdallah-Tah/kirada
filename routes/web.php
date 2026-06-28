@@ -3,6 +3,11 @@
 use App\Http\Controllers\DashboardController;
 use App\Livewire\Subscriptions\Status as SubscriptionStatus;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\ContractController;
+use App\Livewire\Contracts\Create as ContractCreate;
+use App\Livewire\Contracts\Index as ContractIndex;
+use App\Livewire\Contracts\Show as ContractShow;
+use App\Livewire\Contracts\Sign as ContractSign;
 use App\Livewire\Documents\Create as DocumentCreate;
 use App\Livewire\Documents\Index as DocumentIndex;
 use App\Livewire\Properties\Create as PropertyCreate;
@@ -93,6 +98,18 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
     Route::get('/leases/create', LeaseCreate::class)->name('leases.create');
     Route::get('/leases/{lease}/edit', LeaseEdit::class)->name('leases.edit');
 });
+
+// Contracts — admin + landlord only (generation & e-signature management)
+Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+    Route::get('/contracts', ContractIndex::class)->name('contracts.index');
+    Route::get('/contracts/create', ContractCreate::class)->name('contracts.create');
+    Route::get('/contracts/{contract}', ContractShow::class)->name('contracts.show');
+    Route::get('/contracts/{contract}/print', [ContractController::class, 'print'])->name('contracts.print');
+    Route::get('/contracts/{contract}/download', [ContractController::class, 'download'])->name('contracts.download');
+});
+
+// Public contract signing (token-based, no auth — like a DocuSign signing link)
+Route::get('/sign/{token}', ContractSign::class)->name('contracts.sign');
 
 // Rent Invoices — admin + landlord only
 Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
