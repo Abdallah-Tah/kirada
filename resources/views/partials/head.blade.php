@@ -1,5 +1,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<script>document.documentElement.classList.remove('dark')</script>
 
 <title>
     {{ filled($title ?? null) ? $title.' - '.config('app.name', 'Laravel') : config('app.name', 'Laravel') }}
@@ -38,9 +39,22 @@ if ('serviceWorker' in navigator) {
 <script>document.documentElement.classList.add('kirada-motion');</script>
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
-@fluxAppearance
+<style>
+    :root.dark { color-scheme: dark; }
+    :root { color-scheme: light; }
+</style>
 <script>
-// Force light theme as Kirada default (dark mode toggle can be added later)
+window.Flux = {
+    applyAppearance: function(appearance) {
+        var html = document.documentElement;
+        if (appearance === 'dark') {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+    }
+};
+// Kirada default: always light theme
 window.localStorage.setItem('flux.appearance', 'light');
-window.Flux.applyAppearance('light');
+document.documentElement.classList.remove('dark');
 </script>
