@@ -10,7 +10,7 @@
             <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
                 <div class="flex min-w-0 items-center">
                     <div class="rounded-xl bg-white px-3 py-1.5 shadow-sm border border-slate-200">
-                        <x-brand-logo class="h-8 w-auto max-w-[100px] sm:h-10 sm:max-w-[160px]" />
+                        <x-brand-logo class="h-10 w-auto" />
                     </div>
                 </div>
                 <div class="flex shrink-0 items-center gap-2 sm:gap-3">
