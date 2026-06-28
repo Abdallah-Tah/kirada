@@ -1,11 +1,11 @@
 <x-layouts::app :title="__('Maintenance Dashboard')">
     <flux:main class="kirada-shell">
-        <div class="kirada-page-header">
+        <div class="kirada-page-header kirada-reveal">
             <flux:heading size="xl" class="text-kirada-navy">{{ __('Maintenance Dashboard') }}</flux:heading>
             <flux:subheading class="mt-1 text-slate-500">{{ __('Assigned work orders, active jobs, and recent resolutions.') }}</flux:subheading>
         </div>
 
-        <div class="mt-6 grid gap-4 sm:grid-cols-3">
+        <div class="mt-6 grid gap-4 sm:grid-cols-3 kirada-reveal kirada-reveal-delay-1">
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Assigned Open') }}</p>
                 <p class="kirada-stat-value text-kirada-ocean">{{ $assigned_open }}</p>

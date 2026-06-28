@@ -1,6 +1,6 @@
 <x-layouts::app :title="__('Landlord Dashboard')">
     <flux:main class="kirada-shell">
-        <div class="kirada-page-header">
+        <div class="kirada-page-header kirada-reveal">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <flux:heading size="xl" class="text-kirada-navy">{{ __('Landlord Dashboard') }}</flux:heading>
@@ -12,7 +12,7 @@
             </div>
         </div>
 
-        <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 kirada-reveal kirada-reveal-delay-1">
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('My Properties') }}</p>
                 <p class="kirada-stat-value">{{ $my_properties }}</p>
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 kirada-reveal kirada-reveal-delay-2">
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Active Leases') }}</p>
                 <p class="kirada-stat-value">{{ $active_leases }}</p>

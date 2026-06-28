@@ -251,6 +251,39 @@ select:focus[data-flux-control] {
     }
 }
 
+/* Rendered contract body preview (the generated bail commercial, etc.). */
+.kirada-contract-body {
+    color: #0f172a;
+    line-height: 1.65;
+}
+.kirada-contract-body .contract-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 0.25rem;
+}
+.kirada-contract-body .contract-subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.8125rem;
+    margin: 0 0 1.5rem;
+}
+.kirada-contract-body h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 1.25rem 0 0.375rem;
+    color: #0f172a;
+}
+.kirada-contract-body p {
+    font-size: 0.875rem;
+    margin: 0 0 0.625rem;
+    text-align: justify;
+}
+.kirada-contract-body .contract-closing {
+    margin-top: 1.25rem;
+    font-style: italic;
+}
+
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */

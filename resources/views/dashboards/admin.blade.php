@@ -1,11 +1,11 @@
 <x-layouts::app :title="__('Admin Dashboard')">
     <flux:main class="kirada-shell">
-        <div class="kirada-page-header">
+        <div class="kirada-page-header kirada-reveal">
             <flux:heading size="xl" class="text-kirada-navy">{{ __('Admin Dashboard') }}</flux:heading>
             <flux:subheading class="mt-1 text-slate-500">{{ __('System overview, portfolio health, and recent platform activity.') }}</flux:subheading>
         </div>
 
-        <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 kirada-reveal kirada-reveal-delay-1">
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Landlords') }}</p>
                 <p class="kirada-stat-value">{{ $total_landlords }}</p>
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 kirada-reveal kirada-reveal-delay-2">
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Active Leases') }}</p>
                 <p class="kirada-stat-value">{{ $active_leases }}</p>
