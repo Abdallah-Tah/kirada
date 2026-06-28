@@ -298,7 +298,7 @@
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="flex items-center">
                         <div class="rounded-xl bg-white px-3 py-1.5 shadow-sm border border-slate-200">
-                            <x-brand-logo class="h-10 w-auto max-w-[150px]" />
+                            <x-brand-logo class="h-10 w-auto" />
                         </div>
                     </div>
                     <p class="text-sm text-slate-500">
