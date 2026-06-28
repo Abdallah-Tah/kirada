@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('party_role'); // bailleur, preneur, temoin
             $table->string('name');
             $table->string('email')->nullable();
+            $table->string('typed_name')->nullable(); // full legal name typed at signing time
             $table->unsignedInteger('sign_order')->default(1);
             $table->string('token', 64)->unique();
             $table->enum('status', ['pending', 'signed', 'declined'])->default('pending');

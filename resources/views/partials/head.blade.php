@@ -33,6 +33,10 @@ if ('serviceWorker' in navigator) {
 
 @fonts
 
+{{-- Mark JS as available before CSS paints, so scroll-reveal's hidden state
+     only applies when JS can play it back (no blank page if JS is disabled). --}}
+<script>document.documentElement.classList.add('kirada-motion');</script>
+
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance
 <script>

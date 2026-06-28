@@ -15,6 +15,7 @@ class ContractSignature extends Model
         'party_role',
         'name',
         'email',
+        'typed_name',
         'sign_order',
         'token',
         'status',

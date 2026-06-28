@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\Contracts\Index;
 use App\Mail\ContractSignatureRequest;
 use App\Models\User;
 use App\Services\ContractService;
@@ -9,6 +10,7 @@ use App\Services\ContractTemplateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class ContractTest extends TestCase
@@ -106,10 +108,8 @@ class ContractTest extends TestCase
         $this->assertGreaterThan(1000, strlen($bytes));
     }
 
-    public function test_recording_a_signature_is_rejected_without_image_data_validation(): void
+    public function test_signature_hash_binds_the_exact_signed_payload(): void
     {
-        // The Sign component enforces a data-image payload; the service trusts
-        // its caller, so we assert the hash binds the exact payload we passed.
         $service = app(ContractService::class);
         $contract = $service->create(
             ['landlord_id' => $this->landlord->id],
@@ -119,17 +119,67 @@ class ContractTest extends TestCase
 
         $signature = $contract->signatures->first();
         $png = 'data:image/png;base64,AAAA';
-        $service->recordSignature($signature, $png, '10.0.0.1', 'UA');
+        $service->recordSignature($signature, $png, '10.0.0.1', 'UA', 'Jean Bailleur');
 
+        $fresh = $signature->fresh();
         $expected = hash('sha256', implode('|', [
             $signature->contract_id,
             $signature->id,
             $signature->token,
-            $signature->fresh()->signed_at->toIso8601String(),
+            $fresh->signed_at->toIso8601String(),
             $png,
         ]));
 
-        $this->assertSame($expected, $signature->fresh()->signature_hash);
+        $this->assertSame($expected, $fresh->signature_hash);
+        $this->assertSame('Jean Bailleur', $fresh->typed_name);
+    }
+
+    public function test_recording_rejects_a_non_image_or_oversized_payload(): void
+    {
+        $service = app(ContractService::class);
+        $contract = $service->create(
+            ['landlord_id' => $this->landlord->id],
+            $this->sampleVariables(),
+            $this->landlord,
+        );
+        $signature = $contract->signatures->first();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $service->recordSignature($signature, 'not-an-image', '10.0.0.1', 'UA');
+    }
+
+    public function test_recording_rejects_an_already_signed_party(): void
+    {
+        $service = app(ContractService::class);
+        $contract = $service->create(
+            ['landlord_id' => $this->landlord->id],
+            $this->sampleVariables(),
+            $this->landlord,
+        );
+        $signature = $contract->signatures->first();
+        $png = 'data:image/png;base64,AAAA';
+
+        $service->recordSignature($signature, $png, '10.0.0.1', 'UA');
+
+        $this->expectException(\RuntimeException::class);
+        $service->recordSignature($signature->fresh(), $png, '10.0.0.1', 'UA');
+    }
+
+    public function test_send_action_toasts_without_a_class_resolution_error(): void
+    {
+        $contract = app(ContractService::class)->create(
+            ['landlord_id' => $this->landlord->id],
+            $this->sampleVariables(),
+            $this->landlord,
+        );
+
+        // Exercises the Flux::toast() path in the namespaced component.
+        Livewire::actingAs($this->landlord)
+            ->test(Index::class)
+            ->call('send', $contract->id)
+            ->assertHasNoErrors();
+
+        $this->assertSame('sent', $contract->fresh()->status);
     }
 
     public function test_sending_a_contract_emails_signing_links_to_signers(): void

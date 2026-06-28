@@ -7,6 +7,10 @@
  * without IntersectionObserver) get the content instantly with no movement.
  */
 
+// Belt-and-suspenders: the inline <head> script sets this first (before CSS
+// paints); re-assert it here in case a page renders without that partial.
+document.documentElement.classList.add('kirada-motion');
+
 const prefersReducedMotion = () =>
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

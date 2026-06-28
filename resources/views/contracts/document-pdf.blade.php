@@ -90,7 +90,7 @@
             <tbody>
                 @foreach($contract->signatures as $sig)
                     <tr>
-                        <td>{{ $sig->name }}<br><span style="color:#94a3b8;">{{ $sig->email ?: '—' }}</span></td>
+                        <td>{{ $sig->name }}<br><span style="color:#94a3b8;">{{ $sig->email ?: '—' }}</span>@if($sig->typed_name)<br><span style="color:#94a3b8;">Signé&nbsp;: {{ $sig->typed_name }}</span>@endif</td>
                         <td>{{ $sig->isSigned() ? 'Signé' : ucfirst($sig->status) }}</td>
                         <td>{{ $sig->signed_at ? $sig->signed_at->format('d/m/Y H:i:s') : '—' }}</td>
                         <td>{{ $sig->signed_ip ?: '—' }}</td>

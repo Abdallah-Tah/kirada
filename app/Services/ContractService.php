@@ -25,6 +25,9 @@ use Illuminate\Support\Str;
  */
 class ContractService
 {
+    /** Upper bound on a drawn-signature data URL (~2 MB) to stop payload abuse. */
+    private const MAX_SIGNATURE_BYTES = 2_000_000;
+
     public function __construct(private ContractTemplateService $templates) {}
 
     /**
@@ -129,29 +132,42 @@ class ContractService
      * Record a drawn signature for one party, then complete the contract if
      * every party has now signed.
      */
-    public function recordSignature(ContractSignature $signature, string $signatureData, ?string $ip, ?string $userAgent): ContractSignature
+    public function recordSignature(ContractSignature $signature, string $signatureData, ?string $ip, ?string $userAgent, ?string $typedName = null): ContractSignature
     {
+        $contract = $signature->contract()->first();
+
+        // Defence in depth: this path is reachable from the public signing page,
+        // so never trust the caller for state or payload shape/size.
+        if ($signature->status !== 'pending') {
+            throw new \RuntimeException('This signature is no longer pending.');
+        }
+
+        if (! $contract || $contract->isCancelled()) {
+            throw new \RuntimeException('This contract is not open for signature.');
+        }
+
+        if (! str_starts_with($signatureData, 'data:image/') || strlen($signatureData) > self::MAX_SIGNATURE_BYTES) {
+            throw new \InvalidArgumentException('Invalid or oversized signature payload.');
+        }
+
         $signedAt = Carbon::now();
 
         $signature->update([
             'status' => 'signed',
             'signature_data' => $signatureData,
             'signature_hash' => $this->signatureHash($signature, $signatureData, $signedAt),
+            'typed_name' => $typedName !== null && trim($typedName) !== '' ? trim($typedName) : null,
             'signed_at' => $signedAt,
             'signed_ip' => $ip,
             'signed_user_agent' => $userAgent,
         ]);
 
-        $contract = $signature->contract()->first();
-
-        if ($contract && $contract->status === 'draft') {
+        if ($contract->status === 'draft') {
             // A signature implies the contract is in circulation.
             $contract->update(['status' => 'sent', 'sent_at' => $contract->sent_at ?? $signedAt]);
         }
 
-        if ($contract) {
-            $this->finalizeIfComplete($contract->fresh());
-        }
+        $this->finalizeIfComplete($contract->fresh());
 
         return $signature->fresh();
     }
@@ -174,19 +190,29 @@ class ContractService
      */
     public function finalizeIfComplete(Contract $contract): void
     {
-        $contract->loadMissing('signatures');
+        // Lock the contract row and re-check inside the transaction so two
+        // signers completing concurrently cannot both generate a document.
+        DB::transaction(function () use ($contract) {
+            $locked = Contract::whereKey($contract->id)->lockForUpdate()->first();
 
-        if (! $contract->allSigned() || $contract->document_id) {
-            return;
-        }
+            if (! $locked || $locked->document_id) {
+                return;
+            }
 
-        $document = $this->generateSignedDocument($contract);
+            $locked->loadMissing('signatures');
 
-        $contract->update([
-            'status' => 'completed',
-            'completed_at' => Carbon::now(),
-            'document_id' => $document->id,
-        ]);
+            if (! $locked->allSigned()) {
+                return;
+            }
+
+            $document = $this->generateSignedDocument($locked);
+
+            $locked->update([
+                'status' => 'completed',
+                'completed_at' => Carbon::now(),
+                'document_id' => $document->id,
+            ]);
+        });
     }
 
     /**
@@ -233,6 +259,8 @@ class ContractService
 
     protected function createSigner(Contract $contract, string $role, string $name, ?string $email, int $order): ContractSignature
     {
+        $email = $email !== null && trim($email) !== '' ? trim($email) : null;
+
         return $contract->signatures()->create([
             'party_role' => $role,
             'name' => $name !== '' ? $name : ucfirst($role),

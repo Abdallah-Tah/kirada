@@ -6,6 +6,7 @@ use App\Models\Contract;
 use App\Models\Lease;
 use App\Services\ContractService;
 use App\Services\ContractTemplateService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 

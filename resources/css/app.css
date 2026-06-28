@@ -177,7 +177,11 @@ select:focus[data-flux-control] {
 }
 
 /* Scroll-reveal: elements rise and fade as they enter the viewport.
-   JS adds `.is-visible`; without JS or with reduced motion they are visible. */
+   The hidden state is gated behind `.kirada-motion`, a class set on <html> by
+   app.js (and inline in <head>). So if JS is disabled or fails to load the
+   class is absent and content stays fully visible — no blank page. With
+   reduced motion the no-preference block below never applies, also leaving
+   content visible. JS adds `.is-visible` to play the entrance. */
 .kirada-reveal {
     opacity: 1;
 }
@@ -187,14 +191,14 @@ select:focus[data-flux-control] {
         scroll-behavior: smooth;
     }
 
-    .kirada-reveal {
+    .kirada-motion .kirada-reveal {
         opacity: 0;
         transform: translateY(28px);
         transition: opacity 0.7s var(--ease-kirada), transform 0.7s var(--ease-kirada);
         will-change: opacity, transform;
     }
 
-    .kirada-reveal.is-visible {
+    .kirada-motion .kirada-reveal.is-visible {
         opacity: 1;
         transform: none;
     }
@@ -282,6 +286,20 @@ select:focus[data-flux-control] {
 .kirada-contract-body .contract-closing {
     margin-top: 1.25rem;
     font-style: italic;
+}
+
+/* Accessibility contract: when the user asks for reduced motion, neutralise
+   every animation and transition app-wide — including the hover lifts on
+   shared cards/buttons that are declared outside the no-preference block. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 /* \[:where(&)\]:size-4 {

@@ -46,12 +46,13 @@ class Sign extends Component
         abort_if($contract->isCancelled(), 403, __('This contract is no longer open for signature.'));
 
         $this->validate([
-            'signatureData' => ['required', 'string', 'starts_with:data:image/'],
+            'signatureData' => ['required', 'string', 'starts_with:data:image/', 'max:2000000'],
             'typedName' => ['required', 'string', 'max:200'],
             'agreed' => ['accepted'],
         ], [
             'signatureData.required' => __('Please draw your signature before signing.'),
             'signatureData.starts_with' => __('The signature image is invalid.'),
+            'signatureData.max' => __('The signature image is too large.'),
             'agreed.accepted' => __('You must consent to sign electronically.'),
         ]);
 
@@ -60,6 +61,7 @@ class Sign extends Component
             $this->signatureData,
             request()->ip(),
             request()->userAgent(),
+            $this->typedName,
         );
 
         $this->justSigned = true;

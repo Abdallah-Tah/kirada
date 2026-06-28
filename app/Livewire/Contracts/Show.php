@@ -4,6 +4,7 @@ namespace App\Livewire\Contracts;
 
 use App\Models\Contract;
 use App\Services\ContractService;
+use Flux\Flux;
 use Livewire\Component;
 
 class Show extends Component
