@@ -225,6 +225,7 @@
             {{-- ============================================================ --}}
             <section id="features" class="mx-auto max-w-7xl px-6 py-20">
                 <div class="kirada-reveal mb-14 text-center">
+                    <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-kirada-ocean">{{ __('Features') }}</p>
                     <h2 class="text-3xl font-bold text-kirada-navy mb-3 sm:text-4xl">{{ __('Everything you need to run your rental business') }}</h2>
                     <p class="text-slate-500 max-w-2xl mx-auto">{{ __('Powerful tools for property management, rent collection, contracts, and more.') }}</p>
                 </div>
@@ -338,17 +339,44 @@
             {{-- PRICING                                                       --}}
             {{-- ============================================================ --}}
             <section id="pricing" class="border-y border-slate-200 bg-kirada-soft/40">
-                <div class="mx-auto max-w-3xl px-6 py-20 text-center">
-                    <div class="kirada-reveal mb-6 inline-flex items-center gap-2 rounded-full bg-white border border-kirada-sky/45 px-4 py-1.5 text-sm font-medium text-kirada-navy shadow-sm">
-                        <svg class="size-4 text-kirada-green" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                        {{ __('30-Day Free Trial') }}
+                <div class="mx-auto max-w-3xl px-6 py-20">
+                    <div class="kirada-reveal mb-10 text-center">
+                        <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-kirada-ocean">{{ __('Pricing') }}</p>
+                        <h2 class="text-3xl font-bold text-kirada-navy sm:text-4xl">{{ __('Start free. Upgrade when you grow.') }}</h2>
                     </div>
-                    <h2 class="kirada-reveal kirada-reveal-delay-1 text-3xl font-bold text-kirada-navy mb-4 sm:text-4xl">{{ __('No credit card required.') }}</h2>
-                    <p class="kirada-reveal kirada-reveal-delay-2 text-lg text-slate-600 mb-8">{{ __("Choose a plan when you're ready to grow.") }}</p>
-                    <a href="{{ route('register') }}" wire:navigate class="kirada-reveal kirada-reveal-delay-3 kirada-primary-button-lg">
-                        {{ __('Start Free Trial') }}
-                        <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
-                    </a>
+
+                    {{-- Trial card --}}
+                    <div class="kirada-reveal kirada-reveal-delay-1 relative mx-auto max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60">
+                        {{-- Accent ribbon --}}
+                        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-kirada-ocean via-kirada-sky to-kirada-green"></div>
+
+                        <div class="inline-flex items-center gap-2 rounded-full border border-kirada-sky/45 bg-kirada-soft px-3 py-1 text-xs font-semibold text-kirada-navy">
+                            <span class="kirada-pulse-dot size-1.5 rounded-full bg-kirada-green"></span>
+                            {{ __('30-Day Free Trial') }}
+                        </div>
+
+                        <div class="mt-5 flex items-end gap-2">
+                            <span class="text-5xl font-bold tracking-tight text-kirada-navy">{{ __('Free') }}</span>
+                            <span class="mb-1.5 text-sm text-slate-500">{{ __('for 30 days') }}</span>
+                        </div>
+                        <p class="mt-2 text-sm text-slate-500">{{ __("No credit card required. Choose a plan when you're ready to grow.") }}</p>
+
+                        <ul class="mt-6 space-y-3">
+                            @foreach (['All features included', 'Unlimited properties during trial', 'Digital contracts & e-signature', 'No credit card required', 'Cancel anytime'] as $perk)
+                                <li class="flex items-center gap-3 text-sm text-slate-700">
+                                    <span class="flex size-5 shrink-0 items-center justify-center rounded-full bg-green-50">
+                                        <svg class="size-3.5 text-kirada-green" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                                    </span>
+                                    {{ __($perk) }}
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        <a href="{{ route('register') }}" wire:navigate class="kirada-primary-button-lg mt-8 w-full">
+                            {{ __('Start Free Trial') }}
+                            <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                        </a>
+                    </div>
                 </div>
             </section>
 
