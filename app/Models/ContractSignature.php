@@ -21,6 +21,7 @@ class ContractSignature extends Model
         'status',
         'signature_data',
         'signature_hash',
+        'expires_at',
         'signed_at',
         'signed_ip',
         'signed_user_agent',
@@ -29,6 +30,7 @@ class ContractSignature extends Model
 
     protected $casts = [
         'sign_order' => 'integer',
+        'expires_at' => 'datetime',
         'signed_at' => 'datetime',
     ];
 
@@ -52,6 +54,11 @@ class ContractSignature extends Model
     public function isPending(): bool
     {
         return $this->status === 'pending';
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->expires_at !== null && $this->expires_at->isPast();
     }
 
     public function getRoleLabelAttribute(): string

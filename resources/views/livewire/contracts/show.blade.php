@@ -65,7 +65,7 @@
 
                             @if ($sig->isSigned())
                                 <p class="mt-2 text-xs text-slate-400">{{ __('Signed') }} {{ optional($sig->signed_at)->format('d/m/Y H:i') }}</p>
-                            @elseif (! $contract->isCancelled())
+                            @elseif ($contract->isSent())
                                 <div class="mt-3" x-data="{ copied: false, url: @js($this->signingUrl($sig->token)) }">
                                     <label class="text-xs font-medium text-slate-500">{{ __('Signing link') }}</label>
                                     <div class="mt-1 flex items-center gap-2">

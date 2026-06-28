@@ -28,6 +28,9 @@ class ContractService
     /** Upper bound on a drawn-signature data URL (~2 MB) to stop payload abuse. */
     private const MAX_SIGNATURE_BYTES = 2_000_000;
 
+    /** Signing links are short-lived bearer tokens. */
+    private const SIGNATURE_LINK_TTL_DAYS = 7;
+
     public function __construct(private ContractTemplateService $templates) {}
 
     /**
@@ -91,6 +94,10 @@ class ContractService
             'sent_at' => Carbon::now(),
         ]);
 
+        $contract->signatures()
+            ->where('status', 'pending')
+            ->update(['expires_at' => Carbon::now()->addDays(self::SIGNATURE_LINK_TTL_DAYS)]);
+
         $this->dispatchSignatureRequests($contract->fresh('signatures'));
 
         return $contract->fresh();
@@ -118,6 +125,10 @@ class ContractService
      */
     public function sendSignatureRequest(ContractSignature $signature): void
     {
+        $signature->update([
+            'expires_at' => Carbon::now()->addDays(self::SIGNATURE_LINK_TTL_DAYS),
+        ]);
+
         Mail::to($signature->email)->send(new ContractSignatureRequest($signature));
     }
 
@@ -142,11 +153,15 @@ class ContractService
             throw new \RuntimeException('This signature is no longer pending.');
         }
 
-        if (! $contract || $contract->isCancelled()) {
+        if (! $contract || ! $contract->isSent()) {
             throw new \RuntimeException('This contract is not open for signature.');
         }
 
-        if (! str_starts_with($signatureData, 'data:image/') || strlen($signatureData) > self::MAX_SIGNATURE_BYTES) {
+        if ($signature->isExpired()) {
+            throw new \RuntimeException('This signing link has expired.');
+        }
+
+        if (! $this->isValidSignatureImage($signatureData)) {
             throw new \InvalidArgumentException('Invalid or oversized signature payload.');
         }
 
@@ -161,11 +176,6 @@ class ContractService
             'signed_ip' => $ip,
             'signed_user_agent' => $userAgent,
         ]);
-
-        if ($contract->status === 'draft') {
-            // A signature implies the contract is in circulation.
-            $contract->update(['status' => 'sent', 'sent_at' => $contract->sent_at ?? $signedAt]);
-        }
 
         $this->finalizeIfComplete($contract->fresh());
 
@@ -312,5 +322,30 @@ class ContractService
             $signedAt->toIso8601String(),
             $signatureData,
         ]));
+    }
+
+    protected function isValidSignatureImage(string $signatureData): bool
+    {
+        if (strlen($signatureData) > self::MAX_SIGNATURE_BYTES) {
+            return false;
+        }
+
+        if (! preg_match('/\Adata:image\/(png|jpe?g|webp);base64,([A-Za-z0-9+\/=]+)\z/i', $signatureData, $matches)) {
+            return false;
+        }
+
+        $bytes = base64_decode($matches[2], true);
+
+        if ($bytes === false || $bytes === '') {
+            return false;
+        }
+
+        $image = @getimagesizefromstring($bytes);
+
+        if ($image === false || empty($image['mime'])) {
+            return false;
+        }
+
+        return in_array(strtolower($image['mime']), ['image/png', 'image/jpeg', 'image/webp'], true);
     }
 }

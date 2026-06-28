@@ -27,6 +27,9 @@ class Sign extends Component
             ->with('contract.signatures')
             ->firstOrFail();
 
+        abort_if(! $signature->contract?->isSent(), 403, __('This contract is not available for signature.'));
+        abort_if($signature->isExpired(), 403, __('This signing link has expired. Please request a new link.'));
+
         $this->signatureId = $signature->id;
         $this->typedName = $signature->name;
     }
@@ -43,7 +46,8 @@ class Sign extends Component
         $contract = $signature->contract;
 
         abort_if($signature->status !== 'pending', 403, __('This signature is no longer pending.'));
-        abort_if($contract->isCancelled(), 403, __('This contract is no longer open for signature.'));
+        abort_if(! $contract->isSent(), 403, __('This contract is not available for signature.'));
+        abort_if($signature->isExpired(), 403, __('This signing link has expired. Please request a new link.'));
 
         $this->validate([
             'signatureData' => ['required', 'string', 'starts_with:data:image/', 'max:2000000'],

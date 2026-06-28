@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'signed', 'declined'])->default('pending');
             $table->longText('signature_data')->nullable(); // base64-encoded PNG drawn signature
             $table->string('signature_hash')->nullable();    // integrity hash of the signed payload
+            $table->timestamp('expires_at')->nullable()->index();
             $table->timestamp('signed_at')->nullable();
             $table->string('signed_ip', 45)->nullable();
             $table->text('signed_user_agent')->nullable();

@@ -48,6 +48,10 @@ class Show extends Component
             return;
         }
 
+        if (! $this->contract->isSent()) {
+            return;
+        }
+
         app(ContractService::class)->sendSignatureRequest($signature);
 
         Flux::toast(__('Signing link emailed to :name.', ['name' => $signature->name]), 'success');
