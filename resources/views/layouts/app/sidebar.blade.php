@@ -200,8 +200,6 @@
             </flux:sidebar.nav>
 
             {{-- ── Bottom user profile (desktop) ── --}}
-            <flux:spacer />
-
             <div class="kirada-sidebar-user-section">
                 <x-desktop-user-menu :name="auth()->user()->name" />
             </div>
