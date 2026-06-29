@@ -1,3 +1,8 @@
+import { Editor } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
+
 /**
  * Kirada motion runtime.
  *
@@ -341,4 +346,95 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         closeConfirmationModal();
     }
+});
+
+// ── Rich paragraph editor (Tiptap) ────────────────────────────────────────────
+// Full WYSIWYG editor for contract paragraphs. wire:ignore on the host element
+// prevents Livewire from clobbering the ProseMirror DOM; changes sync back via
+// $wire.set(). The editor outputs full HTML (with <p> wrapper); buildBody() in
+// Show.php detects block-level output and uses it as-is.
+
+document.addEventListener('alpine:init', () => {
+    Alpine.data('richEditor', (initial, wirePath) => {
+        let editor = null;
+
+        return {
+            // ── Toolbar active-state flags ────────────────────────
+            fBold: false, fItalic: false, fUnderline: false, fStrike: false,
+            fLeft: true, fCenter: false, fRight: false, fJustify: false,
+            fBullet: false, fOrdered: false,
+            canUndo: false, canRedo: false,
+
+            // ── Lifecycle ─────────────────────────────────────────
+            init() {
+                const self = this;
+
+                editor = new Editor({
+                    element: this.$refs.editorEl,
+                    extensions: [
+                        StarterKit.configure({
+                            heading: false,
+                            codeBlock: false,
+                            horizontalRule: false,
+                            code: false,
+                            blockquote: false,
+                        }),
+                        Underline,
+                        TextAlign.configure({ types: ['paragraph', 'listItem'] }),
+                    ],
+                    content: initial ?? '',
+                    editorProps: {
+                        attributes: { class: 'kirada-rich-editor' },
+                    },
+                    onUpdate({ editor: ed }) {
+                        self.$wire.set(wirePath, ed.getHTML());
+                        self._sync(ed);
+                    },
+                    onSelectionUpdate({ editor: ed }) { self._sync(ed); },
+                    onFocus({ editor: ed })           { self._sync(ed); },
+                });
+
+                this._sync(editor);
+            },
+
+            destroy() { editor?.destroy(); editor = null; },
+
+            // ── Internal state sync ───────────────────────────────
+            _sync(ed) {
+                this.fBold    = ed.isActive('bold');
+                this.fItalic  = ed.isActive('italic');
+                this.fUnderline = ed.isActive('underline');
+                this.fStrike  = ed.isActive('strike');
+                this.fCenter  = ed.isActive({ textAlign: 'center' });
+                this.fRight   = ed.isActive({ textAlign: 'right' });
+                this.fJustify = ed.isActive({ textAlign: 'justify' });
+                this.fLeft    = !this.fCenter && !this.fRight && !this.fJustify;
+                this.fBullet  = ed.isActive('bulletList');
+                this.fOrdered = ed.isActive('orderedList');
+                this.canUndo  = ed.can().undo();
+                this.canRedo  = ed.can().redo();
+            },
+
+            // ── Toolbar commands ──────────────────────────────────
+            _run(fn) {
+                if (!editor) return;
+                fn(editor.chain().focus());
+                this._sync(editor);
+            },
+
+            toggleBold()      { this._run(c => c.toggleBold().run()); },
+            toggleItalic()    { this._run(c => c.toggleItalic().run()); },
+            toggleUnderline() { this._run(c => c.toggleUnderline().run()); },
+            toggleStrike()    { this._run(c => c.toggleStrike().run()); },
+            alignLeft()       { this._run(c => c.setTextAlign('left').run()); },
+            alignCenter()     { this._run(c => c.setTextAlign('center').run()); },
+            alignRight()      { this._run(c => c.setTextAlign('right').run()); },
+            alignJustify()    { this._run(c => c.setTextAlign('justify').run()); },
+            toggleBullet()    { this._run(c => c.toggleBulletList().run()); },
+            toggleOrdered()   { this._run(c => c.toggleOrderedList().run()); },
+            undo()            { this._run(c => c.undo().run()); },
+            redo()            { this._run(c => c.redo().run()); },
+            clearFormat()     { this._run(c => c.clearNodes().unsetAllMarks().run()); },
+        };
+    });
 });

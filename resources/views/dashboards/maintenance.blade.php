@@ -1,5 +1,5 @@
 <x-layouts::app :title="__('Maintenance Dashboard')">
-    <flux:main class="kirada-shell">
+    <div class="kirada-shell">
         <div class="kirada-page-header kirada-reveal">
             <flux:heading size="xl" class="text-kirada-navy">{{ __('Maintenance Dashboard') }}</flux:heading>
             <flux:subheading class="mt-1 text-slate-500">{{ __('Assigned work orders, active jobs, and recent resolutions.') }}</flux:subheading>
@@ -41,5 +41,5 @@
                 <p class="text-sm text-slate-500">{{ __('No assigned requests yet.') }}</p>
             </div>
         @endif
-    </flux:main>
+    </div>
 </x-layouts::app>

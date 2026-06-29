@@ -1,5 +1,5 @@
 <x-layouts::app :title="__('Tenant Dashboard')">
-    <flux:main class="kirada-shell">
+    <div class="kirada-shell">
         <div class="kirada-page-header kirada-reveal">
             <flux:heading size="xl" class="text-kirada-navy">{{ __('Tenant Dashboard') }}</flux:heading>
             <flux:subheading class="mt-1 text-slate-500">{{ __('Your rent, lease, maintenance, and documents at a glance.') }}</flux:subheading>
@@ -53,7 +53,7 @@
                 <p class="kirada-stat-value text-kirada-ocean">{{ $open_maintenance }}</p>
             </div>
             <div class="kirada-stat-card">
-                <p class="kirada-stat-label">{{ __('messages.Documents') }}</p>
+                <p class="kirada-stat-label">{{ __('Documents') }}</p>
                 <p class="kirada-stat-value">{{ $documents_count }}</p>
             </div>
         </div>
@@ -80,5 +80,5 @@
             </div>
         </div>
         @endif
-    </flux:main>
+    </div>
 </x-layouts::app>

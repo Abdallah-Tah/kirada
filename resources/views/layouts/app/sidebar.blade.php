@@ -53,10 +53,10 @@
                         {{ __('messages.Messages') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
-                        {{ __('messages.Documents') }}
+                        {{ __('Documents') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
-                        {{ __('messages.Subscriptions') }}
+                        {{ __('Subscriptions') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chart-bar" href="#">
                         {{ __('Reports') }}
@@ -100,13 +100,13 @@
                         {{ __('messages.Messages') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
-                        {{ __('messages.Documents') }}
+                        {{ __('Documents') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
-                        {{ __('messages.Subscription') }}
+                        {{ __('Subscription') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="sparkles" :href="route('ai-assistant.index')" :current="request()->routeIs('ai-assistant.*')" wire:navigate>
-                        {{ __('messages.AI Assistant') }}
+                        {{ __('AI Assistant') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole
@@ -120,13 +120,13 @@
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
-                        {{ __('messages.Documents') }}
+                        {{ __('Documents') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
                         {{ __('messages.Messages') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="sparkles" :href="route('ai-assistant.index')" :current="request()->routeIs('ai-assistant.*')" wire:navigate>
-                        {{ __('messages.AI Assistant') }}
+                        {{ __('AI Assistant') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole
@@ -140,7 +140,7 @@
                         {{ __('messages.Messages') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="sparkles" :href="route('ai-assistant.index')" :current="request()->routeIs('ai-assistant.*')" wire:navigate>
-                        {{ __('messages.AI Assistant') }}
+                        {{ __('AI Assistant') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole

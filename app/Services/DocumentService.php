@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Document;
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,7 +41,7 @@ class DocumentService
     /**
      * Get documents visible to a user (role-based).
      */
-    public function getDocumentsForUser(User $user)
+    public function getDocumentsForUser(User $user): Builder
     {
         $query = Document::query()
             ->with([
@@ -67,7 +68,7 @@ class DocumentService
             $query->whereRaw('1 = 0');
         }
 
-        return $query->paginate(15);
+        return $query;
     }
 
     /**
