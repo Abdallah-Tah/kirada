@@ -40,7 +40,7 @@ class MessagingService
             });
         }
 
-        return $query->paginate(15);
+        return $query;
     }
 
     /**

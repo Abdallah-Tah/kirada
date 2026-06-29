@@ -74,6 +74,6 @@ class Show extends Component
     {
         return view('livewire.messages.show')
             ->layout('layouts.app')
-            ->title(__('Conversation'));
+            ->title('Conversation');
     }
 }

@@ -130,6 +130,6 @@ class Index extends Component
     {
         return view('livewire.messages.index')
             ->layout('layouts.app')
-            ->title(__('Messages'));
+            ->title('Messages');
     }
 }
