@@ -9,7 +9,7 @@
             <source srcset="{{ asset('brand/kirada-logo.webp') }}?v=kirada-approved-20260627" type="image/webp">
             <img src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627"
                  alt="Kirada"
-                 class="h-7 w-auto object-contain"
+                 class="h-auto w-auto max-h-8 object-contain"
                  decoding="async">
         </picture>
     </div>
