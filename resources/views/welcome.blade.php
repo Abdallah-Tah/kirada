@@ -177,7 +177,7 @@
                         class="kirada-liquid-glass flex items-center justify-between gap-5 rounded-[1.4rem] px-4 py-3 sm:px-5">
                         <a href="{{ route('home') }}" class="flex items-center" wire:navigate>
                             <div class="inline-flex items-center justify-center rounded-xl bg-white/95 px-3 py-1.5 shadow-lg shadow-slate-950/10 ring-1 ring-white/30 backdrop-blur-sm">
-                                <x-brand-logo class="h-7 w-auto" />
+                                <x-brand-logo class="h-8 w-auto" />
                             </div>
                         </a>
 

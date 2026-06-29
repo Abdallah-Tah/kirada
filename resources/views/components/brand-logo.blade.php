@@ -4,6 +4,6 @@
         src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627"
         alt="Kirada"
         decoding="async"
-        {{ $attributes->merge(['class' => 'h-14 w-auto']) }}
+        {{ $attributes->merge(['class' => 'h-14 w-auto rounded-xl']) }}
     >
 </picture>

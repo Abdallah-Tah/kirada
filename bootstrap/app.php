@@ -12,6 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Behind Cloudflare Tunnel (cloudflared on loopback): trust the proxy so
+        // X-Forwarded-Proto=https is honored and asset()/url() emit https URLs.
+        // Prevents mixed-content (http) asset URLs that break images over the tunnel.
+        $middleware->trustProxies(at: '*', headers:
+            Request::HEADER_X_FORWARDED_FOR |
+            Request::HEADER_X_FORWARDED_HOST |
+            Request::HEADER_X_FORWARDED_PORT |
+            Request::HEADER_X_FORWARDED_PROTO
+        );
+
         $middleware->web(append: [
             \App\Http\Middleware\LocaleMiddleware::class,
         ]);
