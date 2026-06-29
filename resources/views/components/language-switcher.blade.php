@@ -21,7 +21,6 @@
         @foreach($languages as $code => $lang)
             <flux:menu.item
                 :href="route('language.switch', ['locale' => $code])"
-                wire:navigate
                 class="{{ $code === $currentLocale ? 'font-bold text-kirada-green' : '' }}"
             >
                 <span class="mr-2 rounded-md bg-kirada-soft px-1.5 py-0.5 text-xs font-semibold text-kirada-ocean">{{ $lang['code'] }}</span>

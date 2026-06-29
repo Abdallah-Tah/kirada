@@ -30,7 +30,13 @@ class LocaleMiddleware
             $user->forceFill(['preferred_language' => $locale])->save();
         }
 
-        return $next($request);
+        $response = $next($request);
+
+        if ($request->cookie(self::SESSION_KEY) !== $locale) {
+            $response->headers->setCookie(cookie()->forever(self::SESSION_KEY, $locale));
+        }
+
+        return $response;
     }
 
     private function resolveLocale(Request $request): string
@@ -46,19 +52,25 @@ class LocaleMiddleware
             return $sessionLocale;
         }
 
-        // 3. User's preferred_language
+        // 3. Cookie
+        $cookieLocale = $request->cookie(self::SESSION_KEY);
+        if ($this->isSupported($cookieLocale)) {
+            return $cookieLocale;
+        }
+
+        // 4. User's preferred_language
         $user = $request->user();
         if ($user && $this->isSupported($user->preferred_language)) {
             return $user->preferred_language;
         }
 
-        // 4. Browser Accept-Language header
+        // 5. Browser Accept-Language header
         $browserLocale = $this->detectBrowserLocale($request);
         if ($this->isSupported($browserLocale)) {
             return $browserLocale;
         }
 
-        // 5. Fallback
+        // 6. Fallback
         return self::DEFAULT_LOCALE;
     }
 

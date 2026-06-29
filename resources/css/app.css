@@ -56,6 +56,17 @@
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
     }
+
+    /* Mobile: page must fill the full viewport width with no horizontal
+       scroll, so the dark hero background (#05070d) can't show as an edge. */
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
 }
 
 [data-flux-field]:not(ui-radio, ui-checkbox) {

@@ -2,7 +2,7 @@
 
 return [
     // Landing page
-    'Built for Djibouti first, ready for regional and global landlords.' => 'Built for Djibouti first, ready for regional and global landlords.',
+    'Built for local, regional, and global landlords.' => 'Built for local, regional, and global landlords.',
     'Smart Rent Management for Landlords and Tenants' => 'Smart Rent Management for Landlords and Tenants',
     'Track rent, manage maintenance, communicate with tenants, and store documents — all in one platform.' => 'Track rent, manage maintenance, communicate with tenants, and store documents — all in one platform.',
     'Get Started' => 'Get Started',
@@ -10,8 +10,8 @@ return [
     'Register' => 'Register',
     'Create Your Free Account' => 'Create Your Free Account',
     'Landlords get a 30-day free trial. No credit card required.' => 'Landlords get a 30-day free trial. No credit card required.',
-    'Start in Djibouti. Scale anywhere.' => 'Start in Djibouti. Scale anywhere.',
-    'Kirada supports multiple currencies, languages, and regional formats. Built for the Horn of Africa, designed for the world.' => 'Kirada supports multiple currencies, languages, and regional formats. Built for the Horn of Africa, designed for the world.',
+    'Start locally. Scale anywhere.' => 'Start locally. Scale anywhere.',
+    'Kirada supports multiple currencies, languages, and regional formats for rental teams anywhere.' => 'Kirada supports multiple currencies, languages, and regional formats for rental teams anywhere.',
     'All rights reserved.' => 'All rights reserved.',
 
     // Feature cards

@@ -63,7 +63,7 @@
             ],
             [
                 'title' => 'Multi-Country & Currency',
-                'desc' => 'Built for Djibouti and ready for regional and global landlords.',
+                'desc' => 'Built for local, regional, and global landlords.',
                 'tone' => 'blue',
             ],
         ];
@@ -158,10 +158,10 @@
 
     <main>
         <section class="kirada-marketing-hero relative isolate overflow-hidden text-white">
-            <div class="absolute inset-4 -z-30 rounded-[2rem] border border-white/50 bg-white/90 p-3 shadow-[0_24px_80px_rgba(15,23,42,0.18)] backdrop-blur-sm sm:inset-6">
+            <div class="absolute inset-0 -z-30 overflow-hidden">
                 <img src="{{ asset('brand/hero-building.png') }}?v=20260628"
                     alt="{{ __('Modern apartment buildings managed with Kirada') }}"
-                    class="kirada-hero-image h-full w-full rounded-[1.4rem] object-cover object-center">
+                    class="kirada-hero-image h-full w-full object-cover object-center">
             </div>
             <div
                 class="absolute inset-0 -z-20 bg-[linear-gradient(180deg,rgba(5,7,13,0.16)_0%,rgba(5,7,13,0.02)_28%,rgba(5,7,13,0.10)_56%,rgba(5,7,13,0.74)_100%)]">
@@ -176,7 +176,7 @@
                     <div
                         class="kirada-liquid-glass flex items-center justify-between gap-5 rounded-[1.4rem] px-4 py-3 sm:px-5">
                         <a href="{{ route('home') }}" class="flex items-center" wire:navigate>
-                            <div class="inline-flex items-center justify-center rounded-xl bg-white/95 px-3 py-1.5 shadow-lg shadow-slate-950/10 ring-1 ring-white/30 backdrop-blur-sm">
+                            <div class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-lg shadow-slate-950/10 ring-1 ring-white/30 backdrop-blur-sm">
                                 <x-brand-logo class="h-8 w-auto" />
                             </div>
                         </a>
@@ -213,7 +213,7 @@
                                 class="kirada-reveal kirada-reveal-delay-2 mb-6 inline-flex items-center gap-3 rounded-full border border-white/16 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-md">
                                 <span
                                     class="size-2.5 rounded-full bg-kirada-green shadow-[0_0_0_6px_rgba(16,185,129,0.18)]"></span>
-                                <span>{{ __('Smart Rent Management · Built in Djibouti · Ready for the world') }}</span>
+                                <span>{{ __('Smart Rent Management · Built for modern rental teams') }}</span>
                             </div>
 
                             <h1
@@ -440,7 +440,7 @@
                     <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-sky-100">
                         {{ __('Global foundation') }}</p>
                     <h2 class="mt-4 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
-                        {{ __('Built in Djibouti. Ready for the world.') }}
+                        {{ __('Built for local markets. Ready for the world.') }}
                     </h2>
                     <p class="mt-5 max-w-3xl text-lg leading-8 text-white/80">
                         {{ __('Support your rental business across countries, currencies, and languages.') }}
