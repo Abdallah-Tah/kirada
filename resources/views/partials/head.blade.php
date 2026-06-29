@@ -45,6 +45,7 @@ window.KIRADA_GOOGLE_MAPS_API_KEY = @js(env('VITE_GOOGLE_MAPS_API_KEY'));
 <style>
     :root.dark { color-scheme: dark; }
     :root { color-scheme: light; }
+    [x-cloak] { display: none !important; }
 </style>
 <script>
 window.Flux = {

@@ -482,7 +482,7 @@
         </section>
 
         <section id="pricing"
-            class="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-20 sm:px-8 lg:px-10">
+            class="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-20 sm:px-8 lg:px-10" x-data="{ billing: 'monthly' }">
             <div class="mx-auto max-w-[1320px]">
                 <div class="mx-auto max-w-4xl text-center">
                     <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-kirada-ocean">
@@ -497,15 +497,22 @@
 
                     <div
                         class="mt-8 inline-flex items-center rounded-full border border-slate-200 bg-white p-1 shadow-sm">
-                        <span
-                            class="rounded-full bg-kirada-navy px-6 py-3 text-base font-semibold text-white">{{ __('Monthly') }}</span>
-                        <span class="px-6 py-3 text-base font-semibold text-slate-500">{{ __('Annual') }} <span
-                                class="text-kirada-green">-20%</span></span>
+                        <button type="button" @click="billing = 'monthly'"
+                            :class="billing === 'monthly' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
+                            class="rounded-full px-6 py-3 text-base font-semibold transition">{{ __('Monthly') }}</button>
+                        <button type="button" @click="billing = 'annual'"
+                            :class="billing === 'annual' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
+                            class="rounded-full px-6 py-3 text-base font-semibold transition">{{ __('Annual') }} <span
+                                class="text-kirada-green">-20%</span></button>
                     </div>
                 </div>
 
                 <div class="mt-14 grid gap-6 xl:grid-cols-3">
                     @foreach ($pricingPlans as $plan)
+                        @php
+                            $monthlyPrice = $plan['price'];
+                            $annualPrice = round($monthlyPrice * 0.8); // 20% off
+                        @endphp
                         <article
                             class="relative rounded-[2rem] border {{ $plan['featured'] ? 'border-slate-900 bg-slate-900 text-white shadow-[0_28px_80px_rgba(15,23,42,0.24)]' : 'border-slate-200 bg-white text-kirada-navy shadow-[0_20px_60px_rgba(15,23,42,0.08)]' }} p-8">
                             @if (!empty($plan['badge']))
@@ -520,12 +527,15 @@
                                 {{ __($plan['audience']) }}</p>
 
                             <div class="mt-8 flex items-end gap-2">
-                                <span class="text-6xl font-semibold tracking-[-0.06em]">${{ $plan['price'] }}</span>
+                                <span class="text-6xl font-semibold tracking-[-0.06em]" x-show="billing === 'monthly'">${{ $monthlyPrice }}</span>
+                                <span class="text-6xl font-semibold tracking-[-0.06em]" x-show="billing === 'annual'" x-cloak>${{ $annualPrice }}</span>
                                 <span
                                     class="pb-2 text-2xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">{{ __($plan['suffix']) }}</span>
                             </div>
                             <p class="mt-2 text-lg {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">
-                                {{ __($plan['billing']) }}</p>
+                                <span x-show="billing === 'monthly'">{{ __($plan['billing']) }}</span>
+                                <span x-show="billing === 'annual'" x-cloak>{{ __('per year') }}</span>
+                            </p>
 
                             <a href="{{ route('register', ['plan' => $plan['slug']]) }}" wire:navigate
                                 class="mt-8 inline-flex min-h-14 w-full items-center justify-center rounded-2xl border text-lg font-semibold transition hover:-translate-y-0.5 {{ $plan['featured'] ? 'border-kirada-ocean bg-kirada-ocean text-white shadow-[0_18px_40px_rgba(14,165,233,0.25)]' : 'border-slate-200 bg-white text-kirada-navy hover:border-kirada-ocean' }}">
