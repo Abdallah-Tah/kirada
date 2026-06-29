@@ -6,19 +6,21 @@
     <body class="min-h-screen bg-[#e8f4ff] text-slate-900 antialiased">
         <flux:sidebar sticky collapsible="true" class="kirada-sidebar">
             {{-- ── Logo card at top ── --}}
-            <div class="kirada-sidebar-logo-card">
-                <a href="{{ route('dashboard') }}" wire:navigate class="flex-1 flex items-center justify-center">
-                    <div class="flex items-center justify-center rounded-xl bg-white px-4 py-3 shadow-lg ring-1 ring-white/20 w-full max-w-[185px]">
+            <div class="kirada-sidebar-header">
+                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center justify-center px-2 pt-3 pb-2">
+                    <div class="flex items-center justify-center rounded-xl bg-white px-4 py-2.5 shadow-lg ring-1 ring-white/20 w-full max-w-[185px]">
                         <picture>
                             <source srcset="{{ asset('brand/kirada-logo.webp') }}?v=kirada-approved-20260627" type="image/webp">
                             <img src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627"
                                  alt="Kirada"
-                                 class="h-14 w-full object-contain"
+                                 class="h-12 w-full object-contain"
                                  decoding="async">
                         </picture>
                     </div>
                 </a>
-                <flux:sidebar.collapse class="kirada-sidebar-collapse-btn shrink-0" />
+                <div class="kirada-sidebar-toggle-row">
+                    <flux:sidebar.collapse class="kirada-sidebar-collapse-btn" />
+                </div>
             </div>
 
             {{-- ── Scrollable nav area ── --}}
