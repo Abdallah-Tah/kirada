@@ -7,18 +7,18 @@
         <flux:sidebar sticky collapsible="mobile" class="kirada-sidebar">
             {{-- ── Logo card at top ── --}}
             <div class="kirada-sidebar-logo-card">
-                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center justify-center">
-                    <div class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-2 shadow-lg ring-1 ring-white/20">
+                <a href="{{ route('dashboard') }}" wire:navigate class="flex-1 flex items-center justify-center">
+                    <div class="flex items-center justify-center rounded-xl bg-white px-3 py-2.5 shadow-lg ring-1 ring-white/20 w-full max-w-[170px]">
                         <picture>
                             <source srcset="{{ asset('brand/kirada-logo.webp') }}?v=kirada-approved-20260627" type="image/webp">
                             <img src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627"
                                  alt="Kirada"
-                                 class="h-7 w-auto object-contain"
+                                 class="h-12 w-full object-contain"
                                  decoding="async">
                         </picture>
                     </div>
                 </a>
-                <flux:sidebar.collapse class="kirada-sidebar-collapse-btn" />
+                <flux:sidebar.collapse class="kirada-sidebar-collapse-btn shrink-0" />
             </div>
 
             {{-- ── Scrollable nav area ── --}}
