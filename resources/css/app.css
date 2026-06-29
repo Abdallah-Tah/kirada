@@ -231,6 +231,22 @@ select:focus[data-flux-control] {
         cursor: pointer !important;
     }
 
+    /* ── Global: all buttons get cursor pointer ── */
+    button,
+    [type="button"],
+    [type="submit"],
+    .flux-button,
+    [data-flux-button] {
+        cursor: pointer !important;
+    }
+    button:disabled,
+    [type="button"]:disabled,
+    [type="submit"]:disabled,
+    .flux-button:disabled,
+    [data-flux-button]:disabled {
+        cursor: default !important;
+    }
+
     .kirada-shell {
         @apply mx-auto w-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 lg:px-8;
     }
