@@ -118,9 +118,13 @@ select:focus[data-flux-control] {
 
     .kirada-sidebar-collapse-btn {
         color: rgba(255, 255, 255, 0.5) !important;
+        cursor: pointer !important;
     }
     .kirada-sidebar-collapse-btn:hover {
         color: #7DD3FC !important;
+    }
+    .kirada-sidebar-collapse-btn button {
+        cursor: pointer !important;
     }
 
     /* ── Scrollable nav ── */
@@ -219,6 +223,7 @@ select:focus[data-flux-control] {
     }
     .kirada-mobile-header button {
         color: #ffffff !important;
+        cursor: pointer !important;
     }
 
     .kirada-shell {
