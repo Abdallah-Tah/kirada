@@ -75,7 +75,7 @@
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($this->plans as $plan)
                     @php $isCurrentPlan = $summary['plan']?->id === $plan->id; @endphp
-                    <div class="kirada-stat-card grid gap-3">
+                    <div class="kirada-stat-card grid gap-3 overflow-hidden">
                         <h4 class="font-semibold text-lg text-zinc-900 dark:text-white">{{ $plan->name }}</h4>
                         <p class="text-2xl font-bold text-zinc-900 dark:text-white">{{ $plan->formattedPrice }}</p>
                         <p class="text-xs text-zinc-400">{{ __('per month') }}</p>
@@ -87,18 +87,10 @@
                             wire:click="selectPlan('{{ $plan->slug }}')"
                             data-confirm="{{ __('Select this subscription plan?') }}"
                             variant="{{ $isCurrentPlan ? 'ghost' : 'primary' }}"
+                            :disabled="$isCurrentPlan"
                             class="w-full"
-                            @if($isCurrentPlan) disabled @endif
                         >
-                            @if($isCurrentPlan)
-                                {{ __('Current Plan') }}
-                            @elseif($summary['state'] === 'none')
-                                {{ __('Start 30-day trial') }}
-                            @elseif($summary['state'] === 'trialing')
-                                {{ __('Select Plan') }}
-                            @else
-                                {{ __('Activate Plan') }}
-                            @endif
+                            {{ $isCurrentPlan ? __('Current Plan') : ($summary['state'] === 'none' ? __('Start 30-day trial') : ($summary['state'] === 'trialing' ? __('Select Plan') : __('Activate Plan'))) }}
                         </flux:button>
                     </div>
                 @endforeach
