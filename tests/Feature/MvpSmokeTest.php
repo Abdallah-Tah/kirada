@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Livewire\MaintenanceRequests\Create;
+use App\Livewire\MaintenanceRequests\Show;
 use App\Models\Conversation;
 use App\Models\Document;
 use App\Models\Lease;
@@ -309,6 +310,95 @@ class MvpSmokeTest extends TestCase
         $this->actingAs($this->landlord)
             ->get(route('maintenance-attachments.show', $attachment))
             ->assertOk();
+    }
+
+    public function test_tenant_status_actions_are_limited_to_safe_transitions()
+    {
+        Notification::fake();
+
+        $this->setupTenantInvitation();
+
+        $tenantUser = User::where('email', 'invited@test.dj')->first();
+        $request = app(MaintenanceRequestService::class)->createRequest([
+            'property_id' => Property::first()->id,
+            'unit_id' => Unit::first()->id,
+            'title' => 'Tenant transition test',
+            'description' => 'Testing tenant maintenance transitions.',
+            'priority' => 'medium',
+        ], $tenantUser);
+
+        Livewire::actingAs($tenantUser)
+            ->test(Show::class, ['maintenanceRequest' => $request])
+            ->set('newStatus', 'in_progress')
+            ->call('changeStatus');
+
+        $this->assertEquals('open', $request->fresh()->status);
+
+        Livewire::actingAs($tenantUser)
+            ->test(Show::class, ['maintenanceRequest' => $request])
+            ->assertSet('allowedTransitions', ['cancelled']);
+    }
+
+    public function test_tenant_can_confirm_or_reopen_a_resolved_request()
+    {
+        Notification::fake();
+
+        $this->setupTenantInvitation();
+
+        $tenantUser = User::where('email', 'invited@test.dj')->first();
+        $request = app(MaintenanceRequestService::class)->createRequest([
+            'property_id' => Property::first()->id,
+            'unit_id' => Unit::first()->id,
+            'title' => 'Resolved request test',
+            'description' => 'Testing tenant resolved actions.',
+            'priority' => 'medium',
+        ], $tenantUser);
+
+        $service = app(MaintenanceRequestService::class);
+        $request = $service->changeStatus($request, 'in_progress', $this->landlord);
+        $request = $service->changeStatus($request, 'resolved', $this->landlord);
+
+        Livewire::actingAs($tenantUser)
+            ->test(Show::class, ['maintenanceRequest' => $request])
+            ->set('newStatus', 'in_progress')
+            ->call('changeStatus');
+
+        $this->assertEquals('in_progress', $request->fresh()->status);
+
+        $request = $service->changeStatus($request->fresh(), 'resolved', $this->landlord);
+
+        Livewire::actingAs($tenantUser)
+            ->test(Show::class, ['maintenanceRequest' => $request])
+            ->set('newStatus', 'closed')
+            ->call('changeStatus');
+
+        $this->assertEquals('closed', $request->fresh()->status);
+    }
+
+    public function test_maintenance_request_opens_linked_conversation()
+    {
+        Notification::fake();
+
+        $this->setupTenantInvitation();
+
+        $tenantUser = User::where('email', 'invited@test.dj')->first();
+        $request = app(MaintenanceRequestService::class)->createRequest([
+            'property_id' => Property::first()->id,
+            'unit_id' => Unit::first()->id,
+            'title' => 'Conversation request test',
+            'description' => 'Testing linked maintenance conversations.',
+            'priority' => 'medium',
+        ], $tenantUser);
+
+        Livewire::actingAs($tenantUser)
+            ->test(Show::class, ['maintenanceRequest' => $request])
+            ->call('openConversation');
+
+        $conversation = Conversation::where('maintenance_request_id', $request->id)->first();
+
+        $this->assertNotNull($conversation);
+        $this->assertEquals($request->landlord_id, $conversation->landlord_id);
+        $this->assertEquals($request->tenant_id, $conversation->tenant_id);
     }
 
     public function test_landlord_and_tenant_can_message()

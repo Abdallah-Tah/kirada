@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Conversation;
-use App\Models\Message;
 use App\Models\MaintenanceRequest;
+use App\Models\Message;
 use App\Models\Tenant;
 use App\Models\User;
 
@@ -49,7 +49,7 @@ class MessagingService
     public function startConversation(User $initiator, array $data): Conversation
     {
         // Prevent duplicate open conversations between same landlord + tenant
-        if (isset($data['landlord_id']) && isset($data['tenant_id']) && !isset($data['maintenance_request_id'])) {
+        if (isset($data['landlord_id']) && isset($data['tenant_id']) && ! isset($data['maintenance_request_id'])) {
             $existing = Conversation::where('landlord_id', $data['landlord_id'])
                 ->where('tenant_id', $data['tenant_id'])
                 ->where('status', 'open')
@@ -61,14 +61,37 @@ class MessagingService
         }
 
         $conversation = Conversation::create([
-            'landlord_id'           => $data['landlord_id'] ?? null,
-            'tenant_id'             => $data['tenant_id'] ?? null,
+            'landlord_id' => $data['landlord_id'] ?? null,
+            'tenant_id' => $data['tenant_id'] ?? null,
             'maintenance_request_id' => $data['maintenance_request_id'] ?? null,
-            'subject'               => $data['subject'],
-            'status'                => 'open',
+            'subject' => $data['subject'],
+            'status' => 'open',
         ]);
 
         return $conversation;
+    }
+
+    /**
+     * Open or reuse the conversation linked to a maintenance request.
+     */
+    public function getOrCreateMaintenanceConversation(MaintenanceRequest $request): Conversation
+    {
+        $existing = Conversation::where('maintenance_request_id', $request->id)
+            ->where('status', 'open')
+            ->first();
+
+        if ($existing) {
+            return $existing;
+        }
+
+        return Conversation::create([
+            'landlord_id' => $request->landlord_id,
+            'tenant_id' => $request->tenant_id,
+            'maintenance_request_id' => $request->id,
+            'subject' => __('Maintenance: :title', ['title' => $request->title]),
+            'status' => 'open',
+            'last_message_at' => now(),
+        ]);
     }
 
     /**
@@ -78,8 +101,8 @@ class MessagingService
     {
         $message = Message::create([
             'conversation_id' => $conversation->id,
-            'user_id'         => $user->id,
-            'body'            => $body,
+            'user_id' => $user->id,
+            'body' => $body,
         ]);
 
         $conversation->update(['last_message_at' => now()]);
@@ -104,6 +127,7 @@ class MessagingService
     public function closeConversation(Conversation $conversation): Conversation
     {
         $conversation->update(['status' => 'closed']);
+
         return $conversation->fresh();
     }
 
@@ -113,6 +137,7 @@ class MessagingService
     public function reopenConversation(Conversation $conversation): Conversation
     {
         $conversation->update(['status' => 'open']);
+
         return $conversation->fresh();
     }
 

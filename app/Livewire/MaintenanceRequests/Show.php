@@ -4,6 +4,7 @@ namespace App\Livewire\MaintenanceRequests;
 
 use App\Models\MaintenanceRequest;
 use App\Services\MaintenanceRequestService;
+use App\Services\MessagingService;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -69,7 +70,7 @@ class Show extends Component
     public function allowedTransitions()
     {
         return app(MaintenanceRequestService::class)
-            ->getAllowedTransitions($this->maintenanceRequest->status);
+            ->getAllowedTransitionsForUser($this->maintenanceRequest, auth()->user());
     }
 
     #[Computed]
@@ -94,6 +95,12 @@ class Show extends Component
         }
 
         return $query->get();
+    }
+
+    #[Computed]
+    public function canMessage(): bool
+    {
+        return (bool) $this->maintenanceRequest->tenant_id && (bool) $this->maintenanceRequest->landlord_id;
     }
 
     #[Computed]
@@ -227,6 +234,7 @@ class Show extends Component
             $request = app(MaintenanceRequestService::class)->changeStatus(
                 $this->maintenanceRequest,
                 $this->newStatus,
+                auth()->user(),
             );
 
             app(MaintenanceRequestService::class)->storeAttachments(
@@ -253,6 +261,22 @@ class Show extends Component
         } catch (\DomainException $e) {
             Flux::toast($e->getMessage(), 'error');
         }
+    }
+
+    public function openConversation(): void
+    {
+        $this->authorize('view', $this->maintenanceRequest);
+
+        if (! $this->canMessage) {
+            Flux::toast('This request is missing tenant or landlord details.', 'error');
+
+            return;
+        }
+
+        $conversation = app(MessagingService::class)
+            ->getOrCreateMaintenanceConversation($this->maintenanceRequest);
+
+        $this->redirect(route('messages.show', $conversation), navigate: true);
     }
 
     public function render()

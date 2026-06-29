@@ -54,11 +54,11 @@ class MaintenanceRequestPolicy
             return $request->landlord_id === $user->id;
         }
 
-        // Tenant can update (e.g., cancel) their own requests if still open
+        // Tenant can cancel an open request or confirm/reopen a resolved request.
         if ($user->hasRole('tenant')) {
             return $request->tenant_id !== null
                 && $request->tenant->user_id === $user->id
-                && $request->isOpen();
+                && in_array($request->status, ['open', 'resolved'], true);
         }
 
         // Maintenance can update assigned requests

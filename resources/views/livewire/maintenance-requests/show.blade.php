@@ -26,6 +26,12 @@
             @else
                 <flux:badge color="red" size="sm">{{ __('Cancelled') }}</flux:badge>
             @endif
+
+            @if ($this->canMessage)
+                <flux:button wire:click="openConversation" variant="ghost" size="sm" icon="chat-bubble-left-right">
+                    {{ __('Message') }}
+                </flux:button>
+            @endif
         </div>
     </div>
 
@@ -157,7 +163,17 @@
                         <flux:select wire:model.live="newStatus" class="mt-1">
                             <option value="">{{ __('Select...') }}</option>
                             @foreach ($this->allowedTransitions as $transition)
-                                <option value="{{ $transition }}">{{ __(str_replace('_', ' ', ucfirst($transition))) }}</option>
+                                <option value="{{ $transition }}">
+                                    @if (auth()->user()->hasRole('tenant') && $transition === 'closed')
+                                        {{ __('Confirm Fixed') }}
+                                    @elseif (auth()->user()->hasRole('tenant') && $transition === 'in_progress')
+                                        {{ __('Reopen Request') }}
+                                    @elseif (auth()->user()->hasRole('tenant') && $transition === 'cancelled')
+                                        {{ __('Cancel Request') }}
+                                    @else
+                                        {{ __(str_replace('_', ' ', ucfirst($transition))) }}
+                                    @endif
+                                </option>
                             @endforeach
                         </flux:select>
                     </div>

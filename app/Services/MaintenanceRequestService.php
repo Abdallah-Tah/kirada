@@ -75,9 +75,11 @@ class MaintenanceRequestService
     /**
      * Transition status through allowed paths.
      */
-    public function changeStatus(MaintenanceRequest $request, string $newStatus): MaintenanceRequest
+    public function changeStatus(MaintenanceRequest $request, string $newStatus, ?User $actor = null): MaintenanceRequest
     {
-        $allowed = $this->getAllowedTransitions($request->status);
+        $allowed = $actor
+            ? $this->getAllowedTransitionsForUser($request, $actor)
+            : $this->getAllowedTransitions($request->status);
 
         if (! in_array($newStatus, $allowed)) {
             throw new \DomainException(
@@ -121,6 +123,35 @@ class MaintenanceRequestService
             'cancelled' => ['open'],
             default => [],
         };
+    }
+
+    /**
+     * Get status transitions allowed for the current actor.
+     */
+    public function getAllowedTransitionsForUser(MaintenanceRequest $request, User $user): array
+    {
+        if ($user->hasRole('admin') || $request->landlord_id === $user->id) {
+            return $this->getAllowedTransitions($request->status);
+        }
+
+        if ($user->hasRole('maintenance') && $request->assigned_to === $user->id) {
+            return match ($request->status) {
+                'open' => ['in_progress'],
+                'in_progress' => ['resolved'],
+                'resolved' => ['in_progress'],
+                default => [],
+            };
+        }
+
+        if ($user->hasRole('tenant') && $request->tenant?->user_id === $user->id) {
+            return match ($request->status) {
+                'open' => ['cancelled'],
+                'resolved' => ['closed', 'in_progress'],
+                default => [],
+            };
+        }
+
+        return [];
     }
 
     /**
