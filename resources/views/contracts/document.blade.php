@@ -13,8 +13,8 @@
         }
         .sheet { max-width: 820px; margin: 0 auto; background: #fff; padding: 56px 64px; }
         .brand { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--ocean); padding-bottom: 16px; margin-bottom: 32px; }
-        .brand .wordmark { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
-        .brand .wordmark span { color: var(--ocean); }
+        .brand-logo-card { display: inline-flex; align-items: center; background: #fff; border-radius: 10px; padding: 6px 12px; box-shadow: 0 1px 4px rgba(15,23,42,0.10); border: 1px solid rgba(226,232,240,0.9); }
+        .brand-logo-card img { height: 28px; width: auto; object-fit: contain; display: block; }
         .brand .ref { text-align: right; font-size: 12px; color: var(--muted); }
         .contract-title { font-size: 22px; text-align: center; margin: 0 0 4px; letter-spacing: -0.01em; }
         .contract-subtitle { text-align: center; color: var(--muted); font-size: 13px; margin: 0 0 28px; }
@@ -48,7 +48,9 @@
 <body>
     <div class="sheet">
         <div class="brand">
-            <div class="wordmark">Kir<span>ada</span></div>
+            <div class="brand-logo-card">
+                <img src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627" alt="Kirada">
+            </div>
             <div class="ref">
                 Réf. {{ $contract->reference }}<br>
                 {{ \Illuminate\Support\Carbon::parse($contract->created_at)->format('d/m/Y') }}

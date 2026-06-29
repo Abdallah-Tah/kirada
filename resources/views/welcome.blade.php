@@ -175,9 +175,10 @@
                 <header class="kirada-reveal kirada-reveal-delay-1 pt-1">
                     <div
                         class="kirada-liquid-glass flex items-center justify-between gap-5 rounded-[1.4rem] px-4 py-3 sm:px-5">
-                        <a href="{{ route('home') }}" class="flex items-center gap-3" wire:navigate>
-                            <x-app-logo-icon class="size-8 sm:size-9" />
-                            <span class="text-2xl font-semibold tracking-tight text-white">Kirada</span>
+                        <a href="{{ route('home') }}" class="flex items-center" wire:navigate>
+                            <div class="inline-flex items-center justify-center rounded-xl bg-white/95 px-3 py-1.5 shadow-lg shadow-slate-950/10 ring-1 ring-white/30 backdrop-blur-sm">
+                                <x-brand-logo class="h-7 w-auto" />
+                            </div>
                         </a>
 
                         <nav class="hidden items-center gap-8 text-sm font-medium text-white/78 lg:flex">
@@ -560,9 +561,10 @@
     <footer class="border-t border-slate-200 bg-white px-5 py-10 sm:px-8 lg:px-10">
         <div class="mx-auto flex max-w-[1320px] flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <a href="{{ route('home') }}" class="flex items-center gap-3" wire:navigate>
-                    <x-app-logo-icon class="size-9" />
-                    <span class="text-3xl font-semibold tracking-tight text-kirada-navy">Kirada</span>
+                <a href="{{ route('home') }}" class="flex items-center" wire:navigate>
+                    <div class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-sm ring-1 ring-slate-200/80">
+                        <x-brand-logo class="h-8 w-auto" />
+                    </div>
                 </a>
                 <p class="mt-2 text-sm text-slate-500">{{ __('Manage. Communicate. Grow.') }}</p>
             </div>
