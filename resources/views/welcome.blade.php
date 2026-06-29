@@ -499,10 +499,10 @@
                         class="mt-8 inline-flex items-center rounded-full border border-slate-200 bg-white p-1 shadow-sm">
                         <button type="button" @click="billing = 'monthly'"
                             :class="billing === 'monthly' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
-                            class="rounded-full px-6 py-3 text-base font-semibold transition">{{ __('Monthly') }}</button>
+                            class="cursor-pointer rounded-full px-6 py-3 text-base font-semibold transition">{{ __('Monthly') }}</button>
                         <button type="button" @click="billing = 'annual'"
                             :class="billing === 'annual' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
-                            class="rounded-full px-6 py-3 text-base font-semibold transition">{{ __('Annual') }} <span
+                            class="cursor-pointer rounded-full px-6 py-3 text-base font-semibold transition">{{ __('Annual') }} <span
                                 class="text-kirada-green">-20%</span></button>
                     </div>
                 </div>
