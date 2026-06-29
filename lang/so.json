@@ -712,5 +712,8 @@
   "Your rent, lease, maintenance, and documents at a glance.": "Kiradaada, kiritaanka, dayactirka, iyo dukumeentiyadaada isla eeg.",
   "Your signature is requested": "Saxiixaaga ayaa loo baahan yahay",
   "You will be able to read the full contract and draw your signature. Your electronic signature is legally binding once submitted.": "Waxaad awoodi doontaa inaad akhrido heshiiska oo dhan oo aad samayso saxiixaaga. Saxiixaaga dijitaalku waa mid sharciga la xiriira marka la gudbiyo.",
-  "You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.": "Waxaa laguu weydiin doonaa pin amni ah oo hal-abuure ah marka aad gasho, kaas oo aad ka heli karto codsiga TOTP-ga ee telefoonkaaga."
+  "You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.": "Waxaa laguu weydiin doonaa pin amni ah oo hal-abuure ah marka aad gasho, kaas oo aad ka heli karto codsiga TOTP-ga ee telefoonkaaga.",
+  "Don't have an account?": "Ma haysata xisaab?",
+  "You don't have a subscription yet. Start your 30-day free trial to explore Kirada.": "Wali iska jadwallin. Bilow tijaabada bilaashka ah ee 30-maalmo ah si aad u baarto Kirada.",
+  "You've been invited to join Kirada as a tenant.": "Waxaa casuumay inaad ku biirto Kirada iyada oo ah kirayste."
 }

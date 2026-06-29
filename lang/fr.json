@@ -712,5 +712,8 @@
   "Your rent, lease, maintenance, and documents at a glance.": "Votre loyer, bail, maintenance et documents en un coup d'œil.",
   "Your signature is requested": "Votre signature est demandée",
   "You will be able to read the full contract and draw your signature. Your electronic signature is legally binding once submitted.": "Vous pourrez lire le contrat complet et dessiner votre signature. Votre signature électronique a une valeur juridique contraignante une fois soumise.",
-  "You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.": "Un code PIN aléatoire et sécurisé vous sera demandé lors de la connexion, que vous pourrez récupérer dans l'application compatible TOTP sur votre téléphone."
+  "You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.": "Un code PIN aléatoire et sécurisé vous sera demandé lors de la connexion, que vous pourrez récupérer dans l'application compatible TOTP sur votre téléphone.",
+  "Don't have an account?": "Vous n'avez pas de compte ?",
+  "You don't have a subscription yet. Start your 30-day free trial to explore Kirada.": "Vous n'avez pas encore d'abonnement. Commencez votre essai gratuit de 30 jours pour explorer Kirada.",
+  "You've been invited to join Kirada as a tenant.": "Vous avez été invité à rejoindre Kirada en tant que locataire."
 }
