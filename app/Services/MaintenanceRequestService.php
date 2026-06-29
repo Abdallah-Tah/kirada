@@ -2,11 +2,16 @@
 
 namespace App\Services;
 
+use App\Models\MaintenanceAttachment;
 use App\Models\MaintenanceComment;
 use App\Models\MaintenanceRequest;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Notifications\MaintenanceCommentAdded;
+use App\Notifications\MaintenanceRequestCreated;
+use App\Notifications\MaintenanceStatusChanged;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\UploadedFile;
 
 class MaintenanceRequestService
 {
@@ -17,7 +22,7 @@ class MaintenanceRequestService
     public function createRequest(array $data, User $reporter): MaintenanceRequest
     {
         // If tenant is creating, resolve landlord from property
-        if ($reporter->hasRole('tenant') && !isset($data['landlord_id'])) {
+        if ($reporter->hasRole('tenant') && ! isset($data['landlord_id'])) {
             $tenant = Tenant::where('user_id', $reporter->id)->first();
             if ($tenant) {
                 $data['tenant_id'] = $tenant->id;
@@ -26,17 +31,23 @@ class MaintenanceRequestService
         }
 
         // If landlord is creating for a tenant
-        if ($reporter->hasRole('landlord') && !isset($data['landlord_id'])) {
+        if ($reporter->hasRole('landlord') && ! isset($data['landlord_id'])) {
             $data['landlord_id'] = $reporter->id;
         }
 
         $data['reported_by'] = $reporter->id;
 
-        if (!isset($data['status'])) {
+        if (! isset($data['status'])) {
             $data['status'] = 'open';
         }
 
-        return MaintenanceRequest::create($data);
+        $request = MaintenanceRequest::create($data);
+
+        if ($request->landlord && $request->landlord->isNot($reporter)) {
+            $request->landlord->notify(new MaintenanceRequestCreated($request));
+        }
+
+        return $request;
     }
 
     /**
@@ -46,7 +57,7 @@ class MaintenanceRequestService
     {
         $assignee = User::findOrFail($assigneeId);
 
-        if (!$assignee->hasRole('maintenance')) {
+        if (! $assignee->hasRole('maintenance')) {
             throw new \DomainException('Can only assign to users with the maintenance role.');
         }
 
@@ -55,7 +66,10 @@ class MaintenanceRequestService
             'status' => 'in_progress',
         ]);
 
-        return $request->fresh();
+        $fresh = $request->fresh(['reporter', 'tenant.user', 'landlord']);
+        $this->notifyStatusChanged($fresh, 'in_progress');
+
+        return $fresh;
     }
 
     /**
@@ -65,7 +79,7 @@ class MaintenanceRequestService
     {
         $allowed = $this->getAllowedTransitions($request->status);
 
-        if (!in_array($newStatus, $allowed)) {
+        if (! in_array($newStatus, $allowed)) {
             throw new \DomainException(
                 "Cannot transition from '{$request->status}' to '{$newStatus}'."
             );
@@ -88,7 +102,10 @@ class MaintenanceRequestService
 
         $request->update($updates);
 
-        return $request->fresh();
+        $fresh = $request->fresh(['reporter', 'tenant.user', 'landlord']);
+        $this->notifyStatusChanged($fresh, $newStatus);
+
+        return $fresh;
     }
 
     /**
@@ -97,12 +114,12 @@ class MaintenanceRequestService
     public function getAllowedTransitions(string $currentStatus): array
     {
         return match ($currentStatus) {
-            'open'        => ['in_progress', 'cancelled'],
+            'open' => ['in_progress', 'cancelled'],
             'in_progress' => ['resolved', 'cancelled'],
-            'resolved'    => ['closed', 'in_progress'],
-            'closed'      => ['in_progress'],
-            'cancelled'   => ['open'],
-            default       => [],
+            'resolved' => ['closed', 'in_progress'],
+            'closed' => ['in_progress'],
+            'cancelled' => ['open'],
+            default => [],
         };
     }
 
@@ -112,16 +129,59 @@ class MaintenanceRequestService
     public function addComment(MaintenanceRequest $request, User $user, string $comment, bool $isInternal = false): MaintenanceComment
     {
         // Only admin/landlord can add internal comments
-        if ($isInternal && !$user->hasRole('admin') && $request->landlord_id !== $user->id) {
+        if ($isInternal && ! $user->hasRole('admin') && $request->landlord_id !== $user->id) {
             $isInternal = false;
         }
 
-        return MaintenanceComment::create([
+        $maintenanceComment = MaintenanceComment::create([
             'maintenance_request_id' => $request->id,
-            'user_id'                => $user->id,
-            'comment'                => $comment,
-            'is_internal'            => $isInternal,
+            'user_id' => $user->id,
+            'comment' => $comment,
+            'is_internal' => $isInternal,
         ]);
+
+        $this->notifyCommentAdded($request->fresh(['landlord', 'tenant.user', 'assignee', 'reporter']), $maintenanceComment, $user);
+
+        return $maintenanceComment;
+    }
+
+    /**
+     * Store photos/files attached to either the original request or a comment.
+     *
+     * @param  iterable<UploadedFile>  $files
+     */
+    public function storeAttachments(
+        MaintenanceRequest $request,
+        User $user,
+        iterable $files,
+        ?MaintenanceComment $comment = null,
+        string $kind = 'initial',
+        bool $isInternal = false,
+    ): void {
+        if ($isInternal && ! $user->hasRole('admin') && $request->landlord_id !== $user->id) {
+            $isInternal = false;
+        }
+
+        foreach ($files as $file) {
+            if (! $file instanceof UploadedFile) {
+                continue;
+            }
+
+            $path = $file->store('maintenance-attachments', 'private');
+
+            MaintenanceAttachment::create([
+                'maintenance_request_id' => $request->id,
+                'maintenance_comment_id' => $comment?->id,
+                'uploaded_by' => $user->id,
+                'disk' => 'private',
+                'path' => $path,
+                'original_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize() ?: 0,
+                'kind' => $kind,
+                'is_internal' => $isInternal,
+            ]);
+        }
     }
 
     /**
@@ -131,10 +191,12 @@ class MaintenanceRequestService
     public function getVisibleComments(MaintenanceRequest $request, User $user): Collection
     {
         if ($user->hasRole('admin') || $request->landlord_id === $user->id) {
-            return $request->comments()->with('user:id,name')->get();
+            return $request->comments()->with(['user:id,name', 'attachments'])->get();
         }
 
-        return $request->publicComments()->with('user:id,name')->get();
+        return $request->publicComments()
+            ->with(['user:id,name', 'attachments' => fn ($query) => $query->where('is_internal', false)])
+            ->get();
     }
 
     /**
@@ -145,5 +207,44 @@ class MaintenanceRequestService
         // For now, all maintenance users are available
         // Future: scope by landlord or property assignment
         return User::role('maintenance')->select('id', 'name')->orderBy('name')->get();
+    }
+
+    private function notifyStatusChanged(MaintenanceRequest $request, string $status): void
+    {
+        foreach ($this->notificationRecipients($request) as $recipient) {
+            $recipient->notify(new MaintenanceStatusChanged($request, $status));
+        }
+    }
+
+    private function notifyCommentAdded(MaintenanceRequest $request, MaintenanceComment $comment, User $author): void
+    {
+        foreach ($this->notificationRecipients($request, $author) as $recipient) {
+            if ($comment->is_internal && ! $recipient->hasRole('admin') && $request->landlord_id !== $recipient->id) {
+                continue;
+            }
+
+            $recipient->notify(new MaintenanceCommentAdded($request, $comment));
+        }
+    }
+
+    /**
+     * @return array<int, User>
+     */
+    private function notificationRecipients(MaintenanceRequest $request, ?User $except = null): array
+    {
+        $users = collect([
+            $request->landlord,
+            $request->tenant?->user,
+            $request->assignee,
+            $request->reporter,
+        ])
+            ->filter()
+            ->unique('id');
+
+        if ($except) {
+            $users = $users->reject(fn (User $user) => $user->is($except));
+        }
+
+        return $users->values()->all();
     }
 }

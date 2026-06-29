@@ -1,42 +1,43 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Livewire\Subscriptions\Status as SubscriptionStatus;
-use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\MaintenanceAttachmentController;
+use App\Livewire\AiAssistant\Index as AiAssistantIndex;
 use App\Livewire\Contracts\Create as ContractCreate;
 use App\Livewire\Contracts\Index as ContractIndex;
 use App\Livewire\Contracts\Show as ContractShow;
 use App\Livewire\Contracts\Sign as ContractSign;
 use App\Livewire\Documents\Create as DocumentCreate;
 use App\Livewire\Documents\Index as DocumentIndex;
-use App\Livewire\Properties\Create as PropertyCreate;
-use App\Livewire\Properties\Edit as PropertyEdit;
-use App\Livewire\Properties\Index as PropertyIndex;
-use App\Livewire\RentPayments\Create as RentPaymentCreate;
-use App\Livewire\RentPayments\Edit as RentPaymentEdit;
-use App\Livewire\RentPayments\Index as RentPaymentIndex;
-use App\Livewire\TenantInvitations\Accept as TenantInvitationAccept;
-use App\Livewire\TenantInvitations\Index as TenantInvitationIndex;
+use App\Livewire\Leases\Create as LeaseCreate;
+use App\Livewire\Leases\Edit as LeaseEdit;
+use App\Livewire\Leases\Index as LeaseIndex;
 use App\Livewire\MaintenanceRequests\Create as MaintenanceRequestCreate;
 use App\Livewire\MaintenanceRequests\Index as MaintenanceRequestIndex;
 use App\Livewire\MaintenanceRequests\Show as MaintenanceRequestShow;
 use App\Livewire\Messages\Index as MessageIndex;
 use App\Livewire\Messages\Show as MessageShow;
+use App\Livewire\Properties\Create as PropertyCreate;
+use App\Livewire\Properties\Edit as PropertyEdit;
+use App\Livewire\Properties\Index as PropertyIndex;
 use App\Livewire\RentInvoices\Create as RentInvoiceCreate;
 use App\Livewire\RentInvoices\Edit as RentInvoiceEdit;
 use App\Livewire\RentInvoices\Index as RentInvoiceIndex;
-use App\Livewire\Leases\Create as LeaseCreate;
-use App\Livewire\Leases\Edit as LeaseEdit;
-use App\Livewire\Leases\Index as LeaseIndex;
+use App\Livewire\RentPayments\Create as RentPaymentCreate;
+use App\Livewire\RentPayments\Edit as RentPaymentEdit;
+use App\Livewire\RentPayments\Index as RentPaymentIndex;
+use App\Livewire\Subscriptions\Status as SubscriptionStatus;
+use App\Livewire\TenantInvitations\Accept as TenantInvitationAccept;
+use App\Livewire\TenantInvitations\Index as TenantInvitationIndex;
 use App\Livewire\Tenants\Create as TenantCreate;
 use App\Livewire\Tenants\Edit as TenantEdit;
 use App\Livewire\Tenants\Index as TenantIndex;
 use App\Livewire\Units\Create as UnitCreate;
 use App\Livewire\Units\Edit as UnitEdit;
 use App\Livewire\Units\Index as UnitIndex;
-use App\Livewire\AiAssistant\Index as AiAssistantIndex;
-use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -138,6 +139,8 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance']
     Route::get('/maintenance-requests', MaintenanceRequestIndex::class)->name('maintenance-requests.index');
     Route::get('/maintenance-requests/create', MaintenanceRequestCreate::class)->name('maintenance-requests.create');
     Route::get('/maintenance-requests/{maintenanceRequest}', MaintenanceRequestShow::class)->name('maintenance-requests.show');
+    Route::get('/maintenance-attachments/{attachment}', [MaintenanceAttachmentController::class, 'show'])
+        ->name('maintenance-attachments.show');
 });
 
 // Messages — admin, landlord, tenant, maintenance

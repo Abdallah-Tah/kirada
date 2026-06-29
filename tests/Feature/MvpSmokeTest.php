@@ -2,19 +2,21 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\MaintenanceRequests\Create;
 use App\Models\Conversation;
 use App\Models\Document;
 use App\Models\Lease;
+use App\Models\MaintenanceAttachment;
 use App\Models\MaintenanceRequest;
-use App\Models\Message;
 use App\Models\Property;
 use App\Models\RentInvoice;
-use App\Models\RentPayment;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\Unit;
 use App\Models\User;
+use App\Notifications\MaintenanceRequestCreated;
+use App\Services\DocumentService;
 use App\Services\LeaseService;
+use App\Services\MaintenanceRequestService;
 use App\Services\MessagingService;
 use App\Services\RentInvoiceService;
 use App\Services\RentPaymentService;
@@ -23,7 +25,9 @@ use App\Services\TenantInvitationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class MvpSmokeTest extends TestCase
@@ -31,7 +35,9 @@ class MvpSmokeTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private User $landlord;
+
     private User $maintenanceUser;
 
     protected function setUp(): void
@@ -196,6 +202,8 @@ class MvpSmokeTest extends TestCase
 
     public function test_tenant_can_create_maintenance_request()
     {
+        Notification::fake();
+
         $this->setupTenantInvitation();
 
         $tenantUser = User::where('email', 'invited@test.dj')->first();
@@ -204,7 +212,7 @@ class MvpSmokeTest extends TestCase
         $property = Property::first();
         $unit = Unit::first();
 
-        $request = app(\App\Services\MaintenanceRequestService::class)->createRequest([
+        $request = app(MaintenanceRequestService::class)->createRequest([
             'property_id' => $property->id,
             'unit_id' => $unit->id,
             'title' => 'Broken faucet',
@@ -218,6 +226,89 @@ class MvpSmokeTest extends TestCase
         $this->assertEquals($this->landlord->id, $request->landlord_id);
 
         Auth::logout();
+    }
+
+    public function test_tenant_can_create_maintenance_request_with_photo()
+    {
+        Notification::fake();
+        Storage::fake('private');
+
+        $this->setupTenantInvitation();
+
+        $tenantUser = User::where('email', 'invited@test.dj')->first();
+        $property = Property::first();
+        $unit = Unit::first();
+
+        Livewire::actingAs($tenantUser)
+            ->test(Create::class)
+            ->set('title', 'Kitchen sink is leaking')
+            ->set('description', 'Water is leaking under the sink and spreading to the cabinet.')
+            ->set('category', 'plumbing')
+            ->set('location', 'Kitchen')
+            ->set('priority', 'urgent')
+            ->set('permission_to_enter', true)
+            ->set('preferred_access_window', 'Weekdays after 4 PM')
+            ->set('photos', [UploadedFile::fake()->image('leak.jpg')])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $request = MaintenanceRequest::latest('id')->first();
+
+        $this->assertEquals($property->id, $request->property_id);
+        $this->assertEquals($unit->id, $request->unit_id);
+        $this->assertEquals('plumbing', $request->category);
+        $this->assertEquals('Kitchen', $request->location);
+        $this->assertTrue($request->permission_to_enter);
+        $this->assertEquals('Weekdays after 4 PM', $request->preferred_access_window);
+
+        $attachment = MaintenanceAttachment::first();
+
+        $this->assertNotNull($attachment);
+        $this->assertEquals($request->id, $attachment->maintenance_request_id);
+        $this->assertEquals('initial', $attachment->kind);
+        Storage::disk('private')->assertExists($attachment->path);
+        Notification::assertSentTo($this->landlord, MaintenanceRequestCreated::class);
+    }
+
+    public function test_internal_maintenance_attachment_is_hidden_from_tenant()
+    {
+        Storage::fake('private');
+
+        $this->setupTenantInvitation();
+
+        $tenant = Tenant::first();
+        $tenantUser = User::where('email', 'invited@test.dj')->first();
+        $request = app(MaintenanceRequestService::class)->createRequest([
+            'property_id' => Property::first()->id,
+            'unit_id' => Unit::first()->id,
+            'title' => 'Private photo test',
+            'description' => 'Testing internal attachment access.',
+            'priority' => 'medium',
+            'tenant_id' => $tenant->id,
+            'landlord_id' => $this->landlord->id,
+        ], $this->landlord);
+
+        Storage::disk('private')->put('maintenance-attachments/internal.jpg', 'internal-photo');
+
+        $attachment = MaintenanceAttachment::create([
+            'maintenance_request_id' => $request->id,
+            'uploaded_by' => $this->landlord->id,
+            'disk' => 'private',
+            'path' => 'maintenance-attachments/internal.jpg',
+            'original_name' => 'internal.jpg',
+            'mime_type' => 'image/jpeg',
+            'size' => 14,
+            'kind' => 'comment',
+            'is_internal' => true,
+        ]);
+
+        $this->actingAs($tenantUser)
+            ->get(route('maintenance-attachments.show', $attachment))
+            ->assertForbidden();
+
+        $this->actingAs($this->landlord)
+            ->get(route('maintenance-attachments.show', $attachment))
+            ->assertOk();
     }
 
     public function test_landlord_and_tenant_can_message()
@@ -258,7 +349,7 @@ class MvpSmokeTest extends TestCase
         Auth::login($this->landlord);
         $file = UploadedFile::fake()->create('lease.pdf', 100, 'application/pdf');
 
-        $doc = app(\App\Services\DocumentService::class)->uploadDocument([
+        $doc = app(DocumentService::class)->uploadDocument([
             'title' => 'Lease Agreement',
             'type' => 'lease_agreement',
             'tenant_id' => $tenant->id,
@@ -269,7 +360,7 @@ class MvpSmokeTest extends TestCase
         $this->assertTrue(Storage::disk('private')->exists($doc->file_path));
 
         // Download
-        $response = app(\App\Services\DocumentService::class)->downloadDocument($doc);
+        $response = app(DocumentService::class)->downloadDocument($doc);
         $this->assertNotNull($response);
 
         Auth::logout();

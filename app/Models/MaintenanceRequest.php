@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 class MaintenanceRequest extends Model
 {
@@ -22,6 +21,10 @@ class MaintenanceRequest extends Model
         'unit_id',
         'title',
         'description',
+        'category',
+        'location',
+        'permission_to_enter',
+        'preferred_access_window',
         'priority',
         'status',
         'assigned_to',
@@ -32,7 +35,8 @@ class MaintenanceRequest extends Model
 
     protected $casts = [
         'resolved_at' => 'datetime',
-        'closed_at'   => 'datetime',
+        'closed_at' => 'datetime',
+        'permission_to_enter' => 'boolean',
     ];
 
     // ── Relationships ──────────────────────────────────
@@ -80,6 +84,16 @@ class MaintenanceRequest extends Model
     public function publicComments(): HasMany
     {
         return $this->hasMany(MaintenanceComment::class)->where('is_internal', false)->latest();
+    }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(MaintenanceAttachment::class);
+    }
+
+    public function publicAttachments(): HasMany
+    {
+        return $this->hasMany(MaintenanceAttachment::class)->where('is_internal', false);
     }
 
     // ── Scopes ──────────────────────────────────────────
@@ -135,10 +149,25 @@ class MaintenanceRequest extends Model
     {
         return match ($this->priority) {
             'urgent' => 'red',
-            'high'   => 'orange',
+            'high' => 'orange',
             'medium' => 'blue',
-            'low'    => 'zinc',
-            default  => 'zinc',
+            'low' => 'zinc',
+            default => 'zinc',
+        };
+    }
+
+    public function getCategoryLabelAttribute(): string
+    {
+        return match ($this->category) {
+            'plumbing' => 'Plumbing',
+            'electrical' => 'Electrical',
+            'ac_heating' => 'AC / Heating',
+            'appliance' => 'Appliance',
+            'door_lock' => 'Door / Lock',
+            'pest' => 'Pest',
+            'cleaning' => 'Cleaning',
+            'safety' => 'Safety',
+            default => 'Other',
         };
     }
 }
