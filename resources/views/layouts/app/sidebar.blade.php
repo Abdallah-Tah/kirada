@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-[#e8f4ff] text-slate-900 antialiased">
+    <body class="min-h-screen text-slate-900 antialiased">
         <flux:sidebar sticky collapsible="true" class="kirada-sidebar">
             {{-- ── Sidebar header: toggle row above logo ── --}}
             <div class="kirada-sidebar-header">

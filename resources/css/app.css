@@ -98,32 +98,28 @@ select:focus[data-flux-control] {
     }
 
     /* ── Dark navy sidebar (sticky full-height, preserves Flux grid) ── */
-    /* The sidebar is position:sticky with height:100dvh so it stays pinned
-       while the main content scrolls. align-self:start prevents the grid
-       from stretching the sidebar to the full cell height (which would break
-       sticky). To avoid a light-blue gap showing in the grid cell below the
-       sidebar when content is tall, we paint the body's left column with the
-       same dark gradient via a fixed-position background layer. */
+    /* The sidebar is position:sticky with height:100dvh and align-self:start
+       so it pins to the viewport top while the main content scrolls.
+
+       Gap fix: The Flux grid cell for the sidebar column grows taller than
+       100dvh when page content is long. The sticky sidebar only covers 100dvh,
+       leaving the grid cell below it showing the body background. We solve
+       this by giving the body a dark left-column background that matches the
+       sidebar gradient, so the gap is invisible. The main content area has
+       its own background (.kirada-app-main) that paints over this on the
+       right side. */
     body:has(>[data-flux-sidebar]) {
         min-height: 100dvh;
+        background: linear-gradient(175deg, #0F172A 0%, #0a1d36 45%, #061220 100%) left / 16rem 100dvh no-repeat fixed;
     }
-    body:has(>[data-flux-sidebar])::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 16rem;
-        height: 100dvh;
-        background: linear-gradient(175deg, #0F172A 0%, #0a1d36 45%, #061220 100%);
-        z-index: 0;
-        pointer-events: none;
-    }
-    /* When sidebar is collapsed (w-14 = 3.5rem), shrink the background column */
-    body:has(>[data-flux-sidebar-collapsed-desktop])::before {
-        width: 3.5rem;
+    /* When sidebar is collapsed (w-14 = 3.5rem), shrink the dark column */
+    body:has(>[data-flux-sidebar-collapsed-desktop]) {
+        background-size: 3.5rem 100dvh;
     }
     @media (max-width: 1023px) {
-        body:has(>[data-flux-sidebar])::before { display: none; }
+        body:has(>[data-flux-sidebar]) {
+            background: #e8f4ff !important;
+        }
     }
     .kirada-sidebar {
         background: linear-gradient(175deg, #0F172A 0%, #0a1d36 45%, #061220 100%) !important;
