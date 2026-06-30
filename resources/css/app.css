@@ -98,6 +98,33 @@ select:focus[data-flux-control] {
     }
 
     /* ── Dark navy sidebar (sticky full-height, preserves Flux grid) ── */
+    /* The sidebar is position:sticky with height:100dvh so it stays pinned
+       while the main content scrolls. align-self:start prevents the grid
+       from stretching the sidebar to the full cell height (which would break
+       sticky). To avoid a light-blue gap showing in the grid cell below the
+       sidebar when content is tall, we paint the body's left column with the
+       same dark gradient via a fixed-position background layer. */
+    body:has(>[data-flux-sidebar]) {
+        min-height: 100dvh;
+    }
+    body:has(>[data-flux-sidebar])::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 16rem;
+        height: 100dvh;
+        background: linear-gradient(175deg, #0F172A 0%, #0a1d36 45%, #061220 100%);
+        z-index: 0;
+        pointer-events: none;
+    }
+    /* When sidebar is collapsed (w-14 = 3.5rem), shrink the background column */
+    body:has(>[data-flux-sidebar-collapsed-desktop])::before {
+        width: 3.5rem;
+    }
+    @media (max-width: 1023px) {
+        body:has(>[data-flux-sidebar])::before { display: none; }
+    }
     .kirada-sidebar {
         background: linear-gradient(175deg, #0F172A 0%, #0a1d36 45%, #061220 100%) !important;
         border-right: 1px solid rgba(14, 165, 233, 0.18);
@@ -112,6 +139,7 @@ select:focus[data-flux-control] {
         position: sticky !important;
         top: 0 !important;
         align-self: start !important;
+        z-index: 10 !important;
     }
 
     /* ── Sidebar header: toggle above logo ── */
