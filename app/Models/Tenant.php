@@ -20,6 +20,10 @@ class Tenant extends Model
         'phone',
         'email',
         'national_id',
+        'id_type',
+        'id_document_number',
+        'id_document_path',
+        'id_document_original_filename',
         'address',
         'city',
         'status',
@@ -60,5 +64,17 @@ class Tenant extends Model
     public function getFullNameAttribute(): string
     {
         return trim($this->first_name . ' ' . $this->last_name);
+    }
+
+    /**
+     * Get the ID document URL if uploaded.
+     */
+    public function getIdDocumentUrlAttribute(): ?string
+    {
+        if (!$this->id_document_path) {
+            return null;
+        }
+
+        return asset('storage/' . $this->id_document_path);
     }
 }

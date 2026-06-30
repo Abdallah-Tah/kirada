@@ -59,6 +59,18 @@
                 viewable
             />
 
+            <!-- Legal Acceptance -->
+            <div class="space-y-3">
+                <label class="flex items-start gap-3 text-sm text-slate-600">
+                    <flux:checkbox name="terms_accepted" required />
+                    <span>{{ __('I agree to the') }} <a href="{{ route('terms-of-service') }}" target="_blank" class="text-kirada-ocean underline">{{ __('Terms of Service') }}</a>.</span>
+                </label>
+                <label class="flex items-start gap-3 text-sm text-slate-600">
+                    <flux:checkbox name="privacy_accepted" required />
+                    <span>{{ __('I agree to the') }} <a href="{{ route('privacy-policy') }}" target="_blank" class="text-kirada-ocean underline">{{ __('Privacy Policy') }}</a>.</span>
+                </label>
+            </div>
+
             <div class="flex items-center justify-end">
                 <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
                     {{ __('Create account') }}

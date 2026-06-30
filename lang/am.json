@@ -715,5 +715,11 @@
   "You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.": "በመግቢያ ጊዜ ደህንነቱ የተጠበቀ የዘፈቀደ pin ይጠየቁታል፣ ይህንም ከስልክዎ TOTP የሚደገፈው መተግበሪያ ማግኘት ይችላሉ።",
   "Don't have an account?": "መለያ የለዎትም?",
   "You don't have a subscription yet. Start your 30-day free trial to explore Kirada.": "ግዢ አልተደረገም። ኪራዳን ለመመርመር የ30 ቀን ነፃ ሙከራዎን ይጀምሩ።",
-  "You've been invited to join Kirada as a tenant.": "እንደ ተከራይ ኪራዳ ለመቀላቀል ተጋብዘዋል።"
+  "You've been invited to join Kirada as a tenant.": "እንደ ተከራይ ኪራዳ ለመቀላቀል ተጋብዘዋል።",
+  "Terms": "ውይይቶች",
+  "Privacy": "ግላዊነት",
+  "How It Works": "እንዴት እንደሚሰራ",
+  "Terms of Service": "የአገልግሎት ውሎች",
+  "Privacy Policy": "የግላዊነት ፖሊሲ",
+  "Last updated": "መጨረሻ ተዘምኗል"
 }

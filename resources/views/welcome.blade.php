@@ -583,6 +583,9 @@
                 <a href="#features" class="transition hover:text-kirada-ocean">{{ __('Features') }}</a>
                 <a href="#pricing" class="transition hover:text-kirada-ocean">{{ __('Pricing') }}</a>
                 <a href="#regions" class="transition hover:text-kirada-ocean">{{ __('Regions') }}</a>
+                <a href="{{ route('how-it-works') }}" wire:navigate class="transition hover:text-kirada-ocean">{{ __('How It Works') }}</a>
+                <a href="{{ route('terms-of-service') }}" wire:navigate class="transition hover:text-kirada-ocean">{{ __('Terms') }}</a>
+                <a href="{{ route('privacy-policy') }}" wire:navigate class="transition hover:text-kirada-ocean">{{ __('Privacy') }}</a>
                 <a href="{{ route('login') }}" wire:navigate
                     class="transition hover:text-kirada-ocean">{{ __('Login') }}</a>
             </nav>

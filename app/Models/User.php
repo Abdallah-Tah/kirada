@@ -31,8 +31,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int|null $country_id
  * @property string|null $preferred_language
  * @property string|null $phone_country_code
+ * @property Carbon|null $terms_accepted_at
+ * @property Carbon|null $privacy_accepted_at
  */
-#[Fillable(['name', 'email', 'password', 'country_id', 'preferred_language', 'phone_country_code'])]
+#[Fillable(['name', 'email', 'password', 'country_id', 'preferred_language', 'phone_country_code', 'terms_accepted_at', 'privacy_accepted_at'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -49,6 +51,8 @@ class User extends Authenticatable implements PasskeyUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'terms_accepted_at' => 'datetime',
+            'privacy_accepted_at' => 'datetime',
         ];
     }
 

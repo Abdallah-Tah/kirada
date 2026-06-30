@@ -34,6 +34,7 @@
                     <th class="px-4 py-3 font-medium">{{ __('Phone') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Email') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('City') }}</th>
+                    <th class="px-4 py-3 font-medium">{{ __('ID') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Status') }}</th>
                     <th class="px-4 py-3 font-medium text-right">{{ __('Actions') }}</th>
                 </tr>
@@ -49,6 +50,13 @@
                         <td class="px-4 py-3 text-zinc-500">{{ $tenant->phone }}</td>
                         <td class="px-4 py-3 text-zinc-500">{{ $tenant->email ?? '—' }}</td>
                         <td class="px-4 py-3 text-zinc-500">{{ $tenant->city ?? '—' }}</td>
+                        <td class="px-4 py-3">
+                            @if ($tenant->id_document_path)
+                                <flux:badge color="blue" size="sm">{{ __('On file') }}</flux:badge>
+                            @else
+                                <span class="text-zinc-300">—</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3">
                             @if ($tenant->status === 'active')
                                 <flux:badge color="green" size="sm">{{ __('Active') }}</flux:badge>
@@ -78,7 +86,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-12 text-center text-zinc-500">
+                        <td colspan="7" class="px-4 py-12 text-center text-zinc-500">
                             {{ __('No tenants found.') }}
                         </td>
                     </tr>

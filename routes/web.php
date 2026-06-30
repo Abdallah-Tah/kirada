@@ -5,7 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MaintenanceAttachmentController;
-use App\Livewire\AiAssistant\Index as AiAssistantIndex;
+use App\Livewire\Reports\Index as ReportsIndex;
 use App\Livewire\Contracts\Create as ContractCreate;
 use App\Livewire\Contracts\Index as ContractIndex;
 use App\Livewire\Contracts\Show as ContractShow;
@@ -41,6 +41,11 @@ use App\Livewire\Units\Index as UnitIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+
+// Legal pages
+Route::view('/terms-of-service', 'pages.legal.terms-of-service')->name('terms-of-service');
+Route::view('/privacy-policy', 'pages.legal.privacy-policy')->name('privacy-policy');
+Route::view('/how-it-works', 'pages.legal.how-it-works')->name('how-it-works');
 
 // Language switcher (works for both guests and authenticated users)
 Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
@@ -163,7 +168,7 @@ Route::middleware(['auth', 'verified', 'role:landlord'])->group(function () {
 
 // AI Assistant — all roles (read-only, scoped by role)
 Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance'])->group(function () {
-    Route::get('/ai-assistant', AiAssistantIndex::class)->name('ai-assistant.index');
+    Route::get('/reports', ReportsIndex::class)->name('reports.index');
 });
 
 require __DIR__.'/settings.php';

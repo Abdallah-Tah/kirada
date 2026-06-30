@@ -77,27 +77,10 @@
 
                 {{-- PLANNING --}}
                 <flux:sidebar.group :heading="__('PLANNING')" class="kirada-sidebar-section">
-                    <flux:sidebar.item icon="chart-bar" href="#">
+                    <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
                         {{ __('Reports') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="sparkles" :href="route('ai-assistant.index')" :current="request()->routeIs('ai-assistant.*')" wire:navigate>
-                        {{ __('AI Assistant') }}
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
-
-                {{-- ADMIN --}}
-                <flux:sidebar.group :heading="__('ADMIN')" class="kirada-sidebar-section">
-                    <flux:sidebar.item icon="users" href="#">
-                        {{ __('Users') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
-                        {{ __('Subscriptions') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item icon="cog-6-tooth" href="#">
-                        {{ __('Settings') }}
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
-                @endhasrole
+                    @endhasrole
 
                 @hasrole('landlord')
                 {{-- MANAGEMENT --}}
@@ -141,16 +124,6 @@
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
-                {{-- PLANNING --}}
-                <flux:sidebar.group :heading="__('PLANNING')" class="kirada-sidebar-section">
-                    <flux:sidebar.item icon="chart-bar" href="#">
-                        {{ __('Reports') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item icon="sparkles" :href="route('ai-assistant.index')" :current="request()->routeIs('ai-assistant.*')" wire:navigate>
-                        {{ __('AI Assistant') }}
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
-
                 {{-- ADMIN --}}
                 <flux:sidebar.group :heading="__('ADMIN')" class="kirada-sidebar-section">
                     <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
@@ -177,9 +150,6 @@
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
                         {{ __('messages.Messages') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="sparkles" :href="route('ai-assistant.index')" :current="request()->routeIs('ai-assistant.*')" wire:navigate>
-                        {{ __('AI Assistant') }}
-                    </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole
 
@@ -191,9 +161,6 @@
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
                         {{ __('messages.Messages') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item icon="sparkles" :href="route('ai-assistant.index')" :current="request()->routeIs('ai-assistant.*')" wire:navigate>
-                        {{ __('AI Assistant') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole

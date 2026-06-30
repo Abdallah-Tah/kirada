@@ -39,6 +39,8 @@ class RegistrationTest extends TestCase
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
+            'terms_accepted' => '1',
+            'privacy_accepted' => '1',
         ]);
 
         $response->assertSessionHasNoErrors()
@@ -58,6 +60,8 @@ class RegistrationTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
             'selected_plan' => 'growth',
+            'terms_accepted' => '1',
+            'privacy_accepted' => '1',
         ]);
 
         $response->assertSessionHasNoErrors()
@@ -66,5 +70,43 @@ class RegistrationTest extends TestCase
         $this->assertAuthenticated();
         $this->assertTrue(auth()->user()->onTrial());
         $this->assertTrue(auth()->user()->subscription->plan->is($plan));
+    }
+
+    public function test_registration_requires_terms_acceptance(): void
+    {
+        $response = $this->post(route('register.store'), [
+            'name' => 'John Doe',
+            'email' => 'noterms@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertSessionHasErrors(['terms_accepted', 'privacy_accepted']);
+        $this->assertGuest();
+    }
+
+    public function test_registration_records_legal_acceptance(): void
+    {
+        $this->post(route('register.store'), [
+            'name' => 'Legal Test',
+            'email' => 'legal@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'terms_accepted' => '1',
+            'privacy_accepted' => '1',
+        ]);
+
+        $user = \App\Models\User::where('email', 'legal@example.com')->first();
+        $this->assertNotNull($user->terms_accepted_at);
+        $this->assertNotNull($user->privacy_accepted_at);
+
+        $this->assertDatabaseHas('legal_acceptances', [
+            'user_id' => $user->id,
+            'document_type' => 'terms-of-service',
+        ]);
+        $this->assertDatabaseHas('legal_acceptances', [
+            'user_id' => $user->id,
+            'document_type' => 'privacy-policy',
+        ]);
     }
 }

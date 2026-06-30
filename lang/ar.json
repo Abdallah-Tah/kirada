@@ -715,5 +715,11 @@
   "You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.": "سيُطلب منك رمز PIN آمن وعشوائي عند تسجيل الدخول، يمكنك الحصول عليه من تطبيق يدعم TOTP على هاتفك.",
   "Don't have an account?": "ليس لديك حساب؟",
   "You don't have a subscription yet. Start your 30-day free trial to explore Kirada.": "ليس لديك اشتراك بعد. ابدأ تجربتك المجانية لمدة 30 يوماً لاستكشاف كيرادا.",
-  "You've been invited to join Kirada as a tenant.": "تمت دعوتك للانضمام إلى كيرادا كمستأجر."
+  "You've been invited to join Kirada as a tenant.": "تمت دعوتك للانضمام إلى كيرادا كمستأجر.",
+  "Terms": "الشروط",
+  "Privacy": "الخصوصية",
+  "How It Works": "كيف يعمل",
+  "Terms of Service": "شروط الخدمة",
+  "Privacy Policy": "سياسة الخصوصية",
+  "Last updated": "آخر تحديث"
 }
