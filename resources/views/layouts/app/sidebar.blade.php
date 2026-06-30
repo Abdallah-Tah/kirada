@@ -80,7 +80,8 @@
                     <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
                         {{ __('Reports') }}
                     </flux:sidebar.item>
-                    @endhasrole
+                </flux:sidebar.group>
+                @endhasrole
 
                 @hasrole('landlord')
                 {{-- MANAGEMENT --}}
@@ -121,6 +122,13 @@
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+                {{-- PLANNING --}}
+                <flux:sidebar.group :heading="__('PLANNING')" class="kirada-sidebar-section">
+                    <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
+                        {{ __('Reports') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
