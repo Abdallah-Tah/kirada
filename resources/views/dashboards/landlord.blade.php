@@ -178,6 +178,52 @@
             </div>
         </div>
 
+        {{-- ─── Rent collection summary ──────────────────────────────────── --}}
+        @if($rent_due_this_month > 0 || $overdue_invoices->isNotEmpty())
+        <div class="grid gap-4 lg:grid-cols-2 kirada-reveal">
+
+            {{-- Due this month --}}
+            <div class="kirada-card">
+                <div class="mb-4 flex items-center justify-between">
+                    <h3 class="font-semibold text-kirada-navy">{{ __('Rent Due This Month') }}</h3>
+                    <a href="{{ route('rent-invoices.index') }}" wire:navigate class="text-xs font-semibold text-kirada-ocean transition hover:text-kirada-navy">{{ __('View all →') }}</a>
+                </div>
+                <p class="text-3xl font-bold text-kirada-navy">{{ number_format($rent_due_this_month, 0) }} <span class="text-base font-medium text-slate-400">DJF</span></p>
+                @if($upcoming_invoices->isNotEmpty())
+                <div class="mt-4 divide-y divide-slate-100">
+                    @foreach($upcoming_invoices as $inv)
+                    <div class="flex items-center justify-between gap-4 py-2.5 text-sm">
+                        <span class="font-medium text-slate-800">{{ $inv->tenant?->first_name }} {{ $inv->tenant?->last_name }}</span>
+                        <span class="text-xs text-slate-500">{{ number_format($inv->amount, 0) }} DJF — due {{ $inv->due_date->format('d/m') }}</span>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+
+            {{-- Delinquency list --}}
+            <div class="kirada-card">
+                <div class="mb-4 flex items-center justify-between">
+                    <h3 class="font-semibold text-red-600">{{ __('Overdue Invoices') }}</h3>
+                    <span class="rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-bold text-red-600">{{ $overdue_invoices->count() }}</span>
+                </div>
+                @if($overdue_invoices->isNotEmpty())
+                <div class="divide-y divide-slate-100">
+                    @foreach($overdue_invoices as $inv)
+                    <div class="flex items-center justify-between gap-4 py-2.5 text-sm">
+                        <span class="font-medium text-slate-800">{{ $inv->tenant?->first_name }} {{ $inv->tenant?->last_name }}</span>
+                        <span class="text-xs font-semibold text-red-500">{{ number_format($inv->amount, 0) }} DJF — {{ $inv->due_date->diffForHumans() }}</span>
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                <p class="text-sm text-kirada-green font-medium">{{ __('No overdue invoices. Great job!') }}</p>
+                @endif
+            </div>
+
+        </div>
+        @endif
+
         {{-- ─── Recent activity ─────────────────────────────────────────────── --}}
         @if($recent_leases->isNotEmpty() || $recent_payments->isNotEmpty())
         <div class="grid gap-4 lg:grid-cols-2 kirada-reveal kirada-reveal-delay-4">

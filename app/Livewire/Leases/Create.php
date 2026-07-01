@@ -22,19 +22,36 @@ class Create extends Component
     public string $status = 'active';
     public ?string $notes = null;
 
+    // Billing settings
+    public bool $auto_generate_invoices = true;
+    public int $invoice_generation_days_before_due = 7;
+    public int $grace_period_days = 5;
+    public string $late_fee_type = 'none';
+    public ?string $late_fee_amount = null;
+    public string $late_fee_frequency = 'once';
+    public array $reminder_keys = ['before_due_7', 'before_due_3', 'before_due_1', 'overdue_1'];
+
     protected function rules(): array
     {
         return [
-            'property_id'     => 'required|exists:properties,id',
-            'unit_id'         => 'required|exists:units,id',
-            'tenant_id'       => 'required|exists:tenants,id',
-            'start_date'      => 'required|date',
-            'end_date'        => 'nullable|date|after_or_equal:start_date',
-            'monthly_rent'    => 'required|numeric|min:0|max:99999999',
-            'security_deposit'=> 'nullable|numeric|min:0|max:99999999',
-            'payment_due_day' => 'required|integer|min:1|max:28',
-            'status'          => 'required|in:active,ended,cancelled',
-            'notes'           => 'nullable|string|max:2000',
+            'property_id'                        => 'required|exists:properties,id',
+            'unit_id'                            => 'required|exists:units,id',
+            'tenant_id'                          => 'required|exists:tenants,id',
+            'start_date'                         => 'required|date',
+            'end_date'                           => 'nullable|date|after_or_equal:start_date',
+            'monthly_rent'                       => 'required|numeric|min:0|max:99999999',
+            'security_deposit'                   => 'nullable|numeric|min:0|max:99999999',
+            'payment_due_day'                    => 'required|integer|min:1|max:28',
+            'status'                             => 'required|in:active,ended,cancelled',
+            'notes'                              => 'nullable|string|max:2000',
+            'auto_generate_invoices'             => 'boolean',
+            'invoice_generation_days_before_due' => 'required|integer|min:1|max:30',
+            'grace_period_days'                  => 'required|integer|min:0|max:30',
+            'late_fee_type'                      => 'required|in:none,fixed,percentage',
+            'late_fee_amount'                    => 'nullable|numeric|min:0|max:99999',
+            'late_fee_frequency'                 => 'required|in:once,weekly,monthly',
+            'reminder_keys'                      => 'array',
+            'reminder_keys.*'                    => 'string',
         ];
     }
 
@@ -129,9 +146,10 @@ class Create extends Component
 
         app(LeaseService::class)->createLease([
             ...$validated,
-            'landlord_id' => auth()->user()->hasRole('admin')
+            'landlord_id'       => auth()->user()->hasRole('admin')
                 ? Property::find($validated['property_id'])->landlord_id
                 : auth()->id(),
+            'reminder_schedule' => $this->reminder_keys ?: null,
         ]);
 
         \Flux\Flux::toast('Lease created successfully. Unit marked as occupied.', 'success');

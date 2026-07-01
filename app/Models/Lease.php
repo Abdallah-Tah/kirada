@@ -25,14 +25,34 @@ class Lease extends Model
         'payment_due_day',
         'status',
         'notes',
+        'auto_generate_invoices',
+        'invoice_generation_days_before_due',
+        'grace_period_days',
+        'late_fee_type',
+        'late_fee_amount',
+        'late_fee_frequency',
+        'reminder_schedule',
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'monthly_rent' => 'float',
-        'security_deposit' => 'float',
-        'payment_due_day' => 'integer',
+        'start_date'                         => 'date',
+        'end_date'                           => 'date',
+        'monthly_rent'                       => 'float',
+        'security_deposit'                   => 'float',
+        'payment_due_day'                    => 'integer',
+        'auto_generate_invoices'             => 'boolean',
+        'invoice_generation_days_before_due' => 'integer',
+        'grace_period_days'                  => 'integer',
+        'late_fee_amount'                    => 'float',
+        'reminder_schedule'                  => 'array',
+    ];
+
+    protected $attributes = [
+        'auto_generate_invoices'             => true,
+        'invoice_generation_days_before_due' => 7,
+        'grace_period_days'                  => 5,
+        'late_fee_type'                      => 'none',
+        'late_fee_frequency'                 => 'once',
     ];
 
     // ── Relationships ──────────────────────────────────

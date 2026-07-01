@@ -33,6 +33,25 @@
             </div>
         @endif
 
+        {{-- Overdue alert --}}
+        @if($overdue_amount > 0)
+        <div class="mt-4 flex items-center gap-4 rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
+            <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600">
+                <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                </svg>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm font-semibold text-red-700">{{ __('Overdue balance: :amount DJF', ['amount' => number_format($overdue_amount, 0)]) }}</p>
+                <p class="mt-0.5 text-xs text-red-500">{{ __('Please settle your outstanding rent as soon as possible.') }}</p>
+            </div>
+            <a href="{{ route('rent-invoices.index') }}" wire:navigate
+                class="shrink-0 rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-red-700">
+                {{ __('View') }}
+            </a>
+        </div>
+        @endif
+
         <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 kirada-reveal kirada-reveal-delay-1">
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Current Invoice') }}</p>
@@ -45,16 +64,18 @@
                 </p>
             </div>
             <div class="kirada-stat-card">
+                <p class="kirada-stat-label">{{ __('Next Due Date') }}</p>
+                <p class="kirada-stat-value text-kirada-ocean text-base font-semibold">
+                    {{ $next_due_date ? $next_due_date->format('d M Y') : '—' }}
+                </p>
+            </div>
+            <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Payments Made') }}</p>
                 <p class="kirada-stat-value">{{ $payment_history_count }}</p>
             </div>
             <div class="kirada-stat-card">
                 <p class="kirada-stat-label">{{ __('Open Maintenance') }}</p>
                 <p class="kirada-stat-value text-kirada-ocean">{{ $open_maintenance }}</p>
-            </div>
-            <div class="kirada-stat-card">
-                <p class="kirada-stat-label">{{ __('Documents') }}</p>
-                <p class="kirada-stat-value">{{ $documents_count }}</p>
             </div>
         </div>
 

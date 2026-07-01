@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 class RentInvoice extends Model
 {
@@ -25,12 +25,18 @@ class RentInvoice extends Model
         'amount',
         'status',
         'notes',
+        'is_auto_generated',
+        'sent_at',
+        'reminders_sent',
     ];
 
     protected $casts = [
-        'invoice_month' => 'date',
-        'due_date' => 'date',
-        'amount' => 'float',
+        'invoice_month'     => 'date',
+        'due_date'          => 'date',
+        'amount'            => 'float',
+        'is_auto_generated' => 'boolean',
+        'sent_at'           => 'datetime',
+        'reminders_sent'    => 'array',
     ];
 
     // ── Relationships ──────────────────────────────────
@@ -60,6 +66,11 @@ class RentInvoice extends Model
         return $this->belongsTo(Tenant::class);
     }
 
+    public function lineItems(): HasMany
+    {
+        return $this->hasMany(RentInvoiceLineItem::class);
+    }
+
     // ── Scopes ──────────────────────────────────────────
 
     public function scopeForLandlord(Builder $query, int $landlordId): Builder
@@ -77,6 +88,11 @@ class RentInvoice extends Model
         return $query->where('status', 'overdue');
     }
 
+    public function scopeActionable(Builder $query): Builder
+    {
+        return $query->whereIn('status', ['unpaid', 'partially_paid', 'overdue', 'sent']);
+    }
+
     // ── Helpers ─────────────────────────────────────────
 
     public function isPaid(): bool
@@ -92,6 +108,33 @@ class RentInvoice extends Model
     public function isDraft(): bool
     {
         return $this->status === 'draft';
+    }
+
+    public function isActionable(): bool
+    {
+        return \in_array($this->status, ['unpaid', 'partially_paid', 'overdue', 'sent'], true);
+    }
+
+    public function reminderWasSent(string $key): bool
+    {
+        return isset(($this->reminders_sent ?? [])[$key]);
+    }
+
+    public function markReminderSent(string $key): void
+    {
+        $sent = $this->reminders_sent ?? [];
+        $sent[$key] = now()->toDateString();
+        $this->update(['reminders_sent' => $sent]);
+    }
+
+    public function lateFeeTotal(): float
+    {
+        return (float) $this->lineItems()->where('type', 'late_fee')->sum('amount');
+    }
+
+    public function totalDue(): float
+    {
+        return $this->amount + $this->lateFeeTotal();
     }
 
     public function getFormattedAmountAttribute(): string
