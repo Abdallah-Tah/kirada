@@ -68,7 +68,7 @@
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        {{ __('messages.Messages') }}
+                        Messages
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
@@ -118,7 +118,7 @@
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        {{ __('messages.Messages') }}
+                        Messages
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
@@ -137,7 +137,7 @@
                     <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
                         {{ __('Subscription') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="cog-6-tooth" href="#">
+                    <flux:sidebar.item icon="cog-6-tooth" :href="route('profile.edit')" :current="request()->routeIs('profile.edit', 'security.edit', 'appearance.edit')" wire:navigate>
                         {{ __('Settings') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
@@ -146,7 +146,7 @@
                 @hasrole('tenant')
                 {{-- MAIN --}}
                 <flux:sidebar.group :heading="__('MY ACCOUNT')" class="kirada-sidebar-section">
-                    <flux:sidebar.item icon="receipt-percent" href="#" wire:navigate>
+                    <flux:sidebar.item icon="receipt-percent" :href="route('rent-invoices.index')" :current="request()->routeIs('rent-invoices.*')" wire:navigate>
                         {{ __('My Rent') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
@@ -156,7 +156,7 @@
                         {{ __('Documents') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        {{ __('messages.Messages') }}
+                        Messages
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole
@@ -168,7 +168,7 @@
                         {{ __('Assigned Requests') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        {{ __('messages.Messages') }}
+                        Messages
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole

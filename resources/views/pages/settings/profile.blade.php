@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -15,8 +16,6 @@ new #[Title('Profile settings')] class extends Component {
 
     public string $name = '';
     public string $email = '';
-    public bool $hasUnverifiedEmail = false;
-    public bool $showDeleteUser = true;
 
     /**
      * Mount the component.
@@ -25,9 +24,8 @@ new #[Title('Profile settings')] class extends Component {
     {
         $user = Auth::user();
 
-        $this->name = $user->name;
+        $this->name  = $user->name;
         $this->email = $user->email;
-        $this->syncVerificationState();
     }
 
     /**
@@ -46,8 +44,6 @@ new #[Title('Profile settings')] class extends Component {
         }
 
         $user->save();
-
-        $this->syncVerificationState();
 
         Flux::toast(variant: 'success', text: __('Profile updated.'));
     }
@@ -71,12 +67,18 @@ new #[Title('Profile settings')] class extends Component {
         Session::flash('status', 'verification-link-sent');
     }
 
-    protected function syncVerificationState(): void
+    #[Computed]
+    public function hasUnverifiedEmail(): bool
     {
         $user = Auth::user();
+        return $user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail();
+    }
 
-        $this->hasUnverifiedEmail = $user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail();
-        $this->showDeleteUser = ! ($user instanceof MustVerifyEmail) || $user->hasVerifiedEmail();
+    #[Computed]
+    public function showDeleteUser(): bool
+    {
+        $user = Auth::user();
+        return ! ($user instanceof MustVerifyEmail) || $user->hasVerifiedEmail();
     }
     /* @end-chisel-email-verification */
 }; ?>
