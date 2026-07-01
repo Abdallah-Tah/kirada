@@ -132,10 +132,19 @@ select:focus[data-flux-control] {
         overflow: hidden !important;
         display: flex !important;
         flex-direction: column !important;
-        position: sticky !important;
-        top: 0 !important;
-        align-self: start !important;
-        z-index: 10 !important;
+    }
+    /* Desktop only: pin the sidebar as a sticky in-flow column.
+       On mobile Flux renders it as a fixed off-canvas drawer and collapses
+       the layout to a single column. We must NOT force position/align here,
+       or the sidebar stays in the grid as a ~16rem column and squeezes the
+       main content into a narrow, overflowing strip. */
+    @media (min-width: 1024px) {
+        .kirada-sidebar {
+            position: sticky !important;
+            top: 0 !important;
+            align-self: start !important;
+            z-index: 10 !important;
+        }
     }
 
     /* ── Sidebar header: toggle above logo ── */
