@@ -177,7 +177,10 @@
                         class="kirada-liquid-glass flex items-center justify-between gap-5 rounded-[1.4rem] px-4 py-3 sm:px-5">
                         <a href="{{ route('home') }}" class="flex items-center" wire:navigate>
                             <div class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-lg shadow-slate-950/10 ring-1 ring-white/30 backdrop-blur-sm">
-                                <x-brand-logo class="h-8 w-auto" />
+                                <img src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627"
+                                     alt="Kirada"
+                                     class="h-6 w-auto sm:h-8"
+                                     decoding="async">
                             </div>
                         </a>
 
@@ -189,16 +192,15 @@
                         </nav>
 
                         <div class="flex items-center gap-2 sm:gap-3">
-                            <div
-                                class="hidden sm:block [&_button]:border-white/15 [&_button]:bg-white/10 [&_button]:text-white [&_button:hover]:bg-white/16 [&_button_svg]:text-white/80">
+                            <div class="[&_button]:border-white/15 [&_button]:bg-white/10 [&_button]:text-white [&_button:hover]:bg-white/16 [&_button_svg]:text-white/80">
                                 <x-language-switcher />
                             </div>
                             <a href="{{ route('login') }}" wire:navigate
-                                class="hidden text-sm font-medium text-white/78 transition hover:text-white md:inline-flex">
+                                class="text-sm font-medium text-white/78 transition hover:text-white">
                                 {{ __('Log in') }}
                             </a>
                             <a href="{{ route('register') }}" wire:navigate
-                                class="inline-flex items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0EA5E9,#10B981)] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_38px_rgba(14,165,233,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_46px_rgba(14,165,233,0.34)]">
+                                class="inline-flex items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0EA5E9,#10B981)] px-3 py-2 text-xs font-semibold text-white shadow-[0_14px_38px_rgba(14,165,233,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_46px_rgba(14,165,233,0.34)] sm:px-4 sm:py-2.5 sm:text-sm">
                                 {{ __('Start Free Trial') }}
                             </a>
                         </div>
