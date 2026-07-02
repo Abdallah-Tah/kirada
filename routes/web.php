@@ -117,9 +117,13 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
 // Public contract signing (token-based, no auth — like a DocuSign signing link)
 Route::get('/sign/{token}', ContractSign::class)->name('contracts.sign');
 
-// Rent Invoices — admin + landlord only
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+// Rent Invoices — list is shared with tenants ("My Rent", scoped in the
+// component); create/edit stay admin + landlord only.
+Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant'])->group(function () {
     Route::get('/rent-invoices', RentInvoiceIndex::class)->name('rent-invoices.index');
+});
+
+Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
     Route::get('/rent-invoices/create', RentInvoiceCreate::class)->name('rent-invoices.create');
     Route::get('/rent-invoices/{rentInvoice}/edit', RentInvoiceEdit::class)->name('rent-invoices.edit');
 });
@@ -166,8 +170,8 @@ Route::middleware(['auth', 'verified', 'role:landlord'])->group(function () {
     Route::get('/subscription', SubscriptionStatus::class)->name('subscription.status');
 });
 
-// AI Assistant — all roles (read-only, scoped by role)
-Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance'])->group(function () {
+// Reports — admin + landlord only
+Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
     Route::get('/reports', ReportsIndex::class)->name('reports.index');
 });
 
