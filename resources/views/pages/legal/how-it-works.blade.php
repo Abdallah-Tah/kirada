@@ -38,7 +38,7 @@
                 <li>{{ __('Maintenance workflow — request → assign → track → resolve') }}</li>
                 <li>{{ __('Digital contracts — create, send, e-sign, archive PDF') }}</li>
                 <li>{{ __('Messaging — communicate with tenants in the app') }}</li>
-                <li>{{ __('AI assistant — ask property management questions') }}</li>
+                <li>{{ __('Reports — financial summary, occupancy, and collection insights') }}</li>
             </ul>
         </section>
 
@@ -191,7 +191,6 @@
         <section>
             <h2 class="text-xl font-semibold text-slate-900">{{ __('Need Help?') }}</h2>
             <ul class="mt-2 list-disc pl-6 space-y-1">
-                <li>{{ __('In-app AI assistant — ask questions about using Kirada') }}</li>
                 <li>{{ __('In-app messaging — contact your landlord or tenant') }}</li>
                 <li>{{ __('Email support') }}: <a href="mailto:buildwithabdallah@gmail.com" class="text-kirada-ocean underline">buildwithabdallah@gmail.com</a></li>
             </ul>

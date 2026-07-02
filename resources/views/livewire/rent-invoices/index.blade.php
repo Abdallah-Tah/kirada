@@ -25,6 +25,7 @@
 
         <flux:spacer />
 
+        @hasanyrole('admin|landlord')
         <flux:button wire:click="markOverdue" data-confirm="{{ __('Mark all overdue unpaid invoices as overdue?') }}" variant="ghost" icon="clock">
             {{ __('Mark Overdue') }}
         </flux:button>
@@ -32,6 +33,7 @@
         <flux:button :href="route('rent-invoices.create')" wire:navigate variant="primary" icon="plus">
             {{ __('New Invoice') }}
         </flux:button>
+        @endhasanyrole
     </div>
 
     <div class="kirada-table-card mt-4">
@@ -77,6 +79,7 @@
                             </flux:badge>
                         </td>
                         <td class="px-4 py-3 text-right">
+                            @hasanyrole('admin|landlord')
                             <flux:dropdown align="end">
                                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />
                                 <flux:menu>
@@ -94,6 +97,7 @@
                                     </flux:menu.item>
                                 </flux:menu>
                             </flux:dropdown>
+                            @endhasanyrole
                         </td>
                     </tr>
                 @empty

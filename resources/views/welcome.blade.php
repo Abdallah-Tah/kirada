@@ -57,8 +57,8 @@
                 'tone' => 'green',
             ],
             [
-                'title' => 'AI Assistant',
-                'desc' => 'Ask questions about tenants, rent, properties, and maintenance instantly.',
+                'title' => 'Reports & Analytics',
+                'desc' => 'Financial summaries, occupancy, and collection insights at a glance.',
                 'tone' => 'purple',
             ],
             [
@@ -85,7 +85,7 @@
             'Private Storage',
             'Role-Based Access',
             'Digital Contracts',
-            'AI Assistant',
+            'Reports & Analytics',
             'Multi-Currency',
             'Multi-Language',
             'PWA Support',
@@ -139,10 +139,10 @@
                 'features' => [
                     'Unlimited units',
                     'Everything in Growth',
-                    'AI assistant & insights',
                     'Reports & analytics',
                     'Multi-country & currency',
                     'Multiple managers',
+                    'Priority support',
                 ],
             ],
         ];
@@ -249,9 +249,9 @@
                                 class="rounded-[2rem] border border-white/70 bg-white/92 p-5 text-kirada-navy shadow-[0_30px_90px_rgba(15,23,42,0.28)] backdrop-blur-xl sm:p-6">
                                 <div class="relative mb-5 overflow-hidden rounded-[1.65rem] bg-kirada-navy">
                                     <video class="h-48 w-full object-cover object-right sm:h-56" autoplay muted loop
-                                        playsinline preload="auto"
+                                        playsinline preload="metadata"
                                         aria-label="{{ __('Fish drifting through skylight beams') }}">
-                                        <source src="{{ asset('brand/hero-fish-scene.mp4') }}?v=20260628"
+                                        <source src="{{ asset('brand/hero-fish-scene.mp4') }}?v=20260702"
                                             type="video/mp4">
                                     </video>
                                     <div
@@ -376,8 +376,8 @@
                             <div
                                 class="mb-5 flex size-12 items-center justify-center rounded-2xl {{ $toneClasses[$feature['tone']] }}">
                                 <span class="text-lg font-bold">
-                                    @if ($feature['title'] === 'AI Assistant')
-                                        AI
+                                    @if ($feature['title'] === 'Reports & Analytics')
+                                        RPT
                                     @elseif ($feature['title'] === 'Multi-Country & Currency')
                                         FX
                                     @elseif ($feature['title'] === 'Documents & Receipts')
