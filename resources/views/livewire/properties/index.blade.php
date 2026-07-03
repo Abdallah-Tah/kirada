@@ -38,37 +38,37 @@
     {{-- Table --}}
     <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
-            <thead class="bg-zinc-50 dark:bg-zinc-900">
+            <thead>
                 <tr>
                     <th class="px-4 py-3 font-medium">{{ __('Name') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Type') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('City') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Units') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Status') }}</th>
-                    <th class="px-4 py-3 font-medium text-right">{{ __('Actions') }}</th>
+                    <th class="px-4 py-3 font-medium text-end">{{ __('Actions') }}</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <tbody>
                 @forelse ($this->properties as $property)
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                        <td class="px-4 py-3">
+                    <tr>
+                        <td data-label="{{ __('Name') }}" class="px-4 py-3">
                             <flux:link :href="route('properties.edit', $property)" wire:navigate class="font-medium">
                                 {{ $property->name }}
                             </flux:link>
                         </td>
-                        <td class="px-4 py-3">
+                        <td data-label="{{ __('Type') }}" class="px-4 py-3">
                             <flux:badge color="blue" size="sm">{{ __(ucfirst($property->type)) }}</flux:badge>
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $property->city }}</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $property->units_count }}</td>
-                        <td class="px-4 py-3">
+                        <td data-label="{{ __('City') }}" class="px-4 py-3 text-zinc-500">{{ $property->city }}</td>
+                        <td data-label="{{ __('Units') }}" class="px-4 py-3 text-zinc-500">{{ $property->units_count }}</td>
+                        <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @if ($property->is_active)
                                 <flux:badge color="green" size="sm">{{ __('Active') }}</flux:badge>
                             @else
                                 <flux:badge color="red" size="sm">{{ __('Inactive') }}</flux:badge>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-right">
+                        <td class="px-4 py-3 text-end">
                             <flux:dropdown align="end">
                                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />
                                 <flux:menu>

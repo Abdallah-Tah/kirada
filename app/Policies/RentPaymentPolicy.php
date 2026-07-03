@@ -18,6 +18,11 @@ class RentPaymentPolicy
             return true;
         }
 
+        // Tenants may view (and download receipts for) their own payments.
+        if ($user->hasRole('tenant')) {
+            return $payment->tenant?->user_id === $user->id;
+        }
+
         return $user->hasRole('landlord') && $payment->landlord_id === $user->id;
     }
 

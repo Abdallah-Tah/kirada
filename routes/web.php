@@ -5,7 +5,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MaintenanceAttachmentController;
-use App\Livewire\Reports\Index as ReportsIndex;
+use App\Http\Controllers\PaymentWebhookController;
+use App\Http\Controllers\ReceiptController;
 use App\Livewire\Contracts\Create as ContractCreate;
 use App\Livewire\Contracts\Index as ContractIndex;
 use App\Livewire\Contracts\Show as ContractShow;
@@ -29,6 +30,8 @@ use App\Livewire\RentInvoices\Index as RentInvoiceIndex;
 use App\Livewire\RentPayments\Create as RentPaymentCreate;
 use App\Livewire\RentPayments\Edit as RentPaymentEdit;
 use App\Livewire\RentPayments\Index as RentPaymentIndex;
+use App\Livewire\RentPayments\Submit as RentPaymentSubmit;
+use App\Livewire\Reports\Index as ReportsIndex;
 use App\Livewire\Subscriptions\Status as SubscriptionStatus;
 use App\Livewire\TenantInvitations\Accept as TenantInvitationAccept;
 use App\Livewire\TenantInvitations\Index as TenantInvitationIndex;
@@ -117,10 +120,20 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
 // Public contract signing (token-based, no auth — like a DocuSign signing link)
 Route::get('/sign/{token}', ContractSign::class)->name('contracts.sign');
 
+// Payment operator webhooks (shared-secret verified per gateway, CSRF-exempt)
+Route::post('/webhooks/payments/{gateway}', PaymentWebhookController::class)->name('webhooks.payments');
+
 // Rent Invoices — list is shared with tenants ("My Rent", scoped in the
 // component); create/edit stay admin + landlord only.
 Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant'])->group(function () {
     Route::get('/rent-invoices', RentInvoiceIndex::class)->name('rent-invoices.index');
+    Route::get('/rent-invoices/{rentInvoice}/pdf', [ReceiptController::class, 'invoicePdf'])->name('rent-invoices.pdf');
+    Route::get('/rent-payments/{rentPayment}/receipt', [ReceiptController::class, 'paymentReceipt'])->name('rent-payments.receipt');
+});
+
+// Tenant "I paid" submission — creates a pending payment for landlord confirmation
+Route::middleware(['auth', 'verified', 'role:tenant'])->group(function () {
+    Route::get('/rent-payments/submit/{rentInvoice}', RentPaymentSubmit::class)->name('rent-payments.submit');
 });
 
 Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {

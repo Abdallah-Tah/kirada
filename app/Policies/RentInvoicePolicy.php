@@ -18,6 +18,11 @@ class RentInvoicePolicy
             return true;
         }
 
+        // Tenants may view (and download) invoices addressed to them.
+        if ($user->hasRole('tenant')) {
+            return $invoice->tenant?->user_id === $user->id;
+        }
+
         return $user->hasRole('landlord') && $invoice->landlord_id === $user->id;
     }
 

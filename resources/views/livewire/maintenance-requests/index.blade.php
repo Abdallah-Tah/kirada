@@ -1,7 +1,7 @@
 <div>
     <div class="kirada-page-header kirada-reveal">
         <flux:heading size="xl">{{ __('Maintenance Requests') }}</flux:heading>
-    <flux:subheading>{{ __('Track and manage maintenance issues') }}</flux:subheading>
+        <flux:subheading>{{ __('Track and manage maintenance issues') }}</flux:subheading>
     </div>
 
     <div class="kirada-toolbar mt-6">
@@ -41,7 +41,7 @@
 
     <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
-            <thead class="bg-zinc-50 dark:bg-zinc-900">
+            <thead>
                 <tr>
                     <th class="px-4 py-3 font-medium">{{ __('Title') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Property') }}</th>
@@ -49,21 +49,21 @@
                     <th class="px-4 py-3 font-medium">{{ __('Priority') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Status') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Assigned') }}</th>
-                    <th class="px-4 py-3 font-medium text-right">{{ __('Actions') }}</th>
+                    <th class="px-4 py-3 font-medium text-end">{{ __('Actions') }}</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <tbody>
                 @forelse ($this->requests as $request)
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                        <td class="px-4 py-3 font-medium">{{ $request->title }}</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $request->property?->name }}</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $request->unit?->unit_number ?? '—' }}</td>
-                        <td class="px-4 py-3">
+                    <tr>
+                        <td data-label="{{ __('Title') }}" class="px-4 py-3 font-medium">{{ $request->title }}</td>
+                        <td data-label="{{ __('Property') }}" class="px-4 py-3 text-zinc-500">{{ $request->property?->name }}</td>
+                        <td data-label="{{ __('Unit') }}" class="px-4 py-3 text-zinc-500">{{ $request->unit?->unit_number ?? '—' }}</td>
+                        <td data-label="{{ __('Priority') }}" class="px-4 py-3">
                             <flux:badge color="{{ $request->priorityColor }}" size="sm">
                                 {{ __(ucfirst($request->priority)) }}
                             </flux:badge>
                         </td>
-                        <td class="px-4 py-3">
+                        <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @if($request->status === 'open')
                                 <flux:badge color="blue" size="sm">{{ __('Open') }}</flux:badge>
                             @elseif($request->status === 'in_progress')
@@ -76,8 +76,8 @@
                                 <flux:badge color="red" size="sm">{{ __('Cancelled') }}</flux:badge>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $request->assignee?->name ?? '—' }}</td>
-                        <td class="px-4 py-3 text-right">
+                        <td data-label="{{ __('Assigned') }}" class="px-4 py-3 text-zinc-500">{{ $request->assignee?->name ?? '—' }}</td>
+                        <td class="px-4 py-3 text-end">
                             <flux:button
                                 :href="route('maintenance-requests.show', $request)"
                                 wire:navigate

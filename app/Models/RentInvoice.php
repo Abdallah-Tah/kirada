@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,9 +21,11 @@ class RentInvoice extends Model
         'unit_id',
         'tenant_id',
         'invoice_number',
+        'payment_reference',
         'invoice_month',
         'due_date',
         'amount',
+        'currency_id',
         'status',
         'notes',
         'is_auto_generated',
@@ -31,12 +34,12 @@ class RentInvoice extends Model
     ];
 
     protected $casts = [
-        'invoice_month'     => 'date',
-        'due_date'          => 'date',
-        'amount'            => 'float',
+        'invoice_month' => 'date',
+        'due_date' => 'date',
+        'amount' => 'float',
         'is_auto_generated' => 'boolean',
-        'sent_at'           => 'datetime',
-        'reminders_sent'    => 'array',
+        'sent_at' => 'datetime',
+        'reminders_sent' => 'array',
     ];
 
     // ── Relationships ──────────────────────────────────
@@ -69,6 +72,16 @@ class RentInvoice extends Model
     public function lineItems(): HasMany
     {
         return $this->hasMany(RentInvoiceLineItem::class);
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(RentPayment::class);
     }
 
     // ── Scopes ──────────────────────────────────────────
@@ -137,9 +150,23 @@ class RentInvoice extends Model
         return $this->amount + $this->lateFeeTotal();
     }
 
+    /**
+     * The currency this invoice is denominated in: its own currency,
+     * falling back to the property's currency (legacy rows).
+     */
+    public function displayCurrency(): ?Currency
+    {
+        return $this->currency ?? $this->property?->currency;
+    }
+
     public function getFormattedAmountAttribute(): string
     {
-        return number_format($this->amount, 0) . ' DJF';
+        return Money::format($this->amount, $this->displayCurrency());
+    }
+
+    public function getFormattedTotalDueAttribute(): string
+    {
+        return Money::format($this->totalDue(), $this->displayCurrency());
     }
 
     public function getInvoiceMonthFormattedAttribute(): string

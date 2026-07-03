@@ -32,7 +32,7 @@ class Index extends Component
     public function invoices()
     {
         $query = RentInvoice::query()
-            ->with(['property:id,name', 'unit:id,unit_number', 'tenant:id,first_name,last_name', 'lease:id,start_date,end_date'])
+            ->with(['property:id,name,currency_id', 'property.currency', 'currency', 'unit:id,unit_number', 'tenant:id,first_name,last_name', 'lease:id,start_date,end_date'])
             ->when($this->search, function ($q) {
                 $q->where('invoice_number', 'like', "%{$this->search}%")
                     ->orWhereHas('tenant', function ($q) {

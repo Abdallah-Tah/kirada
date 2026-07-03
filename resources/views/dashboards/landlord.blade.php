@@ -96,7 +96,7 @@
                 </div>
                 <p class="kirada-stat-label">{{ __('Collected This Month') }}</p>
                 <p class="kirada-stat-value text-kirada-green">
-                    {{ number_format($collected_this_month, 0) }} <span class="text-base font-medium">DJF</span>
+                    {{ number_format($collected_this_month, 0) }} <span class="text-base font-medium">{{ $dashboard_currency?->code ?? 'DJF' }}</span>
                 </p>
             </div>
 
@@ -188,13 +188,13 @@
                     <h3 class="font-semibold text-kirada-navy">{{ __('Rent Due This Month') }}</h3>
                     <a href="{{ route('rent-invoices.index') }}" wire:navigate class="text-xs font-semibold text-kirada-ocean transition hover:text-kirada-navy">{{ __('View all →') }}</a>
                 </div>
-                <p class="text-3xl font-bold text-kirada-navy">{{ number_format($rent_due_this_month, 0) }} <span class="text-base font-medium text-slate-400">DJF</span></p>
+                <p class="text-3xl font-bold text-kirada-navy">{{ number_format($rent_due_this_month, 0) }} <span class="text-base font-medium text-slate-400">{{ $dashboard_currency?->code ?? 'DJF' }}</span></p>
                 @if($upcoming_invoices->isNotEmpty())
                 <div class="mt-4 divide-y divide-slate-100">
                     @foreach($upcoming_invoices as $inv)
                     <div class="flex items-center justify-between gap-4 py-2.5 text-sm">
                         <span class="font-medium text-slate-800">{{ $inv->tenant?->first_name }} {{ $inv->tenant?->last_name }}</span>
-                        <span class="text-xs text-slate-500">{{ number_format($inv->amount, 0) }} DJF — due {{ $inv->due_date->format('d/m') }}</span>
+                        <span class="text-xs text-slate-500">{{ $inv->formatted_amount }} — due {{ $inv->due_date->format('d/m') }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -212,7 +212,7 @@
                     @foreach($overdue_invoices as $inv)
                     <div class="flex items-center justify-between gap-4 py-2.5 text-sm">
                         <span class="font-medium text-slate-800">{{ $inv->tenant?->first_name }} {{ $inv->tenant?->last_name }}</span>
-                        <span class="text-xs font-semibold text-red-500">{{ number_format($inv->amount, 0) }} DJF — {{ $inv->due_date->diffForHumans() }}</span>
+                        <span class="text-xs font-semibold text-red-500">{{ $inv->formatted_amount }} — {{ $inv->due_date->diffForHumans() }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -254,7 +254,7 @@
                     @foreach($recent_payments as $payment)
                     <div class="flex items-center justify-between gap-4 py-3 text-sm">
                         <span class="font-medium text-slate-800">{{ $payment->tenant?->first_name }} {{ $payment->tenant?->last_name }}</span>
-                        <span class="text-right text-xs text-slate-500">{{ number_format($payment->amount, 0) }} DJF — {{ $payment->created_at->diffForHumans() }}</span>
+                        <span class="text-right text-xs text-slate-500">{{ $payment->formatted_amount }} — {{ $payment->created_at->diffForHumans() }}</span>
                     </div>
                     @endforeach
                 </div>
