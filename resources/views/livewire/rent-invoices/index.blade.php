@@ -1,7 +1,7 @@
 <div>
     <div class="kirada-page-header kirada-reveal">
         <flux:heading size="xl">{{ __('Rent Invoices') }}</flux:heading>
-    <flux:subheading>{{ __('Monthly rent invoices and tracking') }}</flux:subheading>
+        <flux:subheading>{{ __('Monthly rent invoices and tracking') }}</flux:subheading>
     </div>
 
     <div class="kirada-toolbar mt-6">
@@ -38,7 +38,7 @@
 
     <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
-            <thead class="bg-zinc-50 dark:bg-zinc-900">
+            <thead>
                 <tr>
                     <th class="px-4 py-3 font-medium">{{ __('Invoice #') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Tenant') }}</th>
@@ -48,22 +48,22 @@
                     <th class="px-4 py-3 font-medium">{{ __('Due') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Amount') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Status') }}</th>
-                    <th class="px-4 py-3 font-medium text-right">{{ __('Actions') }}</th>
+                    <th class="px-4 py-3 font-medium text-end">{{ __('Actions') }}</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <tbody>
                 @forelse ($this->invoices as $invoice)
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                        <td class="px-4 py-3 font-mono text-xs">{{ $invoice->invoice_number }}</td>
-                        <td class="px-4 py-3 font-medium">
+                    <tr>
+                        <td data-label="{{ __('Invoice #') }}" class="px-4 py-3 font-mono text-xs">{{ $invoice->invoice_number }}</td>
+                        <td data-label="{{ __('Tenant') }}" class="px-4 py-3 font-medium">
                             {{ $invoice->tenant?->first_name }} {{ $invoice->tenant?->last_name }}
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $invoice->property?->name }}</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $invoice->unit?->unit_number }}</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $invoice->invoice_month?->format('M Y') }}</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $invoice->due_date?->format('M j, Y') }}</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ number_format($invoice->amount, 0) }} DJF</td>
-                        <td class="px-4 py-3">
+                        <td data-label="{{ __('Property') }}" class="px-4 py-3 text-zinc-500">{{ $invoice->property?->name }}</td>
+                        <td data-label="{{ __('Unit') }}" class="px-4 py-3 text-zinc-500">{{ $invoice->unit?->unit_number }}</td>
+                        <td data-label="{{ __('Month') }}" class="px-4 py-3 text-zinc-500">{{ $invoice->invoice_month?->format('M Y') }}</td>
+                        <td data-label="{{ __('Due') }}" class="px-4 py-3 text-zinc-500">{{ $invoice->due_date?->format('M j, Y') }}</td>
+                        <td data-label="{{ __('Amount') }}" class="px-4 py-3 text-zinc-500">{{ number_format($invoice->amount, 0) }} DJF</td>
+                        <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @php
                                 $colors = [
                                     'draft' => 'zinc',
@@ -78,7 +78,7 @@
                                 {{ __(str_replace('_', ' ', ucfirst($invoice->status))) }}
                             </flux:badge>
                         </td>
-                        <td class="px-4 py-3 text-right">
+                        <td class="px-4 py-3 text-end">
                             @hasanyrole('admin|landlord')
                             <flux:dropdown align="end">
                                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />

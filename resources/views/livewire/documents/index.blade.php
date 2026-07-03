@@ -1,7 +1,7 @@
 <div>
     <div class="kirada-page-header kirada-reveal">
         <flux:heading size="xl">{{ __('messages.Documents') }}</flux:heading>
-    <flux:subheading>{{ __('Lease agreements, receipts, payment proofs, and more') }}</flux:subheading>
+        <flux:subheading>{{ __('Lease agreements, receipts, payment proofs, and more') }}</flux:subheading>
     </div>
 
     <div class="kirada-toolbar mt-6">
@@ -33,7 +33,7 @@
 
     <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
-            <thead class="bg-zinc-50 dark:bg-zinc-900">
+            <thead>
                 <tr>
                     <th class="px-4 py-3 font-medium">{{ __('Title') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Type') }}</th>
@@ -41,19 +41,19 @@
                     <th class="px-4 py-3 font-medium">{{ __('Size') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Visibility') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Uploaded') }}</th>
-                    <th class="px-4 py-3 font-medium text-right">{{ __('Actions') }}</th>
+                    <th class="px-4 py-3 font-medium text-end">{{ __('Actions') }}</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <tbody>
                 @forelse ($this->documents as $document)
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                        <td class="px-4 py-3 font-medium">{{ $document->title }}</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ __($document->typeLabel) }}</td>
-                        <td class="px-4 py-3 text-zinc-500">
+                    <tr>
+                        <td data-label="{{ __('Title') }}" class="px-4 py-3 font-medium">{{ $document->title }}</td>
+                        <td data-label="{{ __('Type') }}" class="px-4 py-3 text-zinc-500">{{ __($document->typeLabel) }}</td>
+                        <td data-label="{{ __('Tenant') }}" class="px-4 py-3 text-zinc-500">
                             {{ $document->tenant ? $document->tenant->first_name . ' ' . $document->tenant->last_name : '—' }}
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $document->formattedSize }}</td>
-                        <td class="px-4 py-3">
+                        <td data-label="{{ __('Size') }}" class="px-4 py-3 text-zinc-500">{{ $document->formattedSize }}</td>
+                        <td data-label="{{ __('Visibility') }}" class="px-4 py-3">
                             @if($document->visibility === 'landlord_only')
                                 <flux:badge color="zinc" size="sm">{{ __('Landlord Only') }}</flux:badge>
                             @elseif($document->visibility === 'tenant_visible')
@@ -62,8 +62,8 @@
                                 <flux:badge color="red" size="sm">{{ __('Admin Only') }}</flux:badge>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $document->created_at?->format('M j, Y') }}</td>
-                        <td class="px-4 py-3 text-right">
+                        <td data-label="{{ __('Uploaded') }}" class="px-4 py-3 text-zinc-500">{{ $document->created_at?->format('M j, Y') }}</td>
+                        <td class="px-4 py-3 text-end">
                             <flux:dropdown align="end">
                                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />
                                 <flux:menu>

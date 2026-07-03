@@ -1,7 +1,7 @@
 <div>
     <div class="kirada-page-header kirada-reveal">
         <flux:heading size="xl">{{ __('Rent Payments') }}</flux:heading>
-    <flux:subheading>{{ __('Track and confirm tenant payments') }}</flux:subheading>
+        <flux:subheading>{{ __('Track and confirm tenant payments') }}</flux:subheading>
     </div>
 
     <div class="kirada-toolbar mt-6">
@@ -29,7 +29,7 @@
 
     <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
-            <thead class="bg-zinc-50 dark:bg-zinc-900">
+            <thead>
                 <tr>
                     <th class="px-4 py-3 font-medium">{{ __('Payment #') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Invoice') }}</th>
@@ -38,21 +38,21 @@
                     <th class="px-4 py-3 font-medium">{{ __('Amount') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Method') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Status') }}</th>
-                    <th class="px-4 py-3 font-medium text-right">{{ __('Actions') }}</th>
+                    <th class="px-4 py-3 font-medium text-end">{{ __('Actions') }}</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <tbody>
                 @forelse ($this->payments as $payment)
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                        <td class="px-4 py-3 font-mono text-xs">{{ $payment->payment_number }}</td>
-                        <td class="px-4 py-3 font-mono text-xs text-zinc-500">{{ $payment->rentInvoice?->invoice_number }}</td>
-                        <td class="px-4 py-3 font-medium">
+                    <tr>
+                        <td data-label="{{ __('Payment #') }}" class="px-4 py-3 font-mono text-xs">{{ $payment->payment_number }}</td>
+                        <td data-label="{{ __('Invoice') }}" class="px-4 py-3 font-mono text-xs text-zinc-500">{{ $payment->rentInvoice?->invoice_number }}</td>
+                        <td data-label="{{ __('Tenant') }}" class="px-4 py-3 font-medium">
                             {{ $payment->tenant?->first_name }} {{ $payment->tenant?->last_name }}
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">{{ $payment->payment_date?->format('M j, Y') }}</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ number_format($payment->amount, 0) }} DJF</td>
-                        <td class="px-4 py-3 text-zinc-500">{{ __(str_replace('_', ' ', ucfirst($payment->method))) }}</td>
-                        <td class="px-4 py-3">
+                        <td data-label="{{ __('Date') }}" class="px-4 py-3 text-zinc-500">{{ $payment->payment_date?->format('M j, Y') }}</td>
+                        <td data-label="{{ __('Amount') }}" class="px-4 py-3 text-zinc-500">{{ number_format($payment->amount, 0) }} DJF</td>
+                        <td data-label="{{ __('Method') }}" class="px-4 py-3 text-zinc-500">{{ __(str_replace('_', ' ', ucfirst($payment->method))) }}</td>
+                        <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @if ($payment->status === 'pending')
                                 <flux:badge color="orange" size="sm">{{ __('Pending') }}</flux:badge>
                             @elseif ($payment->status === 'confirmed')
@@ -61,7 +61,7 @@
                                 <flux:badge color="red" size="sm">{{ __('Rejected') }}</flux:badge>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-right">
+                        <td class="px-4 py-3 text-end">
                             <flux:dropdown align="end">
                                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />
                                 <flux:menu>

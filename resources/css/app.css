@@ -366,7 +366,8 @@ select:focus[data-flux-control] {
     }
 
     .kirada-table-card {
-        @apply overflow-hidden rounded-[1.25rem] border border-white/75 bg-white/92 shadow-[0_18px_55px_rgba(15,23,42,0.07)] ring-1 ring-slate-900/[0.03] backdrop-blur-xl;
+        /* overflow-x-auto (not hidden) so wide tables scroll instead of clip. */
+        @apply overflow-x-auto rounded-[1.25rem] border border-white/75 bg-white/92 shadow-[0_18px_55px_rgba(15,23,42,0.07)] ring-1 ring-slate-900/[0.03] backdrop-blur-xl;
     }
 
     .kirada-table-card table {
@@ -387,6 +388,85 @@ select:focus[data-flux-control] {
 
     .kirada-form-card {
         @apply rounded-[1.25rem] border border-white/75 bg-white/92 p-6 shadow-[0_18px_55px_rgba(15,23,42,0.07)] ring-1 ring-slate-900/[0.03] backdrop-blur-xl;
+    }
+}
+
+/* ----------------------------------------------------------------------------
+   Responsive tables — below lg, every .kirada-table-card table reflows into a
+   stack of cards. Each cell shows its column name from the `data-label`
+   attribute the blades set on every data <td>. Plain descendant selectors
+   (0-1-1) intentionally out-rank the single-class Tailwind utilities on the
+   cells (0-1-0), so no !important is needed. Logical properties keep RTL
+   locales correct.
+---------------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+    .kirada-table-card {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+        --tw-ring-shadow: 0 0 #0000;
+    }
+
+    .kirada-table-card table,
+    .kirada-table-card tbody,
+    .kirada-table-card tbody tr,
+    .kirada-table-card tbody td {
+        display: block;
+        width: 100%;
+    }
+
+    .kirada-table-card thead {
+        display: none;
+    }
+
+    .kirada-table-card tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .kirada-table-card tbody tr {
+        border: 1px solid var(--color-slate-200);
+        border-radius: 1rem;
+        background: #fff;
+        padding: 0.625rem 1rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .kirada-table-card tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.375rem 0;
+        text-align: end;
+    }
+
+    .kirada-table-card tbody td[data-label]::before {
+        content: attr(data-label);
+        flex-shrink: 0;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-slate-400);
+        text-align: start;
+    }
+
+    /* Actions cell (no data-label, last in the row): its own footer band. */
+    .kirada-table-card tbody td:last-child:not([data-label]) {
+        justify-content: flex-end;
+        margin-top: 0.375rem;
+        border-top: 1px solid var(--color-slate-100);
+        padding-top: 0.625rem;
+    }
+
+    /* Empty-state row (single colspan cell): plain centered message. */
+    .kirada-table-card tbody td:only-child {
+        display: block;
+        text-align: center;
     }
 }
 

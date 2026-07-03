@@ -1,7 +1,7 @@
 <div>
     <div class="kirada-page-header kirada-reveal">
         <flux:heading size="xl">{{ __('Tenant Invitations') }}</flux:heading>
-    <flux:subheading>{{ __('Invite tenants to create their own account') }}</flux:subheading>
+        <flux:subheading>{{ __('Invite tenants to create their own account') }}</flux:subheading>
     </div>
 
     {{-- Create Invitation --}}
@@ -70,33 +70,33 @@
     {{-- Invitations Table --}}
     <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
-            <thead class="bg-zinc-50 dark:bg-zinc-900">
+            <thead>
                 <tr>
                     <th class="px-4 py-3 font-medium">{{ __('Tenant') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Contact') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Status') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Expires') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Accepted By') }}</th>
-                    <th class="px-4 py-3 font-medium text-right">{{ __('Actions') }}</th>
+                    <th class="px-4 py-3 font-medium text-end">{{ __('Actions') }}</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <tbody>
                 @forelse ($this->invitations as $invitation)
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                        <td class="px-4 py-3 font-medium">
+                    <tr>
+                        <td data-label="{{ __('Tenant') }}" class="px-4 py-3 font-medium">
                             {{ $invitation->tenant?->first_name }} {{ $invitation->tenant?->last_name }}
                             @if($invitation->tenant?->user_id)
                                 <flux:badge color="green" size="sm" class="ml-1">{{ __('Linked') }}</flux:badge>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">
+                        <td data-label="{{ __('Contact') }}" class="px-4 py-3 text-zinc-500">
                             @if($invitation->email)
                                 {{ $invitation->email }}
                             @else
                                 {{ $invitation->phone }}
                             @endif
                         </td>
-                        <td class="px-4 py-3">
+                        <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @if($invitation->status === 'pending')
                                 <flux:badge color="orange" size="sm">{{ __('Pending') }}</flux:badge>
                             @elseif($invitation->status === 'accepted')
@@ -107,20 +107,20 @@
                                 <flux:badge color="red" size="sm">{{ __('Expired') }}</flux:badge>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">
+                        <td data-label="{{ __('Expires') }}" class="px-4 py-3 text-zinc-500">
                             {{ $invitation->expires_at?->format('M j, Y') }}
                             @if($invitation->isPending() && $invitation->expires_at->isPast())
                                 <span class="text-red-500 text-xs">{{ __('(expired)') }}</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">
+                        <td data-label="{{ __('Accepted By') }}" class="px-4 py-3 text-zinc-500">
                             @if($invitation->acceptedUser)
                                 {{ $invitation->acceptedUser->name }}
                             @else
                                 —
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-right">
+                        <td class="px-4 py-3 text-end">
                             <flux:dropdown align="end">
                                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />
                                 <flux:menu>

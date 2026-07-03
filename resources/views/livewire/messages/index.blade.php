@@ -1,7 +1,7 @@
 <div>
     <div class="kirada-page-header kirada-reveal">
         <flux:heading size="xl">{{ __('messages.Messages') }}</flux:heading>
-    <flux:subheading>{{ __('Conversations with your tenants and landlord') }}</flux:subheading>
+        <flux:subheading>{{ __('Conversations with your tenants and landlord') }}</flux:subheading>
     </div>
 
     <div class="kirada-toolbar mt-6">
@@ -63,37 +63,37 @@
     {{-- Conversations List --}}
     <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
-            <thead class="bg-zinc-50 dark:bg-zinc-900">
+            <thead>
                 <tr>
                     <th class="px-4 py-3 font-medium">{{ __('Subject') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('With') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Last Message') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Status') }}</th>
-                    <th class="px-4 py-3 font-medium text-right">{{ __('Actions') }}</th>
+                    <th class="px-4 py-3 font-medium text-end">{{ __('Actions') }}</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <tbody>
                 @forelse ($this->conversations as $conversation)
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                        <td class="px-4 py-3 font-medium">{{ $conversation->subject }}</td>
-                        <td class="px-4 py-3 text-zinc-500">
+                    <tr>
+                        <td data-label="{{ __('Subject') }}" class="px-4 py-3 font-medium">{{ $conversation->subject }}</td>
+                        <td data-label="{{ __('With') }}" class="px-4 py-3 text-zinc-500">
                             {{ $conversation->getOtherParticipantName(auth()->user()) }}
                         </td>
-                        <td class="px-4 py-3 text-zinc-500">
+                        <td data-label="{{ __('Last Message') }}" class="px-4 py-3 text-zinc-500">
                             @if($conversation->last_message_at)
                                 <span class="text-xs">{{ $conversation->last_message_at->diffForHumans() }}</span>
                             @else
                                 <span class="text-xs text-zinc-400">{{ __('No messages yet') }}</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3">
+                        <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @if($conversation->status === 'open')
                                 <flux:badge color="green" size="sm">{{ __('Open') }}</flux:badge>
                             @else
                                 <flux:badge color="zinc" size="sm">{{ __('Closed') }}</flux:badge>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-right">
+                        <td class="px-4 py-3 text-end">
                             <flux:button
                                 :href="route('messages.show', $conversation)"
                                 wire:navigate
