@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use App\Support\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 class RentPayment extends Model
 {
@@ -23,6 +23,7 @@ class RentPayment extends Model
         'payment_number',
         'payment_date',
         'amount',
+        'currency_id',
         'method',
         'status',
         'reference_number',
@@ -75,6 +76,11 @@ class RentPayment extends Model
         return $this->belongsTo(User::class, 'confirmed_by');
     }
 
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class);
+    }
+
     // ── Scopes ──────────────────────────────────────────
 
     public function scopeForLandlord(Builder $query, int $landlordId): Builder
@@ -109,8 +115,19 @@ class RentPayment extends Model
         return $this->status === 'rejected';
     }
 
+    /**
+     * The currency this payment is denominated in: its own currency,
+     * falling back to the invoice's, then the property's (legacy rows).
+     */
+    public function displayCurrency(): ?Currency
+    {
+        return $this->currency
+            ?? $this->rentInvoice?->currency
+            ?? $this->property?->currency;
+    }
+
     public function getFormattedAmountAttribute(): string
     {
-        return number_format($this->amount, 0) . ' DJF';
+        return Money::format($this->amount, $this->displayCurrency());
     }
 }

@@ -16,7 +16,7 @@
                         <option value="{{ $invoice->id }}">
                             {{ $invoice->invoice_number }} —
                             {{ $invoice->tenant?->first_name }} {{ $invoice->tenant?->last_name }}
-                            ({{ number_format($invoice->amount, 0) }} DJF)
+                            ({{ $invoice->formatted_amount }})
                         </option>
                     @endforeach
                 </flux:select>

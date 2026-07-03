@@ -25,7 +25,7 @@
                     <flux:select wire:model.live="unit_id" required class="mt-1">
                         <option value="">{{ __('Select unit...') }}</option>
                         @foreach ($this->units as $unit)
-                            <option value="{{ $unit->id }}">{{ $unit->unit_number }} — {{ number_format($unit->monthly_rent, 0) }} DJF</option>
+                            <option value="{{ $unit->id }}">{{ $unit->unit_number }} — {{ $unit->formatted_rent }}</option>
                         @endforeach
                     </flux:select>
                     <flux:error name="unit_id" />

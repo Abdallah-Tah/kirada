@@ -4,9 +4,7 @@ namespace App\Services;
 
 use App\Models\RentInvoice;
 use App\Models\RentPayment;
-use App\Models\User;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class RentPaymentService
@@ -16,10 +14,10 @@ class RentPaymentService
      */
     public function generatePaymentNumber(): string
     {
-        $prefix = 'PAY-' . now()->format('Ymd') . '-';
+        $prefix = 'PAY-'.now()->format('Ymd').'-';
 
         $latest = RentPayment::withTrashed()
-            ->where('payment_number', 'like', $prefix . '%')
+            ->where('payment_number', 'like', $prefix.'%')
             ->latest('id')
             ->first();
 
@@ -27,7 +25,7 @@ class RentPaymentService
             ? (int) Str::after($latest->payment_number, $prefix) + 1
             : 1;
 
-        return $prefix . str_pad($sequence, 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($sequence, 4, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -39,11 +37,11 @@ class RentPaymentService
 
         return [
             'rent_invoice_id' => $invoice->id,
-            'lease_id'        => $invoice->lease_id,
-            'property_id'     => $invoice->property_id,
-            'unit_id'         => $invoice->unit_id,
-            'tenant_id'       => $invoice->tenant_id,
-            'amount'          => $remaining,
+            'lease_id' => $invoice->lease_id,
+            'property_id' => $invoice->property_id,
+            'unit_id' => $invoice->unit_id,
+            'tenant_id' => $invoice->tenant_id,
+            'amount' => $remaining,
         ];
     }
 
@@ -75,8 +73,9 @@ class RentPaymentService
         }
 
         $data['payment_number'] = $this->generatePaymentNumber();
+        $data['currency_id'] ??= $invoice->currency_id ?? $invoice->property?->currency_id;
 
-        if (!isset($data['status']) || empty($data['status'])) {
+        if (! isset($data['status']) || empty($data['status'])) {
             $data['status'] = 'pending';
         }
 

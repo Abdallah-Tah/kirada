@@ -19,7 +19,7 @@
                     </div>
                     <div>
                         <span class="text-slate-500">{{ __('Monthly Rent') }}</span>
-                        <p class="font-medium text-slate-900">{{ number_format($active_lease->monthly_rent, 0) }} DJF</p>
+                        <p class="font-medium text-slate-900">{{ $active_lease->formatted_rent }}</p>
                     </div>
                     <div>
                         <span class="text-slate-500">{{ __('Lease Period') }}</span>
@@ -42,7 +42,7 @@
                 </svg>
             </div>
             <div class="flex-1">
-                <p class="text-sm font-semibold text-red-700">{{ __('Overdue balance: :amount DJF', ['amount' => number_format($overdue_amount, 0)]) }}</p>
+                <p class="text-sm font-semibold text-red-700">{{ __('Overdue balance: :amount', ['amount' => \App\Support\Money::format($overdue_amount, $dashboard_currency)]) }}</p>
                 <p class="mt-0.5 text-xs text-red-500">{{ __('Please settle your outstanding rent as soon as possible.') }}</p>
             </div>
             <a href="{{ route('rent-invoices.index') }}" wire:navigate
@@ -95,7 +95,7 @@
                 @foreach($recent_invoices as $invoice)
                     <div class="flex items-center justify-between gap-4 py-3 text-sm">
                         <span class="font-mono text-xs text-slate-700">{{ $invoice->invoice_number }}</span>
-                        <span class="text-right text-slate-500">{{ ucfirst($invoice->status) }} — {{ number_format($invoice->amount, 0) }} DJF</span>
+                        <span class="text-right text-slate-500">{{ ucfirst($invoice->status) }} — {{ $invoice->formatted_amount }}</span>
                     </div>
                 @endforeach
             </div>

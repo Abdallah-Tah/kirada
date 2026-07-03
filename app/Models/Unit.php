@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -78,6 +79,11 @@ class Unit extends Model
     }
 
     // ── Helpers ─────────────────────────────────────────
+
+    public function getFormattedRentAttribute(): string
+    {
+        return Money::format($this->monthly_rent, $this->property?->currency);
+    }
 
     public function isVacant(): bool
     {

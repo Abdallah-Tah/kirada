@@ -6,6 +6,7 @@ use App\Models\Conversation;
 use App\Models\Document;
 use App\Models\Lease;
 use App\Models\MaintenanceRequest;
+use App\Models\Message;
 use App\Models\Property;
 use App\Models\RentInvoice;
 use App\Models\RentPayment;
@@ -13,23 +14,22 @@ use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\Unit;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 
 class DashboardMetricsService
 {
     public function getAdminMetrics(): array
     {
         return [
-            'total_landlords'       => User::role('landlord')->count(),
-            'total_tenants'         => Tenant::count(),
-            'total_properties'      => Property::count(),
-            'total_units'           => Unit::count(),
-            'active_leases'         => Lease::where('status', 'active')->count(),
-            'unpaid_invoices'       => RentInvoice::whereIn('status', ['unpaid', 'partially_paid', 'overdue'])->count(),
-            'open_maintenance'      => MaintenanceRequest::whereIn('status', ['open', 'in_progress'])->count(),
-            'active_subscriptions'  => Subscription::whereIn('status', ['trialing', 'active'])->count(),
-            'recent_properties'     => Property::with('landlord:id,name')->latest()->limit(5)->get(),
-            'recent_maintenance'    => MaintenanceRequest::with('property:id,name')->latest()->limit(5)->get(),
+            'total_landlords' => User::role('landlord')->count(),
+            'total_tenants' => Tenant::count(),
+            'total_properties' => Property::count(),
+            'total_units' => Unit::count(),
+            'active_leases' => Lease::where('status', 'active')->count(),
+            'unpaid_invoices' => RentInvoice::whereIn('status', ['unpaid', 'partially_paid', 'overdue'])->count(),
+            'open_maintenance' => MaintenanceRequest::whereIn('status', ['open', 'in_progress'])->count(),
+            'active_subscriptions' => Subscription::whereIn('status', ['trialing', 'active'])->count(),
+            'recent_properties' => Property::with('landlord:id,name')->latest()->limit(5)->get(),
+            'recent_maintenance' => MaintenanceRequest::with('property:id,name')->latest()->limit(5)->get(),
         ];
     }
 
@@ -73,24 +73,28 @@ class DashboardMetricsService
             ->get();
 
         return [
-            'my_properties'         => Property::forLandlord($landlord->id)->count(),
-            'my_units'              => Unit::whereIn('property_id', $propertyIds)->count(),
-            'occupied_units'        => $occupiedUnits,
-            'vacant_units'          => $vacantUnits,
-            'active_leases'         => Lease::where('landlord_id', $landlord->id)->where('status', 'active')->count(),
-            'unpaid_invoices'       => RentInvoice::forLandlord($landlord->id)
+            // Aggregate sums are labelled with the landlord's first property
+            // currency (true multi-currency aggregation is out of scope).
+            'dashboard_currency' => Property::forLandlord($landlord->id)
+                ->whereNotNull('currency_id')->with('currency')->first()?->currency,
+            'my_properties' => Property::forLandlord($landlord->id)->count(),
+            'my_units' => Unit::whereIn('property_id', $propertyIds)->count(),
+            'occupied_units' => $occupiedUnits,
+            'vacant_units' => $vacantUnits,
+            'active_leases' => Lease::where('landlord_id', $landlord->id)->where('status', 'active')->count(),
+            'unpaid_invoices' => RentInvoice::forLandlord($landlord->id)
                 ->whereIn('status', ['unpaid', 'partially_paid', 'overdue'])->count(),
-            'rent_due_this_month'   => $rentDueThisMonth,
-            'overdue_invoices'      => $overdueInvoices,
-            'upcoming_invoices'     => $upcomingInvoices,
-            'collected_this_month'  => $collectedThisMonth,
-            'open_maintenance'      => MaintenanceRequest::forLandlord($landlord->id)
+            'rent_due_this_month' => $rentDueThisMonth,
+            'overdue_invoices' => $overdueInvoices,
+            'upcoming_invoices' => $upcomingInvoices,
+            'collected_this_month' => $collectedThisMonth,
+            'open_maintenance' => MaintenanceRequest::forLandlord($landlord->id)
                 ->whereIn('status', ['open', 'in_progress'])->count(),
-            'unread_messages'       => $unreadMessages,
-            'recent_leases'         => Lease::where('landlord_id', $landlord->id)
+            'unread_messages' => $unreadMessages,
+            'recent_leases' => Lease::where('landlord_id', $landlord->id)
                 ->with(['tenant:id,first_name,last_name', 'property:id,name', 'unit:id,unit_number'])
                 ->latest()->limit(5)->get(),
-            'recent_payments'       => RentPayment::where('landlord_id', $landlord->id)
+            'recent_payments' => RentPayment::where('landlord_id', $landlord->id)
                 ->with(['tenant:id,first_name,last_name', 'rentInvoice:id,invoice_number'])
                 ->latest()->limit(5)->get(),
         ];
@@ -100,22 +104,23 @@ class DashboardMetricsService
     {
         $tenant = Tenant::where('user_id', $user->id)->first();
 
-        if (!$tenant) {
+        if (! $tenant) {
             return [
-                'active_lease'          => null,
-                'current_invoice'       => null,
+                'active_lease' => null,
+                'dashboard_currency' => null,
+                'current_invoice' => null,
                 'payment_history_count' => 0,
-                'open_maintenance'      => 0,
-                'unread_messages'       => 0,
-                'documents_count'       => 0,
-                'recent_invoices'       => collect(),
-                'recent_payments'       => collect(),
+                'open_maintenance' => 0,
+                'unread_messages' => 0,
+                'documents_count' => 0,
+                'recent_invoices' => collect(),
+                'recent_payments' => collect(),
             ];
         }
 
         $activeLease = Lease::where('tenant_id', $tenant->id)
             ->where('status', 'active')
-            ->with(['property:id,name', 'unit:id,unit_number'])
+            ->with(['property:id,name,currency_id', 'property.currency', 'unit:id,unit_number'])
             ->latest()->first();
 
         $currentInvoice = RentInvoice::where('tenant_id', $tenant->id)
@@ -135,24 +140,25 @@ class DashboardMetricsService
         $nextDueDate = null;
         $overdueAmount = 0.0;
         if ($activeLease) {
-            $nextDueDate = app(\App\Services\RentInvoiceService::class)->nextDueDate($activeLease);
+            $nextDueDate = app(RentInvoiceService::class)->nextDueDate($activeLease);
         }
         $overdueAmount = RentInvoice::where('tenant_id', $tenant->id)
             ->where('status', 'overdue')
             ->sum('amount');
 
         return [
-            'active_lease'          => $activeLease,
-            'current_invoice'       => $currentInvoice,
-            'next_due_date'         => $nextDueDate,
-            'overdue_amount'        => (float) $overdueAmount,
+            'active_lease' => $activeLease,
+            'dashboard_currency' => $activeLease?->property?->currency,
+            'current_invoice' => $currentInvoice,
+            'next_due_date' => $nextDueDate,
+            'overdue_amount' => (float) $overdueAmount,
             'payment_history_count' => $paymentCount,
-            'open_maintenance'      => $openMaintenance,
-            'unread_messages'       => $unreadMessages,
-            'documents_count'       => $documentsCount,
-            'recent_invoices'       => RentInvoice::where('tenant_id', $tenant->id)
+            'open_maintenance' => $openMaintenance,
+            'unread_messages' => $unreadMessages,
+            'documents_count' => $documentsCount,
+            'recent_invoices' => RentInvoice::where('tenant_id', $tenant->id)
                 ->latest()->limit(5)->get(),
-            'recent_payments'       => RentPayment::where('tenant_id', $tenant->id)
+            'recent_payments' => RentPayment::where('tenant_id', $tenant->id)
                 ->with(['rentInvoice:id,invoice_number'])
                 ->latest()->limit(5)->get(),
         ];
@@ -177,17 +183,17 @@ class DashboardMetricsService
             ->latest()->limit(5)->get();
 
         return [
-            'assigned_open'         => $assignedOpen,
-            'in_progress'           => $inProgress,
-            'resolved_this_month'   => $resolvedThisMonth,
-            'recent_assigned'       => $recentAssigned,
+            'assigned_open' => $assignedOpen,
+            'in_progress' => $inProgress,
+            'resolved_this_month' => $resolvedThisMonth,
+            'recent_assigned' => $recentAssigned,
         ];
     }
 
     protected function getUnreadMessageCount(User $user): int
     {
         $conversationIds = Conversation::query()
-            ->when($user->hasRole('landlord'), fn($q) => $q->where('landlord_id', $user->id))
+            ->when($user->hasRole('landlord'), fn ($q) => $q->where('landlord_id', $user->id))
             ->when($user->hasRole('tenant'), function ($q) use ($user) {
                 $tenant = Tenant::where('user_id', $user->id)->first();
                 $q->where('tenant_id', $tenant?->id ?? 0);
@@ -198,7 +204,7 @@ class DashboardMetricsService
             return 0;
         }
 
-        return \App\Models\Message::whereIn('conversation_id', $conversationIds)
+        return Message::whereIn('conversation_id', $conversationIds)
             ->where('user_id', '!=', $user->id)
             ->whereNull('read_at')
             ->count();

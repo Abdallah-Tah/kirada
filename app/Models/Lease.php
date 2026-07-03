@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,24 +36,24 @@ class Lease extends Model
     ];
 
     protected $casts = [
-        'start_date'                         => 'date',
-        'end_date'                           => 'date',
-        'monthly_rent'                       => 'float',
-        'security_deposit'                   => 'float',
-        'payment_due_day'                    => 'integer',
-        'auto_generate_invoices'             => 'boolean',
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'monthly_rent' => 'float',
+        'security_deposit' => 'float',
+        'payment_due_day' => 'integer',
+        'auto_generate_invoices' => 'boolean',
         'invoice_generation_days_before_due' => 'integer',
-        'grace_period_days'                  => 'integer',
-        'late_fee_amount'                    => 'float',
-        'reminder_schedule'                  => 'array',
+        'grace_period_days' => 'integer',
+        'late_fee_amount' => 'float',
+        'reminder_schedule' => 'array',
     ];
 
     protected $attributes = [
-        'auto_generate_invoices'             => true,
+        'auto_generate_invoices' => true,
         'invoice_generation_days_before_due' => 7,
-        'grace_period_days'                  => 5,
-        'late_fee_type'                      => 'none',
-        'late_fee_frequency'                 => 'once',
+        'grace_period_days' => 5,
+        'late_fee_type' => 'none',
+        'late_fee_frequency' => 'once',
     ];
 
     // ── Relationships ──────────────────────────────────
@@ -90,6 +91,11 @@ class Lease extends Model
     }
 
     // ── Helpers ─────────────────────────────────────────
+
+    public function getFormattedRentAttribute(): string
+    {
+        return Money::format($this->monthly_rent, $this->property?->currency);
+    }
 
     public function isActive(): bool
     {

@@ -54,7 +54,12 @@
             <tbody>
                 @forelse ($this->invoices as $invoice)
                     <tr>
-                        <td data-label="{{ __('Invoice #') }}" class="px-4 py-3 font-mono text-xs">{{ $invoice->invoice_number }}</td>
+                        <td data-label="{{ __('Invoice #') }}" class="px-4 py-3 font-mono text-xs">
+                            {{ $invoice->invoice_number }}
+                            @if ($invoice->payment_reference)
+                                <div class="text-[10px] text-zinc-400">{{ $invoice->payment_reference }}</div>
+                            @endif
+                        </td>
                         <td data-label="{{ __('Tenant') }}" class="px-4 py-3 font-medium">
                             {{ $invoice->tenant?->first_name }} {{ $invoice->tenant?->last_name }}
                         </td>
@@ -62,7 +67,7 @@
                         <td data-label="{{ __('Unit') }}" class="px-4 py-3 text-zinc-500">{{ $invoice->unit?->unit_number }}</td>
                         <td data-label="{{ __('Month') }}" class="px-4 py-3 text-zinc-500">{{ $invoice->invoice_month?->format('M Y') }}</td>
                         <td data-label="{{ __('Due') }}" class="px-4 py-3 text-zinc-500">{{ $invoice->due_date?->format('M j, Y') }}</td>
-                        <td data-label="{{ __('Amount') }}" class="px-4 py-3 text-zinc-500">{{ number_format($invoice->amount, 0) }} DJF</td>
+                        <td data-label="{{ __('Amount') }}" class="px-4 py-3 text-zinc-500">{{ $invoice->formatted_amount }}</td>
                         <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @php
                                 $colors = [
@@ -79,12 +84,25 @@
                             </flux:badge>
                         </td>
                         <td class="px-4 py-3 text-end">
+                            @hasrole('tenant')
+                            <div class="inline-flex items-center gap-2">
+                                @if ($invoice->isActionable())
+                                    <flux:button :href="route('rent-payments.submit', $invoice)" wire:navigate variant="primary" size="sm" icon="banknotes">
+                                        {{ __('Report payment') }}
+                                    </flux:button>
+                                @endif
+                                <flux:button :href="route('rent-invoices.pdf', $invoice)" variant="ghost" size="sm" icon="arrow-down-tray" :title="__('Download PDF')" />
+                            </div>
+                            @endhasrole
                             @hasanyrole('admin|landlord')
                             <flux:dropdown align="end">
                                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />
                                 <flux:menu>
                                     <flux:menu.item :href="route('rent-invoices.edit', $invoice)" wire:navigate icon="pencil">
                                         {{ __('Edit') }}
+                                    </flux:menu.item>
+                                    <flux:menu.item :href="route('rent-invoices.pdf', $invoice)" icon="arrow-down-tray">
+                                        {{ __('Download PDF') }}
                                     </flux:menu.item>
                                     <flux:menu.separator />
                                     <flux:menu.item

@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\RentInvoice;
+use App\Support\Money;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -21,17 +22,17 @@ class RentInvoiceGenerated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $invoice = $this->invoice;
-        $amount  = number_format($invoice->amount, 0) . ' DJF';
-        $due     = $invoice->due_date->format('d/m/Y');
-        $month   = $invoice->invoice_month->format('F Y');
+        $amount = Money::format($invoice->amount, $invoice->displayCurrency());
+        $due = $invoice->due_date->format('d/m/Y');
+        $month = $invoice->invoice_month->format('F Y');
 
         return (new MailMessage)
             ->subject("Rent invoice for {$month} — {$amount}")
             ->markdown('emails.rent.invoice-generated', [
                 'invoice' => $invoice,
-                'amount'  => $amount,
-                'due'     => $due,
-                'month'   => $month,
+                'amount' => $amount,
+                'due' => $due,
+                'month' => $month,
             ]);
     }
 }

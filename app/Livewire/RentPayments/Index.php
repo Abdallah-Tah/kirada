@@ -4,6 +4,7 @@ namespace App\Livewire\RentPayments;
 
 use App\Models\RentPayment;
 use App\Services\RentPaymentService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,7 +14,9 @@ class Index extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $filterStatus = '';
+
     public ?int $filterInvoice = null;
 
     public function updatingSearch(): void
@@ -31,22 +34,25 @@ class Index extends Component
     {
         $query = RentPayment::query()
             ->with([
-                'rentInvoice:id,invoice_number,amount',
-                'property:id,name',
+                'rentInvoice:id,invoice_number,amount,currency_id',
+                'rentInvoice.currency',
+                'currency',
+                'property:id,name,currency_id',
+                'property.currency',
                 'unit:id,unit_number',
                 'tenant:id,first_name,last_name',
                 'confirmer:id,name',
             ])
             ->when($this->search, function ($q) {
                 $q->where('payment_number', 'like', "%{$this->search}%")
-                  ->orWhere('reference_number', 'like', "%{$this->search}%")
-                  ->orWhereHas('tenant', function ($q) {
-                      $q->where('first_name', 'like', "%{$this->search}%")
-                        ->orWhere('last_name', 'like', "%{$this->search}%");
-                  });
+                    ->orWhere('reference_number', 'like', "%{$this->search}%")
+                    ->orWhereHas('tenant', function ($q) {
+                        $q->where('first_name', 'like', "%{$this->search}%")
+                            ->orWhere('last_name', 'like', "%{$this->search}%");
+                    });
             })
-            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
-            ->when($this->filterInvoice, fn($q) => $q->where('rent_invoice_id', $this->filterInvoice))
+            ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterInvoice, fn ($q) => $q->where('rent_invoice_id', $this->filterInvoice))
             ->latest();
 
         if (auth()->user()->hasRole('landlord')) {
@@ -66,7 +72,7 @@ class Index extends Component
 
         unset($this->payments);
 
-        \Flux\Flux::toast('Payment confirmed. Invoice status updated.', 'success');
+        Flux::toast('Payment confirmed. Invoice status updated.', 'success');
     }
 
     public function rejectPayment(int $id): void
@@ -79,7 +85,7 @@ class Index extends Component
 
         unset($this->payments);
 
-        \Flux\Flux::toast('Payment rejected.', 'success');
+        Flux::toast('Payment rejected.', 'success');
     }
 
     public function delete(int $id): void
@@ -92,7 +98,7 @@ class Index extends Component
 
         unset($this->payments);
 
-        \Flux\Flux::toast('Payment deleted.', 'success');
+        Flux::toast('Payment deleted.', 'success');
     }
 
     public function render()

@@ -50,7 +50,7 @@
                             {{ $payment->tenant?->first_name }} {{ $payment->tenant?->last_name }}
                         </td>
                         <td data-label="{{ __('Date') }}" class="px-4 py-3 text-zinc-500">{{ $payment->payment_date?->format('M j, Y') }}</td>
-                        <td data-label="{{ __('Amount') }}" class="px-4 py-3 text-zinc-500">{{ number_format($payment->amount, 0) }} DJF</td>
+                        <td data-label="{{ __('Amount') }}" class="px-4 py-3 text-zinc-500">{{ $payment->formatted_amount }}</td>
                         <td data-label="{{ __('Method') }}" class="px-4 py-3 text-zinc-500">{{ __(str_replace('_', ' ', ucfirst($payment->method))) }}</td>
                         <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @if ($payment->status === 'pending')
@@ -68,6 +68,11 @@
                                     <flux:menu.item :href="route('rent-payments.edit', $payment)" wire:navigate icon="pencil">
                                         {{ __('Edit') }}
                                     </flux:menu.item>
+                                    @if ($payment->status === 'confirmed')
+                                        <flux:menu.item :href="route('rent-payments.receipt', $payment)" icon="arrow-down-tray">
+                                            {{ __('Download Receipt') }}
+                                        </flux:menu.item>
+                                    @endif
                                     @if ($payment->status === 'pending')
                                         <flux:menu.separator />
                                         <flux:menu.item

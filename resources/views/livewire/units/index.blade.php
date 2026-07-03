@@ -67,7 +67,7 @@
                             <flux:badge color="blue" size="sm">{{ __(ucfirst($unit->type)) }}</flux:badge>
                         </td>
                         <td data-label="{{ __('Bed/Bath') }}" class="px-4 py-3 text-zinc-500">{{ $unit->bedrooms }}/{{ $unit->bathrooms }}</td>
-                        <td data-label="{{ __('Rent') }}" class="px-4 py-3 text-zinc-500">{{ number_format($unit->monthly_rent, 0) }} DJF</td>
+                        <td data-label="{{ __('Rent') }}" class="px-4 py-3 text-zinc-500">{{ $unit->formatted_rent }}</td>
                         <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @if ($unit->status === 'vacant')
                                 <flux:badge color="green" size="sm">{{ __('Vacant') }}</flux:badge>

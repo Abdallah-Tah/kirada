@@ -51,7 +51,7 @@
                         <td data-label="{{ __('Unit') }}" class="px-4 py-3 text-zinc-500">{{ $lease->unit?->unit_number }}</td>
                         <td data-label="{{ __('Start') }}" class="px-4 py-3 text-zinc-500">{{ $lease->start_date?->format('M j, Y') }}</td>
                         <td data-label="{{ __('End') }}" class="px-4 py-3 text-zinc-500">{{ $lease->end_date?->format('M j, Y') ?? '—' }}</td>
-                        <td data-label="{{ __('Rent') }}" class="px-4 py-3 text-zinc-500">{{ number_format($lease->monthly_rent, 0) }} DJF</td>
+                        <td data-label="{{ __('Rent') }}" class="px-4 py-3 text-zinc-500">{{ $lease->formatted_rent }}</td>
                         <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @if ($lease->status === 'active')
                                 <flux:badge color="green" size="sm">{{ __('Active') }}</flux:badge>
