@@ -1,9 +1,14 @@
 <?php
 
+use App\Http\Middleware\LocaleMiddleware;
+use App\Http\Middleware\SubscriptionMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,22 +20,26 @@ return Application::configure(basePath: dirname(__DIR__))
         // Behind Cloudflare Tunnel (cloudflared on loopback): trust the proxy so
         // X-Forwarded-Proto=https is honored and asset()/url() emit https URLs.
         // Prevents mixed-content (http) asset URLs that break images over the tunnel.
-        $middleware->trustProxies(at: '*', headers:
-            Request::HEADER_X_FORWARDED_FOR |
+        $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_FOR |
             Request::HEADER_X_FORWARDED_HOST |
             Request::HEADER_X_FORWARDED_PORT |
             Request::HEADER_X_FORWARDED_PROTO
         );
 
         $middleware->web(append: [
-            \App\Http\Middleware\LocaleMiddleware::class,
+            LocaleMiddleware::class,
+        ]);
+
+        // Operator payment webhooks authenticate with a shared secret, not a session.
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/payments/*',
         ]);
 
         $middleware->alias([
-            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-            'subscription' => \App\Http\Middleware\SubscriptionMiddleware::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'subscription' => SubscriptionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MaintenanceAttachmentController;
+use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\ReceiptController;
 use App\Livewire\Contracts\Create as ContractCreate;
 use App\Livewire\Contracts\Index as ContractIndex;
@@ -118,6 +119,9 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
 
 // Public contract signing (token-based, no auth — like a DocuSign signing link)
 Route::get('/sign/{token}', ContractSign::class)->name('contracts.sign');
+
+// Payment operator webhooks (shared-secret verified per gateway, CSRF-exempt)
+Route::post('/webhooks/payments/{gateway}', PaymentWebhookController::class)->name('webhooks.payments');
 
 // Rent Invoices — list is shared with tenants ("My Rent", scoped in the
 // component); create/edit stay admin + landlord only.

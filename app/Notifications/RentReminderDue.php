@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\RentInvoice;
+use App\Notifications\Concerns\NotifiesTenantPhone;
 use App\Support\Money;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -10,17 +11,12 @@ use Illuminate\Notifications\Notification;
 
 class RentReminderDue extends Notification
 {
-    use Queueable;
+    use NotifiesTenantPhone, Queueable;
 
     public function __construct(
         public RentInvoice $invoice,
         public string $reminderKey,
     ) {}
-
-    public function via(object $notifiable): array
-    {
-        return ['mail'];
-    }
 
     public function toMail(object $notifiable): MailMessage
     {
@@ -47,5 +43,22 @@ class RentReminderDue extends Notification
             str_starts_with($this->reminderKey, 'overdue') => "Overdue notice: rent of {$amount} was due on {$due}",
             default => "Rent reminder — {$amount} due {$due}",
         };
+    }
+
+    protected function tenantPhone(): ?string
+    {
+        return $this->invoice->tenant?->phone;
+    }
+
+    protected function phoneMessage(): string
+    {
+        $invoice = $this->invoice;
+        $amount = Money::format($invoice->totalDue(), $invoice->displayCurrency());
+
+        return __('Kirada: rent of :amount due :due. Payment reference: :reference', [
+            'amount' => $amount,
+            'due' => $invoice->due_date->format('d/m/Y'),
+            'reference' => $invoice->payment_reference ?? $invoice->invoice_number,
+        ]);
     }
 }

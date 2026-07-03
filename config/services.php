@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    // WhatsApp Cloud API (tenant notifications). Channels no-op when empty.
+    'whatsapp' => [
+        'token' => env('WHATSAPP_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+    ],
+
+    // Twilio SMS (tenant notifications). Channels no-op when empty.
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_AUTH_TOKEN'),
+        'from' => env('TWILIO_FROM'),
+    ],
+
 ];
