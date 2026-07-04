@@ -283,7 +283,7 @@
                                                 <span class="text-lg font-bold">
                                                     @switch($feature['title'])
                                                         @case('Properties')
-                                                            &#8962;
+                                                            ⌂
                                                         @break
 
                                                         @case('Rent Collection')
@@ -291,11 +291,11 @@
                                                         @break
 
                                                         @case('Digital Contracts')
-                                                            &#9998;
+                                                            ✎
                                                         @break
 
                                                         @default
-                                                            &#9881;
+                                                            ⚙
                                                     @endswitch
                                                 </span>
                                             </div>
@@ -326,7 +326,7 @@
                                     <span class="text-base font-bold">
                                         @switch($feature['title'])
                                             @case('Properties')
-                                                &#8962;
+                                                ⌂
                                             @break
 
                                             @case('Rent Collection')
@@ -334,15 +334,15 @@
                                             @break
 
                                             @case('Digital Contracts')
-                                                &#9998;
+                                                ✎
                                             @break
 
                                             @case('Maintenance')
-                                                &#9881;
+                                                ⚙
                                             @break
 
                                             @default
-                                                &#9993;
+                                                ✉
                                         @endswitch
                                     </span>
                                 </div>
@@ -420,17 +420,84 @@
                     </p>
                 </div>
 
-                <div class="mt-12 grid gap-3 md:grid-cols-3 xl:grid-cols-9">
-                    @foreach ($workflow as $step => $label)
-                        <div
-                            class="rounded-[1.35rem] border border-slate-200/80 bg-white px-4 py-5 text-center shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
-                            <span
-                                class="mx-auto mb-3 flex size-9 items-center justify-center rounded-full bg-kirada-ocean/10 text-sm font-bold text-kirada-ocean">
-                                {{ $step + 1 }}
-                            </span>
-                            <p class="text-sm font-semibold text-kirada-navy">{{ __($label) }}</p>
-                        </div>
-                    @endforeach
+                {{-- Chatsheet-style isometric 3D pipeline: scattered input icons on the left
+                     converge via dotted lines into a central 3D disc hub with concentric blue
+                     rings; on the right, numbered step cards ascend on a blue-tinted platform.
+                     Falls back to vertical stack on mobile and static layout for reduced-motion. --}}
+                <div class="kirada-iso-stage">
+
+                    {{-- Left: scattered input icons (Kirada modules as "apps") --}}
+                    <div class="kirada-iso-inputs">
+                        @php
+                            $inputIcons = [
+                                ['glyph' => '⌂', 'label' => 'Property',   'top' => '8%',  'left' => '4%'],
+                                ['glyph' => '👤', 'label' => 'Tenant',     'top' => '28%', 'left' => '18%'],
+                                ['glyph' => '✎', 'label' => 'Lease',      'top' => '52%', 'left' => '6%'],
+                                ['glyph' => '$', 'label' => 'Invoice',    'top' => '72%', 'left' => '20%'],
+                                ['glyph' => '⚙', 'label' => 'Maintain',   'top' => '88%', 'left' => '8%'],
+                                ['glyph' => '✉', 'label' => 'Message',    'top' => '18%', 'left' => '32%'],
+                                ['glyph' => '📄', 'label' => 'Contract',   'top' => '62%', 'left' => '34%'],
+                            ];
+                        @endphp
+                        @foreach ($inputIcons as $i => $icon)
+                            <div class="kirada-iso-input-icon"
+                                 style="top: {{ $icon['top'] }}; left: {{ $icon['left'] }}; transition-delay: {{ $i * 100 }}ms;"
+                                 title="{{ __($icon['label']) }}">
+                                {{ $icon['glyph'] }}
+                            </div>
+                        @endforeach
+                    </div>
+
+                    {{-- Dotted connector lines (SVG, drawn by JS) --}}
+                    <svg class="kirada-iso-connectors" viewBox="0 0 1100 520" preserveAspectRatio="none"></svg>
+
+                    {{-- Center: 3D hub disc with concentric rings --}}
+                    <div class="kirada-iso-hub-glow"></div>
+                    <div class="kirada-iso-hub">
+                        <div class="kirada-iso-hub-disc"></div>
+                    </div>
+
+                    {{-- Right: ascending step cards on blue-tinted platform --}}
+                    <div class="kirada-iso-outputs">
+                        <div class="kirada-iso-path"></div>
+
+                        @php
+                            $stepGlyphs = ['⌂', '👤', '✎', '$', '✎', '⚙', '💬', '📄', '📊'];
+                            $stepLabels = ['Property', 'Tenant', 'Lease', 'Invoice', 'Payment', 'Contract', 'Maintain', 'Message', 'Reports'];
+                            // Ascending diagonal positions (bottom-left to top-right)
+                            $stepPositions = [
+                                ['top' => '78%', 'right' => '2%'],
+                                ['top' => '66%', 'right' => '6%'],
+                                ['top' => '54%', 'right' => '10%'],
+                                ['top' => '42%', 'right' => '14%'],
+                                ['top' => '30%', 'right' => '18%'],
+                                ['top' => '18%', 'right' => '22%'],
+                            ];
+                        @endphp
+                        @foreach (array_slice($workflow, 0, 6) as $step => $label)
+                            <div class="kirada-iso-step"
+                                 style="top: {{ $stepPositions[$step]['top'] }}; right: {{ $stepPositions[$step]['right'] }}; transition-delay: {{ ($step + 3) * 120 }}ms;">
+                                <div class="kirada-iso-step-num">{{ $step + 1 }}</div>
+                                <span class="kirada-iso-step-glyph">{{ $stepGlyphs[$step] }}</span>
+                                <span class="kirada-iso-step-label">{{ __($label) }}</span>
+                            </div>
+                        @endforeach
+
+                        {{-- Data particles floating above the path --}}
+                        @for ($p = 0; $p < 5; $p++)
+                            <div class="kirada-iso-particle"
+                                 style="top: {{ 15 + $p * 12 }}%; right: {{ 10 + $p * 8 }}%; background: {{ $p % 2 === 0 ? '#0EA5E9' : '#10B981' }}; animation-delay: {{ $p * 0.6 }}s;"></div>
+                        @endfor
+                    </div>
+                </div>
+
+                {{-- Fallback: simple labeled list below the orbit for accessibility --}}
+                <div class="sr-only">
+                    <ol>
+                        @foreach ($workflow as $step => $label)
+                            <li>{{ $step + 1 }}. {{ __($label) }}</li>
+                        @endforeach
+                    </ol>
                 </div>
             </div>
         </section>
