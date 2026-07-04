@@ -33,7 +33,7 @@ class RentPaymentService
      */
     public function dataFromInvoice(RentInvoice $invoice): array
     {
-        $remaining = $this->getRemainingAmount($invoice);
+        $remaining = $this->getRemainingAmount($invoice, includePending: true);
 
         return [
             'rent_invoice_id' => $invoice->id,
@@ -48,13 +48,15 @@ class RentPaymentService
     /**
      * Get the remaining amount on an invoice (total minus confirmed payments).
      */
-    public function getRemainingAmount(RentInvoice $invoice): float
+    public function getRemainingAmount(RentInvoice $invoice, bool $includePending = false): float
     {
-        $confirmedTotal = RentPayment::where('rent_invoice_id', $invoice->id)
-            ->where('status', 'confirmed')
+        $statuses = $includePending ? ['confirmed', 'pending'] : ['confirmed'];
+
+        $paidTotal = RentPayment::where('rent_invoice_id', $invoice->id)
+            ->whereIn('status', $statuses)
             ->sum('amount');
 
-        return max(0, (float) $invoice->amount - (float) $confirmedTotal);
+        return max(0, (float) $invoice->totalDue() - (float) $paidTotal);
     }
 
     /**
@@ -64,7 +66,7 @@ class RentPaymentService
     {
         $invoice = RentInvoice::findOrFail($data['rent_invoice_id']);
 
-        $remaining = $this->getRemainingAmount($invoice);
+        $remaining = $this->getRemainingAmount($invoice, includePending: true);
 
         if ((float) $data['amount'] > $remaining) {
             throw new \DomainException(
@@ -173,7 +175,7 @@ class RentPaymentService
             ->where('status', 'confirmed')
             ->sum('amount');
 
-        if ($confirmedTotal >= (float) $invoice->amount) {
+        if ($confirmedTotal >= (float) $invoice->totalDue()) {
             $invoice->update(['status' => 'paid']);
         } elseif ($confirmedTotal > 0) {
             $invoice->update(['status' => 'partially_paid']);
