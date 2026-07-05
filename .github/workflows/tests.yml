@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # composer.lock pins Symfony 8.x, which requires PHP >= 8.4;
+        # composer.lock pins Symfony 8.x, which requires PHP >= 8.4.1;
         # 8.3 can no longer install dependencies.
         php-version: ['8.4', '8.5']
 
