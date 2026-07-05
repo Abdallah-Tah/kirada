@@ -681,303 +681,374 @@ select:focus[data-flux-control] {
 
 /* ----------------------------------------------------------------------------
    Kirada Workflow — Isometric 3D pipeline animation (Chatsheet-style).
-   Left: scattered input icons with dotted connectors to a central 3D hub.
-   Center: thick disc hub with concentric blue rings and glow.
-   Right: ascending step cards on a blue-tinted platform.
-   Light premium SaaS theme using Kirada brand colors only.
-   Gated behind prefers-reduced-motion: no-preference.
+   Left: module icon tiles chained along a dotted path that flows into the hub.
+   Center: thick ringed disc hub floating over a ground shadow.
+   Right: isometric white document panels with pill labels stepping up-right.
+   Traveling dots ride the dotted paths via SMIL inside the SVG.
+   Entrance is scroll-triggered (`.is-visible` on the stage); hidden state is
+   gated behind `.kirada-motion` so no-JS still renders the full scene
+   (ambient float/sweep animations remain, governed by prefers-reduced-motion).
 ---------------------------------------------------------------------------- */
 
 .kirada-iso-stage {
     position: relative;
     width: 100%;
     max-width: 1100px;
-    height: 520px;
+    height: 560px;
     margin: 0 auto;
     perspective: 1400px;
     perspective-origin: 50% 30%;
     overflow: visible;
 }
 
-/* ── Central 3D Hub (thick disc/puck with concentric rings) ── */
-.kirada-iso-hub {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 120px;
-    height: 120px;
-    margin: -60px 0 0 -60px;
-    z-index: 10;
-    transform-style: preserve-3d;
-    transform: rotateX(55deg) rotateZ(0deg);
-}
-
-.kirada-iso-hub-disc {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background:
-        radial-gradient(circle at 50% 50%,
-            #ffffff 0%,
-            #ffffff 28%,
-            rgba(14, 165, 233, 0.08) 29%,
-            rgba(14, 165, 233, 0.08) 32%,
-            #ffffff 33%,
-            #ffffff 44%,
-            rgba(14, 165, 233, 0.12) 45%,
-            rgba(14, 165, 233, 0.12) 48%,
-            #ffffff 49%,
-            #ffffff 60%,
-            rgba(14, 165, 233, 0.18) 61%,
-            rgba(14, 165, 233, 0.18) 64%,
-            #ffffff 65%,
-            #ffffff 76%,
-            rgba(14, 165, 233, 0.25) 77%,
-            rgba(14, 165, 233, 0.25) 80%,
-            #ffffff 81%,
-            #ffffff 100%);
-    box-shadow:
-        0 0 60px rgba(14, 165, 233, 0.30),
-        0 0 120px rgba(14, 165, 233, 0.12),
-        inset 0 0 20px rgba(14, 165, 233, 0.06);
-    position: relative;
-}
-
-/* Hub "thickness" — a dark cylinder side */
-.kirada-iso-hub::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 120px;
-    height: 120px;
-    margin: -60px 0 0 -60px;
-    border-radius: 50%;
-    background: linear-gradient(180deg, #0F172A 0%, #1e293b 100%);
-    transform: translateZ(-24px);
-    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.35);
-}
-
-/* Hub glow on the ground */
-.kirada-iso-hub-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 240px;
-    height: 240px;
-    margin: -120px 0 0 -120px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.18) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: -1;
-    transform: translateZ(-30px);
-}
-
-/* ── Input icons (left side, scattered fan) ── */
-.kirada-iso-inputs {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 42%;
-    height: 100%;
-    z-index: 5;
-}
-
-.kirada-iso-input-icon {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: linear-gradient(145deg, #ffffff 0%, #f8fbff 100%);
-    border: 1px solid rgba(14, 165, 233, 0.12);
-    box-shadow:
-        0 8px 24px rgba(15, 23, 42, 0.10),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--color-kirada-ocean);
-    opacity: 0;
-    transform: scale(0.5) translateY(20px);
-    transition: opacity 0.6s var(--ease-kirada), transform 0.6s var(--ease-kirada);
-    will-change: transform, opacity;
-}
-
-.kirada-iso-input-icon.is-visible {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-}
-
-/* ── Connector lines (SVG, dotted, from inputs to hub) ── */
-.kirada-iso-connectors {
+/* ── Dotted flow paths + traveling dots (SVG) ── */
+.kirada-iso-flow {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 3;
-    opacity: 0;
-    transition: opacity 1s var(--ease-kirada) 0.3s;
+    z-index: 2;
 }
 
-.kirada-iso-connectors.is-visible {
-    opacity: 1;
+.kirada-iso-dotline {
+    stroke: rgba(15, 23, 42, 0.22);
+    stroke-width: 2;
+    stroke-dasharray: 0.5 10;
+    stroke-linecap: round;
 }
 
-.kirada-iso-connectors line {
-    stroke: rgba(14, 165, 233, 0.20);
-    stroke-width: 1.5;
-    stroke-dasharray: 3 5;
-    animation: kirada-dash-flow 4s linear infinite;
+.kirada-iso-dotline--out {
+    stroke: rgba(14, 165, 233, 0.30);
 }
 
-@keyframes kirada-dash-flow {
-    to { stroke-dashoffset: -16; }
+.kirada-iso-dot {
+    fill: var(--color-kirada-ocean);
+    opacity: 0.9;
 }
 
-/* ── Output path (right side, ascending diagonal step cards) ── */
-.kirada-iso-outputs {
+.kirada-iso-dot--out {
+    fill: var(--color-kirada-green);
+}
+
+/* ── Module icon tiles on the path ── */
+.kirada-iso-inputs {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100%;
-    z-index: 6;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
 }
 
-/* Blue-tinted platform under the step cards */
-.kirada-iso-path {
+.kirada-iso-tile {
     position: absolute;
-    top: 20%;
-    right: 0;
-    width: 88%;
-    height: 65%;
-    background: linear-gradient(135deg,
-        rgba(14, 165, 233, 0.06) 0%,
-        rgba(14, 165, 233, 0.10) 50%,
-        rgba(16, 185, 129, 0.08) 100%);
-    border-radius: 20px;
-    border: 1px solid rgba(14, 165, 233, 0.08);
-    transform: rotate(-8deg);
-    transform-origin: bottom left;
-    opacity: 0;
-    transition: opacity 0.8s var(--ease-kirada) 0.2s;
-}
-
-.kirada-iso-path.is-visible {
-    opacity: 1;
-}
-
-.kirada-iso-step {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 20px;
-    border-radius: 16px;
-    background: #ffffff;
-    border: 1px solid rgba(14, 165, 233, 0.12);
-    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.10);
-    min-width: 180px;
-    opacity: 0;
-    transform: translateX(40px) translateY(10px);
-    transition: opacity 0.6s var(--ease-kirada), transform 0.6s var(--ease-kirada);
-    will-change: transform, opacity;
-}
-
-.kirada-iso-step.is-visible {
-    opacity: 1;
-    transform: translateX(0) translateY(0);
-}
-
-.kirada-iso-step-num {
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #0EA5E9, #10B981);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 700;
+    pointer-events: auto; /* parent layer is none; re-enable so title tooltips work */
+    left: var(--x);
+    top: var(--y);
+    width: 56px;
+    height: 56px;
+    margin: -28px 0 0 -28px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #ffffff 0%, #f6faff 100%);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow:
+        0 14px 28px rgba(15, 23, 42, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
 }
 
-.kirada-iso-step-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-kirada-navy);
-    white-space: nowrap;
-}
-
-.kirada-iso-step-glyph {
-    font-size: 16px;
-    color: var(--color-kirada-ocean);
+.kirada-iso-tile > span {
+    font-size: 26px;
     line-height: 1;
 }
 
-/* ── Data particles (small floating dots above the path) ── */
-.kirada-iso-particle {
+/* ── Central 3D hub (thick ringed disc) ── */
+.kirada-iso-hub {
     position: absolute;
-    width: 8px;
-    height: 8px;
+    left: 43.64%;
+    top: 58.93%;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    z-index: 6;
+    transform-style: preserve-3d;
+    transform: rotateX(56deg);
+}
+
+/* Hub "thickness" — dark cylinder side under the top face */
+.kirada-iso-hub::after {
+    content: '';
+    position: absolute;
+    inset: 0;
     border-radius: 50%;
+    background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+    transform: translateZ(-22px);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+}
+
+.kirada-iso-hub-disc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 50%,
+            #0284C7 0%, #0284C7 9%,
+            #ffffff 10%, #ffffff 17%,
+            #0EA5E9 18%, #0EA5E9 27%,
+            #ffffff 28%, #ffffff 35%,
+            #38BDF8 36%, #38BDF8 45%,
+            #ffffff 46%, #ffffff 53%,
+            #7DD3FC 54%, #7DD3FC 63%,
+            #ffffff 64%, #ffffff 73%,
+            #BAE6FD 74%, #BAE6FD 81%,
+            #ffffff 82%, #ffffff 100%);
+    box-shadow:
+        0 0 50px rgba(14, 165, 233, 0.35),
+        inset 0 0 24px rgba(14, 165, 233, 0.10);
+}
+
+/* Rotating highlight sweep across the rings */
+.kirada-iso-hub-sweep {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg,
+        transparent 0deg,
+        transparent 250deg,
+        rgba(255, 255, 255, 0.55) 305deg,
+        transparent 360deg);
+}
+
+/* Soft elliptical ground shadow under the floating hub */
+.kirada-iso-hub-shadow {
+    position: absolute;
+    left: 43.64%;
+    top: 63%;
+    width: 230px;
+    height: 70px;
+    margin: -35px 0 0 -115px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(15, 23, 42, 0.22) 0%, rgba(14, 165, 233, 0.10) 45%, transparent 70%);
+    filter: blur(6px);
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* ── Isometric document panels (right, stepping up to the corner) ── */
+.kirada-iso-panels {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.kirada-iso-panel {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 250px;
+    height: 165px;
+    margin: -82px 0 0 -125px;
+    transform: scale(calc(1 - var(--i) * 0.07));
+}
+
+.kirada-iso-panel-3d {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(56deg) rotateZ(-42deg);
+}
+
+.kirada-iso-panel-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 18px;
+    background: linear-gradient(160deg, #ffffff 0%, #f4f9ff 100%);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow:
+        0 30px 60px rgba(15, 23, 42, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.kirada-iso-panel-chips {
+    display: flex;
+    gap: 8px;
+    transform: translateZ(10px);
+}
+
+.kirada-iso-panel-chips > span {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.07);
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    line-height: 1;
+}
+
+.kirada-iso-panel-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.kirada-iso-panel-lines > i {
+    height: 9px;
+    border-radius: 999px;
+    background: #E4EDF7;
+}
+
+.kirada-iso-panel-lines > i:nth-child(1) { width: 72%; }
+.kirada-iso-panel-lines > i:nth-child(2) { width: 54%; background: #DDEBFA; }
+.kirada-iso-panel-lines > i:nth-child(3) { width: 63%; }
+
+/* Blue pill label raised above the panel plane */
+.kirada-iso-pill {
+    position: absolute;
+    bottom: 12%;
+    left: -14%;
+    transform: translateZ(34px);
+    padding: 9px 20px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0EA5E9 0%, #2563EB 100%);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+    box-shadow: 0 16px 30px rgba(14, 165, 233, 0.45);
+}
+
+/* ── Scroll entrance (hidden state gated behind .kirada-motion) ── */
+.kirada-motion .kirada-iso-flow {
     opacity: 0;
-    transition: opacity 0.8s var(--ease-kirada);
+    transition: opacity 1s var(--ease-kirada) 0.35s;
 }
 
-.kirada-iso-particle.is-visible {
-    opacity: 0.8;
+.kirada-motion .kirada-iso-tile {
+    opacity: 0;
+    transform: scale(0.4) translateY(24px);
+    transition: opacity 0.6s var(--ease-kirada), transform 0.6s var(--ease-kirada);
+    transition-delay: calc(var(--i) * 110ms);
 }
 
-/* ── Animations (gated behind no-preference) ── */
-@keyframes kirada-iso-hub-glow-pulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
+.kirada-motion .kirada-iso-hub,
+.kirada-motion .kirada-iso-hub-shadow {
+    opacity: 0;
+    transition: opacity 0.9s var(--ease-kirada) 0.45s;
 }
 
+.kirada-motion .kirada-iso-panel {
+    opacity: 0;
+    transform: scale(calc(1 - var(--i) * 0.07)) translateY(46px);
+    transition: opacity 0.7s var(--ease-kirada), transform 0.7s var(--ease-kirada);
+    transition-delay: calc(0.55s + var(--i) * 160ms);
+}
+
+.kirada-motion .kirada-iso-stage.is-visible .kirada-iso-flow,
+.kirada-motion .kirada-iso-stage.is-visible .kirada-iso-hub,
+.kirada-motion .kirada-iso-stage.is-visible .kirada-iso-hub-shadow {
+    opacity: 1;
+}
+
+.kirada-motion .kirada-iso-stage.is-visible .kirada-iso-tile {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.kirada-motion .kirada-iso-stage.is-visible .kirada-iso-panel {
+    opacity: 1;
+    transform: scale(calc(1 - var(--i) * 0.07)) translateY(0);
+}
+
+/* ── Ambient animations (gated behind no-preference) ── */
 @keyframes kirada-iso-float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-9px); }
 }
 
-@keyframes kirada-iso-particle-float {
-    0% { transform: translateY(0) scale(1); opacity: 0; }
-    20% { opacity: 0.8; }
-    80% { opacity: 0.8; }
-    100% { transform: translateY(-30px) scale(0.5); opacity: 0; }
+@keyframes kirada-iso-hub-float {
+    0%, 100% { transform: rotateX(56deg) translateZ(0); }
+    50% { transform: rotateX(56deg) translateZ(16px); }
+}
+
+@keyframes kirada-iso-hub-shadow-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+@keyframes kirada-iso-sweep-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes kirada-iso-panel-float {
+    0%, 100% { transform: rotateX(56deg) rotateZ(-42deg) translateZ(0); }
+    50% { transform: rotateX(56deg) rotateZ(-42deg) translateZ(12px); }
+}
+
+@keyframes kirada-iso-dash-flow {
+    to { stroke-dashoffset: -21; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .kirada-iso-hub-glow {
-        animation: kirada-iso-hub-glow-pulse 4s var(--ease-kirada-soft) infinite;
+    .kirada-iso-tile > span {
+        animation: kirada-iso-float 5.5s var(--ease-kirada-soft) infinite;
+        animation-delay: calc(var(--i) * -1.1s);
     }
 
-    .kirada-iso-input-icon.is-visible {
-        animation: kirada-iso-float 6s var(--ease-kirada-soft) infinite;
+    .kirada-iso-hub {
+        animation: kirada-iso-hub-float 6s var(--ease-kirada-soft) infinite;
     }
 
-    .kirada-iso-particle.is-visible {
-        animation: kirada-iso-particle-float 3s var(--ease-kirada-soft) infinite;
+    .kirada-iso-stage.is-visible .kirada-iso-hub-shadow {
+        animation: kirada-iso-hub-shadow-pulse 6s var(--ease-kirada-soft) infinite;
+    }
+
+    .kirada-iso-hub-sweep {
+        animation: kirada-iso-sweep-spin 8s linear infinite;
+    }
+
+    .kirada-iso-panel-3d {
+        animation: kirada-iso-panel-float 7s var(--ease-kirada-soft) infinite;
+        animation-delay: calc(var(--i) * -2.3s);
+    }
+
+    .kirada-iso-dotline {
+        animation: kirada-iso-dash-flow 2s linear infinite;
     }
 }
 
-/* ── Reduced motion fallback ── */
+/* ── Reduced motion: static scene, no travelers ── */
 @media (prefers-reduced-motion: reduce) {
-    .kirada-iso-input-icon,
-    .kirada-iso-step,
-    .kirada-iso-path,
-    .kirada-iso-connectors,
-    .kirada-iso-particle {
+    .kirada-iso-dot {
+        display: none;
+    }
+
+    .kirada-motion .kirada-iso-flow,
+    .kirada-motion .kirada-iso-tile,
+    .kirada-motion .kirada-iso-hub,
+    .kirada-motion .kirada-iso-hub-shadow,
+    .kirada-motion .kirada-iso-panel {
         opacity: 1;
+        transition: none;
+    }
+
+    .kirada-motion .kirada-iso-tile {
         transform: none;
     }
-    .kirada-iso-particle {
-        opacity: 0.6;
+
+    .kirada-motion .kirada-iso-panel {
+        transform: scale(calc(1 - var(--i) * 0.07));
     }
 }
 
@@ -990,83 +1061,100 @@ select:focus[data-flux-control] {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 24px;
-        padding: 16px 0;
+        gap: 28px;
+        padding: 8px 0;
+    }
+
+    .kirada-iso-flow,
+    .kirada-iso-hub-shadow {
+        display: none;
+    }
+
+    .kirada-iso-inputs {
+        position: relative;
+        inset: auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        order: 1;
+    }
+
+    .kirada-iso-tile {
+        position: relative;
+        left: auto;
+        top: auto;
+        margin: 0;
+    }
+
+    .kirada-iso-tile > span {
+        animation: none;
     }
 
     .kirada-iso-hub {
         position: relative;
-        top: auto;
         left: auto;
+        top: auto;
         margin: 0;
+        width: 120px;
+        height: 120px;
         transform: none;
+        animation: none;
+        order: 2;
     }
 
     .kirada-iso-hub::after {
         display: none;
     }
 
-    .kirada-iso-hub-glow {
+    .kirada-iso-panels {
         position: relative;
-        top: auto;
-        left: auto;
-        margin: 0;
-        transform: none;
-    }
-
-    .kirada-iso-inputs {
-        position: relative;
-        top: auto;
-        left: auto;
-        width: 100%;
-        height: auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .kirada-iso-input-icon {
-        position: relative;
-        top: auto;
-        left: auto;
-        opacity: 1;
-        transform: scale(1);
-        animation: none;
-    }
-
-    .kirada-iso-connectors {
-        display: none;
-    }
-
-    .kirada-iso-outputs {
-        position: relative;
-        top: auto;
-        right: auto;
-        width: 100%;
-        height: auto;
+        inset: auto;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+        order: 3;
     }
 
-    .kirada-iso-path {
-        display: none;
-    }
-
-    .kirada-iso-step {
+    .kirada-iso-panel {
         position: relative;
+        left: auto;
         top: auto;
-        right: auto;
-        opacity: 1;
+        margin: 0;
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        transform: none;
+    }
+
+    .kirada-iso-panel-3d {
+        position: relative;
+        inset: auto;
         transform: none;
         animation: none;
-        width: 100%;
-        max-width: 280px;
     }
 
-    .kirada-iso-particle {
-        display: none;
+    .kirada-iso-panel-face {
+        position: relative;
+        inset: auto;
+        min-height: 120px;
+    }
+
+    .kirada-iso-pill {
+        position: absolute;
+        bottom: 14px;
+        left: 18px;
+        transform: none;
+    }
+
+    .kirada-motion .kirada-iso-panel {
+        transform: none;
+    }
+
+    .kirada-motion .kirada-iso-stage.is-visible .kirada-iso-panel {
+        transform: none;
     }
 }
 

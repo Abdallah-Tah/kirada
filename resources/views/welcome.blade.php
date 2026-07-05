@@ -420,74 +420,101 @@
                     </p>
                 </div>
 
-                {{-- Chatsheet-style isometric 3D pipeline: scattered input icons on the left
-                     converge via dotted lines into a central 3D disc hub with concentric blue
-                     rings; on the right, numbered step cards ascend on a blue-tinted platform.
+                {{-- Chatsheet-style isometric 3D pipeline: module icon tiles travel along a
+                     dotted path from the left into a ringed 3D hub disc; on the right,
+                     isometric document panels with pill labels step up toward the corner.
                      Falls back to vertical stack on mobile and static layout for reduced-motion. --}}
-                <div class="kirada-iso-stage">
+                @php
+                    // Waypoint coordinates live in a 1100x560 space shared with the SVG
+                    // viewBox so the dotted path runs exactly through each tile.
+                    $isoTiles = [
+                        ['glyph' => '🏠', 'label' => 'Property',    'x' => 70,  'y' => 430],
+                        ['glyph' => '👥', 'label' => 'Tenant',      'x' => 185, 'y' => 375],
+                        ['glyph' => '📝', 'label' => 'Lease',       'x' => 295, 'y' => 435],
+                        ['glyph' => '💵', 'label' => 'Payment',     'x' => 378, 'y' => 368],
+                        ['glyph' => '🔧', 'label' => 'Maintenance', 'x' => 560, 'y' => 455],
+                    ];
+                    $isoPanels = [
+                        ['pill' => 'Rent Invoicing',      'chips' => ['💵', '🧾', '👥'], 'x' => 645, 'y' => 296],
+                        ['pill' => 'Digital Contracts',   'chips' => ['📄', '✍️', '🔒'], 'x' => 795, 'y' => 212],
+                        ['pill' => 'Reports & Analytics', 'chips' => ['📊', '📈', '🌍'], 'x' => 945, 'y' => 128],
+                    ];
+                @endphp
+                <div class="kirada-iso-stage" aria-hidden="true">
 
-                    {{-- Left: scattered input icons (Kirada modules as "apps") --}}
+                    {{-- Dotted flow paths + traveling data dots (SMIL, scales with viewBox) --}}
+                    <svg class="kirada-iso-flow" viewBox="0 0 1100 560" fill="none" preserveAspectRatio="none"
+                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <path id="kirada-flow-in" class="kirada-iso-dotline"
+                              d="M-30 400 L70 430 L185 375 L295 435 L378 368 L474 332" />
+                        <path id="kirada-flow-in-2" class="kirada-iso-dotline"
+                              d="M560 455 L492 348" />
+                        <path id="kirada-flow-out" class="kirada-iso-dotline kirada-iso-dotline--out"
+                              d="M505 318 L645 296 L795 212 L945 128 L1070 58" />
+                        <circle class="kirada-iso-dot" r="5" cx="-30" cy="400">
+                            <animateMotion dur="5.2s" repeatCount="indefinite">
+                                <mpath xlink:href="#kirada-flow-in" href="#kirada-flow-in" />
+                            </animateMotion>
+                        </circle>
+                        <circle class="kirada-iso-dot" r="4" cx="-30" cy="400">
+                            <animateMotion dur="5.2s" begin="2.6s" repeatCount="indefinite">
+                                <mpath xlink:href="#kirada-flow-in" href="#kirada-flow-in" />
+                            </animateMotion>
+                        </circle>
+                        <circle class="kirada-iso-dot" r="4" cx="560" cy="455">
+                            <animateMotion dur="2.6s" begin="1.2s" repeatCount="indefinite">
+                                <mpath xlink:href="#kirada-flow-in-2" href="#kirada-flow-in-2" />
+                            </animateMotion>
+                        </circle>
+                        <circle class="kirada-iso-dot kirada-iso-dot--out" r="5" cx="505" cy="318">
+                            <animateMotion dur="5s" begin="0.6s" repeatCount="indefinite">
+                                <mpath xlink:href="#kirada-flow-out" href="#kirada-flow-out" />
+                            </animateMotion>
+                        </circle>
+                        <circle class="kirada-iso-dot kirada-iso-dot--out" r="4" cx="505" cy="318">
+                            <animateMotion dur="5s" begin="3.1s" repeatCount="indefinite">
+                                <mpath xlink:href="#kirada-flow-out" href="#kirada-flow-out" />
+                            </animateMotion>
+                        </circle>
+                    </svg>
+
+                    {{-- Module icon tiles sitting on the dotted path --}}
                     <div class="kirada-iso-inputs">
-                        @php
-                            $inputIcons = [
-                                ['glyph' => '⌂', 'label' => 'Property',   'top' => '8%',  'left' => '4%'],
-                                ['glyph' => '👤', 'label' => 'Tenant',     'top' => '28%', 'left' => '18%'],
-                                ['glyph' => '✎', 'label' => 'Lease',      'top' => '52%', 'left' => '6%'],
-                                ['glyph' => '$', 'label' => 'Invoice',    'top' => '72%', 'left' => '20%'],
-                                ['glyph' => '⚙', 'label' => 'Maintain',   'top' => '88%', 'left' => '8%'],
-                                ['glyph' => '✉', 'label' => 'Message',    'top' => '18%', 'left' => '32%'],
-                                ['glyph' => '📄', 'label' => 'Contract',   'top' => '62%', 'left' => '34%'],
-                            ];
-                        @endphp
-                        @foreach ($inputIcons as $i => $icon)
-                            <div class="kirada-iso-input-icon"
-                                 style="top: {{ $icon['top'] }}; left: {{ $icon['left'] }}; transition-delay: {{ $i * 100 }}ms;"
-                                 title="{{ __($icon['label']) }}">
-                                {{ $icon['glyph'] }}
+                        @foreach ($isoTiles as $i => $tile)
+                            <div class="kirada-iso-tile"
+                                 style="--x: {{ round($tile['x'] / 11, 2) }}%; --y: {{ round($tile['y'] / 5.6, 2) }}%; --i: {{ $i }};"
+                                 title="{{ __($tile['label']) }}">
+                                <span>{{ $tile['glyph'] }}</span>
                             </div>
                         @endforeach
                     </div>
 
-                    {{-- Dotted connector lines (SVG, drawn by JS) --}}
-                    <svg class="kirada-iso-connectors" viewBox="0 0 1100 520" preserveAspectRatio="none"></svg>
-
-                    {{-- Center: 3D hub disc with concentric rings --}}
-                    <div class="kirada-iso-hub-glow"></div>
+                    {{-- Center: floating 3D hub disc with concentric rings --}}
+                    <div class="kirada-iso-hub-shadow"></div>
                     <div class="kirada-iso-hub">
-                        <div class="kirada-iso-hub-disc"></div>
+                        <div class="kirada-iso-hub-disc">
+                            <div class="kirada-iso-hub-sweep"></div>
+                        </div>
                     </div>
 
-                    {{-- Right: ascending step cards on blue-tinted platform --}}
-                    <div class="kirada-iso-outputs">
-                        <div class="kirada-iso-path"></div>
-
-                        @php
-                            $stepGlyphs = ['⌂', '👤', '✎', '$', '✎', '⚙', '💬', '📄', '📊'];
-                            $stepLabels = ['Property', 'Tenant', 'Lease', 'Invoice', 'Payment', 'Contract', 'Maintain', 'Message', 'Reports'];
-                            // Ascending diagonal positions (bottom-left to top-right)
-                            $stepPositions = [
-                                ['top' => '78%', 'right' => '2%'],
-                                ['top' => '66%', 'right' => '6%'],
-                                ['top' => '54%', 'right' => '10%'],
-                                ['top' => '42%', 'right' => '14%'],
-                                ['top' => '30%', 'right' => '18%'],
-                                ['top' => '18%', 'right' => '22%'],
-                            ];
-                        @endphp
-                        @foreach (array_slice($workflow, 0, 6) as $step => $label)
-                            <div class="kirada-iso-step"
-                                 style="top: {{ $stepPositions[$step]['top'] }}; right: {{ $stepPositions[$step]['right'] }}; transition-delay: {{ ($step + 3) * 120 }}ms;">
-                                <div class="kirada-iso-step-num">{{ $step + 1 }}</div>
-                                <span class="kirada-iso-step-glyph">{{ $stepGlyphs[$step] }}</span>
-                                <span class="kirada-iso-step-label">{{ __($label) }}</span>
+                    {{-- Right: isometric document panels stepping up to the corner --}}
+                    <div class="kirada-iso-panels">
+                        @foreach ($isoPanels as $p => $panel)
+                            <div class="kirada-iso-panel"
+                                 style="--x: {{ round($panel['x'] / 11, 2) }}%; --y: {{ round($panel['y'] / 5.6, 2) }}%; --i: {{ $p }};">
+                                <div class="kirada-iso-panel-3d">
+                                    <div class="kirada-iso-panel-face">
+                                        <div class="kirada-iso-panel-chips">
+                                            @foreach ($panel['chips'] as $chip)
+                                                <span>{{ $chip }}</span>
+                                            @endforeach
+                                        </div>
+                                        <div class="kirada-iso-panel-lines"><i></i><i></i><i></i></div>
+                                    </div>
+                                    <span class="kirada-iso-pill">{{ __($panel['pill']) }}</span>
+                                </div>
                             </div>
                         @endforeach
-
-                        {{-- Data particles floating above the path --}}
-                        @for ($p = 0; $p < 5; $p++)
-                            <div class="kirada-iso-particle"
-                                 style="top: {{ 15 + $p * 12 }}%; right: {{ 10 + $p * 8 }}%; background: {{ $p % 2 === 0 ? '#0EA5E9' : '#10B981' }}; animation-delay: {{ $p * 0.6 }}s;"></div>
-                        @endfor
                     </div>
                 </div>
 
