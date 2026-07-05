@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <p class="text-xs text-zinc-400">{{ __('Either email or phone is required. The invitation link will be shown after creation — no SMS/email is sent.') }}</p>
+        <p class="text-xs text-zinc-400">{{ __('Either email or phone is required. If email is provided, an invitation email will be sent automatically.') }}</p>
 
         <div>
             <flux:button wire:click="sendInvitation" variant="primary" icon="paper-airplane">

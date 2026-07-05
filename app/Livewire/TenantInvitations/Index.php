@@ -115,7 +115,7 @@ class Index extends Component
             return;
         }
 
-        \Flux\Flux::toast('Invitation created. Share the link with the tenant.', 'success');
+        \Flux\Flux::toast('Invitation created and email sent to the tenant.', 'success');
 
         $this->reset(['tenant_id', 'email', 'phone']);
         unset($this->invitations);
@@ -134,7 +134,7 @@ class Index extends Component
             return;
         }
 
-        \Flux\Flux::toast('Invitation resent with a new link.', 'success');
+        \Flux\Flux::toast('Invitation resent and email sent to the tenant.', 'success');
         unset($this->invitations);
     }
 

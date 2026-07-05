@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Tenant;
 use App\Models\TenantInvitation;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class TenantInvitationService
@@ -41,7 +42,7 @@ class TenantInvitationService
             throw new \DomainException('A pending invitation already exists for this tenant. Cancel it first or resend.');
         }
 
-        return TenantInvitation::create([
+        $invitation = TenantInvitation::create([
             'landlord_id'  => $landlordId,
             'tenant_id'     => $tenantId,
             'email'         => $email,
@@ -50,6 +51,10 @@ class TenantInvitationService
             'status'        => 'pending',
             'expires_at'    => now()->addDays(self::DEFAULT_EXPIRY_DAYS),
         ]);
+
+        $this->sendInvitationEmail($invitation);
+
+        return $invitation;
     }
 
     /**
@@ -66,6 +71,8 @@ class TenantInvitationService
             'expires_at' => now()->addDays(self::DEFAULT_EXPIRY_DAYS),
         ]);
 
+        $this->sendInvitationEmail($invitation->fresh());
+
         return $invitation->fresh();
     }
 
@@ -81,6 +88,27 @@ class TenantInvitationService
         $invitation->update(['status' => 'cancelled']);
 
         return $invitation->fresh();
+    }
+
+    /**
+     * Send the invitation email to the tenant (if email is set).
+     */
+    protected function sendInvitationEmail(TenantInvitation $invitation): void
+    {
+        if (!$invitation->email) {
+            return;
+        }
+
+        $tenant = $invitation->tenant;
+        $landlord = $invitation->landlord;
+        $tenantName = $tenant ? trim($tenant->first_name . ' ' . $tenant->last_name) : 'Tenant';
+        $landlordName = $landlord?->name ?? 'Your Landlord';
+
+        Mail::to($invitation->email)->send(new \App\Mail\TenantInvitationMail(
+            $invitation,
+            $tenantName,
+            $landlordName,
+        ));
     }
 
     /**
