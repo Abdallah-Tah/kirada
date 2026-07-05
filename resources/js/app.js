@@ -349,109 +349,40 @@ document.addEventListener('keydown', (event) => {
 });
 
 // ── Workflow Isometric Pipeline Animation ───────────────────────────────────
-// Chatsheet-style: input icons scatter in from the left, dotted connector
-// lines draw from each icon to the central 3D hub, step cards ascend on the
-// right along a blue-tinted platform, data particles float above.
-// Gated behind prefers-reduced-motion: no-preference.
+// Chatsheet-style scene built entirely in CSS + inline SVG (SMIL travelers).
+// JS only handles the scroll-triggered entrance: `.is-visible` on the stage
+// cascades staggered transitions to tiles, hub, and panels via CSS delays.
 
-function initWorkflowOrbit() {
+function initWorkflowStage() {
     const stage = document.querySelector('.kirada-iso-stage');
-    if (!stage) return;
+    if (!stage || stage.classList.contains('is-visible')) return;
 
-    const inputs = stage.querySelectorAll('.kirada-iso-input-icon');
-    const connector = stage.querySelector('.kirada-iso-connectors');
-    const path = stage.querySelector('.kirada-iso-path');
-    const steps = stage.querySelectorAll('.kirada-iso-step');
-    const particles = stage.querySelectorAll('.kirada-iso-particle');
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
-
-    // Draw dotted connector lines from each input icon to the hub center
-    if (!isMobile && connector && connector.tagName.toLowerCase() === 'svg') {
-        const svgNs = 'http://www.w3.org/2000/svg';
-        const stageW = stage.clientWidth;
-        const stageH = stage.clientHeight;
-        const hubX = stageW * 0.50; // hub at center
-        const hubY = stageH * 0.50;
-        const inputsContainer = stage.querySelector('.kirada-iso-inputs');
-        const inputsRect = inputsContainer ? inputsContainer.getBoundingClientRect() : null;
-        const stageRect = stage.getBoundingClientRect();
-
-        inputs.forEach((icon) => {
-            const iconRect = icon.getBoundingClientRect();
-            const iconCx = iconRect.left - stageRect.left + iconRect.width / 2;
-            const iconCy = iconRect.top - stageRect.top + iconRect.height / 2;
-
-            // Convert to SVG viewBox coordinates
-            const vbX = (iconCx / stageRect.width) * 1100;
-            const vbY = (iconCy / stageRect.height) * 520;
-            const line = document.createElementNS(svgNs, 'line');
-            line.setAttribute('x1', vbX);
-            line.setAttribute('y1', vbY);
-            line.setAttribute('x2', 550);
-            line.setAttribute('y2', 260);
-            connector.appendChild(line);
-        });
-    }
-
-    // Static fallback: show everything immediately
     if (prefersReducedMotion() || !('IntersectionObserver' in window)) {
-        inputs.forEach((el) => el.classList.add('is-visible'));
-        if (connector) connector.classList.add('is-visible');
-        if (path) path.classList.add('is-visible');
-        steps.forEach((el) => el.classList.add('is-visible'));
-        particles.forEach((el) => el.classList.add('is-visible'));
+        stage.classList.add('is-visible');
         return;
     }
 
-    // Scroll-triggered staggered entrance
     const observer = new IntersectionObserver(
         (entries, obs) => {
             entries.forEach((entry) => {
                 if (!entry.isIntersecting) return;
                 obs.unobserve(entry.target);
-
-                // 1. Input icons scatter in from left (staggered)
-                inputs.forEach((icon) => {
-                    const delay = parseFloat(icon.style.transitionDelay) * 1000 || 0;
-                    setTimeout(() => icon.classList.add('is-visible'), delay);
-                });
-
-                // 2. Connector lines fade in
-                setTimeout(() => {
-                    if (connector) connector.classList.add('is-visible');
-                }, 400);
-
-                // 3. Blue platform fades in
-                setTimeout(() => {
-                    if (path) path.classList.add('is-visible');
-                }, 200);
-
-                // 4. Step cards ascend (staggered)
-                steps.forEach((step) => {
-                    const delay = parseFloat(step.style.transitionDelay) * 1000 || 0;
-                    setTimeout(() => step.classList.add('is-visible'), delay);
-                });
-
-                // 5. Data particles appear
-                particles.forEach((particle, i) => {
-                    setTimeout(() => particle.classList.add('is-visible'),
-                        800 + i * 300);
-                });
+                entry.target.classList.add('is-visible');
             });
         },
-        { threshold: 0.20 }
+        { threshold: 0.25 }
     );
 
     observer.observe(stage);
 }
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initWorkflowOrbit);
+    document.addEventListener('DOMContentLoaded', initWorkflowStage);
 } else {
-    initWorkflowOrbit();
+    initWorkflowStage();
 }
 
-document.addEventListener('livewire:navigated', initWorkflowOrbit);
+document.addEventListener('livewire:navigated', initWorkflowStage);
 
 // ── Rich paragraph editor (Tiptap) ────────────────────────────────────────────
 // Full WYSIWYG editor for contract paragraphs. wire:ignore on the host element
