@@ -353,7 +353,16 @@ document.addEventListener('keydown', (event) => {
 // JS only handles the scroll-triggered entrance: `.is-visible` on the stage
 // cascades staggered transitions to tiles, hub, and panels via CSS delays.
 
+let workflowStageObserver = null;
+
 function initWorkflowStage() {
+    // Livewire navigation replaces the DOM; drop the observer watching the
+    // old stage so it doesn't pin detached nodes in memory.
+    if (workflowStageObserver) {
+        workflowStageObserver.disconnect();
+        workflowStageObserver = null;
+    }
+
     const stage = document.querySelector('.kirada-iso-stage');
     if (!stage || stage.classList.contains('is-visible')) return;
 
@@ -374,6 +383,7 @@ function initWorkflowStage() {
     );
 
     observer.observe(stage);
+    workflowStageObserver = observer;
 }
 
 if (document.readyState === 'loading') {

@@ -686,7 +686,8 @@ select:focus[data-flux-control] {
    Right: isometric white document panels with pill labels stepping up-right.
    Traveling dots ride the dotted paths via SMIL inside the SVG.
    Entrance is scroll-triggered (`.is-visible` on the stage); hidden state is
-   gated behind `.kirada-motion` so no-JS renders everything statically.
+   gated behind `.kirada-motion` so no-JS still renders the full scene
+   (ambient float/sweep animations remain, governed by prefers-reduced-motion).
 ---------------------------------------------------------------------------- */
 
 .kirada-iso-stage {
@@ -740,6 +741,7 @@ select:focus[data-flux-control] {
 
 .kirada-iso-tile {
     position: absolute;
+    pointer-events: auto; /* parent layer is none; re-enable so title tooltips work */
     left: var(--x);
     top: var(--y);
     width: 56px;

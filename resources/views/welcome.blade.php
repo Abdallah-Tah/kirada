@@ -443,7 +443,7 @@
                 <div class="kirada-iso-stage" aria-hidden="true">
 
                     {{-- Dotted flow paths + traveling data dots (SMIL, scales with viewBox) --}}
-                    <svg class="kirada-iso-flow" viewBox="0 0 1100 560" fill="none"
+                    <svg class="kirada-iso-flow" viewBox="0 0 1100 560" fill="none" preserveAspectRatio="none"
                          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <path id="kirada-flow-in" class="kirada-iso-dotline"
                               d="M-30 400 L70 430 L185 375 L295 435 L378 368 L474 332" />
