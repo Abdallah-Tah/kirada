@@ -39,20 +39,12 @@
     </table>
 
     @if($newStatus === 'in_progress')
-        <p style="font-size: 14px; line-height: 1.6; color: #475569;">
-            {{ __('Your maintenance request is now being worked on. You will be notified when it is resolved.') }}
-        </p>
+        <div class="context-msg">{{ __('Your maintenance request is now being worked on. You will be notified when it is resolved.') }}</div>
     @elseif($newStatus === 'resolved')
-        <p style="font-size: 14px; line-height: 1.6; color: #475569;">
-            {{ __('The maintenance request has been marked as resolved. Please review and close it if you are satisfied.') }}
-        </p>
+        <div class="context-msg">{{ __('The maintenance request has been marked as resolved. Please review and close it if you are satisfied.') }}</div>
     @elseif($newStatus === 'closed')
-        <p style="font-size: 14px; line-height: 1.6; color: #475569;">
-            {{ __('This maintenance request has been closed. No further action is required.') }}
-        </p>
+        <div class="context-msg">{{ __('This maintenance request has been closed. No further action is required.') }}</div>
     @elseif($newStatus === 'cancelled')
-        <p style="font-size: 14px; line-height: 1.6; color: #475569;">
-            {{ __('This maintenance request has been cancelled.') }}
-        </p>
+        <div class="context-msg">{{ __('This maintenance request has been cancelled.') }}</div>
     @endif
 @endsection
