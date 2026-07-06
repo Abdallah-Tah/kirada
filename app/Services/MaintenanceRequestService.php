@@ -42,9 +42,11 @@ class MaintenanceRequestService
         }
 
         $request = MaintenanceRequest::create($data);
+        $request->loadMissing(['landlord', 'tenant.user', 'property', 'reporter']);
 
-        if ($request->landlord && $request->landlord->isNot($reporter)) {
-            $request->landlord->notify(new MaintenanceRequestCreated($request));
+        // Notify all relevant parties about the new request
+        foreach ($this->notificationRecipients($request, $reporter) as $recipient) {
+            $recipient->notify(new MaintenanceRequestCreated($request));
         }
 
         return $request;
@@ -67,7 +69,7 @@ class MaintenanceRequestService
         ]);
 
         $fresh = $request->fresh(['reporter', 'tenant.user', 'landlord']);
-        $this->notifyStatusChanged($fresh, 'in_progress');
+        $this->notifyStatusChanged($fresh, 'in_progress', 'open');
 
         return $fresh;
     }
@@ -102,10 +104,11 @@ class MaintenanceRequestService
             $updates['closed_at'] = null;
         }
 
+        $previousStatus = $request->status;
         $request->update($updates);
 
         $fresh = $request->fresh(['reporter', 'tenant.user', 'landlord']);
-        $this->notifyStatusChanged($fresh, $newStatus);
+        $this->notifyStatusChanged($fresh, $newStatus, $previousStatus);
 
         return $fresh;
     }
@@ -240,10 +243,10 @@ class MaintenanceRequestService
         return User::role('maintenance')->select('id', 'name')->orderBy('name')->get();
     }
 
-    private function notifyStatusChanged(MaintenanceRequest $request, string $status): void
+    private function notifyStatusChanged(MaintenanceRequest $request, string $status, string $previousStatus = null): void
     {
         foreach ($this->notificationRecipients($request) as $recipient) {
-            $recipient->notify(new MaintenanceStatusChanged($request, $status));
+            $recipient->notify(new MaintenanceStatusChanged($request, $status, $previousStatus));
         }
     }
 

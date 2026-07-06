@@ -6,11 +6,23 @@
     <style>
         /* dompdf-friendly: table layouts, no grid/flex. DejaVu Sans handles UTF-8. */
         * { font-family: DejaVu Sans, sans-serif; }
-        body { color: #0f172a; font-size: 11px; line-height: 1.5; margin: 0; }
+        body { color: #0f172a; font-size: 11px; line-height: 1.5; margin: 0; padding-top: 20px; padding-bottom: 20px; }
+
+        /* ── Watermark (anti-Photoshop / anti-substitution) ── */
+        .watermark {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 60px; font-weight: bold;
+            color: rgba(14, 165, 233, 0.06);
+            white-space: nowrap; z-index: 0;
+            pointer-events: none;
+        }
+
+        .content { position: relative; z-index: 1; }
+
         .brand-table { width: 100%; border-bottom: 2px solid #0EA5E9; padding-bottom: 8px; margin-bottom: 18px; }
         .brand-table td { vertical-align: bottom; }
-        .wordmark { font-size: 18px; font-weight: bold; color: #0f172a; }
-        .wordmark span { color: #0EA5E9; }
+        .brand-logo { height: 32px; }
         .ref { text-align: right; font-size: 10px; color: #64748b; }
         .contract-title { font-size: 16px; text-align: center; margin: 0 0 2px; font-weight: bold; }
         .contract-subtitle { text-align: center; color: #64748b; font-size: 10px; margin: 0 0 16px; }
@@ -37,9 +49,15 @@
     </style>
 </head>
 <body>
+    {{-- Anti-tamper: watermark with reference on every page --}}
+    <div class="watermark">{{ $contract->reference }}</div>
+
+    {{-- Page header/footer are rendered via dompdf Canvas API in ContractService::renderPdf --}}
+
+    <div class="content">
     <table class="brand-table">
         <tr>
-            <td class="wordmark">Kir<span>ada</span></td>
+            <td><img src="{{ public_path('brand/kirada-logo.jpg') }}" class="brand-logo" alt="Kirada"></td>
             <td class="ref">Réf. {{ $contract->reference }}<br>{{ \Illuminate\Support\Carbon::parse($contract->created_at)->format('d/m/Y') }}</td>
         </tr>
     </table>
@@ -103,6 +121,7 @@
             Généré par Kirada — {{ \Illuminate\Support\Carbon::now()->format('d/m/Y H:i') }}.
             Les signatures électroniques recueillies ont valeur probante conformément au droit applicable.
         </p>
+    </div>
     </div>
 </body>
 </html>

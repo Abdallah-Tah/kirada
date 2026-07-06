@@ -40,7 +40,12 @@ class ContractService
      */
     public function createFromLease(Lease $lease, array $variables, User $creator, string $type = 'bail_commercial'): Contract
     {
-        $merged = array_merge($this->templates->buildVariablesFromLease($lease), $variables);
+        $leaseVars = $this->templates->buildVariablesFromLease($lease);
+
+        // Don't let empty user-submitted values clobber prefilled lease data.
+        $variables = array_filter($variables, fn ($v) => $v !== null && $v !== '');
+
+        $merged = array_merge($leaseVars, $variables);
 
         return $this->create([
             'landlord_id' => $lease->landlord_id,
@@ -255,14 +260,34 @@ class ContractService
 
     /**
      * Render a contract to a PDF binary string using the dompdf engine.
+     *
+     * Anti-tamper protections applied via the dompdf Canvas API:
+     *  - Page numbers (Page X / Y) on every page footer
+     *  - Contract reference + date on every page header
      */
     public function renderPdf(Contract $contract): string
     {
         $contract->loadMissing(['signatures', 'landlord', 'tenant']);
 
-        return Pdf::loadView('contracts.document-pdf', ['contract' => $contract])
-            ->setPaper('a4')
-            ->output();
+        $pdf = Pdf::loadView('contracts.document-pdf', ['contract' => $contract])
+            ->setPaper('a4');
+
+        // Render first so the canvas knows total page count.
+        $pdf->render();
+
+        $dompdf = $pdf->getDomPDF();
+        $canvas = $dompdf->getCanvas();
+        $font = $dompdf->getFontMetrics()->getFont('DejaVu Sans');
+        $ref = $contract->reference;
+        $date = \Illuminate\Support\Carbon::parse($contract->created_at)->format('d/m/Y');
+
+        // Footer: page numbers (anti-substitution)
+        $canvas->page_text(200, 820, "{$ref} — Page {PAGE_NUM} / {PAGE_COUNT} — Kirada · Document à valeur probante", $font, 8, [0.56, 0.56, 0.56]);
+
+        // Header: reference on every page (anti-substitution)
+        $canvas->page_text(400, 16, "Kirada — {$ref} — {$date}", $font, 8, [0.56, 0.56, 0.56]);
+
+        return $pdf->output();
     }
 
     // ── Internals ──────────────────────────────────────

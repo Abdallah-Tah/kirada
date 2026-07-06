@@ -20,11 +20,14 @@ class MaintenanceRequestCreated extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        $request = $this->maintenanceRequest->loadMissing(['property', 'unit', 'reporter']);
+
         return (new MailMessage)
-            ->subject(__('New maintenance request: :title', ['title' => $this->maintenanceRequest->title]))
-            ->line(__('A new maintenance issue was reported.'))
-            ->line(__('Property: :property', ['property' => $this->maintenanceRequest->property?->name ?? __('Unknown')]))
-            ->line(__('Priority: :priority', ['priority' => __(ucfirst($this->maintenanceRequest->priority))]))
-            ->action(__('View request'), route('maintenance-requests.show', $this->maintenanceRequest));
+            ->subject(__('New maintenance request: :title', ['title' => $request->title]))
+            ->markdown('emails.maintenance.request-created', [
+                'maintenanceRequest' => $request,
+                'actionUrl' => route('maintenance-requests.show', $request),
+                'actionText' => __('View request'),
+            ]);
     }
 }

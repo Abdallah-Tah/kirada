@@ -24,10 +24,16 @@ class MaintenanceCommentAdded extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        $request = $this->maintenanceRequest->loadMissing(['property', 'unit']);
+        $comment = $this->comment->loadMissing('user');
+
         return (new MailMessage)
-            ->subject(__('New comment on maintenance request'))
-            ->line(__('A new comment was added to: :title', ['title' => $this->maintenanceRequest->title]))
-            ->line(str($this->comment->comment)->limit(180)->toString())
-            ->action(__('View request'), route('maintenance-requests.show', $this->maintenanceRequest));
+            ->subject(__('New comment on: :title', ['title' => $request->title]))
+            ->markdown('emails.maintenance.comment-added', [
+                'maintenanceRequest' => $request,
+                'comment' => $comment,
+                'actionUrl' => route('maintenance-requests.show', $request),
+                'actionText' => __('View request'),
+            ]);
     }
 }

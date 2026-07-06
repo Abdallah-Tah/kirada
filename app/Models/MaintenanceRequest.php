@@ -145,6 +145,11 @@ class MaintenanceRequest extends Model
         return $this->status === 'cancelled';
     }
 
+    public function getReferenceAttribute(): string
+    {
+        return 'KIR-MR-'.str_pad((string) $this->id, 4, '0', STR_PAD_LEFT);
+    }
+
     public function getPriorityColorAttribute(): string
     {
         return match ($this->priority) {

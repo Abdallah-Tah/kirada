@@ -14,6 +14,7 @@ class MaintenanceStatusChanged extends Notification
     public function __construct(
         public MaintenanceRequest $maintenanceRequest,
         public string $status,
+        public ?string $previousStatus = null,
     ) {}
 
     public function via(object $notifiable): array
@@ -23,10 +24,19 @@ class MaintenanceStatusChanged extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        $request = $this->maintenanceRequest->loadMissing(['property', 'unit']);
+
         return (new MailMessage)
-            ->subject(__('Maintenance request status updated'))
-            ->line(__('Status changed to: :status', ['status' => __(str_replace('_', ' ', ucfirst($this->status)))]))
-            ->line($this->maintenanceRequest->title)
-            ->action(__('View request'), route('maintenance-requests.show', $this->maintenanceRequest));
+            ->subject(__('Maintenance request: :status — :title', [
+                'status' => __(ucfirst(str_replace('_', ' ', $this->status))),
+                'title' => $request->title,
+            ]))
+            ->markdown('emails.maintenance.status-changed', [
+                'maintenanceRequest' => $request,
+                'previousStatus' => $this->previousStatus ?? $request->status,
+                'newStatus' => $this->status,
+                'actionUrl' => route('maintenance-requests.show', $request),
+                'actionText' => __('View request'),
+            ]);
     }
 }
