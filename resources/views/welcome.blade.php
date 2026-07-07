@@ -68,17 +68,6 @@
             ],
         ];
 
-        $workflow = [
-            'Property',
-            'Tenant Invite',
-            'Lease',
-            'Invoice',
-            'Payment',
-            'Contract',
-            'Maintenance',
-            'Messaging',
-            'Reports',
-        ];
         $countries = ['Djibouti', 'Ethiopia', 'Somalia', 'Saudi Arabia', 'UAE', 'United States'];
         $trustItems = [
             'Secure Documents',
@@ -407,122 +396,78 @@
             </div>
         </section>
 
-        <section id="workflow" class="bg-white px-5 py-20 sm:px-8 lg:px-10">
-            <div class="mx-auto max-w-[1320px]">
-                <div class="mx-auto max-w-3xl text-center">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-kirada-ocean">
-                        {{ __('Kirada workflow') }}</p>
-                    <h2 class="mt-4 text-4xl font-semibold tracking-[-0.05em] text-kirada-navy sm:text-5xl">
-                        {{ __('From property setup to payments and support') }}
-                    </h2>
-                    <p class="mt-5 text-lg leading-8 text-slate-600">
-                        {{ __('A complete rental management flow for landlords, tenants, and maintenance users.') }}
-                    </p>
+        <section id="workflow" class="bg-white px-5 py-20 sm:px-8 lg:px-10" x-data="kiradaWorkflow()">
+            <div class="kirada-wf-shell">
+                <div class="kirada-wf-header">
+                    <p class="kirada-wf-eyebrow">{{ __('Kirada Workflow') }}</p>
+                    <h2 class="kirada-wf-title">{{ __('From property setup to payments and support') }}</h2>
+                    <p class="kirada-wf-subtitle">{{ __('A complete rental management flow for landlords, tenants, and maintenance.') }}</p>
                 </div>
 
-                {{-- Chatsheet-style isometric 3D pipeline: module icon tiles travel along a
-                     dotted path from the left into a ringed 3D hub disc; on the right,
-                     isometric document panels with pill labels step up toward the corner.
-                     Falls back to vertical stack on mobile and static layout for reduced-motion. --}}
                 @php
-                    // Waypoint coordinates live in a 1100x560 space shared with the SVG
-                    // viewBox so the dotted path runs exactly through each tile.
-                    $isoTiles = [
-                        ['glyph' => '🏠', 'label' => 'Property',    'x' => 70,  'y' => 430],
-                        ['glyph' => '👥', 'label' => 'Tenant',      'x' => 185, 'y' => 375],
-                        ['glyph' => '📝', 'label' => 'Lease',       'x' => 295, 'y' => 435],
-                        ['glyph' => '💵', 'label' => 'Payment',     'x' => 378, 'y' => 368],
-                        ['glyph' => '🔧', 'label' => 'Maintenance', 'x' => 560, 'y' => 455],
-                    ];
-                    $isoPanels = [
-                        ['pill' => 'Rent Invoicing',      'chips' => ['💵', '🧾', '👥'], 'x' => 645, 'y' => 296],
-                        ['pill' => 'Digital Contracts',   'chips' => ['📄', '✍️', '🔒'], 'x' => 795, 'y' => 212],
-                        ['pill' => 'Reports & Analytics', 'chips' => ['📊', '📈', '🌍'], 'x' => 945, 'y' => 128],
+                    $wfSteps = [
+                        ['num'=>'01','label'=>__('Property'),     'desc'=>__('Add buildings & units, track occupancy.'),    'icon'=>'M3 21h18M3 21V8l9-5 9 5v13M9 21v-5h6v5M9 11h.01M15 11h.01'],
+                        ['num'=>'02','label'=>__('Tenant'),       'desc'=>__('Invite & onboard tenants to the portal.'),    'icon'=>'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'],
+                        ['num'=>'03','label'=>__('Lease'),        'desc'=>__('Draft & e-sign leases securely.'),           'icon'=>'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-4-5ZM14 3v5h4M8 13h4M8 17h4'],
+                        ['num'=>'04','label'=>__('Invoice'),      'desc'=>__('Generate monthly rent invoices.'),             'icon'=>'M7 3h10a1 1 0 0 1 1 1v17l-3-2-2 2-2-2-2 2-2-2L6 21V4a1 1 0 0 1 1-1ZM10 8h4M10 12h4'],
+                        ['num'=>'05','label'=>__('Payment'),      'desc'=>__('Collect, reconcile & track balances.'),       'icon'=>'M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1ZM3 10h18M7 14h3'],
+                        ['num'=>'06','label'=>__('Maintenance'),  'desc'=>__('Handle requests & track resolution.'),        'icon'=>'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z'],
+                        ['num'=>'07','label'=>__('Reports'),      'desc'=>__('Track performance & grow.'),                 'icon'=>'M4 20V10M10 20V4M16 20v-7M22 20H2'],
                     ];
                 @endphp
-                <div class="kirada-iso-stage" aria-hidden="true">
 
-                    {{-- Dotted flow paths + traveling data dots (SMIL, scales with viewBox) --}}
-                    <svg class="kirada-iso-flow" viewBox="0 0 1100 560" fill="none" preserveAspectRatio="none"
-                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <path id="kirada-flow-in" class="kirada-iso-dotline"
-                              d="M-30 400 L70 430 L185 375 L295 435 L378 368 L474 332" />
-                        <path id="kirada-flow-in-2" class="kirada-iso-dotline"
-                              d="M560 455 L492 348" />
-                        <path id="kirada-flow-out" class="kirada-iso-dotline kirada-iso-dotline--out"
-                              d="M505 318 L645 296 L795 212 L945 128 L1070 58" />
-                        <circle class="kirada-iso-dot" r="5" cx="-30" cy="400">
-                            <animateMotion dur="5.2s" repeatCount="indefinite">
-                                <mpath xlink:href="#kirada-flow-in" href="#kirada-flow-in" />
-                            </animateMotion>
-                        </circle>
-                        <circle class="kirada-iso-dot" r="4" cx="-30" cy="400">
-                            <animateMotion dur="5.2s" begin="2.6s" repeatCount="indefinite">
-                                <mpath xlink:href="#kirada-flow-in" href="#kirada-flow-in" />
-                            </animateMotion>
-                        </circle>
-                        <circle class="kirada-iso-dot" r="4" cx="560" cy="455">
-                            <animateMotion dur="2.6s" begin="1.2s" repeatCount="indefinite">
-                                <mpath xlink:href="#kirada-flow-in-2" href="#kirada-flow-in-2" />
-                            </animateMotion>
-                        </circle>
-                        <circle class="kirada-iso-dot kirada-iso-dot--out" r="5" cx="505" cy="318">
-                            <animateMotion dur="5s" begin="0.6s" repeatCount="indefinite">
-                                <mpath xlink:href="#kirada-flow-out" href="#kirada-flow-out" />
-                            </animateMotion>
-                        </circle>
-                        <circle class="kirada-iso-dot kirada-iso-dot--out" r="4" cx="505" cy="318">
-                            <animateMotion dur="5s" begin="3.1s" repeatCount="indefinite">
-                                <mpath xlink:href="#kirada-flow-out" href="#kirada-flow-out" />
-                            </animateMotion>
-                        </circle>
+                <!-- Desktop: horizontal card row (≥768px) -->
+                <div data-option class="kirada-wf-desktop">
+                    <svg class="kirada-wf-line-svg" viewBox="0 0 1160 48" preserveAspectRatio="none">
+                        <defs><linearGradient id="wfGrad" x1="0" y1="0" x2="1160" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2563EB"/><stop offset="0.5" stop-color="#0EA5E9"/><stop offset="1" stop-color="#16A34A"/></linearGradient></defs>
+                        <path class="wf-track" d="M40 24 H1120"/>
+                        <path data-line class="wf-progress" d="M40 24 H1120"/>
+                        <path data-comet class="wf-comet" d="M40 24 H1120"/>
                     </svg>
-
-                    {{-- Module icon tiles sitting on the dotted path --}}
-                    <div class="kirada-iso-inputs">
-                        @foreach ($isoTiles as $i => $tile)
-                            <div class="kirada-iso-tile"
-                                 style="--x: {{ round($tile['x'] / 11, 2) }}%; --y: {{ round($tile['y'] / 5.6, 2) }}%; --i: {{ $i }};"
-                                 title="{{ __($tile['label']) }}">
-                                <span>{{ $tile['glyph'] }}</span>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    {{-- Center: floating 3D hub disc with concentric rings --}}
-                    <div class="kirada-iso-hub-shadow"></div>
-                    <div class="kirada-iso-hub">
-                        <div class="kirada-iso-hub-disc">
-                            <div class="kirada-iso-hub-sweep"></div>
-                        </div>
-                    </div>
-
-                    {{-- Right: isometric document panels stepping up to the corner --}}
-                    <div class="kirada-iso-panels">
-                        @foreach ($isoPanels as $p => $panel)
-                            <div class="kirada-iso-panel"
-                                 style="--x: {{ round($panel['x'] / 11, 2) }}%; --y: {{ round($panel['y'] / 5.6, 2) }}%; --i: {{ $p }};">
-                                <div class="kirada-iso-panel-3d">
-                                    <div class="kirada-iso-panel-face">
-                                        <div class="kirada-iso-panel-chips">
-                                            @foreach ($panel['chips'] as $chip)
-                                                <span>{{ $chip }}</span>
-                                            @endforeach
-                                        </div>
-                                        <div class="kirada-iso-panel-lines"><i></i><i></i><i></i></div>
-                                    </div>
-                                    <span class="kirada-iso-pill">{{ __($panel['pill']) }}</span>
+                    <div class="kirada-wf-row">
+                        @foreach ($wfSteps as $step)
+                            <div data-node class="kirada-wf-card">
+                                <div class="kirada-wf-icon-wrap">
+                                    <svg class="kirada-wf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $step['icon'] }}"/></svg>
+                                    <span class="kirada-wf-badge">{{ $step['num'] }}</span>
+                                </div>
+                                <div class="kirada-wf-card-body">
+                                    <h3 class="kirada-wf-label">{{ $step['label'] }}</h3>
+                                    <p class="kirada-wf-desc">{{ $step['desc'] }}</p>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
 
-                {{-- Fallback: simple labeled list below the orbit for accessibility --}}
+                <!-- Mobile: vertical card stack (<768px) -->
+                <div data-option class="kirada-wf-mobile">
+                    <svg class="kirada-wf-line-svg-v" viewBox="0 0 48 920" preserveAspectRatio="none">
+                        <path class="wf-track" d="M24 20 V900"/>
+                        <path data-line class="wf-progress" d="M24 20 V900"/>
+                        <path data-comet class="wf-comet" d="M24 20 V900"/>
+                    </svg>
+                    <div class="kirada-wf-col">
+                        @foreach ($wfSteps as $step)
+                            <div data-node class="kirada-wf-card-v">
+                                <div class="kirada-wf-icon-wrap-v">
+                                    <svg class="kirada-wf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $step['icon'] }}"/></svg>
+                                    <span class="kirada-wf-badge">{{ $step['num'] }}</span>
+                                </div>
+                                <div class="kirada-wf-card-body">
+                                    <h3 class="kirada-wf-label">{{ $step['label'] }}</h3>
+                                    <p class="kirada-wf-desc">{{ $step['desc'] }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Accessibility fallback --}}
                 <div class="sr-only">
                     <ol>
-                        @foreach ($workflow as $step => $label)
-                            <li>{{ $step + 1 }}. {{ __($label) }}</li>
+                        @foreach ($wfSteps as $step)
+                            <li>{{ $step['num'] }}. {{ $step['label'] }} — {{ $step['desc'] }}</li>
                         @endforeach
                     </ol>
                 </div>
@@ -693,6 +638,236 @@
             <flux:toast />
         </flux:toast.group>
     @endpersist
+
+    <style>
+        /* ── Kirada Workflow — Premium SaaS Timeline ─────────────────────────── */
+        .kirada-wf-shell {
+            scroll-margin-top: 24px;
+            background: #fff;
+            border: 1px solid #E5E7EB;
+            border-radius: 20px;
+            padding: 48px 40px 60px;
+            box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -20px rgba(15,23,42,0.12);
+        }
+        .kirada-wf-header { text-align:center; max-width:560px; margin:0 auto 56px; }
+        .kirada-wf-eyebrow {
+            margin:0; font-size:12px; font-weight:600; letter-spacing:0.12em;
+            text-transform:uppercase; color:#2563EB;
+        }
+        .kirada-wf-title {
+            margin:14px 0 0; font-size:clamp(26px,3vw,36px); line-height:1.1;
+            letter-spacing:-0.02em; font-weight:600; color:#111827;
+        }
+        .kirada-wf-subtitle {
+            margin:12px 0 0; font-size:16px; line-height:1.55; color:#6B7280;
+        }
+
+        /* ── Layout switching ── */
+        .kirada-wf-desktop { display:none; position:relative; max-width:1080px; margin:0 auto; }
+        .kirada-wf-mobile  { display:none; position:relative; max-width:480px; margin:0 auto; }
+        @media (min-width:768px) { .kirada-wf-desktop { display:block; } }
+        @media (max-width:767px) { .kirada-wf-mobile  { display:block; } .kirada-wf-shell { padding:32px 20px 44px; border-radius:16px; } }
+
+        /* ── Timeline line (desktop horizontal) ── */
+        .kirada-wf-line-svg {
+            position:absolute; top:24px; left:0; width:100%; height:48px;
+            overflow:visible; pointer-events:none;
+        }
+        .wf-track { fill:none; stroke:#E5E7EB; stroke-width:2; stroke-linecap:round; }
+        .wf-progress { fill:none; stroke:url(#wfGrad); stroke-width:2; stroke-linecap:round; }
+        .wf-comet {
+            fill:none; stroke:#2563EB; stroke-width:3; stroke-linecap:round;
+            filter:drop-shadow(0 0 6px rgba(37,99,235,0.6)); opacity:0;
+        }
+
+        /* ── Timeline line (mobile vertical) ── */
+        .kirada-wf-line-svg-v {
+            position:absolute; top:0; left:24px; width:48px; height:100%;
+            overflow:visible; pointer-events:none;
+        }
+
+        /* ── Desktop cards row ── */
+        .kirada-wf-row {
+            position:relative; display:flex; justify-content:space-between;
+            align-items:flex-start; gap:8px;
+        }
+
+        /* ── Card (shared desktop + mobile) ── */
+        .kirada-wf-card, .kirada-wf-card-v {
+            opacity:0; transform:translateY(20px);
+            background:#fff; border:1px solid #E5E7EB; border-radius:16px;
+            padding:24px 20px; text-align:center;
+            transition:box-shadow 250ms ease-out, border-color 250ms ease-out, transform 250ms ease-out;
+        }
+        .kirada-wf-card { width:140px; }
+        .kirada-wf-card-v {
+            display:flex; align-items:flex-start; gap:16px; text-align:left;
+            margin-bottom:16px; padding:20px 20px;
+        }
+        .kirada-wf-card:hover, .kirada-wf-card-v:hover {
+            box-shadow:0 8px 28px -12px rgba(15,23,42,0.12);
+            border-color:#D1D5DB;
+            transform:translateY(-2px);
+        }
+
+        /* ── Icon wrap ── */
+        .kirada-wf-icon-wrap, .kirada-wf-icon-wrap-v {
+            position:relative; width:44px; height:44px; border-radius:12px;
+            background:#F8FAFC; border:1px solid #E5E7EB;
+            display:flex; align-items:center; justify-content:center;
+            color:#2563EB; margin:0 auto 16px;
+            transition:transform 250ms ease-out, color 250ms ease-out;
+        }
+        .kirada-wf-icon-wrap-v { margin:0; flex-shrink:0; width:40px; height:40px; }
+        .kirada-wf-card:hover .kirada-wf-icon-wrap,
+        .kirada-wf-card-v:hover .kirada-wf-icon-wrap-v {
+            transform:scale(1.05); color:#111827;
+        }
+        .kirada-wf-icon { width:22px; height:22px; }
+
+        /* ── Number badge ── */
+        .kirada-wf-badge {
+            position:absolute; top:-6px; right:-6px; width:18px; height:18px;
+            border-radius:50%; background:#fff; border:1px solid #E5E7EB;
+            color:#6B7280; font-size:9px; font-weight:600;
+            display:flex; align-items:center; justify-content:center;
+            box-shadow:0 1px 4px rgba(15,23,42,0.08);
+        }
+
+        /* ── Card text ── */
+        .kirada-wf-card-body { padding:0 4px; }
+        .kirada-wf-label {
+            margin:0; font-size:15px; font-weight:600; color:#111827;
+            transition:color 250ms ease-out;
+        }
+        .kirada-wf-card:hover .kirada-wf-label,
+        .kirada-wf-card-v:hover .kirada-wf-label { color:#2563EB; }
+        .kirada-wf-desc {
+            margin:6px 0 0; font-size:13px; line-height:1.5; color:#6B7280;
+        }
+
+        /* ── Mobile vertical column ── */
+        .kirada-wf-col { position:relative; display:flex; flex-direction:column; padding-left:0; }
+
+        /* ── Reduced motion ── */
+        @media (prefers-reduced-motion: reduce) {
+            .kirada-wf-card, .kirada-wf-card-v { opacity:1 !important; transform:none !important; }
+        }
+    </style>
+    <script>
+        function kiradaWorkflow() {
+            return {
+                init() {
+                    const root = this.$el;
+                    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                    const getActive = () => {
+                        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+                        return isDesktop
+                            ? root.querySelector('.kirada-wf-desktop')
+                            : root.querySelector('.kirada-wf-mobile');
+                    };
+
+                    const prime = (o) => {
+                        if (!o) return;
+                        o.querySelectorAll('[data-line]').forEach(p => {
+                            if (p.getAnimations) p.getAnimations().forEach(a => a.cancel());
+                            const L = p.getTotalLength();
+                            p.style.strokeDasharray = L;
+                            p.style.strokeDashoffset = L;
+                        });
+                        o.querySelectorAll('[data-comet]').forEach(p => {
+                            if (p.getAnimations) p.getAnimations().forEach(a => a.cancel());
+                            const L = p.getTotalLength();
+                            p.dataset.len = L;
+                            p.style.strokeDasharray = '20 ' + L;
+                            p.style.strokeDashoffset = L;
+                            p.style.opacity = 0;
+                        });
+                        o.querySelectorAll('[data-node]').forEach(n => {
+                            n.style.opacity = 0;
+                            n.style.transform = n.classList.contains('kirada-wf-card-v')
+                                ? 'translateX(-20px)' : 'translateY(20px)';
+                        });
+                    };
+
+                    const reveal = (o) => {
+                        if (!o) return;
+                        o.querySelectorAll('[data-line]').forEach(p => { p.style.strokeDashoffset = 0; });
+                        o.querySelectorAll('[data-node]').forEach(n => {
+                            n.style.opacity = 1; n.style.transform = 'none';
+                        });
+                    };
+
+                    const play = (o) => {
+                        if (!o) return;
+                        if (reduce) { reveal(o); return; }
+                        const lineDur = 1400;
+                        const nodes = o.querySelectorAll('[data-node]');
+                        const isMobile = o.classList.contains('kirada-wf-mobile');
+
+                        // Line draw
+                        o.querySelectorAll('[data-line]').forEach(p => {
+                            const L = p.getTotalLength();
+                            p.animate(
+                                [{ strokeDashoffset: L }, { strokeDashoffset: 0 }],
+                                { duration: lineDur, easing: 'cubic-bezier(0.65,0,0.35,1)', fill: 'forwards' }
+                            ).onfinish = () => { p.style.strokeDashoffset = 0; };
+                        });
+
+                        // Node stagger entrance
+                        const stepDelay = lineDur / nodes.length;
+                        nodes.forEach((n, i) => {
+                            const offset = isMobile ? 'translateX(-20px)' : 'translateY(20px)';
+                            n.animate(
+                                [{ opacity:0, transform:offset }, { opacity:1, transform:'none' }],
+                                { duration:600, delay: stepDelay * i + 80, easing:'cubic-bezier(0.4,0,0.2,1)', fill:'forwards' }
+                            ).onfinish = () => { n.style.opacity=1; n.style.transform='none'; };
+                        });
+
+                        // Comet loop
+                        setTimeout(() => {
+                            o.querySelectorAll('[data-comet]').forEach(p => {
+                                const L = parseFloat(p.dataset.len);
+                                p.style.opacity = 1;
+                                p.animate(
+                                    [{ strokeDashoffset:L }, { strokeDashoffset:0 }],
+                                    { duration:3000, iterations:Infinity, easing:'linear' }
+                                );
+                            });
+                        }, lineDur + 200);
+                    };
+
+                    let currentOpt = null;
+                    let observer = null;
+
+                    const setup = () => {
+                        const opt = getActive();
+                        if (opt === currentOpt) return;
+                        if (observer) observer.disconnect();
+                        if (currentOpt) prime(currentOpt);
+                        currentOpt = opt;
+                        prime(opt);
+
+                        if (reduce) { reveal(opt); return; }
+
+                        observer = new IntersectionObserver((entries) => {
+                            entries.forEach((entry) => {
+                                if (entry.isIntersecting) { play(opt); observer.disconnect(); }
+                            });
+                        }, { threshold:0.15 });
+                        observer.observe(root);
+                    };
+
+                    setup();
+                    window.addEventListener('resize', () => {
+                        clearTimeout(window._kwfTimer);
+                        window._kwfTimer = setTimeout(setup, 200);
+                    });
+                }
+            };
+        }
+    </script>
 
     @fluxScripts
 </body>
