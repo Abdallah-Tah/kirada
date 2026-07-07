@@ -85,7 +85,7 @@ select:focus[data-flux-control] {
 
 @layer components {
     .kirada-app-main {
-        @apply min-h-svh;
+        @apply min-h-svh flex flex-col;
         background:
             radial-gradient(circle at 8% 0%, rgba(14, 165, 233, 0.22), transparent 28%),
             radial-gradient(circle at 92% 18%, rgba(16, 185, 129, 0.18), transparent 26%),
@@ -96,6 +96,40 @@ select:focus[data-flux-control] {
     .kirada-app-main > div:not(.kirada-shell) {
         @apply mx-auto w-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 lg:px-8;
     }
+    .kirada-app-content {
+        @apply mx-auto w-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 lg:px-8;
+        flex: 1 1 0%;
+    }
+    /* ── App footer ── */
+    .kirada-footer {
+        @apply w-full border-t border-slate-200/60 bg-white/40 backdrop-blur-sm;
+        margin-top: auto;
+    }
+    .kirada-footer-inner {
+        @apply mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-6 sm:px-6 lg:px-8;
+    }
+    .kirada-footer-brand {
+        @apply flex items-center justify-center;
+    }
+    .kirada-footer-brand img {
+        height: 24px;
+        width: auto;
+        opacity: 0.5;
+    }
+    .kirada-footer-links {
+        @apply flex items-center gap-2 text-sm text-slate-500;
+    }
+    .kirada-footer-links a {
+        @apply transition-colors hover:text-kirada-ocean;
+        text-decoration: none;
+    }
+    .kirada-footer-divider {
+        @apply text-slate-300;
+    }
+    .kirada-footer-copy {
+        @apply text-center text-xs text-slate-400;
+    }
+
 
     /* ── Dark navy sidebar (sticky full-height, preserves Flux grid) ── */
     /* The sidebar is position:sticky with height:100dvh and align-self:start
