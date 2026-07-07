@@ -3,9 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
+    <meta name="supported-color-schemes" content="light only">
     <title>{{ $subject ?? '' }}</title>
+    <style>
+        /* Force light mode — prevent dark mode inversion */
+        :root { color-scheme: light only; }
+        body { color-scheme: light only; }
+        .logo-card { background:#ffffff !important; }
+        .header-bg { background:linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%) !important; }
+        /* Gmail dark mode hack */
+        u + .body table { background:#f1f5f9 !important; }
+        /* Outlook dark mode hack */
+        [data-ogsc] .logo-card { background:#ffffff !important; }
+        [data-ogsc] .header-bg { background:#0284C7 !important; }
+    </style>
 </head>
-<body style="margin:0; padding:0; background:#f1f5f9; font-family:Arial, 'Helvetica Neue', sans-serif; color:#0f172a;">
+<body style="margin:0; padding:0; background:#f1f5f9; font-family:Arial, 'Helvetica Neue', sans-serif; color:#0f172a; color-scheme: light only;">
 
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9; padding:32px 16px;">
 <tr>
