@@ -6,8 +6,8 @@
         <td style="background:linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); padding:28px; text-align:center;">
             <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
                 <tr>
-                    <td style="background:#ffffff; border-radius:10px; padding:8px 16px; box-shadow:0 2px 6px rgba(0,0,0,0.12);">
-                        <img src="{{ asset('brand/kirada-logo.jpg') }}" alt="Kirada" height="28" style="display:block;">
+                    <td style="background:#ffffff; border-radius:12px; padding:6px 12px; box-shadow:0 1px 2px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                        <picture><source srcset="{{ asset('brand/kirada-logo.webp') }}" type="image/webp"><img src="{{ asset('brand/kirada-logo.jpg') }}" alt="Kirada" height="28" style="display:block; border-radius:8px;"></picture>
                     </td>
                 </tr>
             </table>
