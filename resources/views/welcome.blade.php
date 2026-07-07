@@ -400,8 +400,8 @@
             <div class="kirada-wf-shell">
                 <div class="kirada-wf-header">
                     <p class="kirada-wf-eyebrow">{{ __('Kirada Workflow') }}</p>
-                    <h2 class="kirada-wf-title">{{ __('From property setup to payments and support') }}</h2>
-                    <p class="kirada-wf-subtitle">{{ __('A complete rental management flow for landlords, tenants, and maintenance.') }}</p>
+                    <h2 class="kirada-wf-title">{{ __('Everything from property setup to rent collection') }}</h2>
+                    <p class="kirada-wf-subtitle">{{ __('Manage your entire rental business from one workflow — built for landlords, tenants, and maintenance.') }}</p>
                 </div>
 
                 @php
@@ -410,7 +410,7 @@
                         ['num'=>'02','label'=>__('Tenant'),       'desc'=>__('Invite & onboard tenants to the portal.'),    'icon'=>'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'],
                         ['num'=>'03','label'=>__('Lease'),        'desc'=>__('Draft & e-sign leases securely.'),           'icon'=>'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-4-5ZM14 3v5h4M8 13h4M8 17h4'],
                         ['num'=>'04','label'=>__('Invoice'),      'desc'=>__('Generate monthly rent invoices.'),             'icon'=>'M7 3h10a1 1 0 0 1 1 1v17l-3-2-2 2-2-2-2 2-2-2L6 21V4a1 1 0 0 1 1-1ZM10 8h4M10 12h4'],
-                        ['num'=>'05','label'=>__('Payment'),      'desc'=>__('Collect, reconcile & track balances.'),       'icon'=>'M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1ZM3 10h18M7 14h3'],
+                        ['num'=>'05','label'=>__('Payment'),      'desc'=>__('Collect, reconcile & track balances.'),       'icon'=>'M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1ZM3 10h18M7 14h3', 'focal'=>true],
                         ['num'=>'06','label'=>__('Maintenance'),  'desc'=>__('Handle requests & track resolution.'),        'icon'=>'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z'],
                         ['num'=>'07','label'=>__('Reports'),      'desc'=>__('Track performance & grow.'),                 'icon'=>'M4 20V10M10 20V4M16 20v-7M22 20H2'],
                     ];
@@ -426,7 +426,7 @@
                     </svg>
                     <div class="kirada-wf-row">
                         @foreach ($wfSteps as $step)
-                            <div data-node class="kirada-wf-card">
+                            <div data-node class="kirada-wf-card{{ isset($step['focal']) ? ' kirada-wf-focal' : '' }}">
                                 <div class="kirada-wf-icon-wrap">
                                     <svg class="kirada-wf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $step['icon'] }}"/></svg>
                                     <span class="kirada-wf-badge">{{ $step['num'] }}</span>
@@ -449,7 +449,7 @@
                     </svg>
                     <div class="kirada-wf-col">
                         @foreach ($wfSteps as $step)
-                            <div data-node class="kirada-wf-card-v">
+                            <div data-node class="kirada-wf-card-v{{ isset($step['focal']) ? ' kirada-wf-focal-v' : '' }}">
                                 <div class="kirada-wf-icon-wrap-v">
                                     <svg class="kirada-wf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $step['icon'] }}"/></svg>
                                     <span class="kirada-wf-badge">{{ $step['num'] }}</span>
@@ -640,16 +640,14 @@
     @endpersist
 
     <style>
-        /* ── Kirada Workflow — Premium SaaS Timeline ─────────────────────────── */
+        /* ── Kirada Workflow — Premium SaaS Timeline v2 ───────────────────────── */
         .kirada-wf-shell {
-            scroll-margin-top: 24px;
-            background: #fff;
-            border: 1px solid #E5E7EB;
-            border-radius: 20px;
-            padding: 48px 40px 60px;
-            box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -20px rgba(15,23,42,0.12);
+            scroll-margin-top:24px; background:#fff;
+            border:1px solid #E5E7EB; border-radius:20px;
+            padding:44px 40px 56px;
+            box-shadow:0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -20px rgba(15,23,42,0.12);
         }
-        .kirada-wf-header { text-align:center; max-width:560px; margin:0 auto 56px; }
+        .kirada-wf-header { text-align:center; max-width:600px; margin:0 auto 40px; }
         .kirada-wf-eyebrow {
             margin:0; font-size:12px; font-weight:600; letter-spacing:0.12em;
             text-transform:uppercase; color:#2563EB;
@@ -663,73 +661,87 @@
         }
 
         /* ── Layout switching ── */
-        .kirada-wf-desktop { display:none; position:relative; max-width:1080px; margin:0 auto; }
+        .kirada-wf-desktop { display:none; position:relative; max-width:1200px; margin:0 auto; }
         .kirada-wf-mobile  { display:none; position:relative; max-width:480px; margin:0 auto; }
         @media (min-width:768px) { .kirada-wf-desktop { display:block; } }
         @media (max-width:767px) { .kirada-wf-mobile  { display:block; } .kirada-wf-shell { padding:32px 20px 44px; border-radius:16px; } }
 
         /* ── Timeline line (desktop horizontal) ── */
         .kirada-wf-line-svg {
-            position:absolute; top:24px; left:0; width:100%; height:48px;
+            position:absolute; top:28px; left:0; width:100%; height:56px;
             overflow:visible; pointer-events:none;
         }
-        .wf-track { fill:none; stroke:#E5E7EB; stroke-width:2; stroke-linecap:round; }
-        .wf-progress { fill:none; stroke:url(#wfGrad); stroke-width:2; stroke-linecap:round; }
+        .wf-track { fill:none; stroke:#E5E7EB; stroke-width:3; stroke-linecap:round; }
+        .wf-progress { fill:none; stroke:url(#wfGrad); stroke-width:3; stroke-linecap:round; }
         .wf-comet {
-            fill:none; stroke:#2563EB; stroke-width:3; stroke-linecap:round;
-            filter:drop-shadow(0 0 6px rgba(37,99,235,0.6)); opacity:0;
+            fill:none; stroke:#2563EB; stroke-width:4; stroke-linecap:round;
+            filter:drop-shadow(0 0 8px rgba(37,99,235,0.5)); opacity:0;
         }
 
         /* ── Timeline line (mobile vertical) ── */
         .kirada-wf-line-svg-v {
-            position:absolute; top:0; left:24px; width:48px; height:100%;
+            position:absolute; top:0; left:28px; width:56px; height:100%;
             overflow:visible; pointer-events:none;
         }
 
         /* ── Desktop cards row ── */
         .kirada-wf-row {
             position:relative; display:flex; justify-content:space-between;
-            align-items:flex-start; gap:8px;
+            align-items:flex-start; gap:16px;
         }
 
         /* ── Card (shared desktop + mobile) ── */
         .kirada-wf-card, .kirada-wf-card-v {
             opacity:0; transform:translateY(20px);
             background:#fff; border:1px solid #E5E7EB; border-radius:16px;
-            padding:24px 20px; text-align:center;
+            padding:28px 22px; text-align:center;
             transition:box-shadow 250ms ease-out, border-color 250ms ease-out, transform 250ms ease-out;
         }
-        .kirada-wf-card { width:140px; }
+        .kirada-wf-card { width:160px; }
         .kirada-wf-card-v {
-            display:flex; align-items:flex-start; gap:16px; text-align:left;
-            margin-bottom:16px; padding:20px 20px;
+            display:flex; align-items:flex-start; gap:18px; text-align:left;
+            margin-bottom:20px; padding:22px 22px;
         }
         .kirada-wf-card:hover, .kirada-wf-card-v:hover {
-            box-shadow:0 8px 28px -12px rgba(15,23,42,0.12);
-            border-color:#D1D5DB;
-            transform:translateY(-2px);
+            box-shadow:0 12px 36px -12px rgba(37,99,235,0.15);
+            border-color:#2563EB;
+            transform:translateY(-4px);
+        }
+
+        /* ── Focal card (Payment — center step) ── */
+        .kirada-wf-focal {
+            border-color:#BFDBFE; border-width:1.5px;
+            box-shadow:0 4px 20px -8px rgba(37,99,235,0.18);
+        }
+        .kirada-wf-focal-v {
+            border-color:#BFDBFE; border-width:1.5px;
+            box-shadow:0 4px 20px -8px rgba(37,99,235,0.18);
+        }
+        .kirada-wf-focal .kirada-wf-icon-wrap,
+        .kirada-wf-focal-v .kirada-wf-icon-wrap-v {
+            background:#EFF6FF; border-color:#BFDBFE; color:#2563EB;
         }
 
         /* ── Icon wrap ── */
         .kirada-wf-icon-wrap, .kirada-wf-icon-wrap-v {
-            position:relative; width:44px; height:44px; border-radius:12px;
+            position:relative; width:52px; height:52px; border-radius:14px;
             background:#F8FAFC; border:1px solid #E5E7EB;
             display:flex; align-items:center; justify-content:center;
-            color:#2563EB; margin:0 auto 16px;
+            color:#2563EB; margin:0 auto 18px;
             transition:transform 250ms ease-out, color 250ms ease-out;
         }
-        .kirada-wf-icon-wrap-v { margin:0; flex-shrink:0; width:40px; height:40px; }
+        .kirada-wf-icon-wrap-v { margin:0; flex-shrink:0; width:46px; height:46px; }
         .kirada-wf-card:hover .kirada-wf-icon-wrap,
         .kirada-wf-card-v:hover .kirada-wf-icon-wrap-v {
-            transform:scale(1.05); color:#111827;
+            transform:scale(1.05); color:#2563EB;
         }
-        .kirada-wf-icon { width:22px; height:22px; }
+        .kirada-wf-icon { width:28px; height:28px; }
 
         /* ── Number badge ── */
         .kirada-wf-badge {
-            position:absolute; top:-6px; right:-6px; width:18px; height:18px;
+            position:absolute; top:-7px; right:-7px; width:20px; height:20px;
             border-radius:50%; background:#fff; border:1px solid #E5E7EB;
-            color:#6B7280; font-size:9px; font-weight:600;
+            color:#6B7280; font-size:10px; font-weight:600;
             display:flex; align-items:center; justify-content:center;
             box-shadow:0 1px 4px rgba(15,23,42,0.08);
         }
@@ -737,13 +749,13 @@
         /* ── Card text ── */
         .kirada-wf-card-body { padding:0 4px; }
         .kirada-wf-label {
-            margin:0; font-size:15px; font-weight:600; color:#111827;
+            margin:0; font-size:17px; font-weight:600; color:#111827;
             transition:color 250ms ease-out;
         }
         .kirada-wf-card:hover .kirada-wf-label,
         .kirada-wf-card-v:hover .kirada-wf-label { color:#2563EB; }
         .kirada-wf-desc {
-            margin:6px 0 0; font-size:13px; line-height:1.5; color:#6B7280;
+            margin:8px 0 0; font-size:14px; line-height:1.5; color:#6B7280;
         }
 
         /* ── Mobile vertical column ── */
