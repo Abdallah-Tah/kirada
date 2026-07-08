@@ -191,7 +191,7 @@
                     @if ($contract)
                         <div class="mt-3 flex items-center justify-between">
                             <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $contract->title }}</span>
-                            @php($cc = $contract->status_color)
+                            <?php $cc = $contract->status_color; ?>
                             <span @class([
                                 'kirada-pill text-xs',
                                 'border-green-200 bg-green-50 text-kirada-green'   => $cc === 'green',
@@ -286,7 +286,7 @@
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
                                 <h2 class="font-semibold text-zinc-900 dark:text-white">{{ $contract->title }}</h2>
-                                @php($cc = $contract->status_color)
+                                <?php $cc = $contract->status_color; ?>
                                 <span @class([
                                     'kirada-pill',
                                     'border-green-200 bg-green-50 text-kirada-green'   => $cc === 'green',
@@ -436,6 +436,19 @@
         </div>
 
         {{-- ═══════════════════════ INVOICES TAB ═══════════════════════ --}}
+        @php
+            $invoiceColor = fn(string $s): string => match($s) {
+                'paid'    => 'green',
+                'overdue' => 'red',
+                'draft'   => 'zinc',
+                default   => 'amber',
+            };
+            $paymentColor = fn(string $s): string => match($s) {
+                'confirmed' => 'green',
+                'rejected'  => 'red',
+                default     => 'amber',
+            };
+        @endphp
         <div x-show="tab === 'invoices'" class="mt-6">
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="font-semibold text-zinc-900 dark:text-white">{{ __('Rent Invoices') }}</h2>
@@ -474,15 +487,7 @@
                                     <td class="px-4 py-3 text-zinc-500">{{ $invoice->due_date?->format('M j, Y') }}</td>
                                     <td class="px-4 py-3 text-zinc-700 dark:text-zinc-300">{{ number_format($invoice->amount, 0) }}</td>
                                     <td class="px-4 py-3">
-                                        @php
-                                            $iColor = match($invoice->status) {
-                                                'paid'    => 'green',
-                                                'overdue' => 'red',
-                                                'draft'   => 'zinc',
-                                                default   => 'amber',
-                                            };
-                                        @endphp
-                                        <flux:badge color="{{ $iColor }}" size="sm">{{ __(ucfirst($invoice->status)) }}</flux:badge>
+                                        <flux:badge color="{{ $invoiceColor($invoice->status) }}" size="sm">{{ __(ucfirst($invoice->status)) }}</flux:badge>
                                     </td>
                                     <td class="px-4 py-3 text-end">
                                         <flux:button :href="route('rent-invoices.edit', $invoice)" wire:navigate variant="ghost" size="sm" icon="pencil" />
@@ -536,14 +541,7 @@
                                     <td class="px-4 py-3 text-zinc-700 dark:text-zinc-300">{{ number_format($payment->amount, 0) }}</td>
                                     <td class="px-4 py-3 text-zinc-500 capitalize">{{ __($payment->method ?? '—') }}</td>
                                     <td class="px-4 py-3">
-                                        @php
-                                            $pColor = match($payment->status) {
-                                                'confirmed' => 'green',
-                                                'rejected'  => 'red',
-                                                default     => 'amber',
-                                            };
-                                        @endphp
-                                        <flux:badge color="{{ $pColor }}" size="sm">{{ __(ucfirst($payment->status ?? '—')) }}</flux:badge>
+                                        <flux:badge color="{{ $paymentColor($payment->status ?? 'pending') }}" size="sm">{{ __(ucfirst($payment->status ?? '—')) }}</flux:badge>
                                     </td>
                                     <td class="px-4 py-3 text-end">
                                         <flux:button :href="route('rent-payments.edit', $payment)" wire:navigate variant="ghost" size="sm" icon="pencil" />
@@ -613,7 +611,17 @@
                                     'bg-red-100 text-kirada-red'      => $event['color'] === 'red',
                                     'bg-zinc-100 text-zinc-500'       => $event['color'] === 'zinc',
                                 ])>
-                                    <flux:icon.{{ $event['icon'] }} class="size-4" />
+                                    @php
+                                        $icons = [
+                                            'document-text' => '<svg class="size-4" data-flux-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>',
+                                            'pencil-square' => '<svg class="size-4" data-flux-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>',
+                                            'paper-airplane' => '<svg class="size-4" data-flux-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>',
+                                            'check-badge' => '<svg class="size-4" data-flux-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"/></svg>',
+                                            'check-circle' => '<svg class="size-4" data-flux-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>',
+                                            'x-circle' => '<svg class="size-4" data-flux-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>',
+                                        ];
+                                    @endphp
+                                    {!! $icons[$event['icon']] ?? '<svg class="size-4" data-flux-icon xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>' !!}
                                 </div>
 
                                 <div class="kirada-card py-3.5">
