@@ -191,7 +191,7 @@
                     @if ($contract)
                         <div class="mt-3 flex items-center justify-between">
                             <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $contract->title }}</span>
-                            <?php $cc = $contract->status_color; ?>
+                            @php $cc = $contract->status_color; @endphp
                             <span @class([
                                 'kirada-pill text-xs',
                                 'border-green-200 bg-green-50 text-kirada-green'   => $cc === 'green',
@@ -286,7 +286,7 @@
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
                                 <h2 class="font-semibold text-zinc-900 dark:text-white">{{ $contract->title }}</h2>
-                                <?php $cc = $contract->status_color; ?>
+                                @php $cc = $contract->status_color; @endphp
                                 <span @class([
                                     'kirada-pill',
                                     'border-green-200 bg-green-50 text-kirada-green'   => $cc === 'green',
