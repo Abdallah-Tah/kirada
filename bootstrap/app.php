@@ -30,9 +30,10 @@ return Application::configure(basePath: dirname(__DIR__))
             LocaleMiddleware::class,
         ]);
 
-        // Operator payment webhooks authenticate with a shared secret, not a session.
+        // Webhooks authenticate with signatures, not sessions.
         $middleware->validateCsrfTokens(except: [
             'webhooks/payments/*',
+            'webhooks/stripe',
         ]);
 
         $middleware->alias([

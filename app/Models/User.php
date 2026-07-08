@@ -34,7 +34,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $terms_accepted_at
  * @property Carbon|null $privacy_accepted_at
  */
-#[Fillable(['name', 'email', 'password', 'country_id', 'preferred_language', 'phone_country_code', 'address', 'city', 'postal_code', 'terms_accepted_at', 'privacy_accepted_at'])]
+#[Fillable(['name', 'email', 'password', 'country_id', 'preferred_language', 'phone_country_code', 'address', 'city', 'postal_code', 'terms_accepted_at', 'privacy_accepted_at', 'stripe_customer_id'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {

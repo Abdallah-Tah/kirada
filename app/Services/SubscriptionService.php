@@ -2,12 +2,18 @@
 
 namespace App\Services;
 
+use App\Contracts\SubscriptionBillingGateway;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Services\SubscriptionGateways\CacBankGateway;
+use App\Services\SubscriptionGateways\StripeGateway;
+use App\Services\SubscriptionGateways\WaafiPayGateway;
 
 class SubscriptionService
 {
+    private const GATEWAYS = ['stripe', 'waafi', 'cacbank'];
+
     public const TRIAL_DAYS = 30;
 
     /**
@@ -79,6 +85,53 @@ class SubscriptionService
         return Subscription::where('status', 'trialing')
             ->where('trial_ends_at', '<', now())
             ->update(['status' => 'expired']);
+    }
+
+    /**
+     * Initiate a checkout for a plan via the chosen gateway.
+     * Returns the gateway result array (type + url or data).
+     */
+    public function initiateCheckout(User $user, Plan $plan, string $gateway, array $options = []): array
+    {
+        if (! in_array($gateway, self::GATEWAYS, true)) {
+            throw new \InvalidArgumentException("Unknown payment gateway: {$gateway}");
+        }
+
+        abort_unless($user->isLandlord(), 403);
+
+        return $this->gateway($gateway)->initiate($user, $plan, $options);
+    }
+
+    /**
+     * Resolve a billing gateway by name.
+     */
+    public function gateway(string $name): SubscriptionBillingGateway
+    {
+        return match ($name) {
+            'stripe'  => app(StripeGateway::class),
+            'waafi'   => app(WaafiPayGateway::class),
+            'cacbank' => app(CacBankGateway::class),
+            default   => throw new \InvalidArgumentException("Unknown gateway: {$name}"),
+        };
+    }
+
+    /**
+     * List the enabled subscription gateways.
+     */
+    public function enabledGateways(): array
+    {
+        $enabled = [];
+
+        if (config('services.stripe.secret')) {
+            $enabled[] = 'stripe';
+        }
+        if (config('services.waafi.merchant_uid')) {
+            $enabled[] = 'waafi';
+        }
+        // CAC Bank is always available (reference-based, no API credentials needed)
+        $enabled[] = 'cacbank';
+
+        return $enabled;
     }
 
     /**

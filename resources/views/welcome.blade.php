@@ -79,15 +79,15 @@
             'Multi-Language',
             'PWA Support',
         ];
+        // DJF is the local currency; USD equivalent shown at ~177 DJF/USD
         $pricingPlans = [
             [
-                'name' => 'Starter',
-                'slug' => 'starter',
+                'name'     => 'Starter',
+                'slug'     => 'starter',
                 'audience' => 'For independent landlords.',
-                'price' => 9,
-                'suffix' => '/mo',
-                'billing' => 'per month',
-                'cta' => 'Start free trial',
+                'djf'      => 5000,
+                'usd'      => 28,
+                'cta'      => 'Start free trial',
                 'featured' => false,
                 'features' => [
                     'Up to 10 units',
@@ -98,15 +98,14 @@
                 ],
             ],
             [
-                'name' => 'Growth',
-                'slug' => 'growth',
+                'name'     => 'Growth',
+                'slug'     => 'growth',
                 'audience' => 'For growing portfolios.',
-                'price' => 29,
-                'suffix' => '/mo',
-                'billing' => 'per month',
-                'cta' => 'Start free trial',
+                'djf'      => 15000,
+                'usd'      => 85,
+                'cta'      => 'Start free trial',
                 'featured' => true,
-                'badge' => 'Most popular',
+                'badge'    => 'Most popular',
                 'features' => [
                     'Up to 50 units',
                     'Everything in Starter',
@@ -117,13 +116,12 @@
                 ],
             ],
             [
-                'name' => 'Business',
-                'slug' => 'business',
+                'name'     => 'Business',
+                'slug'     => 'business',
                 'audience' => 'For agencies & teams.',
-                'price' => 79,
-                'suffix' => '/mo',
-                'billing' => 'per month',
-                'cta' => 'Start free trial',
+                'djf'      => 40000,
+                'usd'      => 226,
+                'cta'      => 'Start free trial',
                 'featured' => false,
                 'features' => [
                     'Unlimited units',
@@ -416,14 +414,33 @@
                     ];
                 @endphp
 
-                <!-- Desktop: horizontal card row (≥768px) -->
-                <div data-option class="kirada-wf-desktop">
+                {{-- Visual stage (aria-hidden; sr-only list below is the accessible source) --}}
+                <div class="kirada-wf-stage" aria-hidden="true">
+                    {{-- Horizontal line — desktop (≥768px) --}}
                     <svg class="kirada-wf-line-svg" viewBox="0 0 1160 48" preserveAspectRatio="none">
-                        <defs><linearGradient id="wfGrad" x1="0" y1="0" x2="1160" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2563EB"/><stop offset="0.5" stop-color="#0EA5E9"/><stop offset="1" stop-color="#16A34A"/></linearGradient></defs>
+                        <defs>
+                            <linearGradient id="wfGrad" x1="0" y1="0" x2="1160" y2="0" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#2563EB"/><stop offset="0.5" stop-color="#0EA5E9"/><stop offset="1" stop-color="#16A34A"/>
+                            </linearGradient>
+                        </defs>
                         <path class="wf-track" d="M40 24 H1120"/>
                         <path data-line class="wf-progress" d="M40 24 H1120"/>
                         <path data-comet class="wf-comet" d="M40 24 H1120"/>
                     </svg>
+
+                    {{-- Vertical line — mobile (<768px), own gradient avoids cross-SVG ref --}}
+                    <svg class="kirada-wf-line-svg-v" viewBox="0 0 48 920" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="wfGradV" x1="0" y1="20" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#2563EB"/><stop offset="0.5" stop-color="#0EA5E9"/><stop offset="1" stop-color="#16A34A"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="wf-track" d="M24 20 V900"/>
+                        <path data-line class="wf-progress-v" d="M24 20 V900"/>
+                        <path data-comet class="wf-comet" d="M24 20 V900"/>
+                    </svg>
+
+                    {{-- Single card set — CSS handles row vs column layout per breakpoint --}}
                     <div class="kirada-wf-row">
                         @foreach ($wfSteps as $step)
                             <div data-node class="kirada-wf-card{{ isset($step['focal']) ? ' kirada-wf-focal' : '' }}">
@@ -432,7 +449,7 @@
                                     <span class="kirada-wf-badge">{{ $step['num'] }}</span>
                                 </div>
                                 <div class="kirada-wf-card-body">
-                                    <h3 class="kirada-wf-label">{{ $step['label'] }}</h3>
+                                    <p class="kirada-wf-label">{{ $step['label'] }}</p>
                                     <p class="kirada-wf-desc">{{ $step['desc'] }}</p>
                                 </div>
                             </div>
@@ -440,37 +457,12 @@
                     </div>
                 </div>
 
-                <!-- Mobile: vertical card stack (<768px) -->
-                <div data-option class="kirada-wf-mobile">
-                    <svg class="kirada-wf-line-svg-v" viewBox="0 0 48 920" preserveAspectRatio="none">
-                        <path class="wf-track" d="M24 20 V900"/>
-                        <path data-line class="wf-progress" d="M24 20 V900"/>
-                        <path data-comet class="wf-comet" d="M24 20 V900"/>
-                    </svg>
-                    <div class="kirada-wf-col">
-                        @foreach ($wfSteps as $step)
-                            <div data-node class="kirada-wf-card-v{{ isset($step['focal']) ? ' kirada-wf-focal-v' : '' }}">
-                                <div class="kirada-wf-icon-wrap-v">
-                                    <svg class="kirada-wf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ $step['icon'] }}"/></svg>
-                                    <span class="kirada-wf-badge">{{ $step['num'] }}</span>
-                                </div>
-                                <div class="kirada-wf-card-body">
-                                    <h3 class="kirada-wf-label">{{ $step['label'] }}</h3>
-                                    <p class="kirada-wf-desc">{{ $step['desc'] }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                {{-- Accessibility fallback --}}
-                <div class="sr-only">
-                    <ol>
-                        @foreach ($wfSteps as $step)
-                            <li>{{ $step['num'] }}. {{ $step['label'] }} — {{ $step['desc'] }}</li>
-                        @endforeach
-                    </ol>
-                </div>
+                {{-- Screen-reader accessible list (visual stage is aria-hidden) --}}
+                <ol class="sr-only">
+                    @foreach ($wfSteps as $step)
+                        <li>{{ $step['num'] }}. {{ $step['label'] }} — {{ $step['desc'] }}</li>
+                    @endforeach
+                </ol>
             </div>
         </section>
 
@@ -523,42 +515,59 @@
         </section>
 
         <section id="pricing"
-            class="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-20 sm:px-8 lg:px-10" x-data="{ billing: 'monthly' }">
+            class="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-20 sm:px-8 lg:px-10"
+            x-data="{ billing: 'monthly', currency: 'djf' }">
             <div class="mx-auto max-w-[1320px]">
+
+                {{-- Header --}}
                 <div class="mx-auto max-w-4xl text-center">
                     <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-kirada-ocean">
                         {{ __('Pricing') }}</p>
-                    <h2
-                        class="mt-4 text-4xl font-semibold tracking-[-0.05em] text-kirada-navy sm:text-5xl lg:text-6xl">
+                    <h2 class="mt-4 text-4xl font-semibold tracking-[-0.05em] text-kirada-navy sm:text-5xl lg:text-6xl">
                         {{ __('Simple plans that grow with you') }}
                     </h2>
                     <p class="mt-5 text-lg leading-8 text-slate-500 sm:text-xl">
                         {{ __('Start with a 30-day free trial. No credit card required.') }}
                     </p>
 
-                    <div
-                        class="mt-8 inline-flex items-center rounded-full border border-slate-200 bg-white p-1 shadow-sm">
+                    {{-- Monthly / Annual toggle --}}
+                    <div class="mt-8 inline-flex items-center rounded-full border border-slate-200 bg-white p-1 shadow-sm">
                         <button type="button" @click="billing = 'monthly'"
                             :class="billing === 'monthly' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
                             class="cursor-pointer rounded-full px-6 py-3 text-base font-semibold transition">{{ __('Monthly') }}</button>
                         <button type="button" @click="billing = 'annual'"
                             :class="billing === 'annual' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
-                            class="cursor-pointer rounded-full px-6 py-3 text-base font-semibold transition">{{ __('Annual') }} <span
-                                class="text-kirada-green">-20%</span></button>
+                            class="cursor-pointer rounded-full px-6 py-3 text-base font-semibold transition">
+                            {{ __('Annual') }} <span class="text-kirada-green">-20%</span>
+                        </button>
+                    </div>
+
+                    {{-- Currency switcher — updates `currency` in the section x-data scope --}}
+                    <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm">
+                        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wide">{{ __('Show in') }}</span>
+                        <button type="button" @click="currency = 'djf'"
+                            :class="currency === 'djf' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
+                            class="cursor-pointer rounded-full px-3 py-1 text-xs font-bold transition">DJF</button>
+                        <button type="button" @click="currency = 'usd'"
+                            :class="currency === 'usd' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
+                            class="cursor-pointer rounded-full px-3 py-1 text-xs font-bold transition">USD</button>
                     </div>
                 </div>
 
+                {{-- Plan cards — inherit `billing` and `currency` from section scope --}}
                 <div class="mt-14 grid gap-6 xl:grid-cols-3">
                     @foreach ($pricingPlans as $plan)
                         @php
-                            $monthlyPrice = $plan['price'];
-                            $annualPrice = round($monthlyPrice * 0.8); // 20% off
+                            $djfMonthly  = $plan['djf'];
+                            $djfAnnual   = round($djfMonthly * 0.8);
+                            $usdMonthly  = $plan['usd'];
+                            $usdAnnual   = round($usdMonthly * 0.8);
                         @endphp
                         <article
-                            class="relative rounded-[2rem] border {{ $plan['featured'] ? 'border-slate-900 bg-slate-900 text-white shadow-[0_28px_80px_rgba(15,23,42,0.24)]' : 'border-slate-200 bg-white text-kirada-navy shadow-[0_20px_60px_rgba(15,23,42,0.08)]' }} p-8">
+                            class="relative flex flex-col rounded-[2rem] border {{ $plan['featured'] ? 'border-slate-900 bg-slate-900 text-white shadow-[0_28px_80px_rgba(15,23,42,0.24)]' : 'border-slate-200 bg-white text-kirada-navy shadow-[0_20px_60px_rgba(15,23,42,0.08)]' }} p-8">
+
                             @if (!empty($plan['badge']))
-                                <div
-                                    class="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-kirada-green px-5 py-2 text-sm font-bold uppercase tracking-[0.06em] text-white">
+                                <div class="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-kirada-green px-5 py-2 text-sm font-bold uppercase tracking-[0.06em] text-white">
                                     {{ __($plan['badge']) }}
                                 </div>
                             @endif
@@ -567,29 +576,79 @@
                             <p class="mt-2 text-lg {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-500' }}">
                                 {{ __($plan['audience']) }}</p>
 
-                            <div class="mt-8 flex items-end gap-2">
-                                <span class="text-6xl font-semibold tracking-[-0.06em]" x-show="billing === 'monthly'">${{ $monthlyPrice }}</span>
-                                <span class="text-6xl font-semibold tracking-[-0.06em]" x-show="billing === 'annual'" x-cloak>${{ $annualPrice }}</span>
-                                <span
-                                    class="pb-2 text-2xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">{{ __($plan['suffix']) }}</span>
+                            {{-- Price display --}}
+                            <div class="mt-8">
+                                {{-- DJF monthly --}}
+                                <div x-show="currency === 'djf' && billing === 'monthly'">
+                                    <div class="flex items-end gap-2">
+                                        <span class="text-5xl font-semibold tracking-[-0.05em]">{{ number_format($djfMonthly) }}</span>
+                                        <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">DJF/mo</span>
+                                    </div>
+                                </div>
+                                {{-- DJF annual --}}
+                                <div x-show="currency === 'djf' && billing === 'annual'" x-cloak>
+                                    <div class="flex items-end gap-2">
+                                        <span class="text-5xl font-semibold tracking-[-0.05em]">{{ number_format($djfAnnual) }}</span>
+                                        <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">DJF/mo</span>
+                                    </div>
+                                    <p class="mt-1.5 text-sm text-slate-400">
+                                        {{ __('billed') }} {{ number_format($djfAnnual * 12) }} DJF/yr — <span class="text-kirada-green font-semibold">{{ __('save') }} {{ number_format($djfMonthly * 12 - $djfAnnual * 12) }} DJF</span>
+                                    </p>
+                                </div>
+                                {{-- USD monthly --}}
+                                <div x-show="currency === 'usd' && billing === 'monthly'" x-cloak>
+                                    <div class="flex items-end gap-2">
+                                        <span class="text-5xl font-semibold tracking-[-0.05em]">${{ $usdMonthly }}</span>
+                                        <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">/mo</span>
+                                    </div>
+                                </div>
+                                {{-- USD annual --}}
+                                <div x-show="currency === 'usd' && billing === 'annual'" x-cloak>
+                                    <div class="flex items-end gap-2">
+                                        <span class="text-5xl font-semibold tracking-[-0.05em]">${{ $usdAnnual }}</span>
+                                        <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">/mo</span>
+                                    </div>
+                                    <p class="mt-1.5 text-sm text-slate-400">
+                                        {{ __('billed') }} ${{ $usdAnnual * 12 }}/yr — <span class="text-kirada-green font-semibold">{{ __('save') }} ${{ ($usdMonthly - $usdAnnual) * 12 }}</span>
+                                    </p>
+                                </div>
                             </div>
-                            <p class="mt-2 text-lg {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">
-                                <span x-show="billing === 'monthly'">{{ __($plan['billing']) }}</span>
-                                <span x-show="billing === 'annual'" x-cloak>{{ __('per year') }}</span>
-                            </p>
 
+                            {{-- CTA --}}
                             <a href="{{ route('register', ['plan' => $plan['slug']]) }}" wire:navigate
                                 class="mt-8 inline-flex min-h-14 w-full items-center justify-center rounded-2xl border text-lg font-semibold transition hover:-translate-y-0.5 {{ $plan['featured'] ? 'border-kirada-ocean bg-kirada-ocean text-white shadow-[0_18px_40px_rgba(14,165,233,0.25)]' : 'border-slate-200 bg-white text-kirada-navy hover:border-kirada-ocean' }}">
                                 {{ __($plan['cta']) }}
                             </a>
 
-                            <div
-                                class="mt-8 border-t {{ $plan['featured'] ? 'border-white/10' : 'border-slate-200' }} pt-8">
+                            {{-- Payment methods accepted --}}
+                            <div class="mt-5 flex items-center justify-center gap-2 flex-wrap">
+                                <span class="text-xs {{ $plan['featured'] ? 'text-slate-400' : 'text-slate-400' }}">{{ __('Pay via') }}</span>
+                                {{-- Stripe / Card --}}
+                                <span title="{{ __('Credit / Debit card via Stripe') }}"
+                                    class="inline-flex items-center gap-1 rounded-md border {{ $plan['featured'] ? 'border-white/15 bg-white/8 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-600' }} px-2.5 py-1 text-xs font-semibold">
+                                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                                    {{ __('Card') }}
+                                </span>
+                                {{-- WaafiPay --}}
+                                <span title="{{ __('WaafiPay mobile money — Djibouti & Somalia') }}"
+                                    class="inline-flex items-center gap-1 rounded-md border {{ $plan['featured'] ? 'border-white/15 bg-white/8 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-600' }} px-2.5 py-1 text-xs font-semibold">
+                                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-linecap="round" stroke-width="3"/></svg>
+                                    WaafiPay
+                                </span>
+                                {{-- CAC Bank --}}
+                                <span title="{{ __('CAC Bank Djibouti bank transfer') }}"
+                                    class="inline-flex items-center gap-1 rounded-md border {{ $plan['featured'] ? 'border-white/15 bg-white/8 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-600' }} px-2.5 py-1 text-xs font-semibold">
+                                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 22V12M21 22V12M12 22V12M2 12h20M12 2L2 7h20L12 2z"/></svg>
+                                    CAC Bank
+                                </span>
+                            </div>
+
+                            {{-- Features --}}
+                            <div class="mt-7 border-t {{ $plan['featured'] ? 'border-white/10' : 'border-slate-200' }} pt-7 flex-1">
                                 <ul class="space-y-4">
                                     @foreach ($plan['features'] as $feature)
-                                        <li
-                                            class="flex items-start gap-3 text-lg {{ $plan['featured'] ? 'text-slate-100' : 'text-slate-600' }}">
-                                            <span class="mt-1 text-kirada-green">✓</span>
+                                        <li class="flex items-start gap-3 text-lg {{ $plan['featured'] ? 'text-slate-100' : 'text-slate-600' }}">
+                                            <span class="mt-1 text-kirada-green shrink-0">✓</span>
                                             <span>{{ __($feature) }}</span>
                                         </li>
                                     @endforeach
@@ -599,11 +658,56 @@
                     @endforeach
                 </div>
 
+                {{-- Payment methods trust strip --}}
+                <div class="mt-14 rounded-2xl border border-slate-200 bg-white px-8 py-7 shadow-sm">
+                    <p class="text-center text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400 mb-6">
+                        {{ __('Accepted payment methods') }}
+                    </p>
+                    <div class="flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-10 lg:gap-16">
+
+                        {{-- Stripe / Cards --}}
+                        <div class="flex flex-col items-center gap-2 text-center">
+                            <div class="flex items-center gap-2">
+                                <span class="rounded-lg bg-[#635BFF] px-2.5 py-1.5 text-xs font-bold text-white tracking-wide">stripe</span>
+                                <span class="text-slate-300">·</span>
+                                <span class="text-sm font-semibold text-slate-500">Visa / Mastercard</span>
+                            </div>
+                            <p class="text-xs text-slate-400 max-w-[160px]">{{ __('International credit & debit cards. Secure Stripe Checkout.') }}</p>
+                        </div>
+
+                        <div class="hidden sm:block h-12 w-px bg-slate-200"></div>
+
+                        {{-- WaafiPay --}}
+                        <div class="flex flex-col items-center gap-2 text-center">
+                            <div class="flex items-center gap-2">
+                                <span class="rounded-lg bg-[#00A86B] px-2.5 py-1.5 text-xs font-bold text-white tracking-wide">WaafiPay</span>
+                                <span class="text-sm font-semibold text-slate-500">{{ __('Mobile Money') }}</span>
+                            </div>
+                            <p class="text-xs text-slate-400 max-w-[160px]">{{ __('Hormuud & Telesom wallets. Djibouti & Somalia.') }}</p>
+                        </div>
+
+                        <div class="hidden sm:block h-12 w-px bg-slate-200"></div>
+
+                        {{-- CAC Bank --}}
+                        <div class="flex flex-col items-center gap-2 text-center">
+                            <div class="flex items-center gap-2">
+                                <span class="rounded-lg border border-slate-300 bg-slate-100 px-2.5 py-1.5 text-xs font-bold text-slate-700 tracking-wide">CAC Bank</span>
+                                <span class="text-sm font-semibold text-slate-500">{{ __('Bank Transfer') }}</span>
+                            </div>
+                            <p class="text-xs text-slate-400 max-w-[160px]">{{ __('Direct DJF transfer via CAC Bank Djibouti. Activates in 1 business day.') }}</p>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-center text-xs text-slate-400">
+                        🔒 {{ __('All payments are secured and encrypted. Start with a 30-day free trial — no payment needed to sign up.') }}
+                    </p>
+                </div>
+
                 <div id="contact" class="mt-10 text-center">
                     <a href="{{ route('register', ['plan' => 'growth']) }}" wire:navigate
                         class="inline-flex min-h-14 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#0EA5E9,#10B981)] px-8 text-lg font-semibold text-white shadow-[0_16px_40px_rgba(14,165,233,0.24)] transition hover:-translate-y-0.5">
                         {{ __('Start Free Trial') }}
                     </a>
+                    <p class="mt-3 text-sm text-slate-400">{{ __('No credit card required. 30 days free.') }}</p>
                 </div>
             </div>
         </section>
@@ -638,248 +742,6 @@
             <flux:toast />
         </flux:toast.group>
     @endpersist
-
-    <style>
-        /* ── Kirada Workflow — Premium SaaS Timeline v2 ───────────────────────── */
-        .kirada-wf-shell {
-            scroll-margin-top:24px; background:#fff;
-            border:1px solid #E5E7EB; border-radius:20px;
-            padding:44px 40px 56px;
-            box-shadow:0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -20px rgba(15,23,42,0.12);
-        }
-        .kirada-wf-header { text-align:center; max-width:600px; margin:0 auto 40px; }
-        .kirada-wf-eyebrow {
-            margin:0; font-size:12px; font-weight:600; letter-spacing:0.12em;
-            text-transform:uppercase; color:#2563EB;
-        }
-        .kirada-wf-title {
-            margin:14px 0 0; font-size:clamp(26px,3vw,36px); line-height:1.1;
-            letter-spacing:-0.02em; font-weight:600; color:#111827;
-        }
-        .kirada-wf-subtitle {
-            margin:12px 0 0; font-size:16px; line-height:1.55; color:#6B7280;
-        }
-
-        /* ── Layout switching ── */
-        .kirada-wf-desktop { display:none; position:relative; max-width:1200px; margin:0 auto; }
-        .kirada-wf-mobile  { display:none; position:relative; max-width:480px; margin:0 auto; }
-        @media (min-width:768px) { .kirada-wf-desktop { display:block; } }
-        @media (max-width:767px) { .kirada-wf-mobile  { display:block; } .kirada-wf-shell { padding:32px 20px 44px; border-radius:16px; } }
-
-        /* ── Timeline line (desktop horizontal) ── */
-        .kirada-wf-line-svg {
-            position:absolute; top:28px; left:0; width:100%; height:56px;
-            overflow:visible; pointer-events:none;
-        }
-        .wf-track { fill:none; stroke:#E5E7EB; stroke-width:3; stroke-linecap:round; }
-        .wf-progress { fill:none; stroke:url(#wfGrad); stroke-width:3; stroke-linecap:round; }
-        .wf-comet {
-            fill:none; stroke:#2563EB; stroke-width:4; stroke-linecap:round;
-            filter:drop-shadow(0 0 8px rgba(37,99,235,0.5)); opacity:0;
-        }
-
-        /* ── Timeline line (mobile vertical) ── */
-        .kirada-wf-line-svg-v {
-            position:absolute; top:0; left:28px; width:56px; height:100%;
-            overflow:visible; pointer-events:none;
-        }
-
-        /* ── Desktop cards row ── */
-        .kirada-wf-row {
-            position:relative; display:flex; justify-content:space-between;
-            align-items:flex-start; gap:16px;
-        }
-
-        /* ── Card (shared desktop + mobile) ── */
-        .kirada-wf-card, .kirada-wf-card-v {
-            opacity:0; transform:translateY(20px);
-            background:#fff; border:1px solid #E5E7EB; border-radius:16px;
-            padding:28px 22px; text-align:center;
-            transition:box-shadow 250ms ease-out, border-color 250ms ease-out, transform 250ms ease-out;
-        }
-        .kirada-wf-card { width:160px; }
-        .kirada-wf-card-v {
-            display:flex; align-items:flex-start; gap:18px; text-align:left;
-            margin-bottom:20px; padding:22px 22px;
-        }
-        .kirada-wf-card:hover, .kirada-wf-card-v:hover {
-            box-shadow:0 12px 36px -12px rgba(37,99,235,0.15);
-            border-color:#2563EB;
-            transform:translateY(-4px);
-        }
-
-        /* ── Focal card (Payment — center step) ── */
-        .kirada-wf-focal {
-            border-color:#BFDBFE; border-width:1.5px;
-            box-shadow:0 4px 20px -8px rgba(37,99,235,0.18);
-        }
-        .kirada-wf-focal-v {
-            border-color:#BFDBFE; border-width:1.5px;
-            box-shadow:0 4px 20px -8px rgba(37,99,235,0.18);
-        }
-        .kirada-wf-focal .kirada-wf-icon-wrap,
-        .kirada-wf-focal-v .kirada-wf-icon-wrap-v {
-            background:#EFF6FF; border-color:#BFDBFE; color:#2563EB;
-        }
-
-        /* ── Icon wrap ── */
-        .kirada-wf-icon-wrap, .kirada-wf-icon-wrap-v {
-            position:relative; width:52px; height:52px; border-radius:14px;
-            background:#F8FAFC; border:1px solid #E5E7EB;
-            display:flex; align-items:center; justify-content:center;
-            color:#2563EB; margin:0 auto 18px;
-            transition:transform 250ms ease-out, color 250ms ease-out;
-        }
-        .kirada-wf-icon-wrap-v { margin:0; flex-shrink:0; width:46px; height:46px; }
-        .kirada-wf-card:hover .kirada-wf-icon-wrap,
-        .kirada-wf-card-v:hover .kirada-wf-icon-wrap-v {
-            transform:scale(1.05); color:#2563EB;
-        }
-        .kirada-wf-icon { width:28px; height:28px; }
-
-        /* ── Number badge ── */
-        .kirada-wf-badge {
-            position:absolute; top:-7px; right:-7px; width:20px; height:20px;
-            border-radius:50%; background:#fff; border:1px solid #E5E7EB;
-            color:#6B7280; font-size:10px; font-weight:600;
-            display:flex; align-items:center; justify-content:center;
-            box-shadow:0 1px 4px rgba(15,23,42,0.08);
-        }
-
-        /* ── Card text ── */
-        .kirada-wf-card-body { padding:0 4px; }
-        .kirada-wf-label {
-            margin:0; font-size:17px; font-weight:600; color:#111827;
-            transition:color 250ms ease-out;
-        }
-        .kirada-wf-card:hover .kirada-wf-label,
-        .kirada-wf-card-v:hover .kirada-wf-label { color:#2563EB; }
-        .kirada-wf-desc {
-            margin:8px 0 0; font-size:14px; line-height:1.5; color:#6B7280;
-        }
-
-        /* ── Mobile vertical column ── */
-        .kirada-wf-col { position:relative; display:flex; flex-direction:column; padding-left:0; }
-
-        /* ── Reduced motion ── */
-        @media (prefers-reduced-motion: reduce) {
-            .kirada-wf-card, .kirada-wf-card-v { opacity:1 !important; transform:none !important; }
-        }
-    </style>
-    <script>
-        function kiradaWorkflow() {
-            return {
-                init() {
-                    const root = this.$el;
-                    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-                    const getActive = () => {
-                        const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-                        return isDesktop
-                            ? root.querySelector('.kirada-wf-desktop')
-                            : root.querySelector('.kirada-wf-mobile');
-                    };
-
-                    const prime = (o) => {
-                        if (!o) return;
-                        o.querySelectorAll('[data-line]').forEach(p => {
-                            if (p.getAnimations) p.getAnimations().forEach(a => a.cancel());
-                            const L = p.getTotalLength();
-                            p.style.strokeDasharray = L;
-                            p.style.strokeDashoffset = L;
-                        });
-                        o.querySelectorAll('[data-comet]').forEach(p => {
-                            if (p.getAnimations) p.getAnimations().forEach(a => a.cancel());
-                            const L = p.getTotalLength();
-                            p.dataset.len = L;
-                            p.style.strokeDasharray = '20 ' + L;
-                            p.style.strokeDashoffset = L;
-                            p.style.opacity = 0;
-                        });
-                        o.querySelectorAll('[data-node]').forEach(n => {
-                            n.style.opacity = 0;
-                            n.style.transform = n.classList.contains('kirada-wf-card-v')
-                                ? 'translateX(-20px)' : 'translateY(20px)';
-                        });
-                    };
-
-                    const reveal = (o) => {
-                        if (!o) return;
-                        o.querySelectorAll('[data-line]').forEach(p => { p.style.strokeDashoffset = 0; });
-                        o.querySelectorAll('[data-node]').forEach(n => {
-                            n.style.opacity = 1; n.style.transform = 'none';
-                        });
-                    };
-
-                    const play = (o) => {
-                        if (!o) return;
-                        if (reduce) { reveal(o); return; }
-                        const lineDur = 1400;
-                        const nodes = o.querySelectorAll('[data-node]');
-                        const isMobile = o.classList.contains('kirada-wf-mobile');
-
-                        // Line draw
-                        o.querySelectorAll('[data-line]').forEach(p => {
-                            const L = p.getTotalLength();
-                            p.animate(
-                                [{ strokeDashoffset: L }, { strokeDashoffset: 0 }],
-                                { duration: lineDur, easing: 'cubic-bezier(0.65,0,0.35,1)', fill: 'forwards' }
-                            ).onfinish = () => { p.style.strokeDashoffset = 0; };
-                        });
-
-                        // Node stagger entrance
-                        const stepDelay = lineDur / nodes.length;
-                        nodes.forEach((n, i) => {
-                            const offset = isMobile ? 'translateX(-20px)' : 'translateY(20px)';
-                            n.animate(
-                                [{ opacity:0, transform:offset }, { opacity:1, transform:'none' }],
-                                { duration:600, delay: stepDelay * i + 80, easing:'cubic-bezier(0.4,0,0.2,1)', fill:'forwards' }
-                            ).onfinish = () => { n.style.opacity=1; n.style.transform='none'; };
-                        });
-
-                        // Comet loop
-                        setTimeout(() => {
-                            o.querySelectorAll('[data-comet]').forEach(p => {
-                                const L = parseFloat(p.dataset.len);
-                                p.style.opacity = 1;
-                                p.animate(
-                                    [{ strokeDashoffset:L }, { strokeDashoffset:0 }],
-                                    { duration:3000, iterations:Infinity, easing:'linear' }
-                                );
-                            });
-                        }, lineDur + 200);
-                    };
-
-                    let currentOpt = null;
-                    let observer = null;
-
-                    const setup = () => {
-                        const opt = getActive();
-                        if (opt === currentOpt) return;
-                        if (observer) observer.disconnect();
-                        if (currentOpt) prime(currentOpt);
-                        currentOpt = opt;
-                        prime(opt);
-
-                        if (reduce) { reveal(opt); return; }
-
-                        observer = new IntersectionObserver((entries) => {
-                            entries.forEach((entry) => {
-                                if (entry.isIntersecting) { play(opt); observer.disconnect(); }
-                            });
-                        }, { threshold:0.15 });
-                        observer.observe(root);
-                    };
-
-                    setup();
-                    window.addEventListener('resize', () => {
-                        clearTimeout(window._kwfTimer);
-                        window._kwfTimer = setTimeout(setup, 200);
-                    });
-                }
-            };
-        }
-    </script>
 
     @fluxScripts
 </body>

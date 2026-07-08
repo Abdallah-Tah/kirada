@@ -29,6 +29,7 @@
     --color-kirada-navy: #0F172A;
     --color-kirada-red: #EF4444;
     --color-kirada-soft: #F1F5F9;
+    --color-kirada-blue: #2563EB;
 
     --color-accent: var(--color-kirada-ocean);
     --color-accent-content: var(--color-kirada-ocean);
@@ -713,6 +714,129 @@ select:focus[data-flux-control] {
     }
 }
 
+
+/* ── Kirada Workflow — Premium SaaS Timeline v2 ─────────────────────────── */
+
+.kirada-wf-shell {
+    scroll-margin-top: 24px;
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 20px;
+    padding: 44px 40px 56px;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 12px 32px -20px rgba(15,23,42,0.12);
+}
+.kirada-wf-header { text-align: center; max-width: 600px; margin: 0 auto 40px; }
+.kirada-wf-eyebrow {
+    margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--color-kirada-blue);
+}
+.kirada-wf-title {
+    margin: 14px 0 0; font-size: clamp(26px, 3vw, 36px); line-height: 1.1;
+    letter-spacing: -0.02em; font-weight: 600; color: #111827;
+}
+.kirada-wf-subtitle { margin: 12px 0 0; font-size: 16px; line-height: 1.55; color: #6B7280; }
+
+/* Stage */
+.kirada-wf-stage { position: relative; max-width: 1200px; margin: 0 auto; }
+
+/* Timeline SVGs — each shown only at its breakpoint */
+.kirada-wf-line-svg {
+    position: absolute; top: 28px; left: 0; width: 100%; height: 56px;
+    overflow: visible; pointer-events: none; display: none;
+}
+.kirada-wf-line-svg-v {
+    position: absolute; top: 0; left: 28px; width: 56px; height: 100%;
+    overflow: visible; pointer-events: none; display: none;
+}
+@media (min-width: 768px) { .kirada-wf-line-svg   { display: block; } }
+@media (max-width: 767px) {
+    .kirada-wf-line-svg-v { display: block; }
+    .kirada-wf-shell { padding: 32px 20px 44px; border-radius: 16px; }
+}
+
+.wf-track     { fill: none; stroke: #E5E7EB; stroke-width: 3; stroke-linecap: round; }
+.wf-progress  { fill: none; stroke: url(#wfGrad);  stroke-width: 3; stroke-linecap: round; }
+.wf-progress-v { fill: none; stroke: url(#wfGradV); stroke-width: 3; stroke-linecap: round; }
+.wf-comet {
+    fill: none; stroke: var(--color-kirada-blue); stroke-width: 4; stroke-linecap: round;
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--color-kirada-blue) 50%, transparent));
+    opacity: 0;
+}
+
+/* Card row */
+.kirada-wf-row {
+    position: relative; display: flex; justify-content: space-between;
+    align-items: flex-start; gap: 16px;
+}
+
+/* Card — default: visible (no-JS / pre-Alpine fallback) */
+.kirada-wf-card {
+    background: #fff; border: 1px solid #E5E7EB; border-radius: 16px;
+    padding: 28px 22px; text-align: center; width: 160px; flex-shrink: 0;
+    transition: box-shadow 250ms ease-out, border-color 250ms ease-out, transform 250ms ease-out;
+}
+/* Hidden initial state only when JS is active */
+.kirada-motion .kirada-wf-card { opacity: 0; transform: translateY(20px); }
+.kirada-wf-card:hover {
+    box-shadow: 0 12px 36px -12px rgba(37,99,235,0.15);
+    border-color: var(--color-kirada-blue);
+    transform: translateY(-4px);
+}
+
+/* Focal card (Payment) */
+.kirada-wf-focal {
+    border-color: #BFDBFE; border-width: 1.5px;
+    box-shadow: 0 4px 20px -8px rgba(37,99,235,0.18);
+}
+.kirada-wf-focal .kirada-wf-icon-wrap {
+    background: #EFF6FF; border-color: #BFDBFE; color: var(--color-kirada-blue);
+}
+
+/* Icon wrap */
+.kirada-wf-icon-wrap {
+    position: relative; width: 52px; height: 52px; border-radius: 14px;
+    background: #F8FAFC; border: 1px solid #E5E7EB;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-kirada-blue); margin: 0 auto 18px;
+    transition: transform 250ms ease-out;
+}
+.kirada-wf-card:hover .kirada-wf-icon-wrap { transform: scale(1.05); }
+.kirada-wf-icon { width: 28px; height: 28px; }
+
+/* Number badge */
+.kirada-wf-badge {
+    position: absolute; top: -7px; right: -7px; width: 20px; height: 20px;
+    border-radius: 50%; background: #fff; border: 1px solid #E5E7EB;
+    color: #6B7280; font-size: 10px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.08);
+}
+
+/* Card text */
+.kirada-wf-card-body { padding: 0 4px; }
+.kirada-wf-label {
+    margin: 0; font-size: 17px; font-weight: 600; color: #111827;
+    transition: color 250ms ease-out;
+}
+.kirada-wf-card:hover .kirada-wf-label { color: var(--color-kirada-blue); }
+.kirada-wf-desc { margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: #6B7280; }
+
+/* Mobile — column layout */
+@media (max-width: 767px) {
+    .kirada-wf-row { flex-direction: column; padding-left: 64px; }
+    .kirada-wf-card {
+        width: auto; display: flex; align-items: flex-start;
+        gap: 18px; text-align: left; margin-bottom: 20px; padding: 22px;
+    }
+    .kirada-motion .kirada-wf-card { transform: translateX(-20px); }
+    .kirada-wf-card:hover { transform: none; }
+    .kirada-wf-icon-wrap { margin: 0; flex-shrink: 0; width: 46px; height: 46px; }
+}
+
+/* Ensure reduced-motion users always see cards even if Alpine fails to init */
+@media (prefers-reduced-motion: reduce) {
+    .kirada-motion .kirada-wf-card { opacity: 1 !important; transform: none !important; }
+}
 
 /* ── Rich text editor (Tiptap / ProseMirror) ─────────────────────────────── */
 

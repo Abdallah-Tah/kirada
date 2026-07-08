@@ -7,6 +7,8 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MaintenanceAttachmentController;
 use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\SubscriptionCheckoutController;
 use App\Livewire\Contracts\Create as ContractCreate;
 use App\Livewire\Contracts\Index as ContractIndex;
 use App\Livewire\Contracts\Show as ContractShow;
@@ -122,6 +124,15 @@ Route::get('/sign/{token}', ContractSign::class)->name('contracts.sign');
 
 // Payment operator webhooks (shared-secret verified per gateway, CSRF-exempt)
 Route::post('/webhooks/payments/{gateway}', PaymentWebhookController::class)->name('webhooks.payments');
+
+// Stripe subscription webhook (signature-verified, CSRF-exempt)
+Route::post('/webhooks/stripe', StripeWebhookController::class)->name('webhooks.stripe');
+
+// Subscription checkout initiation — authenticated landlords only
+Route::middleware(['auth', 'verified', 'role:landlord'])->group(function () {
+    Route::post('/subscription/checkout/{planSlug}/{gateway}', [SubscriptionCheckoutController::class, 'initiate'])
+        ->name('subscription.checkout');
+});
 
 // Rent Invoices — list is shared with tenants ("My Rent", scoped in the
 // component); create/edit stay admin + landlord only.

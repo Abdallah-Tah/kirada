@@ -21,6 +21,9 @@ class Subscription extends Model
         'ends_at',
         'status',
         'payment_method',
+        'gateway',
+        'gateway_subscription_id',
+        'gateway_status',
         'notes',
     ];
 

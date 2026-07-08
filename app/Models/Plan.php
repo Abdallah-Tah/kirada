@@ -21,6 +21,7 @@ class Plan extends Model
         'max_active_units',
         'max_active_leases',
         'is_active',
+        'stripe_price_id',
     ];
 
     protected $casts = [

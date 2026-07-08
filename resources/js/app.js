@@ -348,52 +348,6 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// ── Workflow Isometric Pipeline Animation ───────────────────────────────────
-// Chatsheet-style scene built entirely in CSS + inline SVG (SMIL travelers).
-// JS only handles the scroll-triggered entrance: `.is-visible` on the stage
-// cascades staggered transitions to tiles, hub, and panels via CSS delays.
-
-let workflowStageObserver = null;
-
-function initWorkflowStage() {
-    // Livewire navigation replaces the DOM; drop the observer watching the
-    // old stage so it doesn't pin detached nodes in memory.
-    if (workflowStageObserver) {
-        workflowStageObserver.disconnect();
-        workflowStageObserver = null;
-    }
-
-    const stage = document.querySelector('.kirada-iso-stage');
-    if (!stage || stage.classList.contains('is-visible')) return;
-
-    if (prefersReducedMotion() || !('IntersectionObserver' in window)) {
-        stage.classList.add('is-visible');
-        return;
-    }
-
-    const observer = new IntersectionObserver(
-        (entries, obs) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                obs.unobserve(entry.target);
-                entry.target.classList.add('is-visible');
-            });
-        },
-        { threshold: 0.25 }
-    );
-
-    observer.observe(stage);
-    workflowStageObserver = observer;
-}
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initWorkflowStage);
-} else {
-    initWorkflowStage();
-}
-
-document.addEventListener('livewire:navigated', initWorkflowStage);
-
 // ── Rich paragraph editor (Tiptap) ────────────────────────────────────────────
 // Full WYSIWYG editor for contract paragraphs. wire:ignore on the host element
 // prevents Livewire from clobbering the ProseMirror DOM; changes sync back via
@@ -401,6 +355,119 @@ document.addEventListener('livewire:navigated', initWorkflowStage);
 // Show.php detects block-level output and uses it as-is.
 
 document.addEventListener('alpine:init', () => {
+    // ── Workflow timeline ─────────────────────────────────────────────────────
+    Alpine.data('kiradaWorkflow', () => ({
+        _cometAnims: [],
+        _exitObserver: null,
+
+        init() {
+            const root = this.$el;
+            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            let played = false;
+
+            if (reduce) {
+                root.querySelectorAll('[data-node]').forEach(n => {
+                    n.style.opacity = 1; n.style.transform = 'none';
+                });
+                root.querySelectorAll('[data-line]').forEach(p => { p.style.strokeDashoffset = 0; });
+                return;
+            }
+
+            // Prep the visible line/comet paths for their entrance animation.
+            const prime = () => {
+                root.querySelectorAll('[data-line],[data-comet]').forEach(p => {
+                    p.getAnimations?.().forEach(a => a.cancel());
+                });
+                root.querySelectorAll('[data-line]').forEach(p => {
+                    const svg = p.closest('svg');
+                    if (!svg || getComputedStyle(svg).display === 'none') return;
+                    const L = p.getTotalLength?.() || 0;
+                    p.style.strokeDasharray = L;
+                    p.style.strokeDashoffset = L;
+                });
+                root.querySelectorAll('[data-comet]').forEach(p => {
+                    const svg = p.closest('svg');
+                    if (!svg || getComputedStyle(svg).display === 'none') return;
+                    const L = p.getTotalLength?.() || 0;
+                    p.dataset.len = L;
+                    p.style.strokeDasharray = '20 ' + L;
+                    p.style.strokeDashoffset = L;
+                    p.style.opacity = 0;
+                });
+            };
+
+            const play = () => {
+                const isMobile = !window.matchMedia('(min-width:768px)').matches;
+                const lineDur = 1400;
+
+                // Draw the visible timeline line.
+                root.querySelectorAll('[data-line]').forEach(p => {
+                    const svg = p.closest('svg');
+                    if (!svg || getComputedStyle(svg).display === 'none') return;
+                    const L = p.getTotalLength?.() || 0;
+                    p.animate(
+                        [{ strokeDashoffset: L }, { strokeDashoffset: 0 }],
+                        { duration: lineDur, easing: 'cubic-bezier(0.65,0,0.35,1)', fill: 'forwards' }
+                    ).onfinish = () => { p.style.strokeDashoffset = 0; };
+                });
+
+                // Stagger cards in.
+                const nodes = root.querySelectorAll('[data-node]');
+                const stepDelay = lineDur / nodes.length;
+                nodes.forEach((n, i) => {
+                    const offset = isMobile ? 'translateX(-20px)' : 'translateY(20px)';
+                    n.animate(
+                        [{ opacity: 0, transform: offset }, { opacity: 1, transform: 'none' }],
+                        { duration: 600, delay: stepDelay * i + 80, easing: 'cubic-bezier(0.4,0,0.2,1)', fill: 'forwards' }
+                    ).onfinish = () => { n.style.opacity = 1; n.style.transform = 'none'; };
+                });
+
+                // Comet loop — starts after the line draw; pauses off-screen.
+                setTimeout(() => {
+                    this._cometAnims = [];
+                    root.querySelectorAll('[data-comet]').forEach(p => {
+                        const svg = p.closest('svg');
+                        if (!svg || getComputedStyle(svg).display === 'none') return;
+                        const L = parseFloat(p.dataset.len) || 0;
+                        if (!L) return;
+                        p.style.opacity = 1;
+                        this._cometAnims.push(p.animate(
+                            [{ strokeDashoffset: L }, { strokeDashoffset: 0 }],
+                            { duration: 3000, iterations: Infinity, easing: 'linear' }
+                        ));
+                    });
+                    if (this._cometAnims.length) {
+                        this._exitObserver = new IntersectionObserver((entries) => {
+                            entries.forEach(e =>
+                                this._cometAnims.forEach(a => e.isIntersecting ? a.play() : a.pause())
+                            );
+                        }, { threshold: 0.05 });
+                        this._exitObserver.observe(root);
+                    }
+                }, lineDur + 200);
+            };
+
+            prime();
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !played) {
+                        played = true;
+                        observer.disconnect();
+                        play();
+                    }
+                });
+            }, { threshold: 0.15 });
+            observer.observe(root);
+        },
+
+        destroy() {
+            if (this._exitObserver) this._exitObserver.disconnect();
+            this._cometAnims.forEach(a => a.cancel());
+        },
+    }));
+
+    // ── Rich text editor ──────────────────────────────────────────────────────
     Alpine.data('richEditor', (initial, wirePath) => {
         let editor = null;
 

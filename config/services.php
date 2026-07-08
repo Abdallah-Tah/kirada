@@ -48,4 +48,34 @@ return [
         'from' => env('TWILIO_FROM'),
     ],
 
+    // ── Subscription billing gateways ────────────────────────────────────────
+
+    // Stripe (international card payments)
+    // After adding keys, run: php artisan stripe:sync-plans
+    // Get webhook secret from: stripe listen --forward-to localhost/webhooks/stripe
+    'stripe' => [
+        'key'            => env('STRIPE_KEY'),
+        'secret'         => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+
+    // WaafiPay (Hormuud/Telesom mobile money — Somalia & Djibouti)
+    // Credentials from: https://merchant.waafipay.net
+    'waafi' => [
+        'merchant_uid'   => env('WAAFI_MERCHANT_UID'),
+        'api_user_id'    => env('WAAFI_API_USER_ID'),
+        'api_key'        => env('WAAFI_API_KEY'),
+        'webhook_secret' => env('WAAFI_WEBHOOK_SECRET'),
+        'djf_usd_rate'   => env('WAAFI_DJF_USD_RATE', 177),
+    ],
+
+    // CAC Bank (Djibouti bank transfer — reference-based, no API yet)
+    'cacbank' => [
+        'account_name'   => env('CAC_BANK_ACCOUNT_NAME', 'Kirada Technologies'),
+        'account_number' => env('CAC_BANK_ACCOUNT_NUMBER'),
+        'iban'           => env('CAC_BANK_IBAN'),
+        'swift'          => env('CAC_BANK_SWIFT'),
+        'webhook_secret' => env('CAC_BANK_WEBHOOK_SECRET'),
+    ],
+
 ];
