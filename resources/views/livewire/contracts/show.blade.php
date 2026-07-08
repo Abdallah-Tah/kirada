@@ -1,4 +1,17 @@
 <div class="kirada-shell">
+    {{-- ─── Breadcrumb (shown when contract belongs to a lease) ─────────── --}}
+    @if ($contract->lease_id && $contract->lease)
+        <nav class="mb-4 flex items-center gap-1.5 text-sm text-zinc-400">
+            <a href="{{ route('leases.index') }}" wire:navigate class="hover:text-kirada-ocean transition-colors">{{ __('Leases') }}</a>
+            <svg class="size-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+            <a href="{{ route('leases.show', $contract->lease) . '#contract' }}" wire:navigate class="hover:text-kirada-ocean transition-colors">
+                {{ $contract->lease->lease_number }}
+            </a>
+            <svg class="size-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+            <span class="text-zinc-600">{{ __('Contract') }}</span>
+        </nav>
+    @endif
+
     {{-- ─── Page header ──────────────────────────────────────────────────── --}}
     <div class="kirada-page-header">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">

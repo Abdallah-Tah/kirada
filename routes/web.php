@@ -18,6 +18,7 @@ use App\Livewire\Documents\Index as DocumentIndex;
 use App\Livewire\Leases\Create as LeaseCreate;
 use App\Livewire\Leases\Edit as LeaseEdit;
 use App\Livewire\Leases\Index as LeaseIndex;
+use App\Livewire\Leases\Show as LeaseShow;
 use App\Livewire\MaintenanceRequests\Create as MaintenanceRequestCreate;
 use App\Livewire\MaintenanceRequests\Index as MaintenanceRequestIndex;
 use App\Livewire\MaintenanceRequests\Show as MaintenanceRequestShow;
@@ -107,6 +108,7 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
 Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
     Route::get('/leases', LeaseIndex::class)->name('leases.index');
     Route::get('/leases/create', LeaseCreate::class)->name('leases.create');
+    Route::get('/leases/{lease}', LeaseShow::class)->name('leases.show');
     Route::get('/leases/{lease}/edit', LeaseEdit::class)->name('leases.edit');
 });
 

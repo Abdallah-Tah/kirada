@@ -45,7 +45,9 @@
                 @forelse ($this->leases as $lease)
                     <tr>
                         <td data-label="{{ __('Tenant') }}" class="px-4 py-3 font-medium">
-                            {{ $lease->tenant?->first_name }} {{ $lease->tenant?->last_name }}
+                            <a href="{{ route('leases.show', $lease) }}" wire:navigate class="hover:text-kirada-ocean transition-colors">
+                                {{ $lease->tenant?->first_name }} {{ $lease->tenant?->last_name }}
+                            </a>
                         </td>
                         <td data-label="{{ __('Property') }}" class="px-4 py-3 text-zinc-500">{{ $lease->property?->name }}</td>
                         <td data-label="{{ __('Unit') }}" class="px-4 py-3 text-zinc-500">{{ $lease->unit?->unit_number }}</td>
@@ -65,6 +67,9 @@
                             <flux:dropdown align="end">
                                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />
                                 <flux:menu>
+                                    <flux:menu.item :href="route('leases.show', $lease)" wire:navigate icon="eye">
+                                        {{ __('View') }}
+                                    </flux:menu.item>
                                     <flux:menu.item :href="route('leases.edit', $lease)" wire:navigate icon="pencil">
                                         {{ __('Edit') }}
                                     </flux:menu.item>

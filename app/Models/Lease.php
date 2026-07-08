@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Contract;
+use App\Models\Document;
+use App\Models\RentInvoice;
+use App\Models\RentPayment;
 use App\Support\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -78,6 +83,26 @@ class Lease extends Model
         return $this->belongsTo(Tenant::class);
     }
 
+    public function contracts(): HasMany
+    {
+        return $this->hasMany(Contract::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(RentInvoice::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(RentPayment::class);
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
+
     // ── Scopes ──────────────────────────────────────────
 
     public function scopeActive(Builder $query): Builder
@@ -91,6 +116,11 @@ class Lease extends Model
     }
 
     // ── Helpers ─────────────────────────────────────────
+
+    public function getLeaseNumberAttribute(): string
+    {
+        return '#L-' . str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
+    }
 
     public function getFormattedRentAttribute(): string
     {

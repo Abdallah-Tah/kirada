@@ -8,12 +8,14 @@ use App\Services\ContractService;
 use App\Services\ContractTemplateService;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class Create extends Component
 {
     public string $type = 'bail_commercial';
 
+    #[Url(as: 'lease_id')]
     public ?int $lease_id = null;
 
     public string $title = '';
@@ -28,6 +30,11 @@ class Create extends Component
     public function mount(ContractTemplateService $templates): void
     {
         $this->v = $templates->defaultVariables();
+
+        // Pre-fill from URL: /contracts/create?lease_id=5 (linked from Lease Details page)
+        if ($this->lease_id) {
+            $this->updatedLeaseId($templates);
+        }
     }
 
     #[Computed]
