@@ -13,7 +13,7 @@
         }
         .sheet { max-width: 820px; margin: 0 auto; background: #fff; padding: 56px 64px; overflow-wrap: anywhere; word-break: break-word; }
         @media (max-width: 767px) {
-            .sheet { padding: 24px 16px; max-width: 100%; overflow-x: hidden; }
+            .sheet { padding: 24px 16px; max-width: 100%; overflow-x: hidden; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
             .brand { flex-direction: column; gap: 12px; align-items: flex-start; }
             .brand .ref { text-align: left; }
             .contract-title { font-size: 18px; }

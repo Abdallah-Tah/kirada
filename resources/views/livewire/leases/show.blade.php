@@ -1,4 +1,4 @@
-<div>
+<div class="w-full max-w-full overflow-hidden">
     {{-- ── Breadcrumb ─────────────────────────────────────────────────────── --}}
     <nav class="mb-4 flex items-center gap-1.5 text-sm text-zinc-400">
         <a href="{{ route('leases.index') }}" wire:navigate class="hover:text-kirada-ocean transition-colors">{{ __('Leases') }}</a>
