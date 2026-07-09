@@ -11,7 +11,22 @@
             font-family: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
             color: var(--ink); margin: 0; background: #f8fafc; line-height: 1.6;
         }
-        .sheet { max-width: 820px; margin: 0 auto; background: #fff; padding: 56px 64px; }
+        .sheet { max-width: 820px; margin: 0 auto; background: #fff; padding: 56px 64px; overflow-wrap: anywhere; word-break: break-word; }
+        @media (max-width: 767px) {
+            .sheet { padding: 24px 16px; max-width: 100%; overflow-x: hidden; }
+            .brand { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .brand .ref { text-align: left; }
+            .contract-title { font-size: 18px; }
+            .contract-subtitle { font-size: 12px; margin-bottom: 20px; }
+            h2 { font-size: 14px; }
+            p { font-size: 13px; text-align: left; }
+            .signatures { grid-template-columns: 1fr; gap: 16px; margin-top: 32px; }
+            .sig-block { padding: 12px; }
+            .certificate { margin-top: 32px; padding-top: 16px; }
+            table { font-size: 11px; display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            th, td { padding: 6px 8px; }
+            .foot { font-size: 10px; }
+        }
         .brand { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--ocean); padding-bottom: 16px; margin-bottom: 32px; }
         .brand-logo-card { display: inline-flex; align-items: center; background: #fff; border-radius: 10px; padding: 6px 12px; box-shadow: 0 1px 4px rgba(15,23,42,0.10); border: 1px solid rgba(226,232,240,0.9); }
         .brand-logo-card img { height: 28px; width: auto; object-fit: contain; display: block; }

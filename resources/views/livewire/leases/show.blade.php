@@ -282,7 +282,7 @@
                 <div class="space-y-6">
 
                     {{-- Contract header bar --}}
-                    <div class="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-900 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-4 sm:p-5 dark:border-zinc-700 dark:bg-zinc-900 sm:flex-row sm:items-center sm:justify-between overflow-hidden">
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
                                 <h2 class="font-semibold text-zinc-900 dark:text-white">{{ $contract->title }}</h2>
@@ -298,12 +298,13 @@
                             <p class="mt-1 text-xs text-zinc-400">{{ $contract->reference }}</p>
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2 max-md:flex-col max-md:items-stretch">
                             @can('update', $contract)
                                 @if ($contract->isDraft())
                                     <flux:button
                                         variant="primary"
                                         size="sm"
+                                        class="max-md:w-full"
                                         wire:click="sendContract"
                                         data-confirm="{{ __('Send this contract for signature?') }}">
                                         {{ __('Send for Signature') }}
@@ -313,6 +314,7 @@
                                     <flux:button
                                         variant="ghost"
                                         size="sm"
+                                        class="max-md:w-full"
                                         wire:click="cancelContract"
                                         data-confirm="{{ __('Cancel this contract?') }}">
                                         {{ __('Cancel') }}
@@ -325,19 +327,20 @@
                                 wire:navigate
                                 variant="ghost"
                                 size="sm"
+                                class="max-md:w-full"
                                 icon="pencil-square">
                                 {{ __('Edit') }}
                             </flux:button>
 
                             <a href="{{ route('contracts.print', $contract) }}"
                                target="_blank"
-                               class="kirada-pill border-zinc-200 bg-white text-zinc-600 hover:border-kirada-sky text-sm">
+                               class="kirada-pill border-zinc-200 bg-white text-zinc-600 hover:border-kirada-sky text-sm max-md:w-full text-center">
                                 {{ __('Print / PDF') }}
                             </a>
 
                             @if ($contract->isCompleted())
                                 <a href="{{ route('contracts.download', $contract) }}"
-                                   class="kirada-pill border-green-200 bg-green-50 text-kirada-green text-sm">
+                                   class="kirada-pill border-green-200 bg-green-50 text-kirada-green text-sm max-md:w-full text-center">
                                     {{ __('Download Signed') }}
                                 </a>
                             @endif
@@ -345,11 +348,11 @@
                     </div>
 
                     {{-- Two-column: body + signers --}}
-                    <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+                    <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr] max-lg:grid-cols-1">
 
                         {{-- Contract body --}}
-                        <div class="kirada-card">
-                            <div class="kirada-contract-body">
+                        <div class="kirada-card overflow-hidden">
+                            <div class="kirada-contract-body max-w-full overflow-hidden">
                                 {!! $contract->body_html !!}
                             </div>
                             @can('update', $contract)
@@ -481,15 +484,15 @@
                         <tbody>
                             @foreach ($this->invoices as $invoice)
                                 <tr class="border-t border-zinc-100 dark:border-zinc-800">
-                                    <td class="px-4 py-3 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                                    <td data-label="{{ __('Invoice #') }}" class="px-4 py-3 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
                                         {{ $invoice->invoice_number }}
                                     </td>
-                                    <td class="px-4 py-3 text-zinc-500">{{ $invoice->due_date?->format('M j, Y') }}</td>
-                                    <td class="px-4 py-3 text-zinc-700 dark:text-zinc-300">{{ number_format($invoice->amount, 0) }}</td>
-                                    <td class="px-4 py-3">
+                                    <td data-label="{{ __('Due Date') }}" class="px-4 py-3 text-zinc-500">{{ $invoice->due_date?->format('M j, Y') }}</td>
+                                    <td data-label="{{ __('Amount') }}" class="px-4 py-3 text-zinc-700 dark:text-zinc-300">{{ number_format($invoice->amount, 0) }}</td>
+                                    <td data-label="{{ __('Status') }}" class="px-4 py-3">
                                         <flux:badge color="{{ $invoiceColor($invoice->status) }}" size="sm">{{ __(ucfirst($invoice->status)) }}</flux:badge>
                                     </td>
-                                    <td class="px-4 py-3 text-end">
+                                    <td data-label="{{ __('Actions') }}" class="px-4 py-3 text-end">
                                         <flux:button :href="route('rent-invoices.edit', $invoice)" wire:navigate variant="ghost" size="sm" icon="pencil" />
                                     </td>
                                 </tr>
@@ -534,7 +537,7 @@
                         <tbody>
                             @foreach ($this->payments as $payment)
                                 <tr class="border-t border-zinc-100 dark:border-zinc-800">
-                                    <td class="px-4 py-3 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                                    <td data-label="{{ __('Payment #') }}" class="px-4 py-3 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
                                         {{ $payment->payment_number }}
                                     </td>
                                     <td class="px-4 py-3 text-zinc-500">{{ $payment->payment_date?->format('M j, Y') }}</td>

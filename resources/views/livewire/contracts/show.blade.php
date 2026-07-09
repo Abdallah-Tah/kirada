@@ -18,7 +18,7 @@
             <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">
                     <flux:heading size="xl" class="text-kirada-navy">{{ $contract->title }}</flux:heading>
-                    @php($color = $contract->status_color)
+                    @php $color = $contract->status_color; @endphp
                     <span @class([
                         'kirada-pill',
                         'border-green-200 bg-green-50 text-kirada-green' => $color === 'green',
@@ -30,28 +30,28 @@
                 <p class="mt-1 text-sm text-slate-500">{{ $contract->reference }}</p>
             </div>
 
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2 max-md:flex-col max-md:items-stretch">
                 @can('update', $contract)
                     @if ($contract->isDraft())
-                        <flux:button variant="primary" wire:click="send" data-confirm="{{ __('Send this contract for signature?') }}">{{ __('Send for signature') }}</flux:button>
+                        <flux:button variant="primary" wire:click="send" class="max-md:w-full" data-confirm="{{ __('Send this contract for signature?') }}">{{ __('Send for signature') }}</flux:button>
                     @endif
                     @if (! $contract->isCompleted() && ! $contract->isCancelled())
-                        <flux:button variant="ghost" wire:click="cancel" data-confirm="{{ __('Cancel this contract?') }}">{{ __('Cancel') }}</flux:button>
+                        <flux:button variant="ghost" wire:click="cancel" class="max-md:w-full" data-confirm="{{ __('Cancel this contract?') }}">{{ __('Cancel') }}</flux:button>
                     @endif
                 @endcan
-                <a href="{{ route('contracts.print', $contract) }}" target="_blank" class="kirada-pill border-slate-200 bg-white text-slate-600 hover:border-kirada-sky">{{ __('Print / PDF') }}</a>
+                <a href="{{ route('contracts.print', $contract) }}" target="_blank" class="kirada-pill border-slate-200 bg-white text-slate-600 hover:border-kirada-sky max-md:w-full text-center">{{ __('Print / PDF') }}</a>
                 @if ($contract->isCompleted())
-                    <a href="{{ route('contracts.download', $contract) }}" class="kirada-pill border-green-200 bg-green-50 text-kirada-green">{{ __('Download signed') }}</a>
+                    <a href="{{ route('contracts.download', $contract) }}" class="kirada-pill border-green-200 bg-green-50 text-kirada-green max-md:w-full text-center">{{ __('Download signed') }}</a>
                 @endif
             </div>
         </div>
     </div>
 
     {{-- ─── Body + signers ───────────────────────────────────────────────── --}}
-    <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+    <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr] max-lg:grid-cols-1">
 
         {{-- ── Contract body card ──────────────────────────────────────── --}}
-        <div class="kirada-card">
+        <div class="kirada-card overflow-hidden">
 
             @if ($editing)
                 {{-- ══════════════════ EDIT MODE ══════════════════ --}}
@@ -221,7 +221,7 @@
 
             @else
                 {{-- ══════════════════ VIEW MODE ══════════════════ --}}
-                <div class="kirada-contract-body">
+                <div class="kirada-contract-body max-w-full overflow-hidden">
                     {!! $contract->body_html !!}
                 </div>
 
