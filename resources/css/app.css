@@ -88,6 +88,9 @@ select:focus[data-flux-control] {
     .kirada-app-main {
         @apply flex flex-col;
         min-height: auto;
+        /* Flux's <main> ships p-6 lg:p-8 by default. Kill it: .kirada-app-content
+           owns the gutters, and the footer must reach the main edges. */
+        padding: 0 !important;
         background:
             radial-gradient(circle at 8% 0%, rgba(14, 165, 233, 0.22), transparent 28%),
             radial-gradient(circle at 92% 18%, rgba(16, 185, 129, 0.18), transparent 26%),
@@ -95,13 +98,15 @@ select:focus[data-flux-control] {
             linear-gradient(180deg, #e8f4ff 0%, #dff0ff 28%, #e8fff6 62%, #f0f9ff 100%);
     }
 
-    .kirada-app-main > div:not(.kirada-shell) {
-        @apply mx-auto w-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 lg:px-8;
-        padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-    }
     .kirada-app-content {
         @apply mx-auto w-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 lg:px-8;
-        padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+    }
+    /* Page roots that are .kirada-shell sit inside .kirada-app-content, which
+       already provides the max-width and gutters — don't pad twice. */
+    .kirada-app-content > .kirada-shell {
+        max-width: none;
+        padding: 0;
     }
     /* ── Desktop: fill viewport so footer sits at bottom on tall screens ── */
     @media (min-width: 1024px) {
@@ -113,6 +118,7 @@ select:focus[data-flux-control] {
     .kirada-footer {
         @apply w-full border-t border-slate-200/60 bg-white/40 backdrop-blur-sm;
         margin-top: auto;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
     }
     .kirada-footer-inner {
         @apply mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-6 sm:px-6 lg:px-8;
@@ -167,7 +173,6 @@ select:focus[data-flux-control] {
     .kirada-sidebar {
         background: linear-gradient(175deg, #0F172A 0%, #0a1d36 45%, #061220 100%) !important;
         border-right: 1px solid rgba(14, 165, 233, 0.18);
-        box-shadow: 4px 0 40px rgba(15, 23, 42, 0.40);
         gap: 0 !important;
         padding: 0 !important;
         height: 100dvh !important;
@@ -187,6 +192,9 @@ select:focus[data-flux-control] {
             top: 0 !important;
             align-self: start !important;
             z-index: 10 !important;
+            /* Shadow only where the sidebar is in view: off-canvas on mobile,
+               its 40px blur would bleed into the page as a grey smudge. */
+            box-shadow: 4px 0 40px rgba(15, 23, 42, 0.40);
         }
     }
 

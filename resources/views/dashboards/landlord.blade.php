@@ -3,7 +3,7 @@
 
         {{-- ─── Premium banner header ────────────────────────────────────────── --}}
         <div class="kirada-reveal overflow-hidden rounded-[1.75rem] bg-[linear-gradient(135deg,rgba(15,23,42,1)_0%,rgba(14,165,233,0.88)_58%,rgba(16,185,129,0.80)_100%)] px-7 py-8 text-white shadow-[0_28px_80px_rgba(15,23,42,0.18)] sm:px-9">
-            <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                     <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-sky-200/80">{{ __('Landlord Dashboard') }}</p>
                     <h1 class="mt-2 text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl">
@@ -14,7 +14,7 @@
                     </p>
                 </div>
                 <a href="{{ route('properties.create') }}" wire:navigate
-                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 text-sm font-semibold text-kirada-navy shadow-[0_14px_40px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(0,0,0,0.26)]">
+                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 text-sm font-semibold text-kirada-navy shadow-[0_14px_40px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(0,0,0,0.26)] sm:self-start lg:self-center">
                     <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
