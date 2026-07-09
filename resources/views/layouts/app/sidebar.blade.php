@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen text-slate-900 antialiased">
+    <body class="text-slate-900 antialiased lg:min-h-screen">
         <flux:sidebar sticky collapsible="true" class="kirada-sidebar">
             {{-- ── Sidebar header: toggle row above logo ── --}}
             <div class="kirada-sidebar-header">
