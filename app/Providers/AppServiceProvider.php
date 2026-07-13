@@ -6,7 +6,10 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Volt\Volt;
@@ -21,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureRateLimits();
         $this->configureViewNamespaces();
         $this->configureVolt();
     }
@@ -56,6 +60,21 @@ class AppServiceProvider extends ServiceProvider
         // Register layouts as an anonymous component path with prefix
         Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
         Blade::anonymousComponentPath(resource_path('views/pages'), 'pages');
+    }
+
+    protected function configureRateLimits(): void
+    {
+        RateLimiter::for('kirada-webhooks', fn (Request $request) => [
+            Limit::perMinute(30)->by($request->ip()),
+        ]);
+
+        RateLimiter::for('kirada-public-links', fn (Request $request) => [
+            Limit::perMinute(20)->by($request->ip()),
+        ]);
+
+        RateLimiter::for('kirada-authenticated-actions', fn (Request $request) => [
+            Limit::perMinute(120)->by((string) ($request->user()?->id ?? $request->ip())),
+        ]);
     }
 
     /**

@@ -63,7 +63,7 @@ class Create extends Component
             'method' => 'required|in:cash,bank_transfer,mobile_money,check,other',
             'status' => 'required|in:pending,confirmed,rejected',
             'reference_number' => 'nullable|string|max:255',
-            'proof' => 'nullable|file|max:5120', // 5MB max
+            'proof' => 'nullable|file|mimetypes:application/pdf,image/jpeg,image/png,image/webp|max:5120',
             'notes' => 'nullable|string|max:2000',
         ];
     }

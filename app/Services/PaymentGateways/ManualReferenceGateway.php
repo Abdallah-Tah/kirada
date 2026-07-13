@@ -30,6 +30,7 @@ class ManualReferenceGateway implements PaymentGateway
         $validator = Validator::make($request->all(), [
             'payment_reference' => 'required|string|max:20',
             'amount' => 'required|numeric|min:1',
+            'event_id' => 'required|string|max:255',
             'method' => 'nullable|in:cash,bank_transfer,mobile_money,check,other',
             'reference_number' => 'nullable|string|max:255',
         ]);
@@ -43,6 +44,7 @@ class ManualReferenceGateway implements PaymentGateway
         return [
             'payment_reference' => $data['payment_reference'],
             'amount' => (float) $data['amount'],
+            'gateway_event_id' => 'manual:'.$data['event_id'],
             'method' => $data['method'] ?? 'mobile_money',
             'reference_number' => $data['reference_number'] ?? null,
         ];

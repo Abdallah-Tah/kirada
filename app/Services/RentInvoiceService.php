@@ -8,6 +8,7 @@ use App\Models\RentInvoice;
 use App\Models\RentInvoiceLineItem;
 use App\Notifications\LateFeeApplied;
 use App\Notifications\RentInvoiceGenerated;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -97,23 +98,35 @@ class RentInvoiceService
      */
     public function createInvoice(array $data): RentInvoice
     {
-        $exists = RentInvoice::where('lease_id', $data['lease_id'])
-            ->whereDate('invoice_month', $data['invoice_month'])
-            ->exists();
+        return DB::transaction(function () use ($data): RentInvoice {
+            $lease = Lease::query()
+                ->with('property')
+                ->lockForUpdate()
+                ->findOrFail($data['lease_id']);
 
-        if ($exists) {
-            throw new \DomainException('An invoice already exists for this lease and month.');
-        }
+            $exists = RentInvoice::where('lease_id', $lease->id)
+                ->whereDate('invoice_month', $data['invoice_month'])
+                ->lockForUpdate()
+                ->exists();
 
-        $data['invoice_number'] = $this->generateInvoiceNumber();
-        $data['payment_reference'] = $this->generatePaymentReference();
-        $data['currency_id'] ??= $this->currencyIdFor($data);
+            if ($exists) {
+                throw new \DomainException('An invoice already exists for this lease and month.');
+            }
 
-        if (! isset($data['status']) || empty($data['status'])) {
-            $data['status'] = 'draft';
-        }
-
-        return RentInvoice::create($data);
+            return RentInvoice::create([
+                ...$data,
+                'landlord_id' => $lease->landlord_id,
+                'lease_id' => $lease->id,
+                'property_id' => $lease->property_id,
+                'unit_id' => $lease->unit_id,
+                'tenant_id' => $lease->tenant_id,
+                'amount' => $data['amount'] ?? $lease->monthly_rent,
+                'invoice_number' => $this->generateInvoiceNumber(),
+                'payment_reference' => $this->generatePaymentReference(),
+                'currency_id' => $lease->property?->currency_id,
+                'status' => $data['status'] ?? 'draft',
+            ]);
+        });
     }
 
     /**

@@ -45,7 +45,11 @@ class Subscription extends Model
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->where('status', 'active');
+        return $query->where('status', 'active')
+            ->where(function (Builder $query): void {
+                $query->whereNull('ends_at')
+                    ->orWhere('ends_at', '>', now());
+            });
     }
 
     public function scopeTrialing(Builder $query): Builder
@@ -60,7 +64,8 @@ class Subscription extends Model
 
     public function isActive(): bool
     {
-        return $this->status === 'active';
+        return $this->status === 'active'
+            && (! $this->ends_at || $this->ends_at->isFuture());
     }
 
     public function isCancelled(): bool

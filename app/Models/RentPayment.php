@@ -27,6 +27,7 @@ class RentPayment extends Model
         'method',
         'status',
         'reference_number',
+        'gateway_event_id',
         'proof_path',
         'notes',
         'confirmed_at',

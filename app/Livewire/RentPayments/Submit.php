@@ -57,7 +57,7 @@ class Submit extends Component
             'amount' => "required|numeric|min:1|max:{$this->remaining}",
             'method' => 'required|in:cash,bank_transfer,mobile_money,check,other',
             'reference_number' => 'nullable|string|max:255',
-            'proof' => 'nullable|file|max:5120',
+            'proof' => 'nullable|file|mimetypes:application/pdf,image/jpeg,image/png,image/webp|max:5120',
             'notes' => 'nullable|string|max:2000',
         ];
     }

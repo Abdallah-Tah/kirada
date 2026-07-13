@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Contracts\SubscriptionBillingGateway;
 use App\Models\Plan;
+use App\Models\Lease;
+use App\Models\Unit;
 use App\Models\Subscription;
 use App\Models\User;
 use App\Services\SubscriptionGateways\CacBankGateway;
@@ -85,6 +87,53 @@ class SubscriptionService
         return Subscription::where('status', 'trialing')
             ->where('trial_ends_at', '<', now())
             ->update(['status' => 'expired']);
+    }
+
+    /**
+     * Mark active subscriptions whose paid period has ended.
+     */
+    public function expireEndedSubscriptions(): int
+    {
+        return Subscription::where('status', 'active')
+            ->whereNotNull('ends_at')
+            ->where('ends_at', '<=', now())
+            ->update(['status' => 'expired']);
+    }
+
+    public function enforceActiveUnitLimit(User $landlord): void
+    {
+        $plan = $landlord->subscription?->plan;
+
+        if (! $plan || $plan->max_active_units === null) {
+            return;
+        }
+
+        $activeUnits = Unit::query()
+            ->where('is_active', true)
+            ->whereHas('property', fn ($query) => $query->where('landlord_id', $landlord->id))
+            ->count();
+
+        if ($activeUnits >= $plan->max_active_units) {
+            throw new \DomainException("Your current plan allows up to {$plan->max_active_units} active units.");
+        }
+    }
+
+    public function enforceActiveLeaseLimit(User $landlord): void
+    {
+        $plan = $landlord->subscription?->plan;
+
+        if (! $plan || $plan->max_active_leases === null) {
+            return;
+        }
+
+        $activeLeases = Lease::query()
+            ->where('landlord_id', $landlord->id)
+            ->where('status', 'active')
+            ->count();
+
+        if ($activeLeases >= $plan->max_active_leases) {
+            throw new \DomainException("Your current plan allows up to {$plan->max_active_leases} active leases.");
+        }
     }
 
     /**

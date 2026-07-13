@@ -84,7 +84,7 @@ class Create extends Component
             'preferred_access_window' => 'nullable|string|max:255',
             'priority' => 'required|in:low,medium,high,urgent',
             'photos' => 'array|max:6',
-            'photos.*' => 'image|max:5120',
+            'photos.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
         ];
     }
 
@@ -232,17 +232,23 @@ class Create extends Component
             $validated['unit_id'] = $lease->unit_id;
         }
 
-        $request = app(MaintenanceRequestService::class)->createRequest(
-            $validated,
-            auth()->user(),
-        );
+        try {
+            $request = app(MaintenanceRequestService::class)->createRequest(
+                $validated,
+                auth()->user(),
+            );
 
-        app(MaintenanceRequestService::class)->storeAttachments(
-            $request,
-            auth()->user(),
-            $photos,
-            kind: 'initial',
-        );
+            app(MaintenanceRequestService::class)->storeAttachments(
+                $request,
+                auth()->user(),
+                $photos,
+                kind: 'initial',
+            );
+        } catch (\DomainException $e) {
+            $this->addError('property_id', $e->getMessage());
+
+            return;
+        }
 
         Flux::toast('Maintenance request submitted.', 'success');
 

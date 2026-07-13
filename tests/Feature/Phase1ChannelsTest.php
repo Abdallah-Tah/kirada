@@ -199,6 +199,7 @@ class Phase1ChannelsTest extends TestCase
         $this->postJson(route('webhooks.payments', 'manual'), [
             'payment_reference' => $this->invoice->payment_reference,
             'amount' => 50000,
+            'event_id' => 'evt-bad-secret',
         ], ['X-Kirada-Signature' => 'wrong'])->assertForbidden();
 
         $this->assertSame(0, RentPayment::count());
@@ -211,6 +212,7 @@ class Phase1ChannelsTest extends TestCase
         $this->postJson(route('webhooks.payments', 'manual'), [
             'payment_reference' => $this->invoice->payment_reference,
             'amount' => 50000,
+            'event_id' => 'evt-no-secret',
         ], ['X-Kirada-Signature' => ''])->assertForbidden();
     }
 
@@ -231,6 +233,7 @@ class Phase1ChannelsTest extends TestCase
         $this->postJson(route('webhooks.payments', 'manual'), [
             'payment_reference' => 'KIR-DOESNOTX',
             'amount' => 50000,
+            'event_id' => 'evt-unknown-reference',
         ], $this->webhookHeaders())->assertNotFound();
     }
 
@@ -243,6 +246,7 @@ class Phase1ChannelsTest extends TestCase
         $response = $this->postJson(route('webhooks.payments', 'manual'), [
             'payment_reference' => $this->invoice->payment_reference,
             'amount' => 50000,
+            'event_id' => 'evt-valid-payment',
             'method' => 'mobile_money',
             'reference_number' => 'WAAFI-987654',
         ], $this->webhookHeaders());
@@ -254,12 +258,36 @@ class Phase1ChannelsTest extends TestCase
         $this->assertSame('pending', $payment->status);
         $this->assertSame('mobile_money', $payment->method);
         $this->assertSame('WAAFI-987654', $payment->reference_number);
+        $this->assertSame('manual:evt-valid-payment', $payment->gateway_event_id);
         $this->assertSame($this->landlord->id, $payment->landlord_id);
 
         // The invoice is untouched until the landlord confirms.
         $this->assertSame('unpaid', $this->invoice->fresh()->status);
 
         Notification::assertSentTo($this->landlord, TenantPaymentSubmitted::class);
+    }
+
+    public function test_webhook_event_id_is_idempotent(): void
+    {
+        Notification::fake();
+
+        config(['payments.gateways.manual.secret' => 'test-secret']);
+
+        $payload = [
+            'payment_reference' => $this->invoice->payment_reference,
+            'amount' => 50000,
+            'event_id' => 'evt-replayed-payment',
+            'method' => 'mobile_money',
+            'reference_number' => 'WAAFI-REPLAY',
+        ];
+
+        $first = $this->postJson(route('webhooks.payments', 'manual'), $payload, $this->webhookHeaders());
+        $second = $this->postJson(route('webhooks.payments', 'manual'), $payload, $this->webhookHeaders());
+
+        $first->assertCreated();
+        $second->assertOk()->assertJson(['status' => 'duplicate']);
+        $this->assertSame(1, RentPayment::where('gateway_event_id', 'manual:evt-replayed-payment')->count());
+        Notification::assertSentToTimes($this->landlord, TenantPaymentSubmitted::class, 1);
     }
 
     public function test_webhook_overpayment_is_rejected(): void
@@ -269,6 +297,7 @@ class Phase1ChannelsTest extends TestCase
         $this->postJson(route('webhooks.payments', 'manual'), [
             'payment_reference' => $this->invoice->payment_reference,
             'amount' => 999999,
+            'event_id' => 'evt-overpayment',
         ], $this->webhookHeaders())->assertUnprocessable();
 
         $this->assertSame(0, RentPayment::count());

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
@@ -120,5 +121,19 @@ class User extends Authenticatable implements PasskeyUser
         return $this->isLandlord()
             && !$this->onTrial()
             && !$this->hasActiveSubscription();
+    }
+
+    public function approvedMaintenanceUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'landlord_maintenance', 'landlord_id', 'maintenance_user_id')
+            ->withPivot('approved_at')
+            ->withTimestamps();
+    }
+
+    public function approvedLandlords(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'landlord_maintenance', 'maintenance_user_id', 'landlord_id')
+            ->withPivot('approved_at')
+            ->withTimestamps();
     }
 }

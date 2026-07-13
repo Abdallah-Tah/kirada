@@ -137,20 +137,16 @@ class Create extends Component
             abort_if($tenant->landlord_id !== auth()->id(), 403);
         }
 
-        // Ensure unit is vacant before creating an active lease
-        $unit = Unit::find($validated['unit_id']);
-        if ($validated['status'] === 'active' && !$unit->isVacant()) {
-            $this->addError('unit_id', 'This unit is not vacant.');
+        try {
+            app(LeaseService::class)->createLease([
+                ...$validated,
+                'reminder_schedule' => $this->reminder_keys ?: null,
+            ]);
+        } catch (\DomainException $e) {
+            $this->addError('unit_id', $e->getMessage());
+
             return;
         }
-
-        app(LeaseService::class)->createLease([
-            ...$validated,
-            'landlord_id'       => auth()->user()->hasRole('admin')
-                ? Property::find($validated['property_id'])->landlord_id
-                : auth()->id(),
-            'reminder_schedule' => $this->reminder_keys ?: null,
-        ]);
 
         \Flux\Flux::toast('Lease created successfully. Unit marked as occupied.', 'success');
 

@@ -42,6 +42,7 @@ class PaymentWebhookController extends Controller
         $data['amount'] = $payload['amount'];
         $data['method'] = $payload['method'] ?? 'mobile_money';
         $data['reference_number'] = $payload['reference_number'] ?? null;
+        $data['gateway_event_id'] = $payload['gateway_event_id'] ?? null;
         $data['payment_date'] = now()->format('Y-m-d');
         $data['status'] = 'pending';
         $data['notes'] = "Received via {$gateway} payment webhook.";
@@ -52,11 +53,13 @@ class PaymentWebhookController extends Controller
             return response()->json(['message' => $e->getMessage()], 422);
         }
 
-        $invoice->landlord?->notify(new TenantPaymentSubmitted($payment));
+        if ($payment->wasRecentlyCreated) {
+            $invoice->landlord?->notify(new TenantPaymentSubmitted($payment));
+        }
 
         return response()->json([
-            'status' => 'accepted',
+            'status' => $payment->wasRecentlyCreated ? 'accepted' : 'duplicate',
             'payment_number' => $payment->payment_number,
-        ], 201);
+        ], $payment->wasRecentlyCreated ? 201 : 200);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\RentInvoice;
 use App\Models\RentPayment;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class RentPaymentService
@@ -64,34 +65,53 @@ class RentPaymentService
      */
     public function createPayment(array $data, ?UploadedFile $proof = null): RentPayment
     {
-        $invoice = RentInvoice::findOrFail($data['rent_invoice_id']);
+        return DB::transaction(function () use ($data, $proof): RentPayment {
+            if (! empty($data['gateway_event_id'])) {
+                $existing = RentPayment::where('gateway_event_id', $data['gateway_event_id'])->first();
 
-        $remaining = $this->getRemainingAmount($invoice, includePending: true);
+                if ($existing) {
+                    return $existing;
+                }
+            }
 
-        if ((float) $data['amount'] > $remaining) {
-            throw new \DomainException(
-                "Payment amount ({$data['amount']}) exceeds remaining invoice balance ({$remaining})."
-            );
-        }
+            $invoice = RentInvoice::query()
+                ->with(['lease', 'property'])
+                ->lockForUpdate()
+                ->findOrFail($data['rent_invoice_id']);
 
-        $data['payment_number'] = $this->generatePaymentNumber();
-        $data['currency_id'] ??= $invoice->currency_id ?? $invoice->property?->currency_id;
+            $remaining = $this->getRemainingAmount($invoice, includePending: true);
 
-        if (! isset($data['status']) || empty($data['status'])) {
-            $data['status'] = 'pending';
-        }
+            if ((float) $data['amount'] > $remaining) {
+                throw new \DomainException(
+                    "Payment amount ({$data['amount']}) exceeds remaining invoice balance ({$remaining})."
+                );
+            }
 
-        if ($proof) {
-            $data['proof_path'] = $this->storeProof($proof);
-        }
+            $paymentData = [
+                ...$data,
+                'landlord_id' => $invoice->landlord_id,
+                'rent_invoice_id' => $invoice->id,
+                'lease_id' => $invoice->lease_id,
+                'property_id' => $invoice->property_id,
+                'unit_id' => $invoice->unit_id,
+                'tenant_id' => $invoice->tenant_id,
+                'payment_number' => $this->generatePaymentNumber(),
+                'currency_id' => $invoice->currency_id ?? $invoice->property?->currency_id,
+                'status' => $data['status'] ?? 'pending',
+            ];
 
-        $payment = RentPayment::create($data);
+            if ($proof) {
+                $paymentData['proof_path'] = $this->storeProof($proof);
+            }
 
-        if ($payment->isConfirmed()) {
-            $this->syncInvoiceStatus($invoice);
-        }
+            $payment = RentPayment::create($paymentData);
 
-        return $payment;
+            if ($payment->isConfirmed()) {
+                $this->syncInvoiceStatus($invoice);
+            }
+
+            return $payment;
+        });
     }
 
     /**
@@ -120,15 +140,30 @@ class RentPaymentService
      */
     public function confirmPayment(RentPayment $payment, int $userId): RentPayment
     {
-        $payment->update([
-            'status' => 'confirmed',
-            'confirmed_at' => now(),
-            'confirmed_by' => $userId,
-        ]);
+        return DB::transaction(function () use ($payment, $userId): RentPayment {
+            $locked = RentPayment::query()->lockForUpdate()->findOrFail($payment->id);
+            $invoice = RentInvoice::query()->lockForUpdate()->findOrFail($locked->rent_invoice_id);
 
-        $this->syncInvoiceStatus($payment->rentInvoice);
+            if (! $locked->isConfirmed()) {
+                $remaining = $this->getRemainingAmount($invoice, includePending: false);
 
-        return $payment->fresh();
+                if ((float) $locked->amount > $remaining) {
+                    throw new \DomainException(
+                        "Payment amount ({$locked->amount}) exceeds remaining invoice balance ({$remaining})."
+                    );
+                }
+            }
+
+            $locked->update([
+                'status' => 'confirmed',
+                'confirmed_at' => now(),
+                'confirmed_by' => $userId,
+            ]);
+
+            $this->syncInvoiceStatus($invoice);
+
+            return $locked->fresh();
+        });
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Livewire\Units;
 use App\Models\Building;
 use App\Models\Property;
 use App\Models\Unit;
+use App\Services\SubscriptionService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -78,6 +79,14 @@ class Create extends Component
         $property = Property::find($validated['property_id']);
         if (auth()->user()->hasRole('landlord') && $property->landlord_id !== auth()->id()) {
             abort(403);
+        }
+
+        try {
+            app(SubscriptionService::class)->enforceActiveUnitLimit($property->landlord);
+        } catch (\DomainException $e) {
+            $this->addError('property_id', $e->getMessage());
+
+            return;
         }
 
         Unit::create($validated);

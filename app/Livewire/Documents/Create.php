@@ -30,7 +30,7 @@ class Create extends Component
         $rules = [
             'title'     => 'required|string|max:255',
             'type'      => 'required|in:lease_agreement,payment_receipt,payment_proof,id_document,other',
-            'file'      => 'required|file|max:10240', // 10MB max
+            'file'      => 'required|file|mimetypes:application/pdf,image/jpeg,image/png,image/webp|max:10240',
             'visibility' => 'required|in:landlord_only,tenant_visible,admin_only',
         ];
 

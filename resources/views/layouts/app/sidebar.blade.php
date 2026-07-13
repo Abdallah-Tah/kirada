@@ -11,10 +11,10 @@
                     <flux:sidebar.collapse class="kirada-sidebar-collapse-btn" />
                 </div>
                 <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center justify-center px-2 pb-2">
-                    <div class="flex items-center justify-center rounded-xl bg-white px-4 py-2.5 shadow-lg ring-1 ring-white/20 w-full max-w-[185px]">
+                    <div class="flex items-center justify-center px-2 py-2 w-full max-w-[185px]">
                         <picture>
-                            <source srcset="{{ asset('brand/kirada-logo.webp') }}?v=kirada-approved-20260627" type="image/webp">
-                            <img src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627"
+                            <source srcset="{{ asset('brand/kirada-logo-transparent.webp') }}?v=20260713" type="image/webp">
+                            <img src="{{ asset('brand/kirada-logo-transparent.png') }}?v=20260713"
                                  alt="Kirada"
                                  class="h-12 w-full object-contain"
                                  decoding="async">

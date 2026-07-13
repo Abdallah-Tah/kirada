@@ -5,7 +5,10 @@ namespace App\Services;
 use App\Models\MaintenanceAttachment;
 use App\Models\MaintenanceComment;
 use App\Models\MaintenanceRequest;
+use App\Models\Lease;
+use App\Models\Property;
 use App\Models\Tenant;
+use App\Models\Unit;
 use App\Models\User;
 use App\Notifications\MaintenanceCommentAdded;
 use App\Notifications\MaintenanceRequestCreated;
@@ -21,14 +24,7 @@ class MaintenanceRequestService
      */
     public function createRequest(array $data, User $reporter): MaintenanceRequest
     {
-        // If tenant is creating, resolve landlord from property
-        if ($reporter->hasRole('tenant') && ! isset($data['landlord_id'])) {
-            $tenant = Tenant::where('user_id', $reporter->id)->first();
-            if ($tenant) {
-                $data['tenant_id'] = $tenant->id;
-                $data['landlord_id'] = $tenant->landlord_id;
-            }
-        }
+        $data = $this->normalizeRequestEntities($data, $reporter);
 
         // If landlord is creating for a tenant
         if ($reporter->hasRole('landlord') && ! isset($data['landlord_id'])) {
@@ -61,6 +57,15 @@ class MaintenanceRequestService
 
         if (! $assignee->hasRole('maintenance')) {
             throw new \DomainException('Can only assign to users with the maintenance role.');
+        }
+
+        $approved = $assignee->approvedLandlords()
+            ->where('users.id', $request->landlord_id)
+            ->whereNotNull('landlord_maintenance.approved_at')
+            ->exists();
+
+        if (! $approved) {
+            throw new \DomainException('This maintenance worker is not approved for this landlord.');
         }
 
         $request->update([
@@ -201,6 +206,10 @@ class MaintenanceRequestService
                 continue;
             }
 
+            if (! in_array($file->getMimeType(), ['image/jpeg', 'image/png', 'image/webp'], true)) {
+                throw new \DomainException('Only JPG, PNG, and WebP maintenance images are allowed.');
+            }
+
             $path = $file->store('maintenance-attachments', 'private');
 
             MaintenanceAttachment::create([
@@ -238,12 +247,19 @@ class MaintenanceRequestService
      */
     public function getMaintenanceUsers(?int $landlordId = null): Collection
     {
-        // For now, all maintenance users are available
-        // Future: scope by landlord or property assignment
-        return User::role('maintenance')->select('id', 'name')->orderBy('name')->get();
+        $query = User::role('maintenance')->select('id', 'name')->orderBy('name');
+
+        if ($landlordId) {
+            $query->whereHas('approvedLandlords', function ($query) use ($landlordId): void {
+                $query->where('users.id', $landlordId)
+                    ->whereNotNull('landlord_maintenance.approved_at');
+            });
+        }
+
+        return $query->get();
     }
 
-    private function notifyStatusChanged(MaintenanceRequest $request, string $status, string $previousStatus = null): void
+    private function notifyStatusChanged(MaintenanceRequest $request, string $status, ?string $previousStatus = null): void
     {
         foreach ($this->notificationRecipients($request) as $recipient) {
             $recipient->notify(new MaintenanceStatusChanged($request, $status, $previousStatus));
@@ -280,5 +296,64 @@ class MaintenanceRequestService
         }
 
         return $users->values()->all();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function normalizeRequestEntities(array $data, User $reporter): array
+    {
+        $property = Property::findOrFail($data['property_id']);
+        $data['landlord_id'] = $property->landlord_id;
+
+        if (! empty($data['unit_id'])) {
+            $unit = Unit::findOrFail($data['unit_id']);
+
+            if ((int) $unit->property_id !== (int) $property->id) {
+                throw new \DomainException('Maintenance unit must belong to the selected property.');
+            }
+        }
+
+        if (! empty($data['tenant_id'])) {
+            $tenant = Tenant::findOrFail($data['tenant_id']);
+
+            if ((int) $tenant->landlord_id !== (int) $property->landlord_id) {
+                throw new \DomainException('Maintenance tenant must belong to the property landlord.');
+            }
+        }
+
+        if (! empty($data['lease_id'])) {
+            $lease = Lease::findOrFail($data['lease_id']);
+
+            if ((int) $lease->landlord_id !== (int) $property->landlord_id
+                || (int) $lease->property_id !== (int) $property->id
+                || (! empty($data['unit_id']) && (int) $lease->unit_id !== (int) $data['unit_id'])
+                || (! empty($data['tenant_id']) && (int) $lease->tenant_id !== (int) $data['tenant_id'])) {
+                throw new \DomainException('Maintenance lease does not match the selected property, unit, and tenant.');
+            }
+        }
+
+        if ($reporter->hasRole('landlord') && (int) $property->landlord_id !== (int) $reporter->id) {
+            throw new \DomainException('You can only create maintenance requests for your own properties.');
+        }
+
+        if ($reporter->hasRole('tenant')) {
+            $tenant = Tenant::where('user_id', $reporter->id)->firstOrFail();
+            $lease = Lease::active()
+                ->where('tenant_id', $tenant->id)
+                ->where('property_id', $property->id)
+                ->when($data['unit_id'] ?? null, fn ($query, $unitId) => $query->where('unit_id', $unitId))
+                ->latest()
+                ->firstOrFail();
+
+            $data['tenant_id'] = $tenant->id;
+            $data['lease_id'] = $lease->id;
+            $data['property_id'] = $lease->property_id;
+            $data['unit_id'] = $lease->unit_id;
+            $data['landlord_id'] = $lease->landlord_id;
+        }
+
+        return $data;
     }
 }

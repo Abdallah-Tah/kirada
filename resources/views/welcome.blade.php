@@ -134,6 +134,45 @@
             ],
         ];
 
+        try {
+            $dbPlans = \App\Models\Plan::query()
+                ->with('currency')
+                ->active()
+                ->orderBy('monthly_price')
+                ->get();
+
+            if ($dbPlans->isNotEmpty()) {
+                $pricingPlans = $dbPlans->map(function ($plan) {
+                    $unitLimit = $plan->max_active_units === null
+                        ? __('Unlimited units')
+                        : __('Up to :count units', ['count' => $plan->max_active_units]);
+                    $leaseLimit = $plan->max_active_leases === null
+                        ? __('Unlimited active leases')
+                        : __('Up to :count active leases', ['count' => $plan->max_active_leases]);
+
+                    return [
+                        'name' => $plan->name,
+                        'slug' => $plan->slug,
+                        'audience' => $plan->description ?: __('For growing rental portfolios.'),
+                        'djf' => (int) $plan->monthly_price,
+                        'usd' => (int) round($plan->monthly_price / 177),
+                        'cta' => __('Start 30-day trial'),
+                        'featured' => $plan->slug === 'growth',
+                        'badge' => $plan->slug === 'growth' ? __('Most popular') : null,
+                        'features' => [
+                            $unitLimit,
+                            $leaseLimit,
+                            __('Tenant portal and document storage'),
+                            __('Rent invoices and payment tracking'),
+                            __('Maintenance and messaging workflows'),
+                        ],
+                    ];
+                })->values()->all();
+            }
+        } catch (\Throwable $e) {
+            // Keep the public landing page available during fresh installs.
+        }
+
         $toneClasses = [
             'blue' => 'bg-kirada-ocean/12 text-kirada-ocean',
             'green' => 'bg-kirada-green/12 text-kirada-green',
@@ -146,7 +185,7 @@
     <main>
         <section class="kirada-marketing-hero relative isolate overflow-hidden text-white">
             <div class="absolute inset-0 -z-30 overflow-hidden">
-                <img src="{{ asset('brand/hero-building.png') }}?v=20260628"
+                <img src="{{ asset('brand/building-hero.jpg') }}?v=20260713"
                     alt="{{ __('Modern apartment buildings managed with Kirada') }}"
                     class="kirada-hero-image h-full w-full object-cover object-center">
             </div>
@@ -159,14 +198,14 @@
             <div class="kirada-water-glow absolute inset-x-0 bottom-0 -z-10 h-56 opacity-80"></div>
 
             <div class="mx-auto flex min-h-screen max-w-[1320px] flex-col px-5 pt-5 sm:px-8 lg:px-10">
-                <header class="kirada-reveal kirada-reveal-delay-1 pt-1">
+                <header class="kirada-reveal kirada-reveal-delay-1 pt-1" x-data="{ mobileNav: false }">
                     <div
                         class="kirada-liquid-glass flex items-center justify-between gap-5 rounded-[1.4rem] px-4 py-3 sm:px-5">
                         <a href="{{ route('home') }}" class="flex items-center" wire:navigate>
-                            <div class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-lg shadow-slate-950/10 ring-1 ring-white/30 backdrop-blur-sm">
-                                <img src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627"
+                            <div class="inline-flex items-center justify-center">
+                                <img src="{{ asset('brand/kirada-logo-transparent.webp') }}?v=20260713"
                                      alt="Kirada"
-                                     class="h-6 w-auto sm:h-8"
+                                     class="h-8 w-auto sm:h-10"
                                      decoding="async">
                             </div>
                         </a>
@@ -190,8 +229,21 @@
                                 class="inline-flex items-center justify-center rounded-xl bg-[linear-gradient(135deg,#0EA5E9,#10B981)] px-3 py-2 text-xs font-semibold text-white shadow-[0_14px_38px_rgba(14,165,233,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_46px_rgba(14,165,233,0.34)] sm:px-4 sm:py-2.5 sm:text-sm">
                                 {{ __('Start Free Trial') }}
                             </a>
+                            <button type="button" @click="mobileNav = ! mobileNav"
+                                class="inline-flex size-10 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white transition hover:bg-white/16 lg:hidden"
+                                :aria-expanded="mobileNav.toString()" aria-label="{{ __('Toggle navigation') }}">
+                                <svg x-show="! mobileNav" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                                <svg x-show="mobileNav" x-cloak class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                            </button>
                         </div>
                     </div>
+                    <nav x-show="mobileNav" x-cloak
+                        class="mt-3 grid gap-2 rounded-[1.2rem] border border-white/15 bg-slate-950/55 p-3 text-sm font-semibold text-white/85 backdrop-blur-xl lg:hidden">
+                        <a href="#features" @click="mobileNav = false" class="rounded-xl px-3 py-2 transition hover:bg-white/10 hover:text-white">{{ __('Features') }}</a>
+                        <a href="#workflow" @click="mobileNav = false" class="rounded-xl px-3 py-2 transition hover:bg-white/10 hover:text-white">{{ __('Product') }}</a>
+                        <a href="#pricing" @click="mobileNav = false" class="rounded-xl px-3 py-2 transition hover:bg-white/10 hover:text-white">{{ __('Pricing') }}</a>
+                        <a href="#regions" @click="mobileNav = false" class="rounded-xl px-3 py-2 transition hover:bg-white/10 hover:text-white">{{ __('Regions') }}</a>
+                    </nav>
                 </header>
 
                 <div class="flex flex-1 items-end pb-16 pt-14 sm:pt-20 lg:pb-20">
@@ -234,26 +286,35 @@
                         <aside class="kirada-reveal kirada-reveal-delay-5 kirada-float lg:mb-2">
                             <div
                                 class="rounded-[2rem] border border-white/70 bg-white/92 p-5 text-kirada-navy shadow-[0_30px_90px_rgba(15,23,42,0.28)] backdrop-blur-xl sm:p-6">
-                                <div class="relative mb-5 overflow-hidden rounded-[1.65rem] bg-kirada-navy">
-                                    <video class="h-48 w-full object-cover object-right sm:h-56" autoplay muted loop
-                                        playsinline preload="metadata"
-                                        aria-label="{{ __('Fish drifting through skylight beams') }}">
-                                        <source src="{{ asset('brand/hero-fish-scene.mp4') }}?v=20260702"
-                                            type="video/mp4">
-                                    </video>
-                                    <div
-                                        class="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.78)_0%,rgba(2,6,23,0.18)_38%,rgba(2,6,23,0.06)_100%)]">
+                                <div class="relative mb-5 overflow-hidden rounded-[1.65rem] bg-slate-950 p-4 text-white">
+                                    <div class="mb-4 flex items-center justify-between">
+                                        <div>
+                                            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-sky-200">{{ __('Landlord dashboard') }}</p>
+                                            <p class="mt-1 text-lg font-semibold">{{ __('July rent overview') }}</p>
+                                        </div>
+                                        <span class="rounded-full bg-kirada-green/18 px-3 py-1 text-xs font-bold text-emerald-200">{{ __('Live') }}</span>
                                     </div>
-                                    <div
-                                        class="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(103,211,230,0.20),transparent)]">
+                                    <div class="grid gap-3 sm:grid-cols-3">
+                                        <div class="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10">
+                                            <p class="text-xs text-white/60">{{ __('Collected') }}</p>
+                                            <p class="mt-1 text-xl font-semibold">82%</p>
+                                        </div>
+                                        <div class="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10">
+                                            <p class="text-xs text-white/60">{{ __('Open invoices') }}</p>
+                                            <p class="mt-1 text-xl font-semibold">14</p>
+                                        </div>
+                                        <div class="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10">
+                                            <p class="text-xs text-white/60">{{ __('Maintenance') }}</p>
+                                            <p class="mt-1 text-xl font-semibold">6</p>
+                                        </div>
                                     </div>
-                                    <div
-                                        class="absolute bottom-4 left-4 max-w-[13rem] rounded-2xl border border-white/18 bg-slate-950/42 px-4 py-3 text-white backdrop-blur-md">
-                                        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-sky-100/80">
-                                            {{ __('Ambient intelligence') }}</p>
-                                        <p class="mt-1 text-sm leading-6 text-white/90">
-                                            {{ __('A distinct brand layer that adds calm motion and premium depth.') }}
-                                        </p>
+                                    <div class="mt-4 space-y-2">
+                                        @foreach ([['Apt 4B', 'Paid', 'green'], ['Villa 12', 'Pending', 'orange'], ['Office 3', 'Overdue', 'red']] as $row)
+                                            <div class="flex items-center justify-between rounded-2xl bg-white px-3 py-2 text-sm text-kirada-navy">
+                                                <span class="font-semibold">{{ $row[0] }}</span>
+                                                <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ $row[2] === 'green' ? 'bg-emerald-100 text-emerald-700' : ($row[2] === 'orange' ? 'bg-orange-100 text-orange-700' : 'bg-red-100 text-red-700') }}">{{ __($row[1]) }}</span>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
 
@@ -338,58 +399,6 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section
-            class="bg-[radial-gradient(circle_at_14%_10%,rgba(14,165,233,0.08),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(16,185,129,0.08),transparent_30%),#ffffff] px-5 py-20 sm:px-8 lg:px-10">
-            <div class="mx-auto max-w-[1320px]">
-                <div class="mx-auto max-w-3xl text-center">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-kirada-ocean">
-                        {{ __('Everything you need') }}</p>
-                    <h2 class="mt-4 text-4xl font-semibold tracking-[-0.05em] text-kirada-navy sm:text-5xl">
-                        {{ __('Run your rental business from one platform') }}
-                    </h2>
-                    <p class="mt-5 text-lg leading-8 text-slate-600">
-                        {{ __('Kirada brings your rental operations together with the tools already built into the product.') }}
-                    </p>
-                </div>
-
-                <div class="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
-                    @foreach ($featureCards as $index => $feature)
-                        <article
-                            class="kirada-feature-card kirada-reveal {{ $index > 0 ? 'kirada-reveal-delay-' . min($index, 5) : '' }} min-h-60 rounded-[1.6rem] border border-slate-200/80 bg-white/92 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] backdrop-blur-sm">
-                            <div
-                                class="mb-5 flex size-12 items-center justify-center rounded-2xl {{ $toneClasses[$feature['tone']] }}">
-                                <span class="text-lg font-bold">
-                                    @if ($feature['title'] === 'Reports & Analytics')
-                                        RPT
-                                    @elseif ($feature['title'] === 'Multi-Country & Currency')
-                                        FX
-                                    @elseif ($feature['title'] === 'Documents & Receipts')
-                                        DOC
-                                    @elseif ($feature['title'] === 'Tenant Management')
-                                        TEN
-                                    @elseif ($feature['title'] === 'Lease Management')
-                                        LSE
-                                    @elseif ($feature['title'] === 'Invoices & Payments')
-                                        PAY
-                                    @elseif ($feature['title'] === 'Maintenance Requests')
-                                        FIX
-                                    @elseif ($feature['title'] === 'Messaging')
-                                        MSG
-                                    @elseif ($feature['title'] === 'Property Management')
-                                        PM
-                                    @else
-                                        SIGN
-                                    @endif
-                                </span>
-                            </div>
-                            <h3 class="text-lg font-semibold text-kirada-navy">{{ __($feature['title']) }}</h3>
-                            <p class="mt-3 text-sm leading-7 text-slate-600">{{ __($feature['desc']) }}</p>
-                        </article>
-                    @endforeach
                 </div>
             </div>
         </section>

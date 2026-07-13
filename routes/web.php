@@ -84,28 +84,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Properties — admin + landlord only
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord', 'subscription'])->group(function () {
     Route::get('/properties', PropertyIndex::class)->name('properties.index');
     Route::get('/properties/create', PropertyCreate::class)->name('properties.create');
     Route::get('/properties/{property}/edit', PropertyEdit::class)->name('properties.edit');
 });
 
 // Units — admin + landlord only
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord', 'subscription'])->group(function () {
     Route::get('/units', UnitIndex::class)->name('units.index');
     Route::get('/units/create', UnitCreate::class)->name('units.create');
     Route::get('/units/{unit}/edit', UnitEdit::class)->name('units.edit');
 });
 
 // Tenants — admin + landlord only
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord', 'subscription'])->group(function () {
     Route::get('/tenants', TenantIndex::class)->name('tenants.index');
     Route::get('/tenants/create', TenantCreate::class)->name('tenants.create');
     Route::get('/tenants/{tenant}/edit', TenantEdit::class)->name('tenants.edit');
 });
 
 // Leases — admin + landlord only
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord', 'subscription'])->group(function () {
     Route::get('/leases', LeaseIndex::class)->name('leases.index');
     Route::get('/leases/create', LeaseCreate::class)->name('leases.create');
     Route::get('/leases/{lease}', LeaseShow::class)->name('leases.show');
@@ -113,7 +113,7 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
 });
 
 // Contracts — admin + landlord only (generation & e-signature management)
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord', 'subscription'])->group(function () {
     Route::get('/contracts', ContractIndex::class)->name('contracts.index');
     Route::get('/contracts/create', ContractCreate::class)->name('contracts.create');
     Route::get('/contracts/{contract}', ContractShow::class)->name('contracts.show');
@@ -122,13 +122,13 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function (
 });
 
 // Public contract signing (token-based, no auth — like a DocuSign signing link)
-Route::get('/sign/{token}', ContractSign::class)->name('contracts.sign');
+Route::get('/sign/{token}', ContractSign::class)->middleware('throttle:kirada-public-links')->name('contracts.sign');
 
 // Payment operator webhooks (shared-secret verified per gateway, CSRF-exempt)
-Route::post('/webhooks/payments/{gateway}', PaymentWebhookController::class)->name('webhooks.payments');
+Route::post('/webhooks/payments/{gateway}', PaymentWebhookController::class)->middleware('throttle:kirada-webhooks')->name('webhooks.payments');
 
 // Stripe subscription webhook (signature-verified, CSRF-exempt)
-Route::post('/webhooks/stripe', StripeWebhookController::class)->name('webhooks.stripe');
+Route::post('/webhooks/stripe', StripeWebhookController::class)->middleware('throttle:kirada-webhooks')->name('webhooks.stripe');
 
 // Subscription checkout initiation — authenticated landlords only
 Route::middleware(['auth', 'verified', 'role:landlord'])->group(function () {
@@ -149,28 +149,28 @@ Route::middleware(['auth', 'verified', 'role:tenant'])->group(function () {
     Route::get('/rent-payments/submit/{rentInvoice}', RentPaymentSubmit::class)->name('rent-payments.submit');
 });
 
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord', 'subscription'])->group(function () {
     Route::get('/rent-invoices/create', RentInvoiceCreate::class)->name('rent-invoices.create');
     Route::get('/rent-invoices/{rentInvoice}/edit', RentInvoiceEdit::class)->name('rent-invoices.edit');
 });
 
 // Rent Payments — admin + landlord only
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord', 'subscription'])->group(function () {
     Route::get('/rent-payments', RentPaymentIndex::class)->name('rent-payments.index');
     Route::get('/rent-payments/create', RentPaymentCreate::class)->name('rent-payments.create');
     Route::get('/rent-payments/{rentPayment}/edit', RentPaymentEdit::class)->name('rent-payments.edit');
 });
 
 // Tenant Invitations — admin + landlord management
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord', 'subscription'])->group(function () {
     Route::get('/tenant-invitations', TenantInvitationIndex::class)->name('tenant-invitations.index');
 });
 
 // Public invitation acceptance (no auth required)
-Route::get('/tenant-invitations/{token}', TenantInvitationAccept::class)->name('tenant-invitations.accept');
+Route::get('/tenant-invitations/{token}', TenantInvitationAccept::class)->middleware('throttle:kirada-public-links')->name('tenant-invitations.accept');
 
 // Maintenance Requests — admin, landlord, tenant, maintenance
-Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance', 'subscription'])->group(function () {
     Route::get('/maintenance-requests', MaintenanceRequestIndex::class)->name('maintenance-requests.index');
     Route::get('/maintenance-requests/create', MaintenanceRequestCreate::class)->name('maintenance-requests.create');
     Route::get('/maintenance-requests/{maintenanceRequest}', MaintenanceRequestShow::class)->name('maintenance-requests.show');
@@ -185,7 +185,7 @@ Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant|maintenance']
 });
 
 // Documents — admin, landlord, tenant (no maintenance)
-Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord|tenant', 'subscription'])->group(function () {
     Route::get('/documents', DocumentIndex::class)->name('documents.index');
     Route::get('/documents/create', DocumentCreate::class)->name('documents.create');
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
@@ -197,7 +197,7 @@ Route::middleware(['auth', 'verified', 'role:landlord'])->group(function () {
 });
 
 // Reports — admin + landlord only
-Route::middleware(['auth', 'verified', 'role:admin|landlord'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|landlord', 'subscription'])->group(function () {
     Route::get('/reports', ReportsIndex::class)->name('reports.index');
 });
 

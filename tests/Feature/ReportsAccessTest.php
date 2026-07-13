@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Plan;
+use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -29,7 +31,17 @@ class ReportsAccessTest extends TestCase
 
     public function test_landlord_can_view_reports(): void
     {
-        $this->actingAs($this->userWithRole('landlord'))
+        $landlord = $this->userWithRole('landlord');
+        $plan = Plan::create(['name' => 'Growth', 'slug' => 'growth', 'monthly_price' => 15000, 'is_active' => true]);
+        Subscription::create([
+            'user_id' => $landlord->id,
+            'plan_id' => $plan->id,
+            'status' => 'active',
+            'starts_at' => now(),
+            'ends_at' => now()->addMonth(),
+        ]);
+
+        $this->actingAs($landlord)
             ->get(route('reports.index'))
             ->assertOk();
     }

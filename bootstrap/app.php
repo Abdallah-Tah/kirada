@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\LocaleMiddleware;
+use App\Http\Middleware\SecurityHeadersMiddleware;
 use App\Http\Middleware\SubscriptionMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -28,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             LocaleMiddleware::class,
+            SecurityHeadersMiddleware::class,
         ]);
 
         // Webhooks authenticate with signatures, not sessions.

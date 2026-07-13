@@ -48,6 +48,23 @@ class MessagingService
      */
     public function startConversation(User $initiator, array $data): Conversation
     {
+        $tenant = isset($data['tenant_id']) ? Tenant::findOrFail($data['tenant_id']) : null;
+        $landlordId = isset($data['landlord_id']) ? (int) $data['landlord_id'] : null;
+
+        if ($initiator->hasRole('landlord')) {
+            if ($landlordId !== (int) $initiator->id || ! $tenant || (int) $tenant->landlord_id !== (int) $initiator->id) {
+                throw new \DomainException('You can only start conversations with your own tenants.');
+            }
+        } elseif ($initiator->hasRole('tenant')) {
+            $currentTenant = Tenant::where('user_id', $initiator->id)->first();
+
+            if (! $currentTenant || ! $tenant || (int) $tenant->landlord_id !== (int) $currentTenant->landlord_id || $landlordId !== (int) $currentTenant->landlord_id) {
+                throw new \DomainException('You can only start conversations inside your landlord account.');
+            }
+        } elseif (! $initiator->hasRole('admin')) {
+            throw new \DomainException('You are not allowed to start this conversation.');
+        }
+
         // Prevent duplicate open conversations between same landlord + tenant
         if (isset($data['landlord_id']) && isset($data['tenant_id']) && ! isset($data['maintenance_request_id'])) {
             $existing = Conversation::where('landlord_id', $data['landlord_id'])
@@ -99,6 +116,10 @@ class MessagingService
      */
     public function sendMessage(Conversation $conversation, User $user, string $body): Message
     {
+        if (! $this->userCanAccessConversation($conversation, $user)) {
+            throw new \DomainException('You are not allowed to send messages in this conversation.');
+        }
+
         $message = Message::create([
             'conversation_id' => $conversation->id,
             'user_id' => $user->id,
@@ -115,6 +136,10 @@ class MessagingService
      */
     public function markAsRead(Conversation $conversation, User $user): int
     {
+        if (! $this->userCanAccessConversation($conversation, $user)) {
+            throw new \DomainException('You are not allowed to read this conversation.');
+        }
+
         return Message::where('conversation_id', $conversation->id)
             ->where('user_id', '!=', $user->id)
             ->whereNull('read_at')
@@ -185,5 +210,30 @@ class MessagingService
         }
 
         return $query->pluck('id')->toArray();
+    }
+
+    private function userCanAccessConversation(Conversation $conversation, User $user): bool
+    {
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+
+        if ($user->hasRole('landlord')) {
+            return (int) $conversation->landlord_id === (int) $user->id;
+        }
+
+        if ($user->hasRole('tenant')) {
+            $tenant = Tenant::where('user_id', $user->id)->first();
+
+            return $tenant && (int) $conversation->tenant_id === (int) $tenant->id;
+        }
+
+        if ($user->hasRole('maintenance')) {
+            return $conversation->maintenanceRequest()
+                ->where('assigned_to', $user->id)
+                ->exists();
+        }
+
+        return false;
     }
 }

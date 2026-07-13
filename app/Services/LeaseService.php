@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Models\Lease;
+use App\Models\Property;
+use App\Models\Tenant;
 use App\Models\Unit;
+use Illuminate\Support\Facades\DB;
 
 class LeaseService
 {
@@ -12,13 +15,38 @@ class LeaseService
      */
     public function createLease(array $data): Lease
     {
-        $lease = Lease::create($data);
+        return DB::transaction(function () use ($data): Lease {
+            $property = Property::query()->lockForUpdate()->findOrFail($data['property_id']);
+            $unit = Unit::query()->lockForUpdate()->findOrFail($data['unit_id']);
+            $tenant = Tenant::query()->lockForUpdate()->findOrFail($data['tenant_id']);
+            $landlordId = (int) $property->landlord_id;
 
-        if ($lease->isActive()) {
-            $lease->unit->update(['status' => 'occupied']);
-        }
+            if ((int) $unit->property_id !== (int) $property->id || (int) $tenant->landlord_id !== $landlordId) {
+                throw new \DomainException('Lease property, unit, and tenant must belong to the same landlord.');
+            }
 
-        return $lease;
+            if (($data['status'] ?? 'active') === 'active') {
+                if (! $unit->isVacant()) {
+                    throw new \DomainException('This unit is not vacant.');
+                }
+
+                app(SubscriptionService::class)->enforceActiveLeaseLimit($property->landlord);
+            }
+
+            $lease = Lease::create([
+                ...$data,
+                'landlord_id' => $landlordId,
+                'property_id' => $property->id,
+                'unit_id' => $unit->id,
+                'tenant_id' => $tenant->id,
+            ]);
+
+            if ($lease->isActive()) {
+                $unit->update(['status' => 'occupied']);
+            }
+
+            return $lease;
+        });
     }
 
     /**

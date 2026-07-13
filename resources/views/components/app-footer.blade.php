@@ -4,8 +4,8 @@
     <div class="kirada-footer-inner">
         <div class="kirada-footer-brand">
             <picture>
-                <source srcset="{{ asset('brand/kirada-logo.webp') }}?v=kirada-approved-20260627" type="image/webp">
-                <img src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627"
+                <source srcset="{{ asset('brand/kirada-logo-transparent.webp') }}?v=20260713" type="image/webp">
+                <img src="{{ asset('brand/kirada-logo-transparent.png') }}?v=20260713"
                      alt="Kirada"
                      class="h-6 w-auto opacity-60"
                      decoding="async">

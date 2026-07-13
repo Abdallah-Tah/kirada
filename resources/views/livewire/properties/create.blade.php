@@ -8,6 +8,19 @@
         <div class="kirada-form-card grid gap-4">
             <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Details') }}</h3>
 
+            @role('admin')
+                <div>
+                    <flux:label>{{ __('Landlord') }}</flux:label>
+                    <flux:select wire:model="landlord_id" required class="mt-1">
+                        <option value="">{{ __('Select landlord...') }}</option>
+                        @foreach ($this->landlords as $landlord)
+                            <option value="{{ $landlord->id }}">{{ $landlord->name }} — {{ $landlord->email }}</option>
+                        @endforeach
+                    </flux:select>
+                    <flux:error name="landlord_id" />
+                </div>
+            @endrole
+
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
                     <flux:label>{{ __('Property Name') }}</flux:label>

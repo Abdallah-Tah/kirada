@@ -5,6 +5,7 @@ namespace App\Livewire\Properties;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Property;
+use App\Models\User;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -38,11 +39,14 @@ class Create extends Component
 
     public ?float $longitude = null;
 
+    public ?int $landlord_id = null;
+
     public function mount(): void
     {
         $this->country_id = auth()->user()?->country_id
             ?? Country::where('code', 'DJI')->value('id')
             ?? Country::orderBy('name')->value('id');
+        $this->landlord_id = auth()->user()?->hasRole('landlord') ? auth()->id() : null;
 
         $this->syncCountryFields();
     }
@@ -64,6 +68,9 @@ class Create extends Component
             'currency_id' => 'required|exists:currencies,id',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
+            'landlord_id' => auth()->user()->hasRole('admin')
+                ? 'required|exists:users,id'
+                : 'nullable|exists:users,id',
         ];
     }
 
@@ -73,9 +80,15 @@ class Create extends Component
 
         $this->authorize('create', Property::class);
 
+        $landlordId = auth()->user()->hasRole('admin')
+            ? (int) $validated['landlord_id']
+            : auth()->id();
+
+        abort_unless(User::whereKey($landlordId)->whereHas('roles', fn ($query) => $query->where('name', 'landlord'))->exists(), 422);
+
         Property::create([
-            ...$validated,
-            'landlord_id' => auth()->id(),
+            ...collect($validated)->except('landlord_id')->toArray(),
+            'landlord_id' => $landlordId,
         ]);
 
         \Flux\Flux::toast('Property created successfully.', 'success');
@@ -101,6 +114,12 @@ class Create extends Component
         }
 
         return Currency::active()->orderBy('code')->get();
+    }
+
+    #[Computed]
+    public function landlords()
+    {
+        return User::role('landlord')->select('id', 'name', 'email')->orderBy('name')->get();
     }
 
     /**

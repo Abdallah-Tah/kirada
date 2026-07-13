@@ -33,9 +33,9 @@ class Show extends Component
         return [
             'newComment' => 'nullable|string|max:5000',
             'commentPhotos' => 'array|max:6',
-            'commentPhotos.*' => 'image|max:5120',
+            'commentPhotos.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'statusPhotos' => 'array|max:6',
-            'statusPhotos.*' => 'image|max:5120',
+            'statusPhotos.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
         ];
     }
 
@@ -63,7 +63,7 @@ class Show extends Component
     public function maintenanceUsers()
     {
         return app(MaintenanceRequestService::class)
-            ->getMaintenanceUsers();
+            ->getMaintenanceUsers($this->maintenanceRequest->landlord_id);
     }
 
     #[Computed]
@@ -148,7 +148,7 @@ class Show extends Component
         $validated = $this->validate([
             'newComment' => 'nullable|string|max:5000',
             'commentPhotos' => 'array|max:6',
-            'commentPhotos.*' => 'image|max:5120',
+            'commentPhotos.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
         $photos = $validated['commentPhotos'] ?? [];
         $comment = trim($validated['newComment'] ?? '');
@@ -169,14 +169,20 @@ class Show extends Component
             $this->isInternal,
         );
 
-        app(MaintenanceRequestService::class)->storeAttachments(
-            $this->maintenanceRequest,
-            auth()->user(),
-            $photos,
-            $maintenanceComment,
-            kind: $this->maintenanceRequest->isResolved() ? 'resolution' : 'comment',
-            isInternal: $this->isInternal,
-        );
+        try {
+            app(MaintenanceRequestService::class)->storeAttachments(
+                $this->maintenanceRequest,
+                auth()->user(),
+                $photos,
+                $maintenanceComment,
+                kind: $this->maintenanceRequest->isResolved() ? 'resolution' : 'comment',
+                isInternal: $this->isInternal,
+            );
+        } catch (\DomainException $e) {
+            $this->addError('commentPhotos', $e->getMessage());
+
+            return;
+        }
 
         $this->newComment = '';
         $this->commentPhotos = [];
@@ -226,7 +232,7 @@ class Show extends Component
 
         $validated = $this->validate([
             'statusPhotos' => 'array|max:6',
-            'statusPhotos.*' => 'image|max:5120',
+            'statusPhotos.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
         $photos = $validated['statusPhotos'] ?? [];
 
