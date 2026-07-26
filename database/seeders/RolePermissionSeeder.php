@@ -55,6 +55,10 @@ class RolePermissionSeeder extends Seeder
             // Landlord — messaging
             'messages.send', 'messages.view',
 
+            // Landlord — documents and team
+            'documents.view', 'documents.manage',
+            'team.view', 'team.invite', 'team.manage',
+
             // Tenant
             'rent.view', 'invoices.view.own', 'payments.upload', 'maintenance.create', 'maintenance.view.own',
             'documents.view.own', 'messages.send.own', 'messages.view.own',
@@ -89,6 +93,48 @@ class RolePermissionSeeder extends Seeder
             'payments.view', 'payments.confirm',
             'maintenance.view', 'maintenance.respond',
             'messages.send', 'messages.view',
+            'documents.view', 'documents.manage',
+            'reports.view', 'team.view', 'team.invite', 'team.manage',
+        ]);
+
+        $landlordAdmin = Role::firstOrCreate(['name' => 'landlord-admin']);
+        $landlordAdmin->syncPermissions([
+            'properties.view', 'properties.create', 'properties.edit',
+            'units.view', 'units.create', 'units.edit',
+            'tenants.view', 'tenants.create', 'tenants.edit',
+            'leases.view', 'leases.create', 'leases.edit',
+            'invoices.view', 'invoices.create', 'invoices.edit',
+            'payments.view', 'payments.confirm',
+            'maintenance.view', 'maintenance.respond',
+            'messages.send', 'messages.view',
+            'documents.view', 'documents.manage',
+            'reports.view', 'team.view', 'team.invite', 'team.manage',
+        ]);
+
+        $propertyManager = Role::firstOrCreate(['name' => 'property-manager']);
+        $propertyManager->syncPermissions([
+            'properties.view', 'properties.create', 'properties.edit',
+            'units.view', 'units.create', 'units.edit',
+            'tenants.view', 'tenants.create', 'tenants.edit',
+            'leases.view', 'leases.create', 'leases.edit',
+            'maintenance.view', 'maintenance.respond',
+            'messages.send', 'messages.view',
+            'documents.view', 'documents.manage',
+        ]);
+
+        $accountant = Role::firstOrCreate(['name' => 'accountant']);
+        $accountant->syncPermissions([
+            'properties.view', 'units.view', 'tenants.view', 'leases.view',
+            'invoices.view', 'invoices.create', 'invoices.edit',
+            'payments.view', 'payments.confirm',
+            'documents.view', 'documents.manage', 'reports.view',
+        ]);
+
+        $viewer = Role::firstOrCreate(['name' => 'viewer']);
+        $viewer->syncPermissions([
+            'properties.view', 'units.view', 'tenants.view', 'leases.view',
+            'invoices.view', 'payments.view', 'maintenance.view',
+            'messages.view', 'documents.view', 'reports.view', 'team.view',
         ]);
 
         $tenant = Role::firstOrCreate(['name' => 'tenant']);

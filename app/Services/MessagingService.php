@@ -25,8 +25,8 @@ class MessagingService
 
         if ($user->hasRole('admin')) {
             // All conversations
-        } elseif ($user->hasRole('landlord')) {
-            $query->where('landlord_id', $user->id);
+        } elseif ($user->canAccessLandlordPortal()) {
+            $query->where('landlord_id', $user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {
@@ -51,8 +51,8 @@ class MessagingService
         $tenant = isset($data['tenant_id']) ? Tenant::findOrFail($data['tenant_id']) : null;
         $landlordId = isset($data['landlord_id']) ? (int) $data['landlord_id'] : null;
 
-        if ($initiator->hasRole('landlord')) {
-            if ($landlordId !== (int) $initiator->id || ! $tenant || (int) $tenant->landlord_id !== (int) $initiator->id) {
+        if ($initiator->canAccessLandlordPortal()) {
+            if ($landlordId !== $initiator->landlordAccountId() || ! $tenant || ! $initiator->belongsToLandlordAccount($tenant->landlord_id)) {
                 throw new \DomainException('You can only start conversations with your own tenants.');
             }
         } elseif ($initiator->hasRole('tenant')) {
@@ -192,8 +192,8 @@ class MessagingService
 
         if ($user->hasRole('admin')) {
             // All
-        } elseif ($user->hasRole('landlord')) {
-            $query->where('landlord_id', $user->id);
+        } elseif ($user->canAccessLandlordPortal()) {
+            $query->where('landlord_id', $user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {
@@ -218,8 +218,8 @@ class MessagingService
             return true;
         }
 
-        if ($user->hasRole('landlord')) {
-            return (int) $conversation->landlord_id === (int) $user->id;
+        if ($user->canAccessLandlordPortal()) {
+            return $user->belongsToLandlordAccount($conversation->landlord_id);
         }
 
         if ($user->hasRole('tenant')) {

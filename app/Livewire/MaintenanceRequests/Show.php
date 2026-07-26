@@ -6,6 +6,7 @@ use App\Models\MaintenanceQuote;
 use App\Models\MaintenanceRequest;
 use App\Services\MaintenanceQuoteService;
 use App\Services\MaintenanceRequestService;
+use App\Services\MaintenanceReviewService;
 use App\Services\MessagingService;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
@@ -39,6 +40,18 @@ class Show extends Component
 
     public string $quoteNotes = '';
 
+    public int $reviewRating = 5;
+
+    public int $reviewQuality = 5;
+
+    public int $reviewCommunication = 5;
+
+    public int $reviewProfessionalism = 5;
+
+    public string $reviewTitle = '';
+
+    public string $reviewComment = '';
+
     protected function rules(): array
     {
         return [
@@ -58,7 +71,7 @@ class Show extends Component
             'unit',
             'tenant',
             'assignee',
-            'reporter',
+            'reporter', 'review',
         ]);
         $this->assignTo = $maintenanceRequest->assigned_to;
     }
@@ -89,7 +102,18 @@ class Show extends Component
     {
         $user = auth()->user();
 
-        return $user->hasRole('admin') || $this->maintenanceRequest->landlord_id === $user->id;
+        return $user->hasRole('admin')
+            || ($user->can('maintenance.respond') && $user->belongsToLandlordAccount($this->maintenanceRequest->landlord_id));
+    }
+
+    #[Computed]
+    public function canReview(): bool
+    {
+        return auth()->user()->can('maintenance.respond')
+            && auth()->user()->belongsToLandlordAccount($this->maintenanceRequest->landlord_id)
+            && in_array($this->maintenanceRequest->status, ['resolved', 'closed'], true)
+            && $this->maintenanceRequest->assigned_to !== null
+            && $this->maintenanceRequest->review === null;
     }
 
     #[Computed]
@@ -320,6 +344,39 @@ class Show extends Component
             ->getOrCreateMaintenanceConversation($this->maintenanceRequest);
 
         $this->redirect(route('messages.show', $conversation), navigate: true);
+    }
+
+    public function submitReview(): void
+    {
+        abort_unless($this->canReview, 403);
+
+        $validated = $this->validate([
+            'reviewRating' => 'required|integer|between:1,5',
+            'reviewQuality' => 'required|integer|between:1,5',
+            'reviewCommunication' => 'required|integer|between:1,5',
+            'reviewProfessionalism' => 'required|integer|between:1,5',
+            'reviewTitle' => 'nullable|string|max:120',
+            'reviewComment' => 'nullable|string|max:2000',
+        ]);
+
+        try {
+            app(MaintenanceReviewService::class)->create(auth()->user(), $this->maintenanceRequest, [
+                'rating' => $validated['reviewRating'],
+                'quality_rating' => $validated['reviewQuality'],
+                'communication_rating' => $validated['reviewCommunication'],
+                'professionalism_rating' => $validated['reviewProfessionalism'],
+                'title' => $validated['reviewTitle'] ?: null,
+                'comment' => $validated['reviewComment'] ?: null,
+            ]);
+        } catch (\DomainException $exception) {
+            $this->addError('reviewComment', __($exception->getMessage()));
+
+            return;
+        }
+
+        $this->maintenanceRequest->load('review');
+        unset($this->canReview);
+        Flux::toast(__('Review published.'), 'success');
     }
 
     // ── Quote actions ────────────────────────────────────

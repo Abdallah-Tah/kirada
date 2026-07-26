@@ -24,7 +24,7 @@ class Network extends Component
     #[Computed]
     public function connections()
     {
-        return auth()->user()->maintenanceConnections()
+        return auth()->user()->landlordAccount()->maintenanceConnections()
             ->with('maintenanceProfile.currency')
             ->orderByRaw("CASE landlord_maintenance.status WHEN 'approved' THEN 0 WHEN 'pending' THEN 1 ELSE 2 END")
             ->orderBy('users.name')
@@ -38,7 +38,7 @@ class Network extends Component
         $provider = User::findOrFail($providerId);
 
         try {
-            app(MaintenanceProfileService::class)->revokeConnection(auth()->user(), $provider);
+            app(MaintenanceProfileService::class)->revokeConnection(auth()->user()->landlordAccount(), $provider);
         } catch (\DomainException $e) {
             Flux::toast($e->getMessage(), 'danger');
 

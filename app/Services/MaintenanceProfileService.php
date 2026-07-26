@@ -38,15 +38,19 @@ class MaintenanceProfileService
 
         $profile->fill([
             'business_name' => $data['business_name'],
+            'headline' => $data['headline'] ?? null,
             'bio' => $data['bio'] ?? null,
             'trades' => $trades,
             'service_areas' => array_values(array_filter($data['service_areas'] ?? [])),
+            'languages' => array_values(array_unique(array_filter($data['languages'] ?? []))),
             'currency_id' => $data['currency_id'] ?? null,
             'hourly_rate' => $data['hourly_rate'] ?? null,
             'callout_fee' => $data['callout_fee'] ?? null,
             'phone' => $data['phone'] ?? null,
             'whatsapp' => $data['whatsapp'] ?? null,
+            'website' => $data['website'] ?? null,
             'years_experience' => $data['years_experience'] ?? null,
+            'availability_status' => $data['availability_status'] ?? 'available',
             'is_published' => (bool) ($data['is_published'] ?? false),
         ]);
 
@@ -72,7 +76,17 @@ class MaintenanceProfileService
     {
         return MaintenanceProfile::query()
             ->published()
-            ->with(['user:id,name', 'currency'])
+            ->with([
+                'user' => fn ($query) => $query
+                    ->select('id', 'name')
+                    ->withCount([
+                        'assignedMaintenanceRequests as completed_jobs_count' => fn ($query) => $query
+                            ->whereIn('status', ['resolved', 'closed']),
+                    ]),
+                'currency',
+            ])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->when($filters['search'] ?? null, function (Builder $query, string $search): void {
                 $query->where(function (Builder $query) use ($search): void {
                     $query->where('business_name', 'like', "%{$search}%")

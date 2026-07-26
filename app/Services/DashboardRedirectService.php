@@ -15,6 +15,7 @@ class DashboardRedirectService
         return match ($user->getRoleNames()->first()) {
             'admin' => 'admin.dashboard',
             'landlord' => 'landlord.dashboard',
+            'landlord-admin', 'property-manager', 'accountant', 'viewer' => 'landlord.dashboard',
             'tenant' => 'tenant.dashboard',
             'maintenance' => 'maintenance.dashboard',
             default => 'home',

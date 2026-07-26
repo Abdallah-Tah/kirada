@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -77,72 +78,22 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasRole('admin');
     }
 
-    public function payoutAccounts()
+    /**
+     * @return HasMany<LandlordPayoutAccount, $this>
+     */
+    public function payoutAccounts(): HasMany
     {
-        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+        return $this->hasMany(LandlordPayoutAccount::class, 'landlord_id')
             ->orderBy('sort_order')
             ->orderBy('id');
     }
 
-    public function primaryPayoutAccount()
+    /**
+     * @return HasOne<LandlordPayoutAccount, $this>
+     */
+    public function primaryPayoutAccount(): HasOne
     {
-        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
-            ->where('is_primary', true)
-            ->where('is_active', true);
-    }
-
-    public function payoutAccounts()
-    {
-        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
-            ->orderBy('sort_order')
-            ->orderBy('id');
-    }
-
-    public function primaryPayoutAccount()
-    {
-        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
-            ->where('is_primary', true)
-            ->where('is_active', true);
-    }
-
-    public function payoutAccounts()
-    {
-        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
-            ->orderBy('sort_order')
-            ->orderBy('id');
-    }
-
-    public function primaryPayoutAccount()
-    {
-        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
-            ->where('is_primary', true)
-            ->where('is_active', true);
-    }
-
-    public function payoutAccounts()
-    {
-        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
-            ->orderBy('sort_order')
-            ->orderBy('id');
-    }
-
-    public function primaryPayoutAccount()
-    {
-        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
-            ->where('is_primary', true)
-            ->where('is_active', true);
-    }
-
-    public function payoutAccounts()
-    {
-        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
-            ->orderBy('sort_order')
-            ->orderBy('id');
-    }
-
-    public function primaryPayoutAccount()
-    {
-        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+        return $this->hasOne(LandlordPayoutAccount::class, 'landlord_id')
             ->where('is_primary', true)
             ->where('is_active', true);
     }
@@ -150,6 +101,54 @@ class User extends Authenticatable implements PasskeyUser
     public function isLandlord(): bool
     {
         return $this->hasRole('landlord');
+    }
+
+    public function isLandlordTeamMember(): bool
+    {
+        return $this->hasAnyRole(LandlordTeamMembership::ROLES)
+            && $this->teamMembership?->isActive();
+    }
+
+    public function canAccessLandlordPortal(): bool
+    {
+        return $this->isLandlord() || $this->isLandlordTeamMember();
+    }
+
+    public function landlordAccountId(): ?int
+    {
+        if ($this->isLandlord()) {
+            return $this->id;
+        }
+
+        return $this->teamMembership?->isActive()
+            ? $this->teamMembership->landlord_id
+            : null;
+    }
+
+    public function landlordAccount(): ?self
+    {
+        if ($this->isLandlord()) {
+            return $this;
+        }
+
+        return $this->teamMembership?->isActive()
+            ? $this->teamMembership->landlord
+            : null;
+    }
+
+    public function belongsToLandlordAccount(?int $landlordId): bool
+    {
+        return $landlordId !== null && $this->landlordAccountId() === $landlordId;
+    }
+
+    public function teamMembership(): HasOne
+    {
+        return $this->hasOne(LandlordTeamMembership::class)->with('landlord');
+    }
+
+    public function landlordTeamMembers(): HasMany
+    {
+        return $this->hasMany(LandlordTeamMembership::class, 'landlord_id');
     }
 
     public function isTenant(): bool
@@ -164,7 +163,10 @@ class User extends Authenticatable implements PasskeyUser
 
     // ── Subscription helpers ────────────────────────────
 
-    public function subscription()
+    /**
+     * @return HasOne<Subscription, $this>
+     */
+    public function subscription(): HasOne
     {
         return $this->hasOne(Subscription::class)->latestOfMany();
     }
@@ -192,9 +194,11 @@ class User extends Authenticatable implements PasskeyUser
 
     public function needsSubscription(): bool
     {
-        return $this->isLandlord()
-            && ! $this->onTrial()
-            && ! $this->hasActiveSubscription();
+        $account = $this->landlordAccount();
+
+        return $account !== null
+            && ! $account->onTrial()
+            && ! $account->hasActiveSubscription();
     }
 
     // ── Maintenance provider network ────────────────────
@@ -248,5 +252,15 @@ class User extends Authenticatable implements PasskeyUser
     public function maintenanceProfile(): HasOne
     {
         return $this->hasOne(MaintenanceProfile::class);
+    }
+
+    public function maintenanceReviews(): HasMany
+    {
+        return $this->hasMany(MaintenanceReview::class, 'maintenance_user_id');
+    }
+
+    public function assignedMaintenanceRequests(): HasMany
+    {
+        return $this->hasMany(MaintenanceRequest::class, 'assigned_to');
     }
 }

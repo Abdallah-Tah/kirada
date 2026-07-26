@@ -12,6 +12,10 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('settings/appearance', 'pages.settings.appearance')->name('appearance.edit');
 
+    Volt::route('settings/payment-accounts', 'pages.settings.payout-accounts')
+        ->middleware('role:landlord')
+        ->name('payout-accounts.edit');
+
     Volt::route('settings/security', 'pages.settings.security')
         ->middleware([
             'password.confirm',

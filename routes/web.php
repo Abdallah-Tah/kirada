@@ -15,6 +15,8 @@ use App\Livewire\Contracts\Show as ContractShow;
 use App\Livewire\Contracts\Sign as ContractSign;
 use App\Livewire\Documents\Create as DocumentCreate;
 use App\Livewire\Documents\Index as DocumentIndex;
+use App\Livewire\LandlordTeam\Accept as LandlordTeamAccept;
+use App\Livewire\LandlordTeam\Index as LandlordTeamIndex;
 use App\Livewire\Leases\Create as LeaseCreate;
 use App\Livewire\Leases\Edit as LeaseEdit;
 use App\Livewire\Leases\Index as LeaseIndex;
@@ -23,6 +25,7 @@ use App\Livewire\MaintenanceProfiles\Directory as MaintenanceDirectory;
 use App\Livewire\MaintenanceProfiles\Edit as MaintenanceProfileEdit;
 use App\Livewire\MaintenanceProfiles\Inbox as MaintenanceInbox;
 use App\Livewire\MaintenanceProfiles\Network as MaintenanceNetwork;
+use App\Livewire\MaintenanceProfiles\Show as MaintenanceProfileShow;
 use App\Livewire\MaintenanceRequests\Create as MaintenanceRequestCreate;
 use App\Livewire\MaintenanceRequests\Index as MaintenanceRequestIndex;
 use App\Livewire\MaintenanceRequests\Show as MaintenanceRequestShow;
@@ -75,7 +78,7 @@ Route::middleware(['kirada-auth'])->group(function () {
         ->name('admin.dashboard');
 
     Route::get('/landlord/dashboard', [DashboardController::class, 'landlord'])
-        ->middleware('role:landlord')
+        ->middleware('role:landlord|landlord-admin|property-manager|accountant|viewer')
         ->name('landlord.dashboard');
 
     Route::get('/tenant/dashboard', [DashboardController::class, 'tenant'])
@@ -88,28 +91,28 @@ Route::middleware(['kirada-auth'])->group(function () {
 });
 
 // Properties — admin + landlord only
-Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant|viewer', 'subscription'])->group(function () {
     Route::get('/properties', PropertyIndex::class)->name('properties.index');
     Route::get('/properties/create', PropertyCreate::class)->name('properties.create');
     Route::get('/properties/{property}/edit', PropertyEdit::class)->name('properties.edit');
 });
 
 // Units — admin + landlord only
-Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant|viewer', 'subscription'])->group(function () {
     Route::get('/units', UnitIndex::class)->name('units.index');
     Route::get('/units/create', UnitCreate::class)->name('units.create');
     Route::get('/units/{unit}/edit', UnitEdit::class)->name('units.edit');
 });
 
 // Tenants — admin + landlord only
-Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant|viewer', 'subscription'])->group(function () {
     Route::get('/tenants', TenantIndex::class)->name('tenants.index');
     Route::get('/tenants/create', TenantCreate::class)->name('tenants.create');
     Route::get('/tenants/{tenant}/edit', TenantEdit::class)->name('tenants.edit');
 });
 
 // Leases — admin + landlord only
-Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant|viewer', 'subscription'])->group(function () {
     Route::get('/leases', LeaseIndex::class)->name('leases.index');
     Route::get('/leases/create', LeaseCreate::class)->name('leases.create');
     Route::get('/leases/{lease}', LeaseShow::class)->name('leases.show');
@@ -117,7 +120,7 @@ Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group
 });
 
 // Contracts — admin + landlord only (generation & e-signature management)
-Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant|viewer', 'subscription'])->group(function () {
     Route::get('/contracts', ContractIndex::class)->name('contracts.index');
     Route::get('/contracts/create', ContractCreate::class)->name('contracts.create');
     Route::get('/contracts/{contract}', ContractShow::class)->name('contracts.show');
@@ -142,7 +145,7 @@ Route::middleware(['kirada-auth', 'role:landlord'])->group(function () {
 
 // Rent Invoices — list is shared with tenants ("My Rent", scoped in the
 // component); create/edit stay admin + landlord only.
-Route::middleware(['kirada-auth', 'role:admin|landlord|tenant'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant|viewer|tenant'])->group(function () {
     Route::get('/rent-invoices', RentInvoiceIndex::class)->name('rent-invoices.index');
     Route::get('/rent-invoices/{rentInvoice}/pdf', [ReceiptController::class, 'invoicePdf'])->name('rent-invoices.pdf');
     Route::get('/rent-payments/{rentPayment}/receipt', [ReceiptController::class, 'paymentReceipt'])->name('rent-payments.receipt');
@@ -153,20 +156,20 @@ Route::middleware(['kirada-auth', 'role:tenant'])->group(function () {
     Route::get('/rent-payments/submit/{rentInvoice}', RentPaymentSubmit::class)->name('rent-payments.submit');
 });
 
-Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant', 'subscription'])->group(function () {
     Route::get('/rent-invoices/create', RentInvoiceCreate::class)->name('rent-invoices.create');
     Route::get('/rent-invoices/{rentInvoice}/edit', RentInvoiceEdit::class)->name('rent-invoices.edit');
 });
 
 // Rent Payments — admin + landlord only
-Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant', 'subscription'])->group(function () {
     Route::get('/rent-payments', RentPaymentIndex::class)->name('rent-payments.index');
     Route::get('/rent-payments/create', RentPaymentCreate::class)->name('rent-payments.create');
     Route::get('/rent-payments/{rentPayment}/edit', RentPaymentEdit::class)->name('rent-payments.edit');
 });
 
 // Tenant Invitations — admin + landlord management
-Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager', 'subscription'])->group(function () {
     Route::get('/tenant-invitations', TenantInvitationIndex::class)->name('tenant-invitations.index');
 });
 
@@ -174,7 +177,7 @@ Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group
 Route::get('/tenant-invitations/{token}', TenantInvitationAccept::class)->middleware('throttle:kirada-public-links')->name('tenant-invitations.accept');
 
 // Maintenance Requests — admin, landlord, tenant, maintenance
-Route::middleware(['kirada-auth', 'role:admin|landlord|tenant|maintenance', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|viewer|tenant|maintenance', 'subscription'])->group(function () {
     Route::get('/maintenance-requests', MaintenanceRequestIndex::class)->name('maintenance-requests.index');
     Route::get('/maintenance-requests/create', MaintenanceRequestCreate::class)->name('maintenance-requests.create');
     Route::get('/maintenance-requests/{maintenanceRequest}', MaintenanceRequestShow::class)->name('maintenance-requests.show');
@@ -185,8 +188,9 @@ Route::middleware(['kirada-auth', 'role:admin|landlord|tenant|maintenance', 'sub
 // Maintenance provider directory — admin + landlord hire from here.
 // Deliberately outside the 'subscription' gate: building a maintenance team is
 // part of evaluating Kirada, and a lapsed landlord still needs their team list.
-Route::middleware(['kirada-auth', 'role:admin|landlord'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager'])->group(function () {
     Route::get('/maintenance-directory', MaintenanceDirectory::class)->name('maintenance-directory.index');
+    Route::get('/maintenance-directory/{profile}', MaintenanceProfileShow::class)->name('maintenance-directory.show');
     Route::get('/maintenance-network', MaintenanceNetwork::class)->name('maintenance-network.index');
 });
 
@@ -197,13 +201,13 @@ Route::middleware(['kirada-auth', 'role:maintenance'])->group(function () {
 });
 
 // Messages — admin, landlord, tenant, maintenance
-Route::middleware(['kirada-auth', 'role:admin|landlord|tenant|maintenance'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|viewer|tenant|maintenance'])->group(function () {
     Route::get('/messages', MessageIndex::class)->name('messages.index');
     Route::get('/messages/{conversation}', MessageShow::class)->name('messages.show');
 });
 
 // Documents — admin, landlord, tenant (no maintenance)
-Route::middleware(['kirada-auth', 'role:admin|landlord|tenant', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant|viewer|tenant', 'subscription'])->group(function () {
     Route::get('/documents', DocumentIndex::class)->name('documents.index');
     Route::get('/documents/create', DocumentCreate::class)->name('documents.create');
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
@@ -215,8 +219,18 @@ Route::middleware(['kirada-auth', 'role:landlord'])->group(function () {
 });
 
 // Reports — admin + landlord only
-Route::middleware(['kirada-auth', 'role:admin|landlord', 'subscription'])->group(function () {
+Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|accountant|viewer', 'subscription'])->group(function () {
     Route::get('/reports', ReportsIndex::class)->name('reports.index');
 });
+
+Route::middleware(['kirada-auth', 'role:landlord|landlord-admin|property-manager|accountant|viewer'])->group(function () {
+    Route::get('/property-team', LandlordTeamIndex::class)
+        ->middleware('permission:team.view')
+        ->name('property-team.index');
+});
+
+Route::get('/team-invitations/{token}', LandlordTeamAccept::class)
+    ->middleware('throttle:kirada-public-links')
+    ->name('team-invitations.accept');
 
 require __DIR__.'/settings.php';

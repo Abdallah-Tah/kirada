@@ -81,7 +81,7 @@
                 </flux:sidebar.group>
                 @endhasrole
 
-                @hasrole('landlord')
+                @hasanyrole('landlord|landlord-admin|property-manager|accountant|viewer')
                 {{-- MANAGEMENT --}}
                 <flux:sidebar.group :heading="__('MANAGEMENT')" class="kirada-sidebar-section">
                     <flux:sidebar.item icon="building-office" :href="route('properties.index')" :current="request()->routeIs('properties.*')" wire:navigate>
@@ -133,14 +133,21 @@
 
                 {{-- ADMIN --}}
                 <flux:sidebar.group :heading="__('ADMIN')" class="kirada-sidebar-section">
+                    @can('team.view')
+                    <flux:sidebar.item icon="user-group" :href="route('property-team.index')" :current="request()->routeIs('property-team.*')" wire:navigate>
+                        {{ __('Property Team') }}
+                    </flux:sidebar.item>
+                    @endcan
+                    @role('landlord')
                     <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
                         {{ __('Subscription') }}
                     </flux:sidebar.item>
+                    @endrole
                     <flux:sidebar.item icon="cog-6-tooth" :href="route('profile.edit')" :current="request()->routeIs('profile.edit', 'security.edit', 'appearance.edit')" wire:navigate>
                         {{ __('Settings') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
-                @endhasrole
+                @endhasanyrole
 
                 @hasrole('tenant')
                 {{-- MAIN --}}
@@ -150,9 +157,6 @@
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
                         {{ __('Maintenance') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item icon="user-group" :href="route('maintenance-directory.index')" :current="request()->routeIs('maintenance-directory.*', 'maintenance-network.index')" wire:navigate>
-                        {{ __('Find Maintenance') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
@@ -191,7 +195,7 @@
 
             {{-- ── Bottom user profile (desktop) ── --}}
             <div class="kirada-sidebar-user-section">
-                <x-desktop-user-menu :name="auth()->user()->name" />
+                <x-desktop-user-menu :name="auth()?->user()?->name" />
             </div>
         </flux:sidebar>
 

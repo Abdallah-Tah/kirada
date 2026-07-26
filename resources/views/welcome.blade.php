@@ -43,8 +43,13 @@
             ],
             [
                 'title' => 'Maintenance Requests',
-                'desc' => 'Tenants submit issues. Landlords assign, track, and resolve requests.',
+                'desc' => 'Find provider profiles, compare verified job reviews, assign work, approve quotes, and track repairs.',
                 'tone' => 'orange',
+            ],
+            [
+                'title' => 'Property Team Access',
+                'desc' => 'Invite administrators, property managers, accountants, and viewers with role-based permissions.',
+                'tone' => 'purple',
             ],
             [
                 'title' => 'Messaging',
@@ -111,6 +116,7 @@
                     'Everything in Starter',
                     'Digital contracts & e-sign',
                     'Maintenance workflow',
+                    'Provider marketplace & reviews',
                     'Tenant messaging',
                     'Priority email support',
                 ],
@@ -129,6 +135,7 @@
                     'Reports & analytics',
                     'Multi-country & currency',
                     'Multiple managers',
+                    'Role-based property team',
                     'Priority support',
                 ],
             ],

@@ -16,7 +16,7 @@ class PropertyPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $property->landlord_id === $user->id;
+        return $user->can('properties.view') && $user->belongsToLandlordAccount($property->landlord_id);
     }
 
     /**
@@ -24,7 +24,7 @@ class PropertyPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('properties.view');
     }
 
     /**
@@ -32,7 +32,7 @@ class PropertyPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('properties.create');
     }
 
     /**
@@ -44,7 +44,7 @@ class PropertyPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $property->landlord_id === $user->id;
+        return $user->can('properties.edit') && $user->belongsToLandlordAccount($property->landlord_id);
     }
 
     /**
@@ -56,7 +56,7 @@ class PropertyPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $property->landlord_id === $user->id;
+        return $user->can('properties.delete') && $user->belongsToLandlordAccount($property->landlord_id);
     }
 
     /**

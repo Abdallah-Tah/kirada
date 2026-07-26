@@ -44,8 +44,8 @@ class Create extends Component
             ->with(['property:id,name', 'unit:id,unit_number', 'tenant:id,first_name,last_name'])
             ->latest();
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->get();
@@ -123,7 +123,7 @@ class Create extends Component
             $contract = $service->createFromLease($lease, $variables, auth()->user(), $this->type);
         } else {
             $contract = $service->create(
-                ['landlord_id' => auth()->id()],
+                ['landlord_id' => auth()->user()->landlordAccountId()],
                 $variables,
                 auth()->user(),
                 $this->type,
@@ -142,8 +142,8 @@ class Create extends Component
     {
         $query = Lease::query()->whereKey($id);
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->first();

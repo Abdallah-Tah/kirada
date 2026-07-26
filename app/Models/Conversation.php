@@ -84,7 +84,7 @@ class Conversation extends Model
                 : ($this->landlord?->name ?? '—');
         }
 
-        if ($user->hasRole('landlord')) {
+        if ($user->canAccessLandlordPortal()) {
             return $this->tenant
                 ? $this->tenant->first_name.' '.$this->tenant->last_name
                 : '—';

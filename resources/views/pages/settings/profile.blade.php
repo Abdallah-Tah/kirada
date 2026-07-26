@@ -27,8 +27,8 @@ new #[Title('Profile settings')] class extends Component {
     {
         $user = Auth::user();
 
-        $this->name  = $user->name;
-        $this->email = $user->email;
+        $this->name  = $user?->name;
+        $this->email = $user?->email;
     }
 
     /**
@@ -43,7 +43,7 @@ new #[Title('Profile settings')] class extends Component {
         $user->fill($validated);
 
         if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
+            $user?->email_verified_at = null;
         }
 
         $user->save();

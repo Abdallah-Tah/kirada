@@ -14,6 +14,7 @@ use App\Notifications\Channels\SmsChannel;
 use App\Notifications\Channels\WhatsAppChannel;
 use App\Notifications\RentInvoiceGenerated;
 use App\Notifications\TenantPaymentSubmitted;
+use App\Services\Meta\WhatsAppCloudApi;
 use App\Services\RentInvoiceService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -114,7 +115,7 @@ class Phase1ChannelsTest extends TestCase
 
     public function test_via_is_mail_only_when_channels_are_not_configured(): void
     {
-        config(['services.whatsapp.token' => null, 'services.twilio.sid' => null]);
+        config(['services.meta.whatsapp.access_token' => null, 'services.twilio.sid' => null]);
 
         $notification = new RentInvoiceGenerated($this->invoice);
 
@@ -124,8 +125,8 @@ class Phase1ChannelsTest extends TestCase
     public function test_via_adds_whatsapp_and_sms_when_configured_and_tenant_has_phone(): void
     {
         config([
-            'services.whatsapp.token' => 'test-token',
-            'services.whatsapp.phone_number_id' => '123',
+            'services.meta.whatsapp.access_token' => 'test-token',
+            'services.meta.whatsapp.phone_number_id' => '123',
             'services.twilio.sid' => 'AC123',
             'services.twilio.token' => 'secret',
             'services.twilio.from' => '+15550001',
@@ -142,8 +143,8 @@ class Phase1ChannelsTest extends TestCase
     public function test_via_stays_mail_only_when_tenant_has_no_phone(): void
     {
         config([
-            'services.whatsapp.token' => 'test-token',
-            'services.whatsapp.phone_number_id' => '123',
+            'services.meta.whatsapp.access_token' => 'test-token',
+            'services.meta.whatsapp.phone_number_id' => '123',
         ]);
 
         $this->tenant->update(['phone' => '']);
@@ -157,7 +158,7 @@ class Phase1ChannelsTest extends TestCase
     {
         Http::fake();
 
-        config(['services.whatsapp.token' => null, 'services.twilio.sid' => null]);
+        config(['services.meta.whatsapp.access_token' => null, 'services.twilio.sid' => null]);
 
         $notification = new RentInvoiceGenerated($this->invoice);
 
@@ -172,17 +173,43 @@ class Phase1ChannelsTest extends TestCase
         Http::fake(['graph.facebook.com/*' => Http::response(['messages' => []], 200)]);
 
         config([
-            'services.whatsapp.token' => 'test-token',
-            'services.whatsapp.phone_number_id' => '123',
+            'services.meta.graph_version' => 'v23.0',
+            'services.meta.whatsapp.access_token' => 'test-token',
+            'services.meta.whatsapp.phone_number_id' => '123',
         ]);
 
         (new WhatsAppChannel)->send($this->tenantUser, new RentInvoiceGenerated($this->invoice));
 
         Http::assertSent(function ($request) {
-            return str_contains($request->url(), 'graph.facebook.com/v19.0/123/messages')
+            return str_contains($request->url(), 'graph.facebook.com/v23.0/123/messages')
                 && $request['to'] === '25377000001'
                 && str_contains($request['text']['body'], $this->invoice->payment_reference);
         });
+    }
+
+    public function test_meta_cloud_service_can_send_a_template_message(): void
+    {
+        Http::fake(['graph.facebook.com/*' => Http::response(['messages' => [['id' => 'wamid.1']]], 200)]);
+
+        config([
+            'services.meta.graph_version' => 'v23.0',
+            'services.meta.whatsapp.access_token' => 'test-token',
+            'services.meta.whatsapp.phone_number_id' => '123',
+        ]);
+
+        app(WhatsAppCloudApi::class)->sendTemplate(
+            '+253 77 00 00 01',
+            'rent_reminder',
+            'en_US',
+            [[
+                'type' => 'body',
+                'parameters' => [['type' => 'text', 'text' => 'KIR-12345678']],
+            ]],
+        );
+
+        Http::assertSent(fn ($request) => $request['type'] === 'template'
+            && $request['to'] === '25377000001'
+            && $request['template']['name'] === 'rent_reminder');
     }
 
     // ── Payment webhook ──────────────────────────────────

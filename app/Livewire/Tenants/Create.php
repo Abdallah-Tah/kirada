@@ -81,7 +81,7 @@ class Create extends Component
             'city' => $validated['city'],
             'status' => $validated['status'],
             'notes' => $validated['notes'],
-            'landlord_id' => auth()->id(),
+            'landlord_id' => auth()->user()->landlordAccountId(),
         ]);
 
         Flux::toast('Tenant created successfully.', 'success');

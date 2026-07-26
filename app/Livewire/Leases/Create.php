@@ -77,8 +77,8 @@ class Create extends Component
     {
         $query = Property::select('id', 'name')->orderBy('name');
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->get();
@@ -97,8 +97,8 @@ class Create extends Component
             ->orderBy('unit_number');
 
         // If admin, still respect landlord ownership of properties
-        if (auth()->user()->hasRole('landlord')) {
-            $query->whereHas('property', fn ($q) => $q->forLandlord(auth()->id()));
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->whereHas('property', fn ($q) => $q->forLandlord(auth()->user()->landlordAccountId()));
         }
 
         return $query->get();
@@ -109,8 +109,8 @@ class Create extends Component
     {
         $query = Tenant::select('id', 'first_name', 'last_name')->orderBy('last_name');
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->get();
@@ -143,15 +143,15 @@ class Create extends Component
         $validated = $this->validate();
 
         // Ensure landlord owns the property and unit
-        if (auth()->user()->hasRole('landlord')) {
+        if (auth()->user()->canAccessLandlordPortal()) {
             $property = Property::find($validated['property_id']);
-            abort_if($property->landlord_id !== auth()->id(), 403);
+            abort_unless(auth()->user()->belongsToLandlordAccount($property->landlord_id), 403);
 
             $unit = Unit::find($validated['unit_id']);
-            abort_if($unit->property->landlord_id !== auth()->id(), 403);
+            abort_unless(auth()->user()->belongsToLandlordAccount($unit->property->landlord_id), 403);
 
             $tenant = Tenant::find($validated['tenant_id']);
-            abort_if($tenant->landlord_id !== auth()->id(), 403);
+            abort_unless(auth()->user()->belongsToLandlordAccount($tenant->landlord_id), 403);
         }
 
         try {

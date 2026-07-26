@@ -65,8 +65,8 @@ class Index extends Component
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->latest();
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->paginate(10);
@@ -79,8 +79,8 @@ class Index extends Component
             ->whereDoesntHave('user')
             ->orderBy('first_name');
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->get();
@@ -99,14 +99,14 @@ class Index extends Component
         }
 
         // Ensure landlord ownership of tenant
-        if (auth()->user()->hasRole('landlord')) {
+        if (auth()->user()->canAccessLandlordPortal()) {
             $tenant = Tenant::find($validated['tenant_id']);
-            abort_if($tenant->landlord_id !== auth()->id(), 403);
+            abort_unless(auth()->user()->belongsToLandlordAccount($tenant->landlord_id), 403);
         }
 
         $landlordId = auth()->user()->hasRole('admin')
             ? Tenant::find($validated['tenant_id'])->landlord_id
-            : auth()->id();
+            : auth()->user()->landlordAccountId();
 
         try {
             app(TenantInvitationService::class)->createInvitation(

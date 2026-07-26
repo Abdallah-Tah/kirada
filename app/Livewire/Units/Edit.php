@@ -76,8 +76,8 @@ class Edit extends Component
     {
         $query = Property::select('id', 'name')->orderBy('name');
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->get();

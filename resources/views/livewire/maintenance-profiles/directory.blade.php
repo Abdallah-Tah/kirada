@@ -48,11 +48,7 @@
                     <div class="min-w-0 flex-1">
                         <h3 class="truncate font-semibold text-kirada-navy">{{ $profile->business_name }}</h3>
                         <p class="truncate text-sm text-slate-500">
-                            @if($profile->years_experience)
-                                {{ trans_choice(':count year experience|:count years experience', $profile->years_experience, ['count' => $profile->years_experience]) }}
-                            @else
-                                {{ $profile->user->name }}
-                            @endif
+                            {{ $profile->headline ?: $profile->user->name }}
                         </p>
                     </div>
                     @if($profile->isVerified())
@@ -75,6 +71,14 @@
 
                 <dl class="kirada-provider-card-meta">
                     <div>
+                        <dt>{{ __('Rating') }}</dt>
+                        <dd class="text-amber-600">★ {{ number_format((float) ($profile->reviews_avg_rating ?? 0), 1) }} ({{ $profile->reviews_count }})</dd>
+                    </div>
+                    <div>
+                        <dt>{{ __('Completed jobs') }}</dt>
+                        <dd>{{ $profile->user->completed_jobs_count }}</dd>
+                    </div>
+                    <div>
                         <dt>{{ __('Serves') }}</dt>
                         <dd>{{ Str::limit(implode(', ', $profile->service_areas ?? []), 40) ?: '—' }}</dd>
                     </div>
@@ -91,6 +95,9 @@
                 </dl>
 
                 <footer class="kirada-provider-card-foot">
+                    <flux:button :href="route('maintenance-directory.show', $profile)" wire:navigate variant="ghost" size="sm">
+                        {{ __('View profile') }}
+                    </flux:button>
                     @if($state === 'approved')
                         <flux:badge color="green" size="sm" icon="check-circle">{{ __('On your team') }}</flux:badge>
                     @elseif($state === 'pending')

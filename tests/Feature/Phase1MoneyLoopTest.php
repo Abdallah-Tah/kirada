@@ -94,7 +94,7 @@ class Phase1MoneyLoopTest extends TestCase
             'first_name' => $first,
             'last_name' => $last,
             'phone' => '+2537700000'.random_int(0, 9),
-            'email' => $user->email,
+            'email' => $user?->email,
             'status' => 'active',
         ]);
 

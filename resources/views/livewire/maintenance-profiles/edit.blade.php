@@ -70,10 +70,47 @@
             </div>
 
             <div>
+                <flux:label>{{ __('Professional headline') }}</flux:label>
+                <flux:input wire:model="headline" class="mt-1" :placeholder="__('e.g. Licensed electrician for residential and commercial work')" />
+                <flux:error name="headline" />
+            </div>
+
+            <div>
                 <flux:label>{{ __('About your work') }}</flux:label>
                 <flux:textarea wire:model="bio" rows="4" class="mt-1"
                     :placeholder="__('Describe your experience, specialities, and how quickly you usually respond.')" />
                 <flux:error name="bio" />
+            </div>
+        </div>
+
+        <div class="kirada-form-card grid gap-4">
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <flux:label>{{ __('Availability') }}</flux:label>
+                    <flux:select wire:model="availability_status" class="mt-1">
+                        <option value="available">{{ __('Available for work') }}</option>
+                        <option value="busy">{{ __('Limited availability') }}</option>
+                        <option value="unavailable">{{ __('Not accepting work') }}</option>
+                    </flux:select>
+                </div>
+                <div>
+                    <flux:label>{{ __('Website') }}</flux:label>
+                    <flux:input wire:model="website" type="url" class="mt-1" placeholder="https://example.com" />
+                    <flux:error name="website" />
+                </div>
+            </div>
+            <div>
+                <flux:label>{{ __('Working languages') }}</flux:label>
+                <div class="mt-1 flex gap-2">
+                    <flux:input wire:model="newLanguage" wire:keydown.enter.prevent="addLanguage" :placeholder="__('e.g. Somali, French, Arabic')" />
+                    <flux:button type="button" wire:click="addLanguage" icon="plus">{{ __('Add') }}</flux:button>
+                </div>
+                <div class="mt-2 flex flex-wrap gap-2">
+                    @foreach($languages as $index => $language)
+                        <span class="kirada-removable-chip">{{ $language }} <button type="button" wire:click="removeLanguage({{ $index }})"><flux:icon.x-mark class="size-3.5" /></button></span>
+                    @endforeach
+                </div>
+                <flux:error name="languages" />
             </div>
         </div>
 

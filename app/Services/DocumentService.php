@@ -60,8 +60,8 @@ class DocumentService
 
         if ($user->hasRole('admin')) {
             // All documents
-        } elseif ($user->hasRole('landlord')) {
-            $query->forLandlord($user->id);
+        } elseif ($user->canAccessLandlordPortal()) {
+            $query->forLandlord($user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {
@@ -112,7 +112,7 @@ class DocumentService
      */
     private function normalizeLinkedEntities(array $data, User $uploader): array
     {
-        $landlordId = $uploader->hasRole('landlord') ? $uploader->id : ($data['landlord_id'] ?? null);
+        $landlordId = $uploader->canAccessLandlordPortal() ? $uploader->landlordAccountId() : ($data['landlord_id'] ?? null);
 
         if ($uploader->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $uploader->id)->firstOrFail();

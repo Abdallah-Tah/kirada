@@ -82,8 +82,8 @@ class Edit extends Component
             ->select('id', 'invoice_number', 'lease_id', 'property_id', 'unit_id', 'tenant_id', 'amount')
             ->latest();
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->get();
@@ -96,9 +96,9 @@ class Edit extends Component
         $validated = $this->validate();
 
         // Ensure landlord ownership
-        if (auth()->user()->hasRole('landlord')) {
+        if (auth()->user()->canAccessLandlordPortal()) {
             $invoice = RentInvoice::find($validated['rent_invoice_id']);
-            abort_if($invoice->landlord_id !== auth()->id(), 403);
+            abort_unless(auth()->user()->belongsToLandlordAccount($invoice->landlord_id), 403);
         }
 
         $data = collect($validated)->except('proof')->toArray();

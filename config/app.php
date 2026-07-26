@@ -105,6 +105,8 @@ return [
         ),
     ],
 
+    'demo_password' => env('KIRADA_DEMO_PASSWORD', 'password'),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver

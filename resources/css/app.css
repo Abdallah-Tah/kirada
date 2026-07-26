@@ -11,39 +11,38 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
-    /* ── Kirada "Terracotta" palette ──────────────────────────────────────
-       A tight 2-accent system: deep teal (primary, calm + trustworthy) and
-       warm amber (the Djibouti sun — CTAs, money, highlights). Neutrals are
-       warm stone, not cold slate, so the whole app feels human and premium.
-       Dark mode is a first-class warm-charcoal shell, not an afterthought. */
+    /* Kirada application palette.
+       The welcome page establishes a crisp white/slate interface with blue
+       and green reserved for actions and status. Keep the application canvas
+       neutral so long forms, tables, and financial data stay easy to read. */
 
     /* Brand accents */
-    --color-kirada-teal: #0F766E;        /* primary — deep teal */
-    --color-kirada-teal-bright: #14B8A6; /* hover / glow */
-    --color-kirada-teal-soft: #CCFBF1;   /* tint fills */
+    --color-kirada-teal: #0369A1;        /* legacy name: primary brand blue */
+    --color-kirada-teal-bright: #38BDF8; /* dark-mode accent */
+    --color-kirada-teal-soft: #E0F2FE;   /* tint fills */
     --color-kirada-amber: #D97706;       /* accent — CTA / money */
     --color-kirada-amber-bright: #F59E0B;
     --color-kirada-amber-soft: #FEF3C7;
 
     /* Semantic */
-    --color-kirada-success: #0D9488;
+    --color-kirada-success: #059669;
     --color-kirada-danger: #DC2626;
     --color-kirada-warning: #D97706;
 
-    /* Warm neutral base (stone) */
-    --color-kirada-ink: #1C1917;         /* stone-900 — primary text / dark shell */
-    --color-kirada-paper: #FAFAF9;       /* stone-50 — light page bg */
-    --color-kirada-soft: #F5F5F4;        /* stone-100 — subtle fills */
+    /* Neutral base */
+    --color-kirada-ink: #0F172A;
+    --color-kirada-paper: #F8FAFC;
+    --color-kirada-soft: #F1F5F9;
 
-    /* Dark-mode surfaces (warm charcoal, unified shell) */
-    --color-kirada-night: #1C1917;       /* stone-900 */
-    --color-kirada-night-2: #292524;     /* stone-800 */
-    --color-kirada-night-3: #44403C;     /* stone-700 */
+    /* Dark-mode surfaces echo the welcome hero. */
+    --color-kirada-night: #05070D;
+    --color-kirada-night-2: #0F172A;
+    --color-kirada-night-3: #1E293B;
 
     /* ── Legacy aliases (kept so existing blades don't break) ── */
     --color-kirada-ocean: var(--color-kirada-teal);
     --color-kirada-green: var(--color-kirada-success);
-    --color-kirada-sky: #2DD4BF;
+    --color-kirada-sky: #0EA5E9;
     --color-kirada-navy: var(--color-kirada-ink);
     --color-kirada-red: var(--color-kirada-danger);
     --color-kirada-blue: var(--color-kirada-teal);
@@ -120,22 +119,18 @@ select:focus[data-flux-control] {
         /* Flux's <main> ships p-6 lg:p-8 by default. Kill it: .kirada-app-content
            owns the gutters, and the footer must reach the main edges. */
         padding: 0 !important;
+        color: #0F172A;
         background:
-            radial-gradient(circle at 8% 0%, rgba(15, 118, 110, 0.10), transparent 28%),
-            radial-gradient(circle at 92% 18%, rgba(217, 119, 6, 0.07), transparent 26%),
-            radial-gradient(circle at 50% 95%, rgba(20, 184, 166, 0.08), transparent 34%),
-            linear-gradient(180deg, #FAFAF9 0%, #F5F5F4 40%, #FAFAF9 100%);
+            radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.035), transparent 24rem),
+            linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 38%, #F8FAFC 100%);
     }
 
-    /* Dark mode: the main content area was hard-coded light, so dark mode only
-       ever darkened the sidebar/header while the page body stayed light-blue.
-       This unifies the whole shell into one warm-charcoal surface. */
+    /* Dark mode unifies the app around the welcome hero's deep navy surface. */
     .dark .kirada-app-main {
+        color: #E2E8F0;
         background:
-            radial-gradient(circle at 8% 0%, rgba(20, 184, 166, 0.08), transparent 28%),
-            radial-gradient(circle at 92% 18%, rgba(217, 119, 6, 0.05), transparent 26%),
-            radial-gradient(circle at 50% 95%, rgba(20, 184, 166, 0.06), transparent 34%),
-            linear-gradient(180deg, #1C1917 0%, #171412 40%, #1C1917 100%);
+            radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.08), transparent 26rem),
+            linear-gradient(180deg, #0B1120 0%, #05070D 42%, #070B12 100%);
     }
 
     .kirada-app-content {
@@ -154,110 +149,65 @@ select:focus[data-flux-control] {
         .kirada-app-content { flex: 1 1 0%; }
     }
 
-    /* ── App footer ──
-       Premium footer that matches the dark sidebar/header shell. In light mode
-       it's a warm stone surface; in dark mode it merges seamlessly with the
-       unified charcoal shell. Logical properties throughout for RTL. */
+    /* Compact application footer, matching the authenticated Djib-Payroll
+       structure: copyright followed by a single row of useful links. */
     .kirada-footer {
-        @apply w-full border-t backdrop-blur-sm;
+        @apply flex w-full items-center border-t;
         margin-top: auto;
-        border-color: rgba(15, 118, 110, 0.12);
-        background: linear-gradient(180deg, rgba(250, 250, 249, 0.9) 0%, rgba(245, 245, 244, 0.95) 100%);
+        min-height: 3.25rem;
+        border-color: #E2E8F0;
+        background: rgba(255, 255, 255, 0.94);
+        color: #64748B;
     }
+
     .kirada-footer-inner {
-        @apply mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 lg:flex-row lg:items-start lg:justify-between lg:gap-12 lg:px-8;
+        @apply mx-auto flex w-full max-w-7xl flex-col items-center justify-center gap-2 px-4 py-3 text-center sm:flex-row sm:flex-wrap sm:justify-between sm:px-6 sm:text-start lg:px-8;
     }
 
-    .kirada-footer-brand {
-        @apply flex flex-col items-start gap-3 lg:max-w-xs;
-    }
-    .kirada-footer-logo {
-        height: 32px;
-        width: auto;
-    }
-    .kirada-footer-tagline {
-        @apply text-sm leading-relaxed;
-        color: var(--color-zinc-500);
+    .kirada-footer-copy {
+        @apply text-xs font-medium;
+        color: inherit;
     }
 
-    .kirada-footer-columns {
-        @apply grid flex-1 grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3 lg:max-w-2xl;
+    .kirada-footer-links {
+        @apply flex flex-wrap items-center justify-center gap-x-4 gap-y-1;
     }
-    .kirada-footer-column {
-        @apply flex flex-col gap-3;
-    }
-    .kirada-footer-heading {
-        @apply text-[0.6875rem] font-semibold uppercase tracking-[0.1em];
-        color: var(--color-zinc-400);
-    }
-    .kirada-footer-list {
-        @apply flex flex-col gap-2.5;
-    }
+
     .kirada-footer-link {
-        @apply text-sm transition-colors;
-        color: var(--color-zinc-600);
+        @apply rounded-sm text-xs font-medium transition-colors;
+        color: #64748B;
         text-decoration: none;
     }
+
     .kirada-footer-link:hover {
-        color: var(--color-kirada-teal);
+        color: #0369A1;
     }
+
     .kirada-footer-link.is-current {
-        @apply font-semibold;
-        color: var(--color-kirada-teal);
+        color: #0369A1;
     }
+
     .kirada-footer-link:focus-visible {
-        @apply rounded-sm outline-2 outline-offset-2;
-        outline-color: var(--color-kirada-teal);
+        @apply outline-2 outline-offset-4;
+        outline-color: #0EA5E9;
     }
 
-    .kirada-footer-bar {
-        border-top: 1px solid rgba(15, 118, 110, 0.12);
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-    }
-    .kirada-footer-bar-inner {
-        @apply mx-auto flex max-w-7xl flex-col gap-1.5 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8;
-    }
-    .kirada-footer-copy {
-        @apply text-xs;
-        color: var(--color-zinc-500);
-    }
-    .kirada-footer-meta {
-        @apply text-xs;
-        color: var(--color-zinc-400);
-    }
-
-    /* Dark mode: footer merges with the unified charcoal shell */
     .dark .kirada-footer {
-        border-color: rgba(20, 184, 166, 0.15);
-        background: linear-gradient(180deg, rgba(28, 25, 23, 0.95) 0%, rgba(23, 20, 18, 0.98) 100%);
+        border-color: rgba(148, 163, 184, 0.16);
+        background: rgba(5, 7, 13, 0.96);
+        color: #94A3B8;
     }
-    .dark .kirada-footer-tagline {
-        color: var(--color-zinc-400);
-    }
-    .dark .kirada-footer-heading {
-        color: var(--color-zinc-500);
-    }
+
     .dark .kirada-footer-link {
-        color: var(--color-zinc-300);
+        color: #94A3B8;
     }
+
     .dark .kirada-footer-link:hover {
-        color: var(--color-kirada-teal-bright);
+        color: #E2E8F0;
     }
+
     .dark .kirada-footer-link.is-current {
-        color: var(--color-kirada-teal-bright);
-    }
-    .dark .kirada-footer-bar {
-        border-color: rgba(20, 184, 166, 0.15);
-    }
-    .dark .kirada-footer-copy {
-        color: var(--color-zinc-400);
-    }
-    .dark .kirada-footer-meta {
-        color: var(--color-zinc-500);
-    }
-    .dark .kirada-footer-logo {
-        filter: brightness(0) invert(1);
-        opacity: 0.85;
+        color: #7DD3FC;
     }
 
 
@@ -274,7 +224,7 @@ select:focus[data-flux-control] {
        right side. */
     body:has(>[data-flux-sidebar]) {
         min-height: 100dvh;
-        background: linear-gradient(175deg, #1C1917 0%, #292524 50%, #1C1917 100%) left / 16rem 100dvh no-repeat fixed;
+        background: linear-gradient(175deg, #05070D 0%, #0F172A 52%, #05070D 100%) left / 16rem 100dvh no-repeat fixed;
     }
     /* When sidebar is collapsed (w-14 = 3.5rem), shrink the dark column */
     body:has(>[data-flux-sidebar-collapsed-desktop]) {
@@ -282,15 +232,15 @@ select:focus[data-flux-control] {
     }
     @media (max-width: 1023px) {
         body:has(>[data-flux-sidebar]) {
-            background: #FAFAF9 !important;
+            background: #F8FAFC !important;
         }
         .dark body:has(>[data-flux-sidebar]) {
-            background: #1C1917 !important;
+            background: #05070D !important;
         }
     }
     .kirada-sidebar {
-        background: linear-gradient(175deg, #1C1917 0%, #292524 50%, #1C1917 100%) !important;
-        border-right: 1px solid rgba(20, 184, 166, 0.18);
+        background: linear-gradient(175deg, #05070D 0%, #0F172A 52%, #05070D 100%) !important;
+        border-right: 1px solid rgba(148, 163, 184, 0.16);
         gap: 0 !important;
         padding: 0 !important;
         height: 100dvh !important;
@@ -399,14 +349,14 @@ select:focus[data-flux-control] {
     /* ── Active nav item ── */
     .kirada-sidebar [data-current],
     .kirada-sidebar [aria-current="page"] {
-        background: rgba(20, 184, 166, 0.16) !important;
-        color: #2DD4BF !important;
-        border: 1px solid rgba(20, 184, 166, 0.32) !important;
+        background: rgba(14, 165, 233, 0.14) !important;
+        color: #7DD3FC !important;
+        border: 1px solid rgba(56, 189, 248, 0.28) !important;
         border-radius: 0.625rem !important;
     }
     .kirada-sidebar [data-current] svg,
     .kirada-sidebar [aria-current="page"] svg {
-        color: #2DD4BF !important;
+        color: #7DD3FC !important;
     }
 
     /* ── User profile at bottom ── */
@@ -415,22 +365,44 @@ select:focus[data-flux-control] {
         padding: 0.5rem 0.75rem;
         border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .kirada-sidebar-user-section [data-flux-sidebar-profile],
-    .kirada-sidebar-user-section button {
+    .kirada-sidebar-user-section [data-flux-sidebar-profile] {
         color: rgba(255, 255, 255, 0.8) !important;
     }
-    .kirada-sidebar-user-section [data-flux-sidebar-profile]:hover,
-    .kirada-sidebar-user-section button:hover {
+    .kirada-sidebar-user-section [data-flux-sidebar-profile]:hover {
         background: rgba(255, 255, 255, 0.06) !important;
         color: #ffffff !important;
+    }
+
+    /* User dropdown lives in the browser's popover layer but remains a DOM
+       descendant of the dark sidebar. Give it an explicit theme so sidebar
+       trigger styles never leak into its controls. */
+    .kirada-user-menu {
+        width: min(16rem, calc(100vw - 1rem));
+        border-color: #E2E8F0 !important;
+        background: #FFFFFF !important;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18) !important;
+    }
+
+    .kirada-user-menu [data-flux-menu-separator] {
+        background: #E2E8F0;
+    }
+
+    .dark .kirada-user-menu {
+        border-color: #334155 !important;
+        background: #0F172A !important;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.48) !important;
+    }
+
+    .dark .kirada-user-menu [data-flux-menu-separator] {
+        background: #334155;
     }
 
     /* ── App header (all breakpoints) ──
        Matches the sidebar's dark slate so the shell reads as one surface. */
     .kirada-app-header {
         min-height: 64px;
-        background: #1C1917;
-        border-bottom: 1px solid rgba(20, 184, 166, 0.18);
+        background: #05070D;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.16);
         padding: 0.5rem 1rem;
         gap: 0.75rem;
     }
@@ -459,9 +431,9 @@ select:focus[data-flux-control] {
         background: rgba(255, 255, 255, 0.1);
     }
     .kirada-header-search-field:focus-within {
-        border-color: rgba(20, 184, 166, 0.7);
+        border-color: rgba(56, 189, 248, 0.7);
         background: rgba(255, 255, 255, 0.1);
-        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
     }
     .kirada-header-search-icon {
         position: absolute;
@@ -548,7 +520,7 @@ select:focus[data-flux-control] {
         font-size: 0.5625rem;
         font-weight: 700;
         color: #ffffff;
-        box-shadow: 0 0 0 2px #1C1917;
+        box-shadow: 0 0 0 2px #05070D;
     }
 
     /* Language menu (plain Alpine, not a Flux dropdown) */
@@ -618,21 +590,20 @@ select:focus[data-flux-control] {
 
     .kirada-page-header {
         @apply overflow-hidden rounded-[1.5rem] border p-4 sm:p-6 shadow-[0_24px_80px_rgba(15,23,42,0.10)] ring-1 backdrop-blur-xl sm:p-7;
-        border-color: rgba(15, 118, 110, 0.18);
-        ring-color: rgba(15, 118, 110, 0.04);
+        border-color: #E2E8F0;
+        ring-color: rgba(15, 23, 42, 0.03);
         background:
-            radial-gradient(circle at 90% 8%,  rgba(15, 118, 110, 0.12), transparent 30%),
-            radial-gradient(circle at 8%  85%, rgba(217, 119, 6, 0.08), transparent 28%),
-            linear-gradient(135deg, #ffffff 0%, #fafaf9 50%, #f5f5f4 100%);
+            radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.055), transparent 18rem),
+            #FFFFFF;
         box-shadow:
-            0 24px 80px rgba(15, 23, 42, 0.08),
-            inset 0 2px 0 0 rgba(15, 118, 110, 0.25);
+            0 18px 55px rgba(15, 23, 42, 0.07),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
 
     .kirada-card {
         @apply rounded-[1.25rem] border p-4 sm:p-5 backdrop-blur-xl w-full max-w-full overflow-hidden;
-        border-color: rgba(15, 118, 110, 0.12);
-        background: linear-gradient(145deg, #ffffff 0%, #fafaf9 55%, #f5f5f4 100%);
+        border-color: #E2E8F0;
+        background: rgba(255, 255, 255, 0.96);
         box-shadow:
             0 18px 55px rgba(15, 23, 42, 0.07),
             inset 0 1px 0 rgba(255, 255, 255, 0.85);
@@ -641,25 +612,25 @@ select:focus[data-flux-control] {
     }
 
     .kirada-card:hover {
-        border-color: rgba(15, 118, 110, 0.28);
+        border-color: #CBD5E1;
         box-shadow:
-            0 24px 70px rgba(15, 118, 110, 0.10),
+            0 24px 70px rgba(15, 23, 42, 0.10),
             0 4px 16px rgba(15, 23, 42, 0.06),
             inset 0 1px 0 rgba(255, 255, 255, 0.90);
     }
 
     .kirada-stat-card {
         @apply rounded-[1.25rem] p-5 backdrop-blur-xl hover:-translate-y-1;
-        border: 1px solid rgba(15, 118, 110, 0.14);
-        background: linear-gradient(145deg, #ffffff 0%, #fafaf9 55%, #f5f5f4 100%);
+        border: 1px solid #E2E8F0;
+        background: #FFFFFF;
         box-shadow: 0 18px 55px rgba(15, 23, 42, 0.07);
         transition: transform 0.4s var(--ease-kirada), box-shadow 0.4s var(--ease-kirada),
             border-color 0.4s var(--ease-kirada);
     }
 
     .kirada-stat-card:hover {
-        border-color: rgba(15, 118, 110, 0.35);
-        box-shadow: 0 28px 72px rgba(15, 118, 110, 0.15), 0 4px 16px rgba(15, 23, 42, 0.06);
+        border-color: #BAE6FD;
+        box-shadow: 0 28px 72px rgba(15, 23, 42, 0.11), 0 4px 16px rgba(15, 23, 42, 0.06);
     }
 
     .kirada-stat-label {
@@ -924,50 +895,49 @@ select:focus[data-flux-control] {
 /* ----------------------------------------------------------------------------
    Dark mode. The design system above is authored light-only — every surface is
    a white gradient and every text colour is slate-700+. These overrides invert
-   the surfaces to match the sidebar/header slate (#0F172A family) rather than
-   pure black, so the shell reads as one piece. Order matters: this layer must
-   follow the light definitions.
+   the surfaces to match the welcome hero's deep navy rather than pure black,
+   so the shell reads as one piece. Order matters: this layer follows the
+   light definitions.
 ---------------------------------------------------------------------------- */
 @layer components {
 
     /* ── Shell ── */
     .dark .kirada-page-header {
-        border-color: rgba(20, 184, 166, 0.22);
+        border-color: rgba(148, 163, 184, 0.18);
         background:
-            radial-gradient(circle at 90% 8%,  rgba(20, 184, 166, 0.15), transparent 30%),
-            radial-gradient(circle at 8%  85%, rgba(217, 119, 6, 0.10), transparent 28%),
-            linear-gradient(135deg, #292524 0%, #1C1917 50%, #292524 100%);
+            radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.12), transparent 20rem),
+            linear-gradient(135deg, #111827 0%, #0B1120 55%, #0F172A 100%);
         box-shadow:
             0 24px 80px rgba(0, 0, 0, 0.45),
-            inset 0 2px 0 0 rgba(20, 184, 166, 0.30);
+            inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     /* ── Cards ── */
     .dark .kirada-card {
-        border-color: rgba(20, 184, 166, 0.18);
-        background: linear-gradient(145deg, #292524 0%, #1C1917 55%, #292524 100%);
+        border-color: rgba(148, 163, 184, 0.16);
+        background: linear-gradient(145deg, #111827 0%, #0B1120 58%, #0F172A 100%);
         box-shadow:
             0 18px 55px rgba(0, 0, 0, 0.40),
             inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
     .dark .kirada-card:hover {
-        border-color: rgba(20, 184, 166, 0.35);
+        border-color: rgba(56, 189, 248, 0.32);
         box-shadow:
-            0 24px 70px rgba(20, 184, 166, 0.12),
+            0 24px 70px rgba(2, 132, 199, 0.12),
             0 4px 16px rgba(0, 0, 0, 0.35),
             inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     .dark .kirada-stat-card {
-        border-color: rgba(20, 184, 166, 0.20);
-        background: linear-gradient(145deg, #292524 0%, #1C1917 55%, #292524 100%);
+        border-color: rgba(148, 163, 184, 0.16);
+        background: linear-gradient(145deg, #111827 0%, #0B1120 58%, #0F172A 100%);
         box-shadow: 0 18px 55px rgba(0, 0, 0, 0.40);
     }
 
     .dark .kirada-stat-card:hover {
-        border-color: rgba(20, 184, 166, 0.40);
-        box-shadow: 0 28px 72px rgba(20, 184, 166, 0.18), 0 4px 16px rgba(0, 0, 0, 0.35);
+        border-color: rgba(56, 189, 248, 0.34);
+        box-shadow: 0 28px 72px rgba(2, 132, 199, 0.16), 0 4px 16px rgba(0, 0, 0, 0.35);
     }
 
     .dark .kirada-stat-label {
@@ -984,8 +954,8 @@ select:focus[data-flux-control] {
     .dark .kirada-form-card,
     .dark .kirada-provider-card,
     .dark .kirada-status-strip {
-        border-color: rgba(20, 184, 166, 0.15);
-        background: linear-gradient(145deg, #292524 0%, #1C1917 55%, #292524 100%);
+        border-color: rgba(148, 163, 184, 0.16);
+        background: linear-gradient(145deg, #111827 0%, #0B1120 58%, #0F172A 100%);
         box-shadow: 0 18px 55px rgba(0, 0, 0, 0.40);
     }
 
@@ -998,7 +968,7 @@ select:focus[data-flux-control] {
     }
 
     .dark .kirada-table-card tbody tr:hover {
-        @apply bg-teal-500/10;
+        @apply bg-sky-500/10;
     }
 
     .dark .kirada-table-card tbody td {
@@ -1013,11 +983,11 @@ select:focus[data-flux-control] {
 
     .dark .kirada-role-option:hover .kirada-role-option-body,
     .dark .kirada-chip-option:hover .kirada-chip-option-body {
-        @apply border-teal-500/60 bg-teal-500/10;
+        @apply border-sky-500/60 bg-sky-500/10;
     }
 
     .dark .kirada-role-option input:checked + .kirada-role-option-body {
-        @apply border-teal-500 bg-teal-500/15 text-stone-100 ring-teal-500/40;
+        @apply border-sky-500 bg-sky-500/15 text-stone-100 ring-sky-500/40;
     }
 
     .dark .kirada-role-option-title {
@@ -1049,7 +1019,7 @@ select:focus[data-flux-control] {
     }
 
     .dark .kirada-tag {
-        @apply bg-teal-500/15 text-teal-300;
+        @apply bg-sky-500/15 text-sky-300;
     }
 
     /* ── Shared bits ── */
@@ -1074,13 +1044,13 @@ select:focus[data-flux-control] {
     }
 
     .dark .kirada-callout-accent {
-        @apply border-teal-500/40 bg-teal-500/10;
+        @apply border-sky-500/40 bg-sky-500/10;
     }
 
     /* ── Dashboard / app text & dividers (dark-mode repair) ──────────────────
         The dashboards (and several pages) emit light-mode Tailwind utilities
         directly on text and dividers inside the dark kirada surfaces:
-        text-kirada-navy (= #1C1917, the shell itself → invisible),
+        text-kirada-navy (the light-mode ink colour → too dark),
         text-slate-900/800/700 (near-black → invisible on dark cards),
         text-slate-500/400 (too dim for charcoal), and the near-white
         divide-slate-100 / border-slate-100 dividers which vanish on dark.
@@ -1222,7 +1192,7 @@ select:focus[data-flux-control] {
         box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
     }
     .dark .kirada-shell .bg-white\/92:hover {
-        box-shadow: 0 22px 55px rgba(20, 184, 166, 0.16), 0 4px 16px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 22px 55px rgba(2, 132, 199, 0.16), 0 4px 16px rgba(0, 0, 0, 0.35);
     }
     /* ring-slate-900/3 left a near-invisible ring on light; on dark it's a
        faint warm ring that reads as a hairline edge. */

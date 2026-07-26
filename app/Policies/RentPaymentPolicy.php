@@ -9,7 +9,7 @@ class RentPaymentPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('payments.view');
     }
 
     public function view(User $user, RentPayment $payment): bool
@@ -23,12 +23,12 @@ class RentPaymentPolicy
             return $payment->tenant?->user_id === $user->id;
         }
 
-        return $user->hasRole('landlord') && $payment->landlord_id === $user->id;
+        return $user->can('payments.view') && $user->belongsToLandlordAccount($payment->landlord_id);
     }
 
     public function create(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('payments.confirm');
     }
 
     public function update(User $user, RentPayment $payment): bool
@@ -37,7 +37,7 @@ class RentPaymentPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $payment->landlord_id === $user->id;
+        return $user->can('payments.confirm') && $user->belongsToLandlordAccount($payment->landlord_id);
     }
 
     public function delete(User $user, RentPayment $payment): bool
@@ -46,6 +46,6 @@ class RentPaymentPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $payment->landlord_id === $user->id;
+        return $user->can('payments.confirm') && $user->belongsToLandlordAccount($payment->landlord_id);
     }
 }

@@ -1,35 +1,9 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-{{-- Appearance. Must run before the first paint, or the stored theme arrives
-     one frame late and the page flashes light before going dark. --}}
-<script>
-window.Flux = {
-    _media: window.matchMedia('(prefers-color-scheme: dark)'),
-    applyAppearance: function (appearance) {
-        var dark = appearance === 'dark' || (appearance === 'system' && this._media.matches);
-        document.documentElement.classList.toggle('dark', dark);
-    },
-    get appearance() {
-        return window.localStorage.getItem('flux.appearance') || 'system';
-    },
-    set appearance(value) {
-        var next = ['light', 'dark', 'system'].includes(value) ? value : 'system';
-        window.localStorage.setItem('flux.appearance', next);
-        this.applyAppearance(next);
-        // Alpine can't observe a plain window property, so the toggle listens
-        // for this instead of polling.
-        window.dispatchEvent(new CustomEvent('flux-appearance-changed', { detail: next }));
-    },
-};
-
-window.Flux.applyAppearance(window.Flux.appearance);
-window.Flux._media.addEventListener('change', function () {
-    if (window.Flux.appearance === 'system') {
-        window.Flux.applyAppearance('system');
-    }
-});
-</script>
+{{-- Apply the stored appearance before first paint. Flux then promotes this
+     bootstrap object to its reactive Alpine store when its scripts load. --}}
+@fluxAppearance
 
 <title>
     {{ filled($title ?? null) ? $title.' - '.config('app.name', 'Laravel') : config('app.name', 'Laravel') }}

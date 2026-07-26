@@ -13,7 +13,7 @@ class MaintenanceProfilePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() || $user->isLandlord();
+        return $user->isAdmin() || ($user->canAccessLandlordPortal() && $user->can('maintenance.view'));
     }
 
     public function view(User $user, MaintenanceProfile $profile): bool
@@ -22,7 +22,7 @@ class MaintenanceProfilePolicy
             return true;
         }
 
-        return $user->isLandlord() && $profile->is_published;
+        return $user->canAccessLandlordPortal() && $user->can('maintenance.view') && $profile->is_published;
     }
 
     /**

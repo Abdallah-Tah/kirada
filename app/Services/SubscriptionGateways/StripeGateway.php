@@ -104,8 +104,8 @@ class StripeGateway implements SubscriptionBillingGateway
         }
 
         $customer = Customer::create([
-            'email' => $user->email,
-            'name' => $user->name,
+            'email' => $user?->email,
+            'name' => $user?->name,
             'metadata' => ['user_id' => $user->id],
         ]);
 

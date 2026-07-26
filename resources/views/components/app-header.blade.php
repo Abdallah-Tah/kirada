@@ -101,19 +101,18 @@
             </div>
         </div>
 
-        {{-- Light/dark toggle. `dark` is local state because Alpine can't observe
-             window.Flux.appearance directly; the setter fires the event below. --}}
+        {{-- Use Flux's reactive appearance store so this button stays in sync
+             with the Light / Dark / System control on the settings page. --}}
         <button
             type="button"
-            x-data="{ dark: window.Flux.appearance === 'dark' }"
-            @flux-appearance-changed.window="dark = $event.detail === 'dark'"
-            @click="window.Flux.appearance = dark ? 'light' : 'dark'"
+            x-data
+            @click="$flux.dark = !$flux.dark"
             class="kirada-header-btn"
-            :aria-label="dark ? '{{ __('Switch to light mode') }}' : '{{ __('Switch to dark mode') }}'"
-            :title="dark ? '{{ __('Switch to light mode') }}' : '{{ __('Switch to dark mode') }}'"
+            :aria-label="$flux.dark ? '{{ __('Switch to light mode') }}' : '{{ __('Switch to dark mode') }}'"
+            :title="$flux.dark ? '{{ __('Switch to light mode') }}' : '{{ __('Switch to dark mode') }}'"
         >
-            <flux:icon.moon x-show="!dark" x-cloak class="size-5" />
-            <flux:icon.sun x-show="dark" x-cloak class="size-5" />
+            <flux:icon.moon x-show="!$flux.dark" x-cloak class="size-5" />
+            <flux:icon.sun x-show="$flux.dark" x-cloak class="size-5" />
         </button>
 
         {{-- Notifications --}}
@@ -169,14 +168,14 @@
 
         {{-- Profile --}}
         <flux:dropdown position="bottom" align="end">
-            <flux:profile :initials="$user->initials()" icon-trailing="chevron-down" />
+            <flux:profile :initials="$user?->initials() ?? null" icon-trailing="chevron-down" />
 
             <flux:menu>
                 <div class="flex items-center gap-3 px-2 py-2 text-sm">
-                    <flux:avatar :name="$user->name" :initials="$user->initials()" />
+                    <flux:avatar :name="$user?->name" :initials="$user?->initials() ?? null" />
                     <div class="grid flex-1 text-start leading-tight">
-                        <flux:heading class="truncate">{{ $user->name }}</flux:heading>
-                        <flux:text class="truncate">{{ $user->email }}</flux:text>
+                        <flux:heading class="truncate">{{ $user?->name }}</flux:heading>
+                        <flux:text class="truncate">{{ $user?->email }}</flux:text>
                     </div>
                 </div>
 

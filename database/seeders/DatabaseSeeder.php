@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             CountryCurrencySeeder::class,
             PlanSeeder::class,
             AdminUserSeeder::class,
+            DemoPortfolioSeeder::class,
         ]);
     }
 }

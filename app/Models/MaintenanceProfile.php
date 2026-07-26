@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MaintenanceProfile extends Model
 {
@@ -16,15 +17,19 @@ class MaintenanceProfile extends Model
     protected $fillable = [
         'user_id',
         'business_name',
+        'headline',
         'bio',
         'trades',
         'service_areas',
+        'languages',
         'currency_id',
         'hourly_rate',
         'callout_fee',
         'phone',
         'whatsapp',
+        'website',
         'years_experience',
+        'availability_status',
         'is_published',
         'verified_at',
         'verified_by',
@@ -33,6 +38,7 @@ class MaintenanceProfile extends Model
     protected $casts = [
         'trades' => 'array',
         'service_areas' => 'array',
+        'languages' => 'array',
         'hourly_rate' => 'integer',
         'callout_fee' => 'integer',
         'years_experience' => 'integer',
@@ -85,6 +91,12 @@ class MaintenanceProfile extends Model
         return $this->belongsTo(User::class, 'verified_by');
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(MaintenanceReview::class, 'maintenance_user_id', 'user_id')
+            ->latest();
+    }
+
     // ── Scopes ─────────────────────────────────────────
 
     /**
@@ -129,10 +141,12 @@ class MaintenanceProfile extends Model
     {
         $checks = [
             filled($this->business_name),
+            filled($this->headline),
             filled($this->bio),
             filled($this->trades),
             filled($this->service_areas),
             filled($this->phone),
+            filled($this->languages),
             $this->hourly_rate !== null || $this->callout_fee !== null,
             $this->years_experience !== null,
         ];

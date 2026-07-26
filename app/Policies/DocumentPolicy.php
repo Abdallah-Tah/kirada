@@ -10,7 +10,7 @@ class DocumentPolicy
     public function viewAny(User $user): bool
     {
         return $user->hasRole('admin')
-            || $user->hasRole('landlord')
+            || $user->can('documents.view')
             || $user->hasRole('tenant');
     }
 
@@ -20,8 +20,9 @@ class DocumentPolicy
             return true;
         }
 
-        if ($user->hasRole('landlord')) {
-            return $document->landlord_id === $user->id;
+        if ($user->canAccessLandlordPortal()) {
+            return $user->can('documents.view')
+                && $user->belongsToLandlordAccount($document->landlord_id);
         }
 
         if ($user->hasRole('tenant')) {
@@ -40,7 +41,7 @@ class DocumentPolicy
     public function create(User $user): bool
     {
         return $user->hasRole('admin')
-            || $user->hasRole('landlord')
+            || $user->can('documents.manage')
             || $user->hasRole('tenant');
     }
 
@@ -50,8 +51,9 @@ class DocumentPolicy
             return true;
         }
 
-        if ($user->hasRole('landlord')) {
-            return $document->landlord_id === $user->id;
+        if ($user->canAccessLandlordPortal()) {
+            return $user->can('documents.manage')
+                && $user->belongsToLandlordAccount($document->landlord_id);
         }
 
         // Tenants can delete their own uploaded payment_proof documents

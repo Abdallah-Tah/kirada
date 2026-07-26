@@ -9,7 +9,7 @@ class RentInvoicePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('invoices.view');
     }
 
     public function view(User $user, RentInvoice $invoice): bool
@@ -23,12 +23,12 @@ class RentInvoicePolicy
             return $invoice->tenant?->user_id === $user->id;
         }
 
-        return $user->hasRole('landlord') && $invoice->landlord_id === $user->id;
+        return $user->can('invoices.view') && $user->belongsToLandlordAccount($invoice->landlord_id);
     }
 
     public function create(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('invoices.create');
     }
 
     public function update(User $user, RentInvoice $invoice): bool
@@ -37,7 +37,7 @@ class RentInvoicePolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $invoice->landlord_id === $user->id;
+        return $user->can('invoices.edit') && $user->belongsToLandlordAccount($invoice->landlord_id);
     }
 
     public function delete(User $user, RentInvoice $invoice): bool
@@ -46,6 +46,6 @@ class RentInvoicePolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $invoice->landlord_id === $user->id;
+        return $user->can('invoices.edit') && $user->belongsToLandlordAccount($invoice->landlord_id);
     }
 }

@@ -2,7 +2,7 @@
     <article class="prose prose-slate max-w-none">
         <header class="mb-8 not-prose">
             <h1 class="text-3xl font-bold text-slate-900">{{ __('How It Works') }}</h1>
-            <p class="mt-2 text-sm text-slate-500">{{ __('Last updated') }}: June 30, 2026</p>
+            <p class="mt-2 text-sm text-slate-500">{{ __('Last updated') }}: July 26, 2026</p>
         </header>
 
         <div class="space-y-10 text-slate-700 leading-relaxed">
@@ -27,6 +27,8 @@
                 <li>{{ __('Create leases — set terms, rent amounts, dates, and deposits') }}</li>
                 <li>{{ __('Generate invoices — create rent invoices; tenants see them and record payments') }}</li>
                 <li>{{ __('Manage maintenance — tenants submit requests; you assign them to maintenance workers') }}</li>
+                <li>{{ __('Build a property team — invite administrators, property managers, accountants, or read-only viewers') }}</li>
+                <li>{{ __('Hire with confidence — compare provider profiles and reviews from completed Kirada jobs') }}</li>
                 <li>{{ __('Sign contracts — create digital contracts and send signing links to tenants') }}</li>
             </ol>
             <h3 class="mt-4 font-semibold text-slate-800">{{ __('Key Features') }}</h3>
@@ -39,6 +41,7 @@
                 <li>{{ __('Digital contracts — create, send, e-sign, archive PDF') }}</li>
                 <li>{{ __('Messaging — communicate with tenants in the app') }}</li>
                 <li>{{ __('Reports — financial summary, occupancy, and collection insights') }}</li>
+                <li>{{ __('Role-based team access — staff work inside one landlord portfolio with only their assigned permissions') }}</li>
             </ul>
         </section>
 
@@ -70,10 +73,14 @@
         <section>
             <h2 class="text-xl font-semibold text-slate-900">{{ __('For Maintenance Workers') }}</h2>
             <ol class="mt-2 list-decimal pl-6 space-y-2">
-                <li>{{ __('Receive assignment — landlord assigns you a maintenance request') }}</li>
+                <li>{{ __('Create a professional profile — add trades, experience, service areas, languages, availability, rates, and contact details') }}</li>
+                <li>{{ __('Publish your profile — appear in the provider directory and receive landlord invitations') }}</li>
+                <li>{{ __('Receive assignment — an approved landlord assigns you a maintenance request') }}</li>
                 <li>{{ __('Review details — see the issue description, photos, and unit location') }}</li>
-                <li>{{ __('Update status — mark progress as you work') }}</li>
+                <li>{{ __('Submit a quote — itemize the work, price, and tax for landlord approval') }}</li>
+                <li>{{ __('Update status — mark progress and add completion photos as you work') }}</li>
                 <li>{{ __('Complete and report — mark resolved and add notes about the fix') }}</li>
+                <li>{{ __('Build your reputation — reviews can be posted only after a completed Kirada work order') }}</li>
             </ol>
         </section>
 
@@ -130,6 +137,11 @@
                         <span class="flex h-7 w-7 items-center justify-center rounded-full bg-kirada-green text-white text-xs">4</span>
                         {{ __('Worker updates status and marks "Resolved"') }}
                     </div>
+                    <div class="ml-3.5 h-4 border-l border-slate-300"></div>
+                    <div class="flex items-center gap-2">
+                        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-kirada-green text-white text-xs">5</span>
+                        {{ __('Landlord can publish one verified review for the completed job') }}
+                    </div>
                 </div>
             </div>
         </section>
@@ -169,6 +181,7 @@
             <ul class="mt-2 list-disc pl-6 space-y-1">
                 <li>{{ __('Two-factor authentication available in Settings → Security') }}</li>
                 <li>{{ __('Role-based access — each user only sees data for their role') }}</li>
+                <li>{{ __('Team members belong to one landlord portfolio; the owner controls invitations and administrator access') }}</li>
                 <li>{{ __('All traffic encrypted via HTTPS') }}</li>
                 <li>{{ __('Every user has their own account — no password sharing') }}</li>
             </ul>

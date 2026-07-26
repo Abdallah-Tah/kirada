@@ -61,8 +61,8 @@ class Create extends Component
         $user = auth()->user();
         $query = Tenant::select('id', 'first_name', 'last_name')->orderBy('first_name');
 
-        if ($user->hasRole('landlord')) {
-            $query->forLandlord($user->id);
+        if ($user->canAccessLandlordPortal()) {
+            $query->forLandlord($user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {
@@ -81,8 +81,8 @@ class Create extends Component
         $user = auth()->user();
         $query = Lease::select('id', 'tenant_id', 'unit_id')->with('tenant:id,first_name,last_name');
 
-        if ($user->hasRole('landlord')) {
-            $query->where('landlord_id', $user->id);
+        if ($user->canAccessLandlordPortal()) {
+            $query->where('landlord_id', $user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {
@@ -101,8 +101,8 @@ class Create extends Component
         $user = auth()->user();
         $query = RentInvoice::select('id', 'invoice_number', 'tenant_id');
 
-        if ($user->hasRole('landlord')) {
-            $query->forLandlord($user->id);
+        if ($user->canAccessLandlordPortal()) {
+            $query->forLandlord($user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {
@@ -121,8 +121,8 @@ class Create extends Component
         $user = auth()->user();
         $query = RentPayment::select('id', 'payment_number', 'tenant_id');
 
-        if ($user->hasRole('landlord')) {
-            $query->forLandlord($user->id);
+        if ($user->canAccessLandlordPortal()) {
+            $query->forLandlord($user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {
@@ -148,7 +148,7 @@ class Create extends Component
             ];
         }
 
-        if ($user->hasRole('landlord')) {
+        if ($user->canAccessLandlordPortal()) {
             return [
                 'landlord_only' => 'Landlord Only',
                 'tenant_visible' => 'Tenant Visible',
@@ -188,9 +188,9 @@ class Create extends Component
         }
 
         // Ensure landlord ownership
-        if ($user->hasRole('landlord') && isset($validated['tenant_id']) && $validated['tenant_id']) {
+        if ($user->canAccessLandlordPortal() && isset($validated['tenant_id']) && $validated['tenant_id']) {
             $tenant = Tenant::find($validated['tenant_id']);
-            abort_if($tenant && $tenant->landlord_id !== $user->id, 403);
+            abort_if($tenant && ! $user->belongsToLandlordAccount($tenant->landlord_id), 403);
         }
 
         try {

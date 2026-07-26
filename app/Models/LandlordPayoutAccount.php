@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -33,6 +34,9 @@ class LandlordPayoutAccount extends Model
         'other' => 'Other',
     ];
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function landlord(): BelongsTo
     {
         return $this->belongsTo(User::class, 'landlord_id');
@@ -43,12 +47,20 @@ class LandlordPayoutAccount extends Model
         return self::METHODS[$this->method] ?? ucfirst($this->method);
     }
 
-    public function scopeActive($query)
+    /**
+     * @param  Builder<LandlordPayoutAccount>  $query
+     * @return Builder<LandlordPayoutAccount>
+     */
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
 
-    public function scopePrimary($query)
+    /**
+     * @param  Builder<LandlordPayoutAccount>  $query
+     * @return Builder<LandlordPayoutAccount>
+     */
+    public function scopePrimary(Builder $query): Builder
     {
         return $query->where('is_primary', true);
     }

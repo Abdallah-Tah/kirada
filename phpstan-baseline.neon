@@ -2653,18 +2653,6 @@ parameters:
 			path: app/Models/Unit.php
 
 		-
-			message: '#^Access to an undefined property App\\Models\\User\:\:\$subscription\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Models/User.php
-
-		-
-			message: '#^Method App\\Models\\User\:\:subscription\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: app/Models/User.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$phone\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3509,12 +3497,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: app/Services/SubscriptionGateways/WaafiPayGateway.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\User\:\:\$subscription\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Services/SubscriptionService.php
 
 		-
 			message: '#^Method App\\Services\\SubscriptionService\:\:enabledGateways\(\) return type has no value type specified in iterable type array\.$#'

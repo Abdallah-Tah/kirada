@@ -50,8 +50,8 @@ class Index extends Component
             ->latest();
 
         // Landlord sees only own; admin sees all
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->paginate(10);

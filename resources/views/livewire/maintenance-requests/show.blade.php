@@ -206,6 +206,33 @@
         </div>
     @endcan
 
+    @if($maintenanceRequest->review || $this->canReview)
+        <section class="kirada-card mt-6">
+            <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Provider review') }}</h3>
+            @if($maintenanceRequest->review)
+                <div class="mt-3">
+                    <p class="text-amber-600">★ {{ $maintenanceRequest->review->rating }}/5</p>
+                    <p class="font-medium">{{ $maintenanceRequest->review->title }}</p>
+                    <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{{ $maintenanceRequest->review->comment }}</p>
+                    <p class="mt-2 text-xs text-zinc-500">{{ __('Verified completed job review') }}</p>
+                </div>
+            @else
+                <form wire:submit="submitReview" class="mt-4 grid gap-4">
+                    <p class="text-sm text-zinc-500">{{ __('Share an honest review of the completed work. This review will appear on the provider profile.') }}</p>
+                    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <flux:select wire:model="reviewRating" :label="__('Overall')">@foreach(range(5, 1) as $score)<option value="{{ $score }}">{{ $score }}/5</option>@endforeach</flux:select>
+                        <flux:select wire:model="reviewQuality" :label="__('Quality')">@foreach(range(5, 1) as $score)<option value="{{ $score }}">{{ $score }}/5</option>@endforeach</flux:select>
+                        <flux:select wire:model="reviewCommunication" :label="__('Communication')">@foreach(range(5, 1) as $score)<option value="{{ $score }}">{{ $score }}/5</option>@endforeach</flux:select>
+                        <flux:select wire:model="reviewProfessionalism" :label="__('Professionalism')">@foreach(range(5, 1) as $score)<option value="{{ $score }}">{{ $score }}/5</option>@endforeach</flux:select>
+                    </div>
+                    <flux:input wire:model="reviewTitle" :label="__('Review title')" />
+                    <flux:textarea wire:model="reviewComment" :label="__('Review')" rows="3" />
+                    <flux:button type="submit" variant="primary" class="w-fit">{{ __('Publish verified review') }}</flux:button>
+                </form>
+            @endif
+        </section>
+    @endif
+
     {{-- ─── Quotes & Invoices ─────────────────────────────────────────── --}}
     @if ($this->quotes->isNotEmpty() || $this->isAssignedPro)
         <div class="kirada-card mt-6">

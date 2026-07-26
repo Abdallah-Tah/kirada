@@ -15,6 +15,8 @@ class Edit extends Component
 {
     public string $business_name = '';
 
+    public string $headline = '';
+
     public string $bio = '';
 
     /** @var array<int, string> */
@@ -23,7 +25,12 @@ class Edit extends Component
     /** @var array<int, string> */
     public array $service_areas = [];
 
+    /** @var array<int, string> */
+    public array $languages = [];
+
     public string $newArea = '';
+
+    public string $newLanguage = '';
 
     public ?int $currency_id = null;
 
@@ -35,7 +42,11 @@ class Edit extends Component
 
     public string $whatsapp = '';
 
+    public string $website = '';
+
     public ?int $years_experience = null;
+
+    public string $availability_status = 'available';
 
     public bool $is_published = false;
 
@@ -47,21 +58,25 @@ class Edit extends Component
 
         if (! $profile) {
             // Sensible starting point: their account name and phone country default.
-            $this->business_name = auth()->user()->name;
+            $this->business_name = auth()?->user()?->name;
 
             return;
         }
 
         $this->business_name = $profile->business_name;
+        $this->headline = $profile->headline ?? '';
         $this->bio = $profile->bio ?? '';
         $this->trades = $profile->trades ?? [];
         $this->service_areas = $profile->service_areas ?? [];
+        $this->languages = $profile->languages ?? [];
         $this->currency_id = $profile->currency_id;
         $this->hourly_rate = $profile->hourly_rate;
         $this->callout_fee = $profile->callout_fee;
         $this->phone = $profile->phone ?? '';
         $this->whatsapp = $profile->whatsapp ?? '';
+        $this->website = $profile->website ?? '';
         $this->years_experience = $profile->years_experience;
+        $this->availability_status = $profile->availability_status;
         $this->is_published = $profile->is_published;
     }
 
@@ -72,17 +87,22 @@ class Edit extends Component
     {
         return [
             'business_name' => 'required|string|max:255',
+            'headline' => 'nullable|string|max:160',
             'bio' => 'nullable|string|max:2000',
             'trades' => 'required|array|min:1',
             'trades.*' => 'string|in:'.implode(',', MaintenanceProfile::TRADES),
             'service_areas' => 'required|array|min:1',
             'service_areas.*' => 'string|max:120',
+            'languages' => 'array|max:10',
+            'languages.*' => 'string|max:80',
             'currency_id' => 'nullable|exists:currencies,id',
             'hourly_rate' => 'nullable|integer|min:0|max:100000000',
             'callout_fee' => 'nullable|integer|min:0|max:100000000',
             'phone' => 'nullable|string|max:32',
             'whatsapp' => 'nullable|string|max:32',
+            'website' => 'nullable|url:http,https|max:255',
             'years_experience' => 'nullable|integer|min:0|max:80',
+            'availability_status' => 'required|in:available,busy,unavailable',
             'is_published' => 'boolean',
         ];
     }
@@ -141,6 +161,23 @@ class Edit extends Component
     {
         unset($this->service_areas[$index]);
         $this->service_areas = array_values($this->service_areas);
+    }
+
+    public function addLanguage(): void
+    {
+        $language = trim($this->newLanguage);
+
+        if ($language !== '' && ! in_array($language, $this->languages, true)) {
+            $this->languages[] = $language;
+        }
+
+        $this->newLanguage = '';
+    }
+
+    public function removeLanguage(int $index): void
+    {
+        unset($this->languages[$index]);
+        $this->languages = array_values($this->languages);
     }
 
     public function save(): void

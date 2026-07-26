@@ -21,13 +21,14 @@ class SubscriptionMiddleware
             return $next($request);
         }
 
-        // Only landlords need subscriptions
-        if (! $user->isLandlord()) {
+        // Only the landlord portal uses a landlord account subscription.
+        if (! $user->canAccessLandlordPortal()) {
             return $next($request);
         }
 
-        // Allow if on trial or has active subscription
-        if ($user->onTrial() || $user->hasActiveSubscription()) {
+        $landlord = $user->landlordAccount();
+
+        if ($landlord && ($landlord->onTrial() || $landlord->hasActiveSubscription())) {
             return $next($request);
         }
 

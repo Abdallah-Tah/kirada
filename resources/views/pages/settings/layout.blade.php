@@ -1,7 +1,16 @@
+@props([
+    'heading' => '',
+    'subheading' => '',
+    'contentClass' => 'max-w-lg',
+])
+
 <div class="flex items-start max-md:flex-col">
     <div class="me-10 w-full pb-4 md:w-[220px]">
         <flux:navlist aria-label="{{ __('Settings') }}">
             <flux:navlist.item :href="route('profile.edit')" wire:navigate>{{ __('Profile') }}</flux:navlist.item>
+            @role('landlord')
+                <flux:navlist.item :href="route('payout-accounts.edit')" wire:navigate>{{ __('Payment accounts') }}</flux:navlist.item>
+            @endrole
             <flux:navlist.item :href="route('security.edit')" wire:navigate>{{ __('Security') }}</flux:navlist.item>
             <flux:navlist.item :href="route('appearance.edit')" wire:navigate>{{ __('Appearance') }}</flux:navlist.item>
         </flux:navlist>
@@ -13,7 +22,7 @@
         <flux:heading>{{ $heading ?? '' }}</flux:heading>
         <flux:subheading>{{ $subheading ?? '' }}</flux:subheading>
 
-        <div class="mt-5 w-full max-w-lg">
+        <div @class(['mt-5 w-full', $contentClass])>
             {{ $slot }}
         </div>
     </div>

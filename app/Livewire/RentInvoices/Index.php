@@ -46,8 +46,8 @@ class Index extends Component
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->latest();
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         } elseif (auth()->user()->hasRole('tenant')) {
             // "My Rent": tenants only see invoices addressed to their own
             // tenant record(s); a user with no tenant record sees nothing.

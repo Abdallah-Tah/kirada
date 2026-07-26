@@ -2,9 +2,10 @@
 
 namespace App\Notifications\Channels;
 
+use App\Services\Meta\WhatsAppCloudApi;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * WhatsApp Cloud API channel. Notifications opt in by implementing
@@ -14,10 +15,16 @@ use Illuminate\Support\Facades\Log;
  */
 class WhatsAppChannel
 {
+    private WhatsAppCloudApi $client;
+
+    public function __construct(?WhatsAppCloudApi $client = null)
+    {
+        $this->client = $client ?? app(WhatsAppCloudApi::class);
+    }
+
     public static function isConfigured(): bool
     {
-        return filled(config('services.whatsapp.token'))
-            && filled(config('services.whatsapp.phone_number_id'));
+        return app(WhatsAppCloudApi::class)->isConfigured();
     }
 
     public function send(object $notifiable, Notification $notification): void
@@ -38,21 +45,14 @@ class WhatsAppChannel
             return;
         }
 
-        $phoneNumberId = config('services.whatsapp.phone_number_id');
+        try {
+            $this->client->sendText($payload['to'], $payload['message']);
+        } catch (Throwable $exception) {
+            report($exception);
 
-        $response = Http::withToken(config('services.whatsapp.token'))
-            ->post("https://graph.facebook.com/v19.0/{$phoneNumberId}/messages", [
-                'messaging_product' => 'whatsapp',
-                'to' => ltrim($payload['to'], '+'),
-                'type' => 'text',
-                'text' => ['body' => $payload['message']],
-            ]);
-
-        if ($response->failed()) {
-            Log::warning('WhatsApp message failed.', [
+            Log::warning('Meta WhatsApp message failed.', [
                 'to' => $payload['to'],
-                'status' => $response->status(),
-                'body' => $response->body(),
+                'exception' => $exception::class,
             ]);
         }
     }

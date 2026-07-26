@@ -81,7 +81,7 @@ class Directory extends Component
     #[Computed]
     public function connectionStates(): array
     {
-        return auth()->user()->maintenanceConnections()
+        return auth()->user()->landlordAccount()->maintenanceConnections()
             ->pluck('landlord_maintenance.status', 'users.id')
             ->all();
     }
@@ -115,7 +115,7 @@ class Directory extends Component
 
         try {
             app(MaintenanceProfileService::class)->requestConnection(
-                auth()->user(),
+                auth()->user()->landlordAccount(),
                 $provider,
                 $this->requestMessage ?: null,
             );

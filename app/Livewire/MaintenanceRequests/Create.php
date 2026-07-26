@@ -109,8 +109,8 @@ class Create extends Component
         $user = auth()->user();
         $query = Property::active()->select('id', 'name')->orderBy('name');
 
-        if ($user->hasRole('landlord')) {
-            $query->forLandlord($user->id);
+        if ($user->canAccessLandlordPortal()) {
+            $query->forLandlord($user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {
@@ -156,8 +156,8 @@ class Create extends Component
         $user = auth()->user();
         $query = Tenant::select('id', 'first_name', 'last_name')->orderBy('first_name');
 
-        if ($user->hasRole('landlord')) {
-            $query->forLandlord($user->id);
+        if ($user->canAccessLandlordPortal()) {
+            $query->forLandlord($user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {
@@ -212,9 +212,9 @@ class Create extends Component
         unset($validated['photos']);
 
         // Ensure landlord ownership
-        if (auth()->user()->hasRole('landlord')) {
+        if (auth()->user()->canAccessLandlordPortal()) {
             $property = Property::find($validated['property_id']);
-            abort_if($property->landlord_id !== auth()->id(), 403);
+            abort_unless(auth()->user()->belongsToLandlordAccount($property->landlord_id), 403);
         }
 
         if (auth()->user()->hasRole('tenant')) {

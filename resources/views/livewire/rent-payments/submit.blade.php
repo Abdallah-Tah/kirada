@@ -33,6 +33,45 @@
                 <p class="mt-2 font-mono text-base font-bold tracking-wide">{{ $paymentReference }}</p>
             </div>
 
+            @if ($this->payoutAccounts->isNotEmpty())
+                <div>
+                    <div class="mb-3">
+                        <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Where to pay') }}</h3>
+                        <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ __('Choose any active account provided by your landlord.') }}</p>
+                    </div>
+
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        @foreach ($this->payoutAccounts as $account)
+                            <div @class([
+                                'rounded-xl border p-4',
+                                'border-sky-300 bg-sky-50/70 dark:border-sky-700 dark:bg-sky-950/30' => $account->is_primary,
+                                'border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900' => ! $account->is_primary,
+                            ])>
+                                <div class="flex items-start justify-between gap-3">
+                                    <div>
+                                        <p class="font-semibold text-zinc-900 dark:text-white">{{ $account->label }}</p>
+                                        <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ __($account->method_label) }}</p>
+                                    </div>
+                                    @if ($account->is_primary)
+                                        <flux:badge color="sky" size="sm">{{ __('Primary') }}</flux:badge>
+                                    @endif
+                                </div>
+
+                                @if ($account->account_number)
+                                    <p class="mt-3 font-mono text-sm font-semibold text-zinc-800 dark:text-zinc-100">{{ $account->account_number }}</p>
+                                @endif
+                                @if ($account->account_name)
+                                    <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{{ $account->account_name }}</p>
+                                @endif
+                                @if ($account->instructions)
+                                    <p class="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{{ $account->instructions }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
                     <flux:label>{{ __('Amount Paid') }}</flux:label>

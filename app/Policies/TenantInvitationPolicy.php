@@ -9,7 +9,7 @@ class TenantInvitationPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('tenants.view');
     }
 
     public function view(User $user, TenantInvitation $invitation): bool
@@ -18,12 +18,12 @@ class TenantInvitationPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $invitation->landlord_id === $user->id;
+        return $user->can('tenants.view') && $user->belongsToLandlordAccount($invitation->landlord_id);
     }
 
     public function create(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('tenants.create');
     }
 
     public function update(User $user, TenantInvitation $invitation): bool
@@ -32,7 +32,7 @@ class TenantInvitationPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $invitation->landlord_id === $user->id;
+        return $user->can('tenants.edit') && $user->belongsToLandlordAccount($invitation->landlord_id);
     }
 
     public function delete(User $user, TenantInvitation $invitation): bool
@@ -41,6 +41,6 @@ class TenantInvitationPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $invitation->landlord_id === $user->id;
+        return $user->can('tenants.delete') && $user->belongsToLandlordAccount($invitation->landlord_id);
     }
 }

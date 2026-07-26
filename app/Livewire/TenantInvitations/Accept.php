@@ -88,7 +88,7 @@ class Accept extends Component
     public function render()
     {
         return view('livewire.tenant-invitations.accept')
-            ->layout('layouts.app')
+            ->layout('layouts.auth')
             ->title(__('Accept Invitation'));
     }
 }

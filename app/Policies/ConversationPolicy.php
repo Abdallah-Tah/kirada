@@ -10,7 +10,7 @@ class ConversationPolicy
     public function viewAny(User $user): bool
     {
         return $user->hasRole('admin')
-            || $user->hasRole('landlord')
+            || $user->can('messages.view')
             || $user->hasRole('tenant')
             || $user->hasRole('maintenance');
     }
@@ -21,8 +21,9 @@ class ConversationPolicy
             return true;
         }
 
-        if ($user->hasRole('landlord')) {
-            return $conversation->landlord_id === $user->id;
+        if ($user->canAccessLandlordPortal()) {
+            return $user->can('messages.view')
+                && $user->belongsToLandlordAccount($conversation->landlord_id);
         }
 
         if ($user->hasRole('tenant')) {
@@ -42,7 +43,7 @@ class ConversationPolicy
     public function create(User $user): bool
     {
         return $user->hasRole('admin')
-            || $user->hasRole('landlord')
+            || $user->can('messages.send')
             || $user->hasRole('tenant');
     }
 
@@ -58,7 +59,8 @@ class ConversationPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $conversation->landlord_id === $user->id;
+        return $user->can('messages.send')
+            && $user->belongsToLandlordAccount($conversation->landlord_id);
     }
 
     /**
@@ -70,6 +72,6 @@ class ConversationPolicy
             return false;
         }
 
-        return $this->view($user, $conversation);
+        return $user->can('messages.send') && $this->view($user, $conversation);
     }
 }

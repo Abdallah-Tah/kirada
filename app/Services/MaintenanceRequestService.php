@@ -27,8 +27,8 @@ class MaintenanceRequestService
         $data = $this->normalizeRequestEntities($data, $reporter);
 
         // If landlord is creating for a tenant
-        if ($reporter->hasRole('landlord') && ! isset($data['landlord_id'])) {
-            $data['landlord_id'] = $reporter->id;
+        if ($reporter->canAccessLandlordPortal() && ! isset($data['landlord_id'])) {
+            $data['landlord_id'] = $reporter->landlordAccountId();
         }
 
         $data['reported_by'] = $reporter->id;
@@ -341,7 +341,7 @@ class MaintenanceRequestService
             }
         }
 
-        if ($reporter->hasRole('landlord') && (int) $property->landlord_id !== (int) $reporter->id) {
+        if ($reporter->canAccessLandlordPortal() && ! $reporter->belongsToLandlordAccount($property->landlord_id)) {
             throw new \DomainException('You can only create maintenance requests for your own properties.');
         }
 

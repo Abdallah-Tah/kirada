@@ -46,8 +46,8 @@ class Index extends Component
     {
         $query = Property::select('id', 'name')->orderBy('name');
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->get();
@@ -68,8 +68,8 @@ class Index extends Component
             ->latest();
 
         // Landlord sees only units belonging to own properties
-        if (auth()->user()->hasRole('landlord')) {
-            $query->whereHas('property', fn ($q) => $q->forLandlord(auth()->id()));
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->whereHas('property', fn ($q) => $q->forLandlord(auth()->user()->landlordAccountId()));
         }
 
         return $query->paginate(10);

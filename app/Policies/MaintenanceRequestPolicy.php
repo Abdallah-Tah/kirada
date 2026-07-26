@@ -10,7 +10,7 @@ class MaintenanceRequestPolicy
     public function viewAny(User $user): bool
     {
         return $user->hasRole('admin')
-            || $user->hasRole('landlord')
+            || $user->can('maintenance.view')
             || $user->hasRole('tenant')
             || $user->hasRole('maintenance');
     }
@@ -21,8 +21,9 @@ class MaintenanceRequestPolicy
             return true;
         }
 
-        if ($user->hasRole('landlord')) {
-            return $request->landlord_id === $user->id;
+        if ($user->canAccessLandlordPortal()) {
+            return $user->can('maintenance.view')
+                && $user->belongsToLandlordAccount($request->landlord_id);
         }
 
         if ($user->hasRole('tenant')) {
@@ -40,7 +41,7 @@ class MaintenanceRequestPolicy
     public function create(User $user): bool
     {
         return $user->hasRole('admin')
-            || $user->hasRole('landlord')
+            || $user->can('maintenance.respond')
             || $user->hasRole('tenant');
     }
 
@@ -50,8 +51,9 @@ class MaintenanceRequestPolicy
             return true;
         }
 
-        if ($user->hasRole('landlord')) {
-            return $request->landlord_id === $user->id;
+        if ($user->canAccessLandlordPortal()) {
+            return $user->can('maintenance.respond')
+                && $user->belongsToLandlordAccount($request->landlord_id);
         }
 
         // Tenant can cancel an open request or confirm/reopen a resolved request.
@@ -75,7 +77,8 @@ class MaintenanceRequestPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $request->landlord_id === $user->id;
+        return $user->can('maintenance.respond')
+            && $user->belongsToLandlordAccount($request->landlord_id);
     }
 
     /**
@@ -83,6 +86,7 @@ class MaintenanceRequestPolicy
      */
     public function viewInternalComments(User $user, MaintenanceRequest $request): bool
     {
-        return $user->hasRole('admin') || $request->landlord_id === $user->id;
+        return $user->hasRole('admin')
+            || ($user->can('maintenance.view') && $user->belongsToLandlordAccount($request->landlord_id));
     }
 }

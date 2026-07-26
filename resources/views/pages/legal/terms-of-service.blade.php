@@ -2,7 +2,7 @@
     <article class="prose prose-slate max-w-none">
         <header class="mb-8 not-prose">
             <h1 class="text-3xl font-bold text-slate-900">{{ __('Terms of Service') }}</h1>
-            <p class="mt-2 text-sm text-slate-500">{{ __('Last updated') }}: June 30, 2026</p>
+            <p class="mt-2 text-sm text-slate-500">{{ __('Last updated') }}: July 26, 2026</p>
         </header>
 
         <div class="space-y-8 text-slate-700 leading-relaxed">
@@ -24,6 +24,8 @@
                 <li>{{ __('Communication between users') }}</li>
                 <li>{{ __('Document organization and storage') }}</li>
                 <li>{{ __('Maintenance request tracking') }}</li>
+                <li>{{ __('Maintenance provider profiles, work invitations, quotes, and completed-job reviews') }}</li>
+                <li>{{ __('Role-based landlord team collaboration') }}</li>
                 <li>{{ __('Lease and contract management') }}</li>
                 <li>{{ __('Invoicing and payment status tracking') }}</li>
                 <li>{{ __('Reporting and dashboards') }}</li>
@@ -120,8 +122,11 @@
 
         {{-- Section 10 --}}
         <section>
-            <h2 class="text-xl font-semibold text-slate-900">{{ __('10. AI Assistant') }}</h2>
-            <p class="mt-3">{{ __('The Service includes an AI assistant. AI-generated responses are informational only and may contain errors. Do not rely on AI output for legal, financial, or critical decisions. We are not liable for actions taken based on AI-generated content.') }}</p>
+            <h2 class="text-xl font-semibold text-slate-900">{{ __('10. Maintenance Marketplace and Reviews') }}</h2>
+            <p class="mt-3">{{ __('Provider profiles, rates, availability, qualifications, and contact information are supplied by users. A verification badge means only that Kirada reviewed selected profile details; it is not a guarantee, license check, insurance confirmation, endorsement, or promise of work quality.') }}</p>
+            <p class="mt-3">{{ __('Providers are responsible for maintaining any licenses, permits, insurance, tax registrations, and professional qualifications required where they work. Landlords must perform their own due diligence before hiring or granting property access.') }}</p>
+            <p class="mt-3">{{ __('A verified job review can be submitted only by the landlord account connected to a completed Kirada work order. Reviews remain personal opinions. Users must not post false, abusive, discriminatory, retaliatory, incentivized, or unlawful content. We may remove reviews or profiles that violate these Terms or applicable law.') }}</p>
+            <p class="mt-3">{{ __('Kirada is not a party to the maintenance agreement and does not set prices, employ providers, supervise work, resolve payment disputes, or guarantee safety, timing, workmanship, or results.') }}</p>
         </section>
 
         {{-- Section 11 --}}
@@ -150,7 +155,6 @@
                 <li>{{ __('Indirect damages') }}</li>
                 <li>{{ __('Consequential damages') }}</li>
                 <li>{{ __('Disputes between users') }}</li>
-                <li>{{ __('Any action based on AI assistant output') }}</li>
             </ul>
             <p class="mt-3 font-medium">{{ __('Maximum liability is limited to the amount paid for the subscription during the previous 12 months. If the user paid nothing, liability is limited to $100 USD or local equivalent.') }}</p>
         </section>

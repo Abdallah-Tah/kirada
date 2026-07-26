@@ -60,7 +60,7 @@ class Index extends Component
             ->whereNotNull('user_id')
             ->orderBy('first_name');
 
-        if ($user->hasRole('landlord')) {
+        if ($user->canAccessLandlordPortal()) {
             $query->forLandlord($user->id);
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
@@ -97,7 +97,7 @@ class Index extends Component
         $tenant = Tenant::findOrFail($this->selectedTenantId);
 
         // Determine landlord
-        $landlordId = $user->hasRole('landlord') ? $user->id : $tenant->landlord_id;
+        $landlordId = $user->canAccessLandlordPortal() ? $user->landlordAccountId() : $tenant->landlord_id;
 
         // Check for existing open conversation with same tenant+landlord
         $existing = Conversation::where('tenant_id', $tenant->id)

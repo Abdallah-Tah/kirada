@@ -2,7 +2,7 @@
     <article class="prose prose-slate max-w-none">
         <header class="mb-8 not-prose">
             <h1 class="text-3xl font-bold text-slate-900">{{ __('Privacy Policy') }}</h1>
-            <p class="mt-2 text-sm text-slate-500">{{ __('Last updated') }}: June 30, 2026</p>
+            <p class="mt-2 text-sm text-slate-500">{{ __('Last updated') }}: July 26, 2026</p>
         </header>
 
         <div class="space-y-8 text-slate-700 leading-relaxed">
@@ -22,7 +22,7 @@
                 <li>{{ __('Full name') }}</li>
                 <li>{{ __('Email address') }}</li>
                 <li>{{ __('Phone number (if provided)') }}</li>
-                <li>{{ __('Role (admin, landlord, tenant, maintenance)') }}</li>
+                <li>{{ __('Role and landlord team membership, including inviter, assigned permissions, status, and acceptance dates') }}</li>
                 <li>{{ __('Password (hashed — never stored in plain text)') }}</li>
             </ul>
 
@@ -39,7 +39,8 @@
                 <li>{{ __('Uploaded documents (contracts, lease agreements, photos)') }}</li>
                 <li>{{ __('Maintenance request descriptions and attached images') }}</li>
                 <li>{{ __('In-app messages between users') }}</li>
-                <li>{{ __('AI assistant conversation history') }}</li>
+                <li>{{ __('Maintenance provider profile details, service areas, rates, availability, languages, and website') }}</li>
+                <li>{{ __('Completed-job ratings, review text, and the landlord account that submitted the review') }}</li>
             </ul>
 
             <h3 class="mt-4 font-semibold text-slate-800">{{ __('2.4 Technical Data') }}</h3>
@@ -60,7 +61,7 @@
                 <li>{{ __('Authenticate users and manage sessions') }}</li>
                 <li>{{ __('Display relevant data based on your role') }}</li>
                 <li>{{ __('Send notifications about invoices, maintenance requests, and messages') }}</li>
-                <li>{{ __('Provide the AI assistant feature') }}</li>
+                <li>{{ __('Operate landlord teams, provider discovery, completed-job reviews, and maintenance work history') }}</li>
                 <li>{{ __('Improve the Service and fix issues') }}</li>
                 <li>{{ __('Prevent fraud and unauthorized access') }}</li>
             </ul>
@@ -83,6 +84,8 @@
                 <li>{{ __('Landlords see data for their own properties and tenants') }}</li>
                 <li>{{ __('Tenants see their own lease, invoices, and maintenance requests') }}</li>
                 <li>{{ __('Maintenance workers see assigned requests only') }}</li>
+                <li>{{ __('Landlord team members see portfolio data permitted by their assigned role') }}</li>
+                <li>{{ __('Published provider profiles and completed-job reviews are visible in the signed-in provider directory') }}</li>
             </ul>
 
             <h3 class="mt-4 font-semibold text-slate-800">{{ __('4.2 With Third Parties') }}</h3>
@@ -134,8 +137,9 @@
 
         {{-- Section 8 --}}
         <section>
-            <h2 class="text-xl font-semibold text-slate-900">{{ __('8. AI Assistant Data') }}</h2>
-            <p class="mt-3">{{ __('AI conversations are stored to improve response quality. This data is not shared with third parties, not used for training external models, accessible only to your account, and deletable upon account deletion.') }}</p>
+            <h2 class="text-xl font-semibold text-slate-900">{{ __('8. Marketplace Profiles and Reviews') }}</h2>
+            <p class="mt-3">{{ __('Maintenance providers choose whether to publish a directory profile. Published business details, trades, service areas, rates, availability, languages, website, aggregate rating, review count, and completed-job count are shown to authorized landlord users. Direct contact details remain limited to signed-in landlord users.') }}</p>
+            <p class="mt-3">{{ __('Reviews identify the reviewing landlord account and remain linked to the completed maintenance record to prevent duplicate or unverified reviews. We may retain review and work-order records when necessary for fraud prevention, dispute handling, legal compliance, or platform integrity.') }}</p>
         </section>
 
         {{-- Section 9 --}}

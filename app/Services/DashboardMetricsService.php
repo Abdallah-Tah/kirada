@@ -199,7 +199,7 @@ class DashboardMetricsService
     protected function getUnreadMessageCount(User $user): int
     {
         $conversationIds = Conversation::query()
-            ->when($user->hasRole('landlord'), fn ($q) => $q->where('landlord_id', $user->id))
+            ->when($user->canAccessLandlordPortal(), fn ($q) => $q->where('landlord_id', $user->landlordAccountId()))
             ->when($user->hasRole('tenant'), function ($q) use ($user) {
                 $tenant = Tenant::where('user_id', $user->id)->first();
                 $q->where('tenant_id', $tenant?->id ?? 0);

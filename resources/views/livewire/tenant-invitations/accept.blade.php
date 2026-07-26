@@ -1,6 +1,6 @@
 <div>
     @if ($invitation && $invitation->isPending())
-        <div class="mx-auto max-w-md mt-12">
+        <div class="mx-auto w-full max-w-md">
             <flux:heading size="xl">{{ __('Accept Your Invitation') }}</flux:heading>
             <flux:subheading>
                 {{ __('You\'ve been invited to join Kirada as a tenant.') }}
@@ -65,7 +65,7 @@
             </form>
         </div>
     @elseif($invitation && $invitation->isAccepted())
-        <div class="mx-auto max-w-md mt-12 text-center">
+        <div class="mx-auto w-full max-w-md text-center">
             <flux:heading size="xl">{{ __('Invitation Already Accepted') }}</flux:heading>
             <flux:subheading class="mt-2">
                 {{ __('This invitation has already been accepted.') }}
@@ -77,7 +77,7 @@
             </div>
         </div>
     @elseif($invitation && ($invitation->isCancelled() || $invitation->isExpired()))
-        <div class="mx-auto max-w-md mt-12 text-center">
+        <div class="mx-auto w-full max-w-md text-center">
             <flux:heading size="xl">{{ __('Invitation No Longer Valid') }}</flux:heading>
             <flux:subheading class="mt-2">
                 @if($invitation->isCancelled())
@@ -88,7 +88,7 @@
             </flux:subheading>
         </div>
     @else
-        <div class="mx-auto max-w-md mt-12 text-center">
+        <div class="mx-auto w-full max-w-md text-center">
             <flux:heading size="xl">{{ __('Invitation Not Found') }}</flux:heading>
             <flux:subheading class="mt-2">
                 {{ __('This invitation link is invalid or has been removed.') }}

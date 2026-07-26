@@ -2,12 +2,15 @@
 
 namespace App\Livewire\RentPayments;
 
+use App\Models\LandlordPayoutAccount;
 use App\Models\RentInvoice;
 use App\Models\Tenant;
 use App\Notifications\TenantPaymentSubmitted;
 use App\Services\RentInvoiceService;
 use App\Services\RentPaymentService;
 use Flux\Flux;
+use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -90,6 +93,21 @@ class Submit extends Component
         Flux::toast(__('Payment reported. Your landlord will confirm it shortly.'), 'success');
 
         $this->redirect(route('rent-invoices.index'), navigate: true);
+    }
+
+    /**
+     * @return Collection<int, LandlordPayoutAccount>
+     */
+    #[Computed]
+    public function payoutAccounts(): Collection
+    {
+        return LandlordPayoutAccount::query()
+            ->where('landlord_id', $this->rentInvoice->landlord_id)
+            ->active()
+            ->orderByDesc('is_primary')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
     }
 
     public function render()

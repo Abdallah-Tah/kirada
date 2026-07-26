@@ -47,7 +47,7 @@ class Create extends Component
         $this->country_id = auth()->user()?->country_id
             ?? Country::where('code', 'DJI')->value('id')
             ?? Country::orderBy('name')->value('id');
-        $this->landlord_id = auth()->user()?->hasRole('landlord') ? auth()->id() : null;
+        $this->landlord_id = auth()->user()?->landlordAccountId();
 
         $this->syncCountryFields();
     }
@@ -83,7 +83,7 @@ class Create extends Component
 
         $landlordId = auth()->user()->hasRole('admin')
             ? (int) $validated['landlord_id']
-            : auth()->id();
+            : auth()->user()->landlordAccountId();
 
         abort_unless(User::whereKey($landlordId)->whereHas('roles', fn ($query) => $query->where('name', 'landlord'))->exists(), 422);
 

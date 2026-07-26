@@ -60,8 +60,8 @@ class Index extends Component
             ->latest();
 
         // Role-based scoping
-        if ($user->hasRole('landlord')) {
-            $query->forLandlord($user->id);
+        if ($user->canAccessLandlordPortal()) {
+            $query->forLandlord($user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant) {

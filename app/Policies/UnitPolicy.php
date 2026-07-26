@@ -13,17 +13,17 @@ class UnitPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $unit->property->landlord_id === $user->id;
+        return $user->can('units.view') && $user->belongsToLandlordAccount($unit->property->landlord_id);
     }
 
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('units.view');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasRole('admin') || $user->hasRole('landlord');
+        return $user->hasRole('admin') || $user->can('units.create');
     }
 
     public function update(User $user, Unit $unit): bool
@@ -32,7 +32,7 @@ class UnitPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $unit->property->landlord_id === $user->id;
+        return $user->can('units.edit') && $user->belongsToLandlordAccount($unit->property->landlord_id);
     }
 
     public function delete(User $user, Unit $unit): bool
@@ -41,6 +41,6 @@ class UnitPolicy
             return true;
         }
 
-        return $user->hasRole('landlord') && $unit->property->landlord_id === $user->id;
+        return $user->can('units.delete') && $user->belongsToLandlordAccount($unit->property->landlord_id);
     }
 }

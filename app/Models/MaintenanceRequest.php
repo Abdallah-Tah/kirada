@@ -96,6 +96,11 @@ class MaintenanceRequest extends Model
         return $this->hasMany(MaintenanceQuote::class);
     }
 
+    public function review()
+    {
+        return $this->hasOne(MaintenanceReview::class);
+    }
+
     public function publicAttachments(): HasMany
     {
         return $this->hasMany(MaintenanceAttachment::class)->where('is_internal', false);

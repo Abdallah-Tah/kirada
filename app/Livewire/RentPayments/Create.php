@@ -76,8 +76,8 @@ class Create extends Component
             ->whereIn('status', ['unpaid', 'partially_paid', 'overdue'])
             ->latest();
 
-        if (auth()->user()->hasRole('landlord')) {
-            $query->forLandlord(auth()->id());
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
         }
 
         return $query->get();
@@ -124,16 +124,16 @@ class Create extends Component
         $validated = $this->validate();
 
         // Ensure landlord ownership
-        if (auth()->user()->hasRole('landlord')) {
+        if (auth()->user()->canAccessLandlordPortal()) {
             $invoice = RentInvoice::find($validated['rent_invoice_id']);
-            abort_if($invoice->landlord_id !== auth()->id(), 403);
+            abort_unless(auth()->user()->belongsToLandlordAccount($invoice->landlord_id), 403);
         }
 
         $data = collect($validated)->except('proof')->toArray();
 
         $data['landlord_id'] = auth()->user()->hasRole('admin')
             ? RentInvoice::find($validated['rent_invoice_id'])->landlord_id
-            : auth()->id();
+            : auth()->user()->landlordAccountId();
 
         // Handle confirmed_by if status is confirmed
         if ($data['status'] === 'confirmed') {
