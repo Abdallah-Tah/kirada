@@ -35,11 +35,11 @@ class DocumentService
 
         return Document::create([
             ...$data,
-            'uploaded_by'       => $uploader->id,
-            'file_path'         => $path,
+            'uploaded_by' => $uploader->id,
+            'file_path' => $path,
             'original_filename' => $file->getClientOriginalName(),
-            'mime_type'         => $file->getMimeType(),
-            'size'              => $file->getSize(),
+            'mime_type' => $file->getMimeType(),
+            'size' => $file->getSize(),
         ]);
     }
 
@@ -81,7 +81,7 @@ class DocumentService
      */
     public function downloadDocument(Document $document)
     {
-        if (!Storage::disk('private')->exists($document->file_path)) {
+        if (! Storage::disk('private')->exists($document->file_path)) {
             return null;
         }
 

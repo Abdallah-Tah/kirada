@@ -64,10 +64,10 @@ class Show extends Component
         $invoices = $this->invoices;
         $payments = $this->payments;
 
-        $totalInvoiced  = $invoices->sum('amount');
-        $totalPaid      = $payments->where('status', 'confirmed')->sum('amount');
-        $outstanding    = max(0, $totalInvoiced - $totalPaid);
-        $pendingCount   = $invoices->whereIn('status', ['unpaid', 'partially_paid', 'overdue', 'sent'])->count();
+        $totalInvoiced = $invoices->sum('amount');
+        $totalPaid = $payments->where('status', 'confirmed')->sum('amount');
+        $outstanding = max(0, $totalInvoiced - $totalPaid);
+        $pendingCount = $invoices->whereIn('status', ['unpaid', 'partially_paid', 'overdue', 'sent'])->count();
 
         return compact('totalInvoiced', 'totalPaid', 'outstanding', 'pendingCount');
     }
@@ -78,8 +78,8 @@ class Show extends Component
         $events = [];
 
         $events[] = [
-            'date'  => $this->lease->created_at,
-            'icon'  => 'document-text',
+            'date' => $this->lease->created_at,
+            'icon' => 'document-text',
             'color' => 'zinc',
             'label' => __('Lease created'),
         ];
@@ -88,16 +88,16 @@ class Show extends Component
 
         if ($contract) {
             $events[] = [
-                'date'  => $contract->created_at,
-                'icon'  => 'pencil-square',
+                'date' => $contract->created_at,
+                'icon' => 'pencil-square',
                 'color' => 'blue',
                 'label' => __('Contract generated — :title', ['title' => $contract->title]),
             ];
 
             if ($contract->sent_at) {
                 $events[] = [
-                    'date'  => $contract->sent_at,
-                    'icon'  => 'paper-airplane',
+                    'date' => $contract->sent_at,
+                    'icon' => 'paper-airplane',
                     'color' => 'amber',
                     'label' => __('Contract sent for signature'),
                 ];
@@ -106,8 +106,8 @@ class Show extends Component
             foreach ($contract->signatures as $sig) {
                 if ($sig->isSigned()) {
                     $events[] = [
-                        'date'  => $sig->signed_at,
-                        'icon'  => 'check-badge',
+                        'date' => $sig->signed_at,
+                        'icon' => 'check-badge',
                         'color' => 'green',
                         'label' => __(':name signed (:role)', [
                             'name' => $sig->name,
@@ -119,8 +119,8 @@ class Show extends Component
 
             if ($contract->isCompleted() && $contract->completed_at) {
                 $events[] = [
-                    'date'  => $contract->completed_at,
-                    'icon'  => 'check-circle',
+                    'date' => $contract->completed_at,
+                    'icon' => 'check-circle',
                     'color' => 'green',
                     'label' => __('Contract completed — all parties signed'),
                 ];
@@ -128,8 +128,8 @@ class Show extends Component
 
             if ($contract->isCancelled()) {
                 $events[] = [
-                    'date'  => $contract->updated_at,
-                    'icon'  => 'x-circle',
+                    'date' => $contract->updated_at,
+                    'icon' => 'x-circle',
                     'color' => 'red',
                     'label' => __('Contract cancelled'),
                 ];

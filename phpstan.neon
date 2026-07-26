@@ -1,6 +1,9 @@
 includes:
     - vendor/larastan/larastan/extension.neon
     - vendor/nesbot/carbon/extension.neon
+    # Pre-existing errors, frozen so the gate can be blocking. Only ever
+    # shrink this file — never regenerate it to absorb new errors.
+    - phpstan-baseline.neon
 
 parameters:
     paths:

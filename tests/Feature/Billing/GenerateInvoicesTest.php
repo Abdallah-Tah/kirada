@@ -19,8 +19,11 @@ class GenerateInvoicesTest extends TestCase
     use RefreshDatabase;
 
     private User $landlord;
+
     private Property $property;
+
     private Unit $unit;
+
     private Tenant $tenant;
 
     protected function setUp(): void
@@ -33,20 +36,20 @@ class GenerateInvoicesTest extends TestCase
         $this->landlord->assignRole('landlord');
 
         $this->property = Property::create([
-            'landlord_id'    => $this->landlord->id,
-            'name'           => 'Test Property',
-            'type'           => 'apartment',
+            'landlord_id' => $this->landlord->id,
+            'name' => 'Test Property',
+            'type' => 'apartment',
             'address_line_1' => '1 Rue de la Paix',
-            'city'           => 'Djibouti',
-            'is_active'      => true,
+            'city' => 'Djibouti',
+            'is_active' => true,
         ]);
 
         $this->unit = Unit::create([
             'property_id' => $this->property->id,
             'unit_number' => 'A1',
-            'type'        => 'apartment',
-            'monthly_rent'=> 50000,
-            'status'      => 'occupied',
+            'type' => 'apartment',
+            'monthly_rent' => 50000,
+            'status' => 'occupied',
         ]);
 
         $tenantUser = User::factory()->create();
@@ -54,31 +57,31 @@ class GenerateInvoicesTest extends TestCase
 
         $this->tenant = Tenant::create([
             'landlord_id' => $this->landlord->id,
-            'user_id'     => $tenantUser->id,
-            'first_name'  => 'Jane',
-            'last_name'   => 'Doe',
-            'phone'       => '+25377000001',
-            'email'       => $tenantUser->email,
-            'status'      => 'active',
+            'user_id' => $tenantUser->id,
+            'first_name' => 'Jane',
+            'last_name' => 'Doe',
+            'phone' => '+25377000001',
+            'email' => $tenantUser->email,
+            'status' => 'active',
         ]);
     }
 
     private function makeLease(array $overrides = []): Lease
     {
         return Lease::create(array_merge([
-            'landlord_id'                        => $this->landlord->id,
-            'property_id'                        => $this->property->id,
-            'unit_id'                            => $this->unit->id,
-            'tenant_id'                          => $this->tenant->id,
-            'start_date'                         => now()->subMonth()->toDateString(),
-            'monthly_rent'                       => 50000,
-            'payment_due_day'                    => 5,
-            'status'                             => 'active',
-            'auto_generate_invoices'             => true,
+            'landlord_id' => $this->landlord->id,
+            'property_id' => $this->property->id,
+            'unit_id' => $this->unit->id,
+            'tenant_id' => $this->tenant->id,
+            'start_date' => now()->subMonth()->toDateString(),
+            'monthly_rent' => 50000,
+            'payment_due_day' => 5,
+            'status' => 'active',
+            'auto_generate_invoices' => true,
             'invoice_generation_days_before_due' => 7,
-            'grace_period_days'                  => 5,
-            'late_fee_type'                      => 'none',
-            'late_fee_frequency'                 => 'once',
+            'grace_period_days' => 5,
+            'late_fee_type' => 'none',
+            'late_fee_frequency' => 'once',
         ], $overrides));
     }
 
@@ -87,7 +90,7 @@ class GenerateInvoicesTest extends TestCase
         // payment_due_day=5, generate 7 days before → window opens on 28th of previous month
         Carbon::setTestNow('2026-07-01'); // 4 days before July 5
 
-        $lease   = $this->makeLease(['payment_due_day' => 5]);
+        $lease = $this->makeLease(['payment_due_day' => 5]);
         $service = app(RentInvoiceService::class);
 
         $invoice = $service->generateForLease($lease);
@@ -106,7 +109,7 @@ class GenerateInvoicesTest extends TestCase
         // 15 days before July 5 → outside 7-day window
         Carbon::setTestNow('2026-06-20');
 
-        $lease   = $this->makeLease(['payment_due_day' => 5]);
+        $lease = $this->makeLease(['payment_due_day' => 5]);
         $service = app(RentInvoiceService::class);
 
         $invoice = $service->generateForLease($lease);
@@ -121,10 +124,10 @@ class GenerateInvoicesTest extends TestCase
     {
         Carbon::setTestNow('2026-07-01');
 
-        $lease   = $this->makeLease(['payment_due_day' => 5]);
+        $lease = $this->makeLease(['payment_due_day' => 5]);
         $service = app(RentInvoiceService::class);
 
-        $first  = $service->generateForLease($lease);
+        $first = $service->generateForLease($lease);
         $second = $service->generateForLease($lease);
 
         $this->assertNotNull($first);
@@ -138,7 +141,7 @@ class GenerateInvoicesTest extends TestCase
     {
         Carbon::setTestNow('2026-07-01');
 
-        $lease   = $this->makeLease(['status' => 'ended', 'payment_due_day' => 5]);
+        $lease = $this->makeLease(['status' => 'ended', 'payment_due_day' => 5]);
         $service = app(RentInvoiceService::class);
 
         $invoice = $service->generateForLease($lease);
@@ -153,7 +156,7 @@ class GenerateInvoicesTest extends TestCase
     {
         Carbon::setTestNow('2026-07-01');
 
-        $lease   = $this->makeLease(['payment_due_day' => 5, 'auto_generate_invoices' => false]);
+        $lease = $this->makeLease(['payment_due_day' => 5, 'auto_generate_invoices' => false]);
         $service = app(RentInvoiceService::class);
 
         $invoice = $service->generateForLease($lease);

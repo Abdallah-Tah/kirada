@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Lease;
 use App\Models\MaintenanceAttachment;
 use App\Models\MaintenanceComment;
 use App\Models\MaintenanceRequest;
-use App\Models\Lease;
 use App\Models\Property;
 use App\Models\Tenant;
 use App\Models\Unit;
@@ -250,8 +250,15 @@ class MaintenanceRequestService
         $query = User::role('maintenance')->select('id', 'name')->orderBy('name');
 
         if ($landlordId) {
-            $query->whereHas('approvedLandlords', function ($query) use ($landlordId): void {
-                $query->where('users.id', $landlordId)
+            // Queried against the pivot directly rather than whereHas(): users
+            // relates to itself here, so Laravel aliases the related table and a
+            // `users.id` constraint inside the closure would bind to the
+            // maintenance worker instead of the landlord.
+            $query->whereExists(function ($query) use ($landlordId): void {
+                $query->selectRaw('1')
+                    ->from('landlord_maintenance')
+                    ->whereColumn('landlord_maintenance.maintenance_user_id', 'users.id')
+                    ->where('landlord_maintenance.landlord_id', $landlordId)
                     ->whereNotNull('landlord_maintenance.approved_at');
             });
         }

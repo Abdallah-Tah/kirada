@@ -187,6 +187,12 @@ class DashboardMetricsService
             'in_progress' => $inProgress,
             'resolved_this_month' => $resolvedThisMonth,
             'recent_assigned' => $recentAssigned,
+            // Directory standing: without a published profile a provider gets no
+            // work at all, so the dashboard leads with that rather than burying it.
+            'profile' => $user->maintenanceProfile,
+            'pending_invitations' => $user->landlordConnections()
+                ->wherePivot('status', 'pending')->count(),
+            'active_landlords' => $user->approvedLandlords()->count(),
         ];
     }
 

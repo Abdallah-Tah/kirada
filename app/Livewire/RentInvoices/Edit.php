@@ -5,20 +5,30 @@ namespace App\Livewire\RentInvoices;
 use App\Models\Lease;
 use App\Models\RentInvoice;
 use App\Services\RentInvoiceService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Edit extends Component
 {
     public RentInvoice $invoice;
+
     public ?int $lease_id = null;
+
     public ?int $property_id = null;
+
     public ?int $unit_id = null;
+
     public ?int $tenant_id = null;
+
     public string $invoice_month = '';
+
     public string $due_date = '';
+
     public string $amount = '';
+
     public string $status = 'draft';
+
     public ?string $notes = null;
 
     public function mount(RentInvoice $invoice): void
@@ -39,15 +49,15 @@ class Edit extends Component
     protected function rules(): array
     {
         return [
-            'lease_id'      => 'required|exists:leases,id',
-            'property_id'   => 'required|exists:properties,id',
-            'unit_id'       => 'required|exists:units,id',
-            'tenant_id'     => 'required|exists:tenants,id',
+            'lease_id' => 'required|exists:leases,id',
+            'property_id' => 'required|exists:properties,id',
+            'unit_id' => 'required|exists:units,id',
+            'tenant_id' => 'required|exists:tenants,id',
             'invoice_month' => 'required|date',
-            'due_date'      => 'required|date',
-            'amount'        => 'required|numeric|min:0|max:99999999',
-            'status'        => 'required|in:draft,unpaid,partially_paid,paid,overdue,cancelled',
-            'notes'         => 'nullable|string|max:2000',
+            'due_date' => 'required|date',
+            'amount' => 'required|numeric|min:0|max:99999999',
+            'status' => 'required|in:draft,unpaid,partially_paid,paid,overdue,cancelled',
+            'notes' => 'nullable|string|max:2000',
         ];
     }
 
@@ -79,7 +89,7 @@ class Edit extends Component
 
         app(RentInvoiceService::class)->updateInvoice($this->invoice, $validated);
 
-        \Flux\Flux::toast('Invoice updated successfully.', 'success');
+        Flux::toast('Invoice updated successfully.', 'success');
 
         $this->redirect(route('rent-invoices.index'), navigate: true);
     }

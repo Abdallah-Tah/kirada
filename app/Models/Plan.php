@@ -25,10 +25,10 @@ class Plan extends Model
     ];
 
     protected $casts = [
-        'monthly_price'      => 'float',
-        'max_active_units'   => 'integer',
-        'max_active_leases'  => 'integer',
-        'is_active'          => 'boolean',
+        'monthly_price' => 'float',
+        'max_active_units' => 'integer',
+        'max_active_leases' => 'integer',
+        'is_active' => 'boolean',
     ];
 
     public function currency(): BelongsTo
@@ -49,8 +49,8 @@ class Plan extends Model
     public function getFormattedPriceAttribute(): string
     {
         $currency = $this->currency;
-        if (!$currency) {
-            return number_format($this->monthly_price, 0) . ' DJF';
+        if (! $currency) {
+            return number_format($this->monthly_price, 0).' DJF';
         }
 
         return $currency->format($this->monthly_price);

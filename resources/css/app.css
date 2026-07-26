@@ -114,35 +114,94 @@ select:focus[data-flux-control] {
         .kirada-app-content { flex: 1 1 0%; }
     }
 
-    /* ── App footer ── */
+    /* ── App footer ──
+       Brand block beside stacked link columns, with a separated bottom bar.
+       Single column on phones, side by side from sm up. Logical properties
+       throughout so the Arabic (RTL) locale mirrors correctly. */
     .kirada-footer {
-        @apply w-full border-t border-slate-200/60 bg-white/40 backdrop-blur-sm;
+        @apply w-full border-t border-slate-200/70 bg-slate-50/70 backdrop-blur-sm;
         margin-top: auto;
-        padding-bottom: env(safe-area-inset-bottom, 0px);
     }
     .kirada-footer-inner {
-        @apply mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-6 sm:px-6 lg:px-8;
+        @apply mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 lg:flex-row lg:items-start lg:justify-between lg:gap-12 lg:px-8;
     }
+
     .kirada-footer-brand {
-        @apply flex items-center justify-center;
+        @apply flex flex-col items-start gap-3 lg:max-w-xs;
     }
-    .kirada-footer-brand img {
-        height: 24px;
+    .kirada-footer-logo {
+        height: 32px;
         width: auto;
-        opacity: 0.5;
     }
-    .kirada-footer-links {
-        @apply flex items-center gap-2 text-sm text-slate-500;
+    .kirada-footer-tagline {
+        @apply text-sm leading-relaxed text-slate-500;
     }
-    .kirada-footer-links a {
-        @apply transition-colors hover:text-kirada-ocean;
+
+    .kirada-footer-columns {
+        @apply grid flex-1 grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3 lg:max-w-2xl;
+    }
+    .kirada-footer-column {
+        @apply flex flex-col gap-3;
+    }
+    .kirada-footer-heading {
+        @apply text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-slate-400;
+    }
+    .kirada-footer-list {
+        @apply flex flex-col gap-2.5;
+    }
+    .kirada-footer-link {
+        @apply text-sm text-slate-600 transition-colors hover:text-kirada-ocean;
         text-decoration: none;
     }
-    .kirada-footer-divider {
-        @apply text-slate-300;
+    .kirada-footer-link.is-current {
+        @apply font-semibold text-kirada-ocean;
+    }
+    .kirada-footer-link:focus-visible {
+        @apply rounded-sm outline-2 outline-offset-2 outline-kirada-ocean;
+    }
+
+    .kirada-footer-bar {
+        @apply border-t border-slate-200/70;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .kirada-footer-bar-inner {
+        @apply mx-auto flex max-w-7xl flex-col gap-1.5 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8;
     }
     .kirada-footer-copy {
-        @apply text-center text-xs text-slate-400;
+        @apply text-xs text-slate-500;
+    }
+    .kirada-footer-meta {
+        @apply text-xs text-slate-400;
+    }
+
+    /* Dark mode */
+    .dark .kirada-footer {
+        @apply border-slate-700/70 bg-slate-900/60;
+    }
+    .dark .kirada-footer-tagline {
+        @apply text-slate-400;
+    }
+    .dark .kirada-footer-heading {
+        @apply text-slate-500;
+    }
+    .dark .kirada-footer-link {
+        @apply text-slate-300 hover:text-sky-400;
+    }
+    .dark .kirada-footer-link.is-current {
+        @apply text-sky-400;
+    }
+    .dark .kirada-footer-bar {
+        @apply border-slate-700/70;
+    }
+    .dark .kirada-footer-copy {
+        @apply text-slate-400;
+    }
+    .dark .kirada-footer-meta {
+        @apply text-slate-500;
+    }
+    .dark .kirada-footer-logo {
+        filter: brightness(0) invert(1);
+        opacity: 0.85;
     }
 
 
@@ -307,15 +366,174 @@ select:focus[data-flux-control] {
         color: #ffffff !important;
     }
 
-    /* ── Mobile header ── */
-    .kirada-mobile-header {
+    /* ── App header (all breakpoints) ──
+       Matches the sidebar's dark slate so the shell reads as one surface. */
+    .kirada-app-header {
+        min-height: 64px;
         background: #0F172A;
         border-bottom: 1px solid rgba(14, 165, 233, 0.18);
         padding: 0.5rem 1rem;
+        gap: 0.75rem;
     }
-    .kirada-mobile-header button {
-        color: #ffffff !important;
+    .kirada-app-header button {
         cursor: pointer !important;
+    }
+
+    /* Search */
+    .kirada-header-search {
+        display: flex;
+        flex: 1 1 0%;
+        max-width: 26rem;
+    }
+    .kirada-header-search-field {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 2.25rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        background: rgba(255, 255, 255, 0.06);
+        transition: border-color 200ms, background-color 200ms, box-shadow 200ms;
+    }
+    .kirada-header-search-field:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    .kirada-header-search-field:focus-within {
+        border-color: rgba(14, 165, 233, 0.7);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+    }
+    .kirada-header-search-icon {
+        position: absolute;
+        inset-inline-start: 0.75rem;
+        width: 1.125rem;
+        height: 1.125rem;
+        color: rgba(148, 163, 184, 0.9);
+        pointer-events: none;
+    }
+    .kirada-header-search-field input {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: transparent;
+        padding: 0 4rem 0 2.5rem;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: #ffffff;
+        outline: none;
+        box-shadow: none;
+    }
+    .kirada-header-search-field input::placeholder {
+        font-weight: 400;
+        color: rgba(148, 163, 184, 0.8);
+    }
+    .kirada-header-search-kbd {
+        position: absolute;
+        inset-inline-end: 0.5rem;
+        display: none;
+        align-items: center;
+        height: 1.25rem;
+        padding: 0 0.375rem;
+        border-radius: 0.375rem;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(255, 255, 255, 0.06);
+        font-family: inherit;
+        font-size: 0.625rem;
+        font-weight: 500;
+        color: rgba(148, 163, 184, 0.9);
+        pointer-events: none;
+    }
+    @media (min-width: 640px) {
+        .kirada-header-search-kbd { display: inline-flex; }
+    }
+
+    /* Action buttons */
+    .kirada-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .kirada-header-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        height: 2.25rem;
+        min-width: 2.25rem;
+        border-radius: 0.5rem;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: rgba(226, 232, 240, 0.85);
+        transition: background-color 150ms, color 150ms;
+    }
+    .kirada-header-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+    }
+    .kirada-header-btn-wide {
+        padding-inline: 0.625rem;
+    }
+    .kirada-header-badge {
+        position: absolute;
+        top: -0.125rem;
+        inset-inline-end: -0.125rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1rem;
+        height: 1rem;
+        padding: 0 0.1875rem;
+        border-radius: 9999px;
+        background: #ef4444;
+        font-size: 0.5625rem;
+        font-weight: 700;
+        color: #ffffff;
+        box-shadow: 0 0 0 2px #0F172A;
+    }
+
+    /* Language menu (plain Alpine, not a Flux dropdown) */
+    .kirada-header-menu {
+        position: absolute;
+        inset-inline-end: 0;
+        z-index: 50;
+        margin-top: 0.5rem;
+        width: 11rem;
+        overflow: hidden;
+        border-radius: 0.75rem;
+        border: 1px solid rgb(228 228 231);
+        background: #ffffff;
+        padding-block: 0.25rem;
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15);
+    }
+    .kirada-header-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        color: rgb(63 63 70);
+        transition: background-color 150ms;
+    }
+    .kirada-header-menu-item:hover {
+        background: rgb(244 244 245);
+    }
+    .kirada-header-menu-code {
+        min-width: 1.75rem;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: rgb(161 161 170);
+    }
+    .dark .kirada-header-menu {
+        border-color: rgb(63 63 70);
+        background: rgb(24 24 27);
+    }
+    .dark .kirada-header-menu-item {
+        color: rgb(228 228 231);
+    }
+    .dark .kirada-header-menu-item:hover {
+        background: rgb(39 39 42);
     }
 
     /* ── Global: all buttons get cursor pointer ── */
@@ -441,6 +659,363 @@ select:focus[data-flux-control] {
     .kirada-form-card {
         @apply rounded-[1.25rem] border border-white/75 bg-white/92 p-6 shadow-[0_18px_55px_rgba(15,23,42,0.07)] ring-1 ring-slate-900/[0.03] backdrop-blur-xl;
     }
+
+    /* Segmented account-type picker (registration). Single column on phones so
+       the descriptions stay readable; side by side from sm up. */
+    .kirada-role-picker {
+        @apply grid grid-cols-1 gap-3 sm:grid-cols-2;
+    }
+
+    .kirada-role-option {
+        @apply relative cursor-pointer;
+    }
+
+    .kirada-role-option input {
+        @apply absolute size-0 opacity-0;
+    }
+
+    .kirada-role-option-body {
+        @apply flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-slate-600 transition;
+    }
+
+    .kirada-role-option:hover .kirada-role-option-body {
+        @apply border-kirada-sky/70 bg-sky-50/40;
+    }
+
+    .kirada-role-option input:checked + .kirada-role-option-body {
+        @apply border-kirada-ocean bg-sky-50 text-kirada-navy ring-2 ring-kirada-ocean/25;
+    }
+
+    /* Keyboard focus must be visible even though the input itself is hidden. */
+    .kirada-role-option input:focus-visible + .kirada-role-option-body {
+        @apply outline-2 outline-offset-2 outline-kirada-ocean;
+    }
+
+    .kirada-role-option-text {
+        @apply flex min-w-0 flex-col;
+    }
+
+    .kirada-role-option-title {
+        @apply text-sm font-semibold text-kirada-navy;
+    }
+
+    .kirada-role-option-desc {
+        @apply text-xs text-slate-500;
+    }
+
+    /* ── Maintenance directory ────────────────────────────────────────────── */
+
+    /* Toolbar controls: full width stacked on phones, sized from sm up. The
+       toolbar itself already wraps, so these only need to stop being 100%. */
+    .kirada-toolbar-search {
+        @apply w-full sm:w-72;
+    }
+
+    .kirada-toolbar-filter {
+        @apply w-full sm:w-44;
+    }
+
+    .kirada-provider-grid {
+        @apply grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3;
+    }
+
+    .kirada-provider-card {
+        @apply flex flex-col gap-3 rounded-[1.25rem] border border-white/75 bg-white/92 p-5 shadow-[0_18px_55px_rgba(15,23,42,0.07)] ring-1 ring-slate-900/[0.03] backdrop-blur-xl transition hover:shadow-[0_22px_65px_rgba(15,23,42,0.10)];
+    }
+
+    .kirada-provider-card-head {
+        @apply flex items-start gap-3;
+    }
+
+    .kirada-provider-card-bio {
+        @apply text-sm leading-relaxed text-slate-600;
+    }
+
+    .kirada-provider-card-tags {
+        @apply flex flex-wrap gap-1.5;
+    }
+
+    .kirada-tag {
+        @apply inline-flex items-center rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700;
+    }
+
+    .kirada-provider-card-meta {
+        @apply mt-auto grid grid-cols-2 gap-3 border-t border-slate-100 pt-3;
+    }
+
+    .kirada-provider-card-meta dt {
+        @apply text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-slate-400;
+    }
+
+    .kirada-provider-card-meta dd {
+        @apply mt-0.5 text-sm text-slate-700;
+    }
+
+    .kirada-provider-card-foot {
+        @apply flex items-center justify-end border-t border-slate-100 pt-3;
+    }
+
+    /* ── Connection request rows (provider inbox) ─────────────────────────── */
+
+    /* Stacks on phones so the accept/decline buttons never crowd the name. */
+    .kirada-request-row {
+        @apply flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
+    }
+
+    .kirada-request-identity {
+        @apply flex min-w-0 items-center gap-3;
+    }
+
+    .kirada-request-actions {
+        @apply flex shrink-0 items-center gap-2;
+    }
+
+    .kirada-quote {
+        @apply rounded-xl border-s-4 border-kirada-ocean bg-slate-50 p-3 text-sm leading-relaxed text-slate-600;
+    }
+
+    /* ── Shared bits ──────────────────────────────────────────────────────── */
+
+    .kirada-empty-state {
+        @apply rounded-[1.25rem] border border-dashed border-slate-200 bg-white/60 p-8 text-center;
+    }
+
+    .kirada-status-strip {
+        @apply flex flex-col gap-4 rounded-[1.25rem] border border-white/75 bg-white/92 p-5 shadow-[0_18px_55px_rgba(15,23,42,0.07)] ring-1 ring-slate-900/[0.03] backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between;
+    }
+
+    .kirada-status-strip-main {
+        @apply min-w-0 flex-1;
+    }
+
+    .kirada-status-strip-meter {
+        @apply w-full sm:w-56;
+    }
+
+    .kirada-meter {
+        @apply h-2 overflow-hidden rounded-full bg-slate-100;
+    }
+
+    .kirada-meter-fill {
+        @apply h-full rounded-full bg-kirada-ocean transition-[width] duration-500;
+    }
+
+    /* Form footers: full-width stacked buttons on phones (thumb-reachable),
+       inline and right-aligned from sm up. */
+    .kirada-form-actions {
+        @apply flex flex-col-reverse gap-2 sm:flex-row sm:justify-end;
+    }
+
+    .kirada-form-actions > * {
+        @apply w-full sm:w-auto;
+    }
+
+    /* Multi-select chip grid (trades). */
+    .kirada-chip-grid {
+        @apply flex flex-wrap gap-2;
+    }
+
+    .kirada-chip-option {
+        @apply relative cursor-pointer;
+    }
+
+    .kirada-chip-option input {
+        @apply absolute size-0 opacity-0;
+    }
+
+    .kirada-chip-option-body {
+        @apply inline-flex items-center rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-sm text-slate-600 transition;
+    }
+
+    .kirada-chip-option:hover .kirada-chip-option-body {
+        @apply border-kirada-sky/70 bg-sky-50/50;
+    }
+
+    .kirada-chip-option input:checked + .kirada-chip-option-body {
+        @apply border-kirada-ocean bg-kirada-ocean font-medium text-white;
+    }
+
+    .kirada-chip-option input:focus-visible + .kirada-chip-option-body {
+        @apply outline-2 outline-offset-2 outline-kirada-ocean;
+    }
+
+    .kirada-removable-chip {
+        @apply inline-flex items-center gap-1.5 rounded-full bg-slate-100 py-1 ps-3 pe-2 text-sm text-slate-700;
+    }
+
+    .kirada-removable-chip button {
+        @apply rounded-full p-0.5 text-slate-400 transition hover:bg-slate-200 hover:text-slate-600;
+    }
+
+    /* Dashboard callout: stacks on phones so the CTA is full-width and
+       thumb-reachable instead of squeezed beside the text. */
+    .kirada-callout {
+        @apply flex flex-col items-start gap-3 rounded-[1.25rem] border p-5 sm:flex-row sm:items-center;
+    }
+
+    .kirada-callout > *:last-child {
+        @apply w-full sm:w-auto;
+    }
+
+    .kirada-callout-accent {
+        @apply border-kirada-sky/45 bg-sky-50/70;
+    }
+}
+
+/* ----------------------------------------------------------------------------
+   Dark mode. The design system above is authored light-only — every surface is
+   a white gradient and every text colour is slate-700+. These overrides invert
+   the surfaces to match the sidebar/header slate (#0F172A family) rather than
+   pure black, so the shell reads as one piece. Order matters: this layer must
+   follow the light definitions.
+---------------------------------------------------------------------------- */
+@layer components {
+
+    /* ── Shell ── */
+    .dark .kirada-page-header {
+        border-color: rgba(14, 165, 233, 0.22);
+        background:
+            radial-gradient(circle at 90% 8%,  rgba(14, 165, 233, 0.20), transparent 30%),
+            radial-gradient(circle at 8%  85%, rgba(16, 185, 129, 0.14), transparent 28%),
+            linear-gradient(135deg, #1E293B 0%, #172033 50%, #14202E 100%);
+        box-shadow:
+            0 24px 80px rgba(0, 0, 0, 0.45),
+            inset 0 2px 0 0 rgba(14, 165, 233, 0.35);
+    }
+
+    /* ── Cards ── */
+    .dark .kirada-card {
+        border-color: rgba(14, 165, 233, 0.18);
+        background: linear-gradient(145deg, #1E293B 0%, #1B2536 55%, #182231 100%);
+        box-shadow:
+            0 18px 55px rgba(0, 0, 0, 0.40),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .dark .kirada-card:hover {
+        border-color: rgba(14, 165, 233, 0.38);
+        box-shadow:
+            0 24px 70px rgba(14, 165, 233, 0.14),
+            0 4px 16px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .dark .kirada-stat-card {
+        border-color: rgba(14, 165, 233, 0.20);
+        background: linear-gradient(145deg, #1E293B 0%, #1A2739 55%, #172633 100%);
+        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.40);
+    }
+
+    .dark .kirada-stat-card:hover {
+        border-color: rgba(14, 165, 233, 0.45);
+        box-shadow: 0 28px 72px rgba(14, 165, 233, 0.20), 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .dark .kirada-stat-label {
+        @apply text-slate-400;
+    }
+
+    .dark .kirada-stat-value {
+        @apply text-slate-100;
+    }
+
+    /* ── Toolbar, tables, forms ── */
+    .dark .kirada-toolbar,
+    .dark .kirada-table-card,
+    .dark .kirada-form-card,
+    .dark .kirada-provider-card,
+    .dark .kirada-status-strip {
+        @apply border-slate-700/70 bg-slate-800/80 ring-white/5;
+        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.40);
+    }
+
+    .dark .kirada-table-card thead {
+        @apply bg-slate-900/60 text-slate-400;
+    }
+
+    .dark .kirada-table-card tbody {
+        @apply divide-slate-700/70;
+    }
+
+    .dark .kirada-table-card tbody tr:hover {
+        @apply bg-sky-500/10;
+    }
+
+    .dark .kirada-table-card tbody td {
+        @apply text-slate-200;
+    }
+
+    /* ── Role picker & trade chips ── */
+    .dark .kirada-role-option-body,
+    .dark .kirada-chip-option-body {
+        @apply border-slate-700 bg-slate-800 text-slate-300;
+    }
+
+    .dark .kirada-role-option:hover .kirada-role-option-body,
+    .dark .kirada-chip-option:hover .kirada-chip-option-body {
+        @apply border-kirada-sky/60 bg-sky-500/10;
+    }
+
+    .dark .kirada-role-option input:checked + .kirada-role-option-body {
+        @apply border-kirada-ocean bg-sky-500/15 text-slate-100 ring-kirada-ocean/40;
+    }
+
+    .dark .kirada-role-option-title {
+        @apply text-slate-100;
+    }
+
+    .dark .kirada-role-option-desc {
+        @apply text-slate-400;
+    }
+
+    /* checked chips keep the solid ocean fill — already legible on dark */
+
+    /* ── Provider cards ── */
+    .dark .kirada-provider-card-bio {
+        @apply text-slate-300;
+    }
+
+    .dark .kirada-provider-card-meta,
+    .dark .kirada-provider-card-foot {
+        @apply border-slate-700/70;
+    }
+
+    .dark .kirada-provider-card-meta dt {
+        @apply text-slate-500;
+    }
+
+    .dark .kirada-provider-card-meta dd {
+        @apply text-slate-200;
+    }
+
+    .dark .kirada-tag {
+        @apply bg-sky-500/15 text-sky-300;
+    }
+
+    /* ── Shared bits ── */
+    .dark .kirada-quote {
+        @apply bg-slate-900/60 text-slate-300;
+    }
+
+    .dark .kirada-empty-state {
+        @apply border-slate-700 bg-slate-800/40 text-slate-300;
+    }
+
+    .dark .kirada-meter {
+        @apply bg-slate-700;
+    }
+
+    .dark .kirada-removable-chip {
+        @apply bg-slate-700 text-slate-200;
+    }
+
+    .dark .kirada-removable-chip button {
+        @apply text-slate-400 hover:bg-slate-600 hover:text-slate-100;
+    }
+
+    .dark .kirada-callout-accent {
+        @apply border-kirada-sky/40 bg-sky-500/10;
+    }
 }
 
 /* ----------------------------------------------------------------------------
@@ -519,6 +1094,22 @@ select:focus[data-flux-control] {
     .kirada-table-card tbody td:only-child {
         display: block;
         text-align: center;
+    }
+
+    /* Card-mode rows are a real surface below lg, so they need the dark
+       treatment the desktop table gets from its container. */
+    .dark .kirada-table-card tbody tr {
+        border-color: var(--color-slate-700);
+        background: var(--color-slate-800);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .dark .kirada-table-card tbody td[data-label]::before {
+        color: var(--color-slate-500);
+    }
+
+    .dark .kirada-table-card tbody td:last-child:not([data-label]) {
+        border-top-color: var(--color-slate-700);
     }
 }
 

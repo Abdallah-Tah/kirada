@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Plan;
 use App\Services\SubscriptionService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 
 /**
  * Handles subscription checkout initiation and Stripe return redirects.

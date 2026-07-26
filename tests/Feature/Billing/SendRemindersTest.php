@@ -19,8 +19,11 @@ class SendRemindersTest extends TestCase
     use RefreshDatabase;
 
     private User $landlord;
+
     private User $tenantUser;
+
     private Lease $lease;
+
     private Tenant $tenant;
 
     protected function setUp(): void
@@ -36,64 +39,64 @@ class SendRemindersTest extends TestCase
         $this->tenantUser->assignRole('tenant');
 
         $property = Property::create([
-            'landlord_id'    => $this->landlord->id,
-            'name'           => 'Test Property',
-            'type'           => 'apartment',
+            'landlord_id' => $this->landlord->id,
+            'name' => 'Test Property',
+            'type' => 'apartment',
             'address_line_1' => '1 Rue de la Paix',
-            'city'           => 'Djibouti',
-            'is_active'      => true,
+            'city' => 'Djibouti',
+            'is_active' => true,
         ]);
 
         $unit = Unit::create([
-            'property_id'  => $property->id,
-            'unit_number'  => 'A1',
-            'type'         => 'apartment',
+            'property_id' => $property->id,
+            'unit_number' => 'A1',
+            'type' => 'apartment',
             'monthly_rent' => 50000,
-            'status'       => 'occupied',
+            'status' => 'occupied',
         ]);
 
         $this->tenant = Tenant::create([
             'landlord_id' => $this->landlord->id,
-            'user_id'     => $this->tenantUser->id,
-            'first_name'  => 'Jane',
-            'last_name'   => 'Doe',
-            'phone'       => '+25377000001',
-            'email'       => $this->tenantUser->email,
-            'status'      => 'active',
+            'user_id' => $this->tenantUser->id,
+            'first_name' => 'Jane',
+            'last_name' => 'Doe',
+            'phone' => '+25377000001',
+            'email' => $this->tenantUser->email,
+            'status' => 'active',
         ]);
 
         $this->lease = Lease::create([
-            'landlord_id'                        => $this->landlord->id,
-            'property_id'                        => $property->id,
-            'unit_id'                            => $unit->id,
-            'tenant_id'                          => $this->tenant->id,
-            'start_date'                         => now()->subMonth()->toDateString(),
-            'monthly_rent'                       => 50000,
-            'payment_due_day'                    => 10,
-            'status'                             => 'active',
-            'auto_generate_invoices'             => true,
+            'landlord_id' => $this->landlord->id,
+            'property_id' => $property->id,
+            'unit_id' => $unit->id,
+            'tenant_id' => $this->tenant->id,
+            'start_date' => now()->subMonth()->toDateString(),
+            'monthly_rent' => 50000,
+            'payment_due_day' => 10,
+            'status' => 'active',
+            'auto_generate_invoices' => true,
             'invoice_generation_days_before_due' => 7,
-            'grace_period_days'                  => 5,
-            'late_fee_type'                      => 'none',
-            'late_fee_frequency'                 => 'once',
-            'reminder_schedule'                  => ['before_due_7', 'before_due_3', 'before_due_1', 'overdue_1'],
+            'grace_period_days' => 5,
+            'late_fee_type' => 'none',
+            'late_fee_frequency' => 'once',
+            'reminder_schedule' => ['before_due_7', 'before_due_3', 'before_due_1', 'overdue_1'],
         ]);
     }
 
     private function makeInvoice(string $dueDate, string $status = 'unpaid'): RentInvoice
     {
         return RentInvoice::create([
-            'landlord_id'      => $this->landlord->id,
-            'lease_id'         => $this->lease->id,
-            'property_id'      => $this->lease->property_id,
-            'unit_id'          => $this->lease->unit_id,
-            'tenant_id'        => $this->tenant->id,
-            'invoice_number'   => 'INV-TEST-' . rand(1000, 9999),
-            'invoice_month'    => now()->startOfMonth()->toDateString(),
-            'due_date'         => $dueDate,
-            'amount'           => 50000,
-            'status'           => $status,
-            'is_auto_generated'=> true,
+            'landlord_id' => $this->landlord->id,
+            'lease_id' => $this->lease->id,
+            'property_id' => $this->lease->property_id,
+            'unit_id' => $this->lease->unit_id,
+            'tenant_id' => $this->tenant->id,
+            'invoice_number' => 'INV-TEST-'.rand(1000, 9999),
+            'invoice_month' => now()->startOfMonth()->toDateString(),
+            'due_date' => $dueDate,
+            'amount' => 50000,
+            'status' => $status,
+            'is_auto_generated' => true,
         ]);
     }
 

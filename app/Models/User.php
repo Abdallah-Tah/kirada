@@ -7,9 +7,10 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
@@ -40,7 +41,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable, HasRoles;
+    use HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -101,39 +102,81 @@ class User extends Authenticatable implements PasskeyUser
     public function onTrial(): bool
     {
         $sub = $this->subscription;
+
         return $sub && $sub->trialIsActive();
     }
 
     public function hasActiveSubscription(): bool
     {
         $sub = $this->subscription;
+
         return $sub && $sub->isActive();
     }
 
     public function trialExpired(): bool
     {
         $sub = $this->subscription;
+
         return $sub && $sub->trialHasExpired();
     }
 
     public function needsSubscription(): bool
     {
         return $this->isLandlord()
-            && !$this->onTrial()
-            && !$this->hasActiveSubscription();
+            && ! $this->onTrial()
+            && ! $this->hasActiveSubscription();
     }
 
-    public function approvedMaintenanceUsers(): BelongsToMany
+    // ── Maintenance provider network ────────────────────
+
+    /**
+     * Maintenance workers linked to this landlord, in any state. Callers that
+     * need only usable workers should go through approvedMaintenanceUsers().
+     *
+     * @return BelongsToMany<User, $this, LandlordMaintenance>
+     */
+    public function maintenanceConnections(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'landlord_maintenance', 'landlord_id', 'maintenance_user_id')
-            ->withPivot('approved_at')
+            ->using(LandlordMaintenance::class)
+            ->withPivot(['status', 'requested_by', 'approved_at', 'rejected_at', 'message'])
             ->withTimestamps();
     }
 
-    public function approvedLandlords(): BelongsToMany
+    /**
+     * @return BelongsToMany<User, $this, LandlordMaintenance>
+     */
+    public function approvedMaintenanceUsers(): BelongsToMany
+    {
+        return $this->maintenanceConnections()->wherePivotNotNull('approved_at');
+    }
+
+    /**
+     * Landlords linked to this maintenance worker, in any state.
+     *
+     * @return BelongsToMany<User, $this, LandlordMaintenance>
+     */
+    public function landlordConnections(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'landlord_maintenance', 'maintenance_user_id', 'landlord_id')
-            ->withPivot('approved_at')
+            ->using(LandlordMaintenance::class)
+            ->withPivot(['status', 'requested_by', 'approved_at', 'rejected_at', 'message'])
             ->withTimestamps();
+    }
+
+    /**
+     * @return BelongsToMany<User, $this, LandlordMaintenance>
+     */
+    public function approvedLandlords(): BelongsToMany
+    {
+        return $this->landlordConnections()->wherePivotNotNull('approved_at');
+    }
+
+    /**
+     * @return HasOne<MaintenanceProfile, $this>
+     */
+    public function maintenanceProfile(): HasOne
+    {
+        return $this->hasOne(MaintenanceProfile::class);
     }
 }

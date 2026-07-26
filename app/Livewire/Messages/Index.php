@@ -5,6 +5,7 @@ namespace App\Livewire\Messages;
 use App\Models\Conversation;
 use App\Models\Tenant;
 use App\Services\MessagingService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -17,8 +18,11 @@ class Index extends Component
 
     // New conversation form
     public ?int $selectedTenantId = null;
+
     public string $subject = '';
+
     public string $firstMessage = '';
+
     public bool $showNewForm = false;
 
     public function updatingSearch(): void
@@ -35,13 +39,13 @@ class Index extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('subject', 'like', "%{$this->search}%")
-                  ->orWhereHas('tenant', function ($q) {
-                      $q->where('first_name', 'like', "%{$this->search}%")
-                        ->orWhere('last_name', 'like', "%{$this->search}%");
-                  })
-                  ->orWhereHas('landlord', function ($q) {
-                      $q->where('name', 'like', "%{$this->search}%");
-                  });
+                    ->orWhereHas('tenant', function ($q) {
+                        $q->where('first_name', 'like', "%{$this->search}%")
+                            ->orWhere('last_name', 'like', "%{$this->search}%");
+                    })
+                    ->orWhereHas('landlord', function ($q) {
+                        $q->where('name', 'like', "%{$this->search}%");
+                    });
             });
         }
 
@@ -62,7 +66,7 @@ class Index extends Component
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant && $tenant->landlord_id) {
                 $query->where('landlord_id', $tenant->landlord_id)
-                      ->where('id', '!=', $tenant->id);
+                    ->where('id', '!=', $tenant->id);
             } else {
                 return collect();
             }
@@ -77,6 +81,7 @@ class Index extends Component
         if (auth()->user()->hasRole('tenant')) {
             return Tenant::where('user_id', auth()->id())->first();
         }
+
         return null;
     }
 
@@ -84,8 +89,8 @@ class Index extends Component
     {
         $this->validate([
             'selectedTenantId' => 'required|exists:tenants,id',
-            'subject'           => 'required|string|max:255',
-            'firstMessage'      => 'required|string|max:5000',
+            'subject' => 'required|string|max:255',
+            'firstMessage' => 'required|string|max:5000',
         ]);
 
         $user = auth()->user();
@@ -101,24 +106,26 @@ class Index extends Component
             ->first();
 
         if ($existing) {
-            \Flux\Flux::toast('An open conversation with this tenant already exists.', 'error');
+            Flux::toast('An open conversation with this tenant already exists.', 'error');
+
             return;
         }
 
         try {
             $conversation = app(MessagingService::class)->startConversation($user, [
                 'landlord_id' => $landlordId,
-                'tenant_id'   => $tenant->id,
-                'subject'     => $this->subject,
+                'tenant_id' => $tenant->id,
+                'subject' => $this->subject,
             ]);
         } catch (\DomainException $e) {
             $this->addError('selectedTenantId', $e->getMessage());
+
             return;
         }
 
         app(MessagingService::class)->sendMessage($conversation, $user, $this->firstMessage);
 
-        \Flux\Flux::toast('Conversation started.', 'success');
+        Flux::toast('Conversation started.', 'success');
 
         $this->reset(['selectedTenantId', 'subject', 'firstMessage', 'showNewForm']);
         unset($this->conversations);

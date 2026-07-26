@@ -3,7 +3,9 @@
 namespace App\Livewire\Tenants;
 
 use App\Models\Tenant;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,7 +13,10 @@ class Index extends Component
 {
     use WithPagination;
 
+    /** URL-bound so the header's global search can seed this index via ?search=. */
+    #[Url]
     public string $search = '';
+
     public string $filterStatus = '';
 
     public function updatingSearch(): void
@@ -31,12 +36,12 @@ class Index extends Component
             ->when($this->search, function ($q) {
                 $q->where(function ($q) {
                     $q->where('first_name', 'like', "%{$this->search}%")
-                      ->orWhere('last_name', 'like', "%{$this->search}%")
-                      ->orWhere('phone', 'like', "%{$this->search}%")
-                      ->orWhere('email', 'like', "%{$this->search}%");
+                        ->orWhere('last_name', 'like', "%{$this->search}%")
+                        ->orWhere('phone', 'like', "%{$this->search}%")
+                        ->orWhere('email', 'like', "%{$this->search}%");
                 });
             })
-            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->latest();
 
         if (auth()->user()->hasRole('landlord')) {
@@ -56,7 +61,7 @@ class Index extends Component
 
         unset($this->tenants);
 
-        \Flux\Flux::toast('Tenant deleted.', 'success');
+        Flux::toast('Tenant deleted.', 'success');
     }
 
     public function render()

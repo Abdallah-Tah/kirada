@@ -124,7 +124,7 @@ class LeaseService
             ->where('status', 'active')
             ->exists();
 
-        if (!$hasActiveLease) {
+        if (! $hasActiveLease) {
             $unit->update(['status' => 'vacant']);
         }
     }

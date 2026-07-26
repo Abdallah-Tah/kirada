@@ -12,7 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 class LocaleMiddleware
 {
     private const SUPPORTED_LOCALES = ['en', 'fr', 'ar', 'so', 'am'];
+
     private const DEFAULT_LOCALE = 'en';
+
     private const SESSION_KEY = 'locale';
 
     public function handle(Request $request, Closure $next): Response
@@ -82,7 +84,7 @@ class LocaleMiddleware
     private function detectBrowserLocale(Request $request): ?string
     {
         $header = $request->header('Accept-Language');
-        if (!$header) {
+        if (! $header) {
             return null;
         }
 

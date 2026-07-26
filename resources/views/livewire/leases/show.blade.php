@@ -492,7 +492,7 @@
                                     <td data-label="{{ __('Status') }}" class="px-4 py-3">
                                         <flux:badge color="{{ $invoiceColor($invoice->status) }}" size="sm">{{ __(ucfirst($invoice->status)) }}</flux:badge>
                                     </td>
-                                    <td data-label="{{ __('Actions') }}" class="px-4 py-3 text-end">
+                                    <td class="px-4 py-3 text-end">
                                         <flux:button :href="route('rent-invoices.edit', $invoice)" wire:navigate variant="ghost" size="sm" icon="pencil" />
                                     </td>
                                 </tr>
@@ -540,10 +540,10 @@
                                     <td data-label="{{ __('Payment #') }}" class="px-4 py-3 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
                                         {{ $payment->payment_number }}
                                     </td>
-                                    <td class="px-4 py-3 text-zinc-500">{{ $payment->payment_date?->format('M j, Y') }}</td>
-                                    <td class="px-4 py-3 text-zinc-700 dark:text-zinc-300">{{ number_format($payment->amount, 0) }}</td>
-                                    <td class="px-4 py-3 text-zinc-500 capitalize">{{ __($payment->method ?? '—') }}</td>
-                                    <td class="px-4 py-3">
+                                    <td data-label="{{ __('Date') }}" class="px-4 py-3 text-zinc-500">{{ $payment->payment_date?->format('M j, Y') }}</td>
+                                    <td data-label="{{ __('Amount') }}" class="px-4 py-3 text-zinc-700 dark:text-zinc-300">{{ number_format($payment->amount, 0) }}</td>
+                                    <td data-label="{{ __('Method') }}" class="px-4 py-3 text-zinc-500 capitalize">{{ __($payment->method ?? '—') }}</td>
+                                    <td data-label="{{ __('Status') }}" class="px-4 py-3">
                                         <flux:badge color="{{ $paymentColor($payment->status ?? 'pending') }}" size="sm">{{ __(ucfirst($payment->status ?? '—')) }}</flux:badge>
                                     </td>
                                     <td class="px-4 py-3 text-end">

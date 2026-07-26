@@ -9,9 +9,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
-    public function __construct(private DocumentService $documentService)
-    {
-    }
+    public function __construct(private DocumentService $documentService) {}
 
     public function download(Request $request, Document $document): StreamedResponse
     {
@@ -19,7 +17,7 @@ class DocumentController extends Controller
 
         $response = $this->documentService->downloadDocument($document);
 
-        if (!$response) {
+        if (! $response) {
             abort(404, 'File not found on disk.');
         }
 

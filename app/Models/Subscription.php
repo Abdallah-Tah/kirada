@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 class Subscription extends Model
 {
@@ -29,8 +28,8 @@ class Subscription extends Model
 
     protected $casts = [
         'trial_ends_at' => 'datetime',
-        'starts_at'      => 'datetime',
-        'ends_at'        => 'datetime',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

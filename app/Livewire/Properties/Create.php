@@ -6,6 +6,7 @@ use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Property;
 use App\Models\User;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -91,7 +92,7 @@ class Create extends Component
             'landlord_id' => $landlordId,
         ]);
 
-        \Flux\Flux::toast('Property created successfully.', 'success');
+        Flux::toast('Property created successfully.', 'success');
 
         $this->redirect(route('properties.index'), navigate: true);
     }

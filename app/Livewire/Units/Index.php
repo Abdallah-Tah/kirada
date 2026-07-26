@@ -4,6 +4,7 @@ namespace App\Livewire\Units;
 
 use App\Models\Property;
 use App\Models\Unit;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,8 +14,11 @@ class Index extends Component
     use WithPagination;
 
     public ?int $propertyId = null;
+
     public string $search = '';
+
     public string $filterStatus = '';
+
     public string $filterType = '';
 
     public function updatingSearch(): void
@@ -54,18 +58,18 @@ class Index extends Component
     {
         $query = Unit::query()
             ->with('property:id,name', 'building:id,name')
-            ->when($this->propertyId, fn($q) => $q->forProperty($this->propertyId))
+            ->when($this->propertyId, fn ($q) => $q->forProperty($this->propertyId))
             ->when($this->search, function ($q) {
                 $q->where('unit_number', 'like', "%{$this->search}%")
-                  ->orWhere('floor', 'like', "%{$this->search}%");
+                    ->orWhere('floor', 'like', "%{$this->search}%");
             })
-            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
-            ->when($this->filterType, fn($q) => $q->where('type', $this->filterType))
+            ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterType, fn ($q) => $q->where('type', $this->filterType))
             ->latest();
 
         // Landlord sees only units belonging to own properties
         if (auth()->user()->hasRole('landlord')) {
-            $query->whereHas('property', fn($q) => $q->forLandlord(auth()->id()));
+            $query->whereHas('property', fn ($q) => $q->forLandlord(auth()->id()));
         }
 
         return $query->paginate(10);
@@ -81,7 +85,7 @@ class Index extends Component
 
         unset($this->units);
 
-        \Flux\Flux::toast('Unit deleted.', 'success');
+        Flux::toast('Unit deleted.', 'success');
     }
 
     public function render()

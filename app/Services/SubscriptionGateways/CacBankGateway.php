@@ -34,27 +34,27 @@ class CacBankGateway implements SubscriptionBillingGateway
 {
     public function initiate(User $user, Plan $plan, array $options = []): array
     {
-        $reference = 'KIR-' . strtoupper(substr($plan->slug, 0, 3)) . '-' . $user->id . '-' . now()->format('Ymd');
+        $reference = 'KIR-'.strtoupper(substr($plan->slug, 0, 3)).'-'.$user->id.'-'.now()->format('Ymd');
 
         return [
             'type' => 'inline',
             'data' => [
-                'method'         => 'bank_transfer',
-                'reference'      => $reference,
-                'amount'         => $plan->monthly_price,
-                'currency'       => $plan->currency?->code ?? 'DJF',
-                'account_name'   => config('services.cacbank.account_name', 'Kirada Technologies'),
+                'method' => 'bank_transfer',
+                'reference' => $reference,
+                'amount' => $plan->monthly_price,
+                'currency' => $plan->currency?->code ?? 'DJF',
+                'account_name' => config('services.cacbank.account_name', 'Kirada Technologies'),
                 'account_number' => config('services.cacbank.account_number', '— not configured —'),
-                'iban'           => config('services.cacbank.iban', '— not configured —'),
-                'swift'          => config('services.cacbank.swift', '— not configured —'),
-                'instructions'   => __(
-                    'Please transfer :amount :currency to the account above, ' .
-                    'using reference :ref. Your subscription will be activated ' .
+                'iban' => config('services.cacbank.iban', '— not configured —'),
+                'swift' => config('services.cacbank.swift', '— not configured —'),
+                'instructions' => __(
+                    'Please transfer :amount :currency to the account above, '.
+                    'using reference :ref. Your subscription will be activated '.
                     'within 1 business day after confirmation.',
                     [
-                        'amount'   => number_format($plan->monthly_price, 0),
+                        'amount' => number_format($plan->monthly_price, 0),
                         'currency' => $plan->currency?->code ?? 'DJF',
-                        'ref'      => $reference,
+                        'ref' => $reference,
                     ]
                 ),
             ],
@@ -66,7 +66,7 @@ class CacBankGateway implements SubscriptionBillingGateway
      */
     public function verifyWebhook(Request $request): bool
     {
-        $secret    = config('services.cacbank.webhook_secret');
+        $secret = config('services.cacbank.webhook_secret');
         $signature = $request->header('X-CacBank-Signature', '');
 
         if (! $secret || ! $signature) {

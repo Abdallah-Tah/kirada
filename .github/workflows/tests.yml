@@ -63,11 +63,10 @@ jobs:
       - name: Build Assets
         run: npm run build
 
-      # Non-blocking until the existing ~549 phpstan errors are fixed or
-      # baselined; a hard failure here was stopping the test suite from
-      # ever running.
+      # Blocking. The pre-existing errors are frozen in phpstan-baseline.neon,
+      # so this only fails on newly introduced ones. Fix them — do not
+      # regenerate the baseline.
       - name: Run Type Analysis
-        continue-on-error: true
         run: composer types:check
 
       - name: Run Tests

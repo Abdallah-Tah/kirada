@@ -41,25 +41,25 @@ class WaafiPayGateway implements SubscriptionBillingGateway
 
         // WaafiPay prices are in USD — convert DJF at fixed rate (1 USD ≈ 177 DJF)
         $amountUsd = $this->convertToUsd($plan->monthly_price);
-        $referenceId = 'KIR-SUB-' . $user->id . '-' . now()->format('Ymd-His');
+        $referenceId = 'KIR-SUB-'.$user->id.'-'.now()->format('Ymd-His');
 
         $payload = [
             'schemaVersion' => '1.0',
-            'requestId'     => Str::uuid()->toString(),
-            'timestamp'     => now()->format('Y-m-d\TH:i:s'),
-            'channelName'   => 'WEB',
-            'serviceName'   => 'API_PURCHASE',
+            'requestId' => Str::uuid()->toString(),
+            'timestamp' => now()->format('Y-m-d\TH:i:s'),
+            'channelName' => 'WEB',
+            'serviceName' => 'API_PURCHASE',
             'serviceParams' => [
-                'merchantUid'     => config('services.waafi.merchant_uid'),
-                'apiUserId'       => config('services.waafi.api_user_id'),
-                'apiKey'          => config('services.waafi.api_key'),
-                'paymentMethod'   => 'mwallet_account',
-                'payerInfo'       => ['accountNo' => $phone],
+                'merchantUid' => config('services.waafi.merchant_uid'),
+                'apiUserId' => config('services.waafi.api_user_id'),
+                'apiKey' => config('services.waafi.api_key'),
+                'paymentMethod' => 'mwallet_account',
+                'payerInfo' => ['accountNo' => $phone],
                 'transactionInfo' => [
                     'referenceId' => $referenceId,
-                    'invoiceId'   => $referenceId,
-                    'amount'      => (string) $amountUsd,
-                    'currency'    => 'USD',
+                    'invoiceId' => $referenceId,
+                    'amount' => (string) $amountUsd,
+                    'currency' => 'USD',
                     'description' => "Kirada {$plan->name} subscription",
                 ],
             ],
@@ -68,9 +68,9 @@ class WaafiPayGateway implements SubscriptionBillingGateway
         $response = Http::timeout(30)->post(self::API_URL, $payload);
         $body = $response->json();
 
-        $state    = $body['params']['state']         ?? 'DECLINED';
-        $txnId    = $body['params']['transactionId'] ?? null;
-        $errorMsg = $body['params']['description']   ?? 'Payment declined by WaafiPay.';
+        $state = $body['params']['state'] ?? 'DECLINED';
+        $txnId = $body['params']['transactionId'] ?? null;
+        $errorMsg = $body['params']['description'] ?? 'Payment declined by WaafiPay.';
 
         if ($state !== 'APPROVED') {
             throw new \RuntimeException($errorMsg);
@@ -80,17 +80,17 @@ class WaafiPayGateway implements SubscriptionBillingGateway
         return [
             'type' => 'inline',
             'data' => [
-                'state'          => 'approved',
+                'state' => 'approved',
                 'transaction_id' => $txnId,
-                'reference_id'   => $referenceId,
-                'amount_usd'     => $amountUsd,
+                'reference_id' => $referenceId,
+                'amount_usd' => $amountUsd,
             ],
         ];
     }
 
     public function verifyWebhook(Request $request): bool
     {
-        $secret    = config('services.waafi.webhook_secret');
+        $secret = config('services.waafi.webhook_secret');
         $signature = $request->header('X-WaafiPay-Signature', '');
 
         if (! $secret || ! $signature) {
@@ -104,7 +104,7 @@ class WaafiPayGateway implements SubscriptionBillingGateway
 
     public function parseWebhook(Request $request): ?array
     {
-        $body  = $request->json()->all();
+        $body = $request->json()->all();
         $state = $body['params']['state'] ?? null;
 
         if (! $state) {
@@ -112,12 +112,12 @@ class WaafiPayGateway implements SubscriptionBillingGateway
         }
 
         return [
-            'event'                   => 'waafi.' . strtolower($state),
+            'event' => 'waafi.'.strtolower($state),
             'gateway_subscription_id' => $body['params']['transactionId'] ?? null,
-            'gateway_status'          => strtolower($state),
-            'override_status'         => $state === 'APPROVED' ? 'active' : 'past_due',
-            'plan_id'                 => null, // resolved from reference_id by the controller
-            'ends_at'                 => $state === 'APPROVED' ? now()->addMonth() : null,
+            'gateway_status' => strtolower($state),
+            'override_status' => $state === 'APPROVED' ? 'active' : 'past_due',
+            'plan_id' => null, // resolved from reference_id by the controller
+            'ends_at' => $state === 'APPROVED' ? now()->addMonth() : null,
         ];
     }
 

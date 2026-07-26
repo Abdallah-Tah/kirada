@@ -21,6 +21,7 @@ use Stripe\Stripe;
 class StripeSyncPlans extends Command
 {
     protected $signature = 'stripe:sync-plans {--force : Re-sync plans that already have a stripe_price_id}';
+
     protected $description = 'Sync Kirada plans to Stripe Products and Prices';
 
     public function handle(): int
@@ -31,33 +32,36 @@ class StripeSyncPlans extends Command
 
         if ($plans->isEmpty()) {
             $this->warn('No active plans found. Run the PlanSeeder first.');
+
             return self::FAILURE;
         }
 
         foreach ($plans as $plan) {
             if ($plan->stripe_price_id && ! $this->option('force')) {
                 $this->line("  <fg=gray>skip</> {$plan->name} (already synced: {$plan->stripe_price_id})");
+
                 continue;
             }
 
             if ($plan->monthly_price <= 0) {
                 $this->line("  <fg=yellow>skip</> {$plan->name} (price is 0 — Enterprise/custom plan)");
+
                 continue;
             }
 
             // Create or retrieve a Product for this plan
             $product = Product::create([
-                'name'     => "Kirada {$plan->name}",
+                'name' => "Kirada {$plan->name}",
                 'metadata' => ['kirada_plan_slug' => $plan->slug, 'kirada_plan_id' => $plan->id],
             ]);
 
             // Create a recurring Price (DJF is zero-decimal on Stripe)
             $price = Price::create([
-                'product'        => $product->id,
-                'unit_amount'    => (int) $plan->monthly_price,
-                'currency'       => strtolower($plan->currency?->code ?? 'djf'),
-                'recurring'      => ['interval' => 'month'],
-                'metadata'       => ['kirada_plan_slug' => $plan->slug],
+                'product' => $product->id,
+                'unit_amount' => (int) $plan->monthly_price,
+                'currency' => strtolower($plan->currency?->code ?? 'djf'),
+                'recurring' => ['interval' => 'month'],
+                'metadata' => ['kirada_plan_slug' => $plan->slug],
             ]);
 
             $plan->update(['stripe_price_id' => $price->id]);

@@ -8,7 +8,8 @@ use Illuminate\Console\Command;
 
 class ApplyLateFees extends Command
 {
-    protected $signature   = 'kirada:apply-late-fees';
+    protected $signature = 'kirada:apply-late-fees';
+
     protected $description = 'Apply late fee line items to overdue invoices past their grace period.';
 
     public function handle(RentInvoiceService $service): int

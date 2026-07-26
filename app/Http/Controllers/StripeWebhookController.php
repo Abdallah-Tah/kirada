@@ -34,7 +34,7 @@ class StripeWebhookController extends Controller
             $this->handle($event);
         } catch (\Throwable $e) {
             Log::error('Stripe webhook handler failed', [
-                'event'     => $event['event'] ?? null,
+                'event' => $event['event'] ?? null,
                 'exception' => $e->getMessage(),
             ]);
 
@@ -50,8 +50,8 @@ class StripeWebhookController extends Controller
     {
         match (true) {
             str_starts_with($event['event'], 'customer.subscription') => $this->handleSubscription($event),
-            str_starts_with($event['event'], 'invoice.')              => $this->handleInvoice($event),
-            default                                                    => null,
+            str_starts_with($event['event'], 'invoice.') => $this->handleInvoice($event),
+            default => null,
         };
     }
 
@@ -63,7 +63,10 @@ class StripeWebhookController extends Controller
             return;
         }
 
-        $sub = Subscription::where('user_id', $user->id)->first()
+        // Must match User::subscription()'s latestOfMany(): a landlord who trialed,
+        // lapsed, and re-subscribed has several rows, and updating the oldest one
+        // would leave the app reading a stale status for a paying customer.
+        $sub = Subscription::where('user_id', $user->id)->latest('id')->first()
             ?? new Subscription(['user_id' => $user->id]);
 
         $overrideStatus = $event['override_status'] ?? null;
@@ -71,19 +74,19 @@ class StripeWebhookController extends Controller
         $kiradaStatus = match ($overrideStatus ?? $event['gateway_status']) {
             'active', 'trialing' => $overrideStatus ?? 'active',
             'cancelled', 'canceled' => 'cancelled',
-            'past_due'              => 'past_due',
-            default                 => 'expired',
+            'past_due' => 'past_due',
+            default => 'expired',
         };
 
         $sub->fill([
-            'plan_id'                 => $event['plan_id'] ?? $sub->plan_id,
-            'status'                  => $kiradaStatus,
-            'gateway'                 => 'stripe',
-            'payment_method'          => 'stripe',
+            'plan_id' => $event['plan_id'] ?? $sub->plan_id,
+            'status' => $kiradaStatus,
+            'gateway' => 'stripe',
+            'payment_method' => 'stripe',
             'gateway_subscription_id' => $event['gateway_subscription_id'] ?? $sub->gateway_subscription_id,
-            'gateway_status'          => $event['gateway_status'] ?? null,
-            'starts_at'               => $sub->starts_at ?? now(),
-            'ends_at'                 => $event['ends_at'] ?? $sub->ends_at,
+            'gateway_status' => $event['gateway_status'] ?? null,
+            'starts_at' => $sub->starts_at ?? now(),
+            'ends_at' => $event['ends_at'] ?? $sub->ends_at,
         ]);
 
         $sub->save();

@@ -3,6 +3,7 @@
 namespace App\Livewire\Tenants;
 
 use App\Models\Tenant;
+use Flux\Flux;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -12,17 +13,29 @@ class Edit extends Component
     use WithFileUploads;
 
     public Tenant $tenant;
+
     public string $first_name = '';
+
     public string $last_name = '';
+
     public string $phone = '';
+
     public ?string $email = null;
+
     public ?string $national_id = null;
+
     public ?string $id_type = null;
+
     public ?string $id_document_number = null;
+
     public $id_document = null;
+
     public ?string $address = null;
+
     public ?string $city = null;
+
     public string $status = 'active';
+
     public ?string $notes = null;
 
     public function mount(Tenant $tenant): void
@@ -40,18 +53,18 @@ class Edit extends Component
     protected function rules(): array
     {
         return [
-            'first_name'           => 'required|string|max:100',
-            'last_name'            => 'required|string|max:100',
-            'phone'                => 'required|string|max:30',
-            'email'                => 'nullable|email|max:255',
-            'national_id'          => 'nullable|string|max:100',
-            'id_type'              => 'nullable|in:national_id,passport,driver_license,other',
-            'id_document_number'   => 'nullable|string|max:100',
-            'id_document'          => 'nullable|file|mimes:jpg,jpeg,png,pdf,webp|max:10240',
-            'address'              => 'nullable|string|max:500',
-            'city'                 => 'nullable|string|max:100',
-            'status'               => 'required|in:active,inactive',
-            'notes'                => 'nullable|string|max:2000',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'phone' => 'required|string|max:30',
+            'email' => 'nullable|email|max:255',
+            'national_id' => 'nullable|string|max:100',
+            'id_type' => 'nullable|in:national_id,passport,driver_license,other',
+            'id_document_number' => 'nullable|string|max:100',
+            'id_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf,webp|max:10240',
+            'address' => 'nullable|string|max:500',
+            'city' => 'nullable|string|max:100',
+            'status' => 'required|in:active,inactive',
+            'notes' => 'nullable|string|max:2000',
         ];
     }
 
@@ -87,7 +100,7 @@ class Edit extends Component
 
         $this->tenant->update($updateData);
 
-        \Flux\Flux::toast('Tenant updated successfully.', 'success');
+        Flux::toast('Tenant updated successfully.', 'success');
 
         $this->redirect(route('tenants.index'), navigate: true);
     }
@@ -104,7 +117,7 @@ class Edit extends Component
                 'id_document_original_filename' => null,
             ]);
             $this->tenant->refresh();
-            \Flux\Flux::toast('ID document removed.', 'success');
+            Flux::toast('ID document removed.', 'success');
         }
     }
 

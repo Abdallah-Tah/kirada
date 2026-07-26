@@ -12,6 +12,31 @@
                 <input type="hidden" name="selected_plan" value="{{ $selectedPlan }}">
             @endif
 
+            <!-- Account type -->
+            @php $accountType = old('account_type', request('as') === 'maintenance' ? 'maintenance' : 'landlord'); @endphp
+            <div class="kirada-role-picker" role="radiogroup" aria-label="{{ __('Account type') }}">
+                <label class="kirada-role-option">
+                    <input type="radio" name="account_type" value="landlord" @checked($accountType === 'landlord')>
+                    <span class="kirada-role-option-body">
+                        <flux:icon.building-office class="size-5" />
+                        <span class="kirada-role-option-text">
+                            <span class="kirada-role-option-title">{{ __('Landlord') }}</span>
+                            <span class="kirada-role-option-desc">{{ __('Manage properties, tenants, and rent') }}</span>
+                        </span>
+                    </span>
+                </label>
+                <label class="kirada-role-option">
+                    <input type="radio" name="account_type" value="maintenance" @checked($accountType === 'maintenance')>
+                    <span class="kirada-role-option-body">
+                        <flux:icon.wrench-screwdriver class="size-5" />
+                        <span class="kirada-role-option-text">
+                            <span class="kirada-role-option-title">{{ __('Maintenance pro') }}</span>
+                            <span class="kirada-role-option-desc">{{ __('List your services and get hired') }}</span>
+                        </span>
+                    </span>
+                </label>
+            </div>
+
             <!-- Name -->
             <flux:input
                 name="name"

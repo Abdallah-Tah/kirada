@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 class Conversation extends Model
 {
@@ -81,13 +80,13 @@ class Conversation extends Model
     {
         if ($user->hasRole('admin')) {
             return $this->tenant
-                ? $this->tenant->first_name . ' ' . $this->tenant->last_name
+                ? $this->tenant->first_name.' '.$this->tenant->last_name
                 : ($this->landlord?->name ?? '—');
         }
 
         if ($user->hasRole('landlord')) {
             return $this->tenant
-                ? $this->tenant->first_name . ' ' . $this->tenant->last_name
+                ? $this->tenant->first_name.' '.$this->tenant->last_name
                 : '—';
         }
 

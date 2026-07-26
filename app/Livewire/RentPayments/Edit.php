@@ -5,6 +5,7 @@ namespace App\Livewire\RentPayments;
 use App\Models\RentInvoice;
 use App\Models\RentPayment;
 use App\Services\RentPaymentService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -14,17 +15,29 @@ class Edit extends Component
     use WithFileUploads;
 
     public RentPayment $payment;
+
     public ?int $rent_invoice_id = null;
+
     public ?int $lease_id = null;
+
     public ?int $property_id = null;
+
     public ?int $unit_id = null;
+
     public ?int $tenant_id = null;
+
     public string $payment_date = '';
+
     public string $amount = '';
+
     public string $method = 'cash';
+
     public string $status = 'pending';
+
     public ?string $reference_number = null;
+
     public $proof = null;
+
     public ?string $notes = null;
 
     public ?string $existing_proof = null;
@@ -47,18 +60,18 @@ class Edit extends Component
     protected function rules(): array
     {
         return [
-            'rent_invoice_id'  => 'required|exists:rent_invoices,id',
-            'lease_id'         => 'required|exists:leases,id',
-            'property_id'      => 'required|exists:properties,id',
-            'unit_id'          => 'required|exists:units,id',
-            'tenant_id'        => 'required|exists:tenants,id',
-            'payment_date'     => 'required|date',
-            'amount'           => 'required|numeric|min:0|max:99999999',
-            'method'           => 'required|in:cash,bank_transfer,mobile_money,check,other',
-            'status'           => 'required|in:pending,confirmed,rejected',
+            'rent_invoice_id' => 'required|exists:rent_invoices,id',
+            'lease_id' => 'required|exists:leases,id',
+            'property_id' => 'required|exists:properties,id',
+            'unit_id' => 'required|exists:units,id',
+            'tenant_id' => 'required|exists:tenants,id',
+            'payment_date' => 'required|date',
+            'amount' => 'required|numeric|min:0|max:99999999',
+            'method' => 'required|in:cash,bank_transfer,mobile_money,check,other',
+            'status' => 'required|in:pending,confirmed,rejected',
             'reference_number' => 'nullable|string|max:255',
-            'proof'            => 'nullable|file|max:5120',
-            'notes'            => 'nullable|string|max:2000',
+            'proof' => 'nullable|file|max:5120',
+            'notes' => 'nullable|string|max:2000',
         ];
     }
 
@@ -101,7 +114,7 @@ class Edit extends Component
 
         app(RentPaymentService::class)->updatePayment($this->payment, $data, $this->proof);
 
-        \Flux\Flux::toast('Payment updated successfully.', 'success');
+        Flux::toast('Payment updated successfully.', 'success');
 
         $this->redirect(route('rent-payments.index'), navigate: true);
     }

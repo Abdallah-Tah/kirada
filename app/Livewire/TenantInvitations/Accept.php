@@ -4,17 +4,22 @@ namespace App\Livewire\TenantInvitations;
 
 use App\Models\TenantInvitation;
 use App\Services\TenantInvitationService;
+use Flux\Flux;
 use Livewire\Component;
 
 class Accept extends Component
 {
     public string $token;
+
     public ?TenantInvitation $invitation = null;
 
     // Form fields
     public string $name = '';
+
     public string $email = '';
+
     public string $password = '';
+
     public string $password_confirmation = '';
 
     public bool $showAcceptForm = false;
@@ -24,7 +29,7 @@ class Accept extends Component
         $this->token = $token;
         $this->invitation = app(TenantInvitationService::class)->findByToken($token);
 
-        if (!$this->invitation) {
+        if (! $this->invitation) {
             abort(404);
         }
 
@@ -36,7 +41,7 @@ class Accept extends Component
         // Pre-fill name from tenant record
         $tenant = $this->invitation->tenant;
         if ($tenant) {
-            $this->name = trim($tenant->first_name . ' ' . $tenant->last_name);
+            $this->name = trim($tenant->first_name.' '.$tenant->last_name);
         }
 
         $this->showAcceptForm = $this->invitation->isPending();
@@ -45,16 +50,17 @@ class Accept extends Component
     protected function rules(): array
     {
         return [
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|max:255',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'password' => 'required|string|min:8|confirmed',
         ];
     }
 
     public function accept(): void
     {
-        if (!$this->invitation || !$this->invitation->isPending()) {
-            \Flux\Flux::toast('This invitation is no longer valid.', 'error');
+        if (! $this->invitation || ! $this->invitation->isPending()) {
+            Flux::toast('This invitation is no longer valid.', 'error');
+
             return;
         }
 
@@ -71,7 +77,7 @@ class Accept extends Component
             // Log the user in
             auth()->login($user);
 
-            \Flux\Flux::toast('Welcome! Your tenant account is ready.', 'success');
+            Flux::toast('Welcome! Your tenant account is ready.', 'success');
 
             $this->redirect(route('dashboard'), navigate: true);
         } catch (\DomainException $e) {

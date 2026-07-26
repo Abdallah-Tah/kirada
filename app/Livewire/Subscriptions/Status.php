@@ -43,23 +43,23 @@ class Status extends Component
     public function openPayment(string $slug): void
     {
         $this->selectedPlanSlug = $slug;
-        $this->selectedGateway  = 'stripe';
-        $this->inlineResult     = null;
-        $this->waafiPhone       = '';
+        $this->selectedGateway = 'stripe';
+        $this->inlineResult = null;
+        $this->waafiPhone = '';
     }
 
     public function closePayment(): void
     {
         $this->selectedPlanSlug = null;
-        $this->inlineResult     = null;
+        $this->inlineResult = null;
     }
 
     /** Start trial / select plan during trial (no payment needed) */
     public function selectPlan(string $slug): void
     {
-        $plan    = Plan::active()->where('slug', $slug)->firstOrFail();
+        $plan = Plan::active()->where('slug', $slug)->firstOrFail();
         $service = app(SubscriptionService::class);
-        $user    = auth()->user();
+        $user = auth()->user();
         $summary = $service->getStatusSummary($user);
 
         if (in_array($summary['state'], ['none', 'trialing'], true)) {
@@ -84,9 +84,9 @@ class Status extends Component
             return;
         }
 
-        $plan    = Plan::active()->where('slug', $this->selectedPlanSlug)->firstOrFail();
+        $plan = Plan::active()->where('slug', $this->selectedPlanSlug)->firstOrFail();
         $service = app(SubscriptionService::class);
-        $user    = auth()->user();
+        $user = auth()->user();
 
         $options = [];
         if ($this->selectedGateway === 'waafi') {
@@ -98,11 +98,13 @@ class Status extends Component
             $result = $service->initiateCheckout($user, $plan, $this->selectedGateway, $options);
         } catch (\Throwable $e) {
             $this->addError('payment', $e->getMessage());
+
             return;
         }
 
         if ($result['type'] === 'redirect') {
             $this->redirectAway($result['url']);
+
             return;
         }
 

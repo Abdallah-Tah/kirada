@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Contracts\SubscriptionBillingGateway;
-use App\Models\Plan;
 use App\Models\Lease;
-use App\Models\Unit;
+use App\Models\Plan;
 use App\Models\Subscription;
+use App\Models\Unit;
 use App\Models\User;
 use App\Services\SubscriptionGateways\CacBankGateway;
 use App\Services\SubscriptionGateways\StripeGateway;
@@ -157,10 +157,10 @@ class SubscriptionService
     public function gateway(string $name): SubscriptionBillingGateway
     {
         return match ($name) {
-            'stripe'  => app(StripeGateway::class),
-            'waafi'   => app(WaafiPayGateway::class),
+            'stripe' => app(StripeGateway::class),
+            'waafi' => app(WaafiPayGateway::class),
             'cacbank' => app(CacBankGateway::class),
-            default   => throw new \InvalidArgumentException("Unknown gateway: {$name}"),
+            default => throw new \InvalidArgumentException("Unknown gateway: {$name}"),
         };
     }
 

@@ -4,12 +4,14 @@ namespace App\Livewire\Messages;
 
 use App\Models\Conversation;
 use App\Services\MessagingService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Show extends Component
 {
     public Conversation $conversation;
+
     public string $newMessage = '';
 
     public function mount(Conversation $conversation): void
@@ -47,7 +49,7 @@ class Show extends Component
         $this->conversation->refresh();
         unset($this->messages);
 
-        \Flux\Flux::toast('Message sent.', 'success');
+        Flux::toast('Message sent.', 'success');
     }
 
     public function closeConversation(): void
@@ -57,7 +59,7 @@ class Show extends Component
         app(MessagingService::class)->closeConversation($this->conversation);
         $this->conversation->refresh();
 
-        \Flux\Flux::toast('Conversation closed.', 'success');
+        Flux::toast('Conversation closed.', 'success');
     }
 
     public function reopenConversation(): void
@@ -67,7 +69,7 @@ class Show extends Component
         app(MessagingService::class)->reopenConversation($this->conversation);
         $this->conversation->refresh();
 
-        \Flux\Flux::toast('Conversation reopened.', 'success');
+        Flux::toast('Conversation reopened.', 'success');
     }
 
     public function render()

@@ -4,6 +4,7 @@ namespace App\Contracts;
 
 use App\Models\Plan;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 /**
@@ -42,7 +43,7 @@ interface SubscriptionBillingGateway
      *   gateway_status?: string,
      *   stripe_customer_id?: string,
      *   plan_id?: int,
-     *   ends_at?: \Carbon\Carbon,
+     *   ends_at?: Carbon,
      * }|null
      */
     public function parseWebhook(Request $request): ?array;

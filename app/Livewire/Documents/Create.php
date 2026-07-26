@@ -8,6 +8,7 @@ use App\Models\RentInvoice;
 use App\Models\RentPayment;
 use App\Models\Tenant;
 use App\Services\DocumentService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -17,27 +18,34 @@ class Create extends Component
     use WithFileUploads;
 
     public string $title = '';
+
     public string $type = 'other';
+
     public ?int $tenant_id = null;
+
     public ?int $lease_id = null;
+
     public ?int $rent_invoice_id = null;
+
     public ?int $rent_payment_id = null;
+
     public string $visibility = 'landlord_only';
+
     public $file = null;
 
     protected function rules(): array
     {
         $rules = [
-            'title'     => 'required|string|max:255',
-            'type'      => 'required|in:lease_agreement,payment_receipt,payment_proof,id_document,other',
-            'file'      => 'required|file|mimetypes:application/pdf,image/jpeg,image/png,image/webp|max:10240',
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:lease_agreement,payment_receipt,payment_proof,id_document,other',
+            'file' => 'required|file|mimetypes:application/pdf,image/jpeg,image/png,image/webp|max:10240',
             'visibility' => 'required|in:landlord_only,tenant_visible,admin_only',
         ];
 
         $user = auth()->user();
 
         // Landlord/admin can link to any entity
-        if (!$user->hasRole('tenant')) {
+        if (! $user->hasRole('tenant')) {
             $rules['tenant_id'] = 'nullable|exists:tenants,id';
             $rules['lease_id'] = 'nullable|exists:leases,id';
             $rules['rent_invoice_id'] = 'nullable|exists:rent_invoices,id';
@@ -134,15 +142,15 @@ class Create extends Component
 
         if ($user->hasRole('admin')) {
             return [
-                'landlord_only'  => 'Landlord Only',
+                'landlord_only' => 'Landlord Only',
                 'tenant_visible' => 'Tenant Visible',
-                'admin_only'     => 'Admin Only',
+                'admin_only' => 'Admin Only',
             ];
         }
 
         if ($user->hasRole('landlord')) {
             return [
-                'landlord_only'  => 'Landlord Only',
+                'landlord_only' => 'Landlord Only',
                 'tenant_visible' => 'Tenant Visible',
             ];
         }
@@ -165,8 +173,9 @@ class Create extends Component
         if ($user->hasRole('tenant')) {
             $validated['visibility'] = 'tenant_visible';
             // Tenant can only upload payment_proof or id_document
-            if (!in_array($validated['type'], ['payment_proof', 'id_document'])) {
+            if (! in_array($validated['type'], ['payment_proof', 'id_document'])) {
                 $this->addError('type', 'Tenants can only upload payment proofs or ID documents.');
+
                 return;
             }
 
@@ -188,10 +197,11 @@ class Create extends Component
             app(DocumentService::class)->uploadDocument($validated, $this->file, $user);
         } catch (\Exception $e) {
             $this->addError('file', $e->getMessage());
+
             return;
         }
 
-        \Flux\Flux::toast('Document uploaded successfully.', 'success');
+        Flux::toast('Document uploaded successfully.', 'success');
 
         $this->redirect(route('documents.index'), navigate: true);
     }

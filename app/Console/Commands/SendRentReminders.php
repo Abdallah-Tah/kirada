@@ -9,7 +9,8 @@ use Illuminate\Support\Carbon;
 
 class SendRentReminders extends Command
 {
-    protected $signature   = 'kirada:send-rent-reminders';
+    protected $signature = 'kirada:send-rent-reminders';
+
     protected $description = 'Send scheduled rent reminders to tenants based on lease reminder settings.';
 
     /** Maps reminder key → days relative to due_date (negative = before, positive = after) */
@@ -17,13 +18,13 @@ class SendRentReminders extends Command
         'before_due_7' => -7,
         'before_due_3' => -3,
         'before_due_1' => -1,
-        'overdue_1'    =>  1,
-        'overdue_7'    =>  7,
+        'overdue_1' => 1,
+        'overdue_7' => 7,
     ];
 
     public function handle(): int
     {
-        $sent    = 0;
+        $sent = 0;
         $skipped = 0;
 
         RentInvoice::with(['lease', 'tenant.user'])
@@ -36,6 +37,7 @@ class SendRentReminders extends Command
                 $tenantUser = $invoice->tenant?->user;
                 if (! $tenantUser) {
                     $skipped++;
+
                     return;
                 }
 
@@ -71,8 +73,8 @@ class SendRentReminders extends Command
             return false;
         }
 
-        $offset  = self::KEY_OFFSETS[$key];
-        $target  = $invoice->due_date->copy()->addDays($offset)->startOfDay();
+        $offset = self::KEY_OFFSETS[$key];
+        $target = $invoice->due_date->copy()->addDays($offset)->startOfDay();
 
         return Carbon::today()->eq($target);
     }

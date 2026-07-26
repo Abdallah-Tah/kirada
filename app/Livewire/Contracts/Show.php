@@ -47,7 +47,7 @@ class Show extends Component
     public function cancelEditing(): void
     {
         $this->editing = false;
-        $this->sections   = [];
+        $this->sections = [];
         $this->headerHtml = '';
         $this->closingHtml = '';
     }
@@ -71,7 +71,7 @@ class Show extends Component
         ));
 
         $this->sections[] = [
-            'heading'    => 'Article ' . ($articleCount + 1) . ' — ',
+            'heading' => 'Article '.($articleCount + 1).' — ',
             'paragraphs' => [''],
         ];
     }
@@ -145,18 +145,18 @@ class Show extends Component
 
     private function parseBody(string $html): void
     {
-        $this->headerHtml  = '';
+        $this->headerHtml = '';
         $this->closingHtml = '';
-        $this->sections    = [];
+        $this->sections = [];
 
         if (blank($html)) {
             return;
         }
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         libxml_use_internal_errors(true);
         $dom->loadHTML(
-            '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' . $html . '</body></html>'
+            '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>'.$html.'</body></html>'
         );
         libxml_clear_errors();
 
@@ -172,7 +172,7 @@ class Show extends Component
                 continue;
             }
 
-            $tag   = strtolower($node->tagName);
+            $tag = strtolower($node->tagName);
             $class = $node->getAttribute('class');
 
             if ($tag === 'h1' || in_array($class, ['contract-title', 'contract-subtitle'])) {
@@ -210,7 +210,7 @@ class Show extends Component
 
         foreach ($this->sections as $section) {
             $heading = e($section['heading'] ?? '');
-            $html   .= "\n<h2>{$heading}</h2>";
+            $html .= "\n<h2>{$heading}</h2>";
 
             foreach ($section['paragraphs'] as $para) {
                 $content = trim($para ?? '');
@@ -220,7 +220,7 @@ class Show extends Component
                 // Tiptap outputs block HTML (<p>, <ul>, <ol>…); use as-is.
                 // Legacy inline content (no outer block tag) gets wrapped.
                 if (preg_match('/^<(p|ul|ol)\b/', $content)) {
-                    $html .= "\n" . $content;
+                    $html .= "\n".$content;
                 } else {
                     $html .= "\n<p>{$content}</p>";
                 }

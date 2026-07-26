@@ -1,6 +1,28 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<script>document.documentElement.classList.remove('dark')</script>
+
+{{-- Appearance. Must run before the first paint, or the stored theme arrives
+     one frame late and the page flashes light before going dark. --}}
+<script>
+window.Flux = {
+    applyAppearance: function (appearance) {
+        document.documentElement.classList.toggle('dark', appearance === 'dark');
+    },
+    get appearance() {
+        return window.localStorage.getItem('flux.appearance') || 'light';
+    },
+    set appearance(value) {
+        var next = value === 'dark' ? 'dark' : 'light';
+        window.localStorage.setItem('flux.appearance', next);
+        this.applyAppearance(next);
+        // Alpine can't observe a plain window property, so the toggle listens
+        // for this instead of polling.
+        window.dispatchEvent(new CustomEvent('flux-appearance-changed', { detail: next }));
+    },
+};
+
+window.Flux.applyAppearance(window.Flux.appearance);
+</script>
 
 <title>
     {{ filled($title ?? null) ? $title.' - '.config('app.name', 'Laravel') : config('app.name', 'Laravel') }}
@@ -47,18 +69,3 @@ window.KIRADA_GOOGLE_MAPS_API_KEY = @js(env('VITE_GOOGLE_MAPS_API_KEY'));
     :root { color-scheme: light; }
     [x-cloak] { display: none !important; }
 </style>
-<script>
-window.Flux = {
-    applyAppearance: function(appearance) {
-        var html = document.documentElement;
-        if (appearance === 'dark') {
-            html.classList.add('dark');
-        } else {
-            html.classList.remove('dark');
-        }
-    }
-};
-// Kirada default: always light theme
-window.localStorage.setItem('flux.appearance', 'light');
-document.documentElement.classList.remove('dark');
-</script>

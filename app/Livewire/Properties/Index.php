@@ -3,8 +3,8 @@
 namespace App\Livewire\Properties;
 
 use App\Models\Property;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,7 +13,9 @@ class Index extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $filterType = '';
+
     public string $filterStatus = '';
 
     public function updatingSearch(): void
@@ -39,12 +41,12 @@ class Index extends Component
             ->when($this->search, function ($q) {
                 $q->where(function ($q) {
                     $q->where('name', 'like', "%{$this->search}%")
-                      ->orWhere('address_line_1', 'like', "%{$this->search}%")
-                      ->orWhere('city', 'like', "%{$this->search}%");
+                        ->orWhere('address_line_1', 'like', "%{$this->search}%")
+                        ->orWhere('city', 'like', "%{$this->search}%");
                 });
             })
-            ->when($this->filterType, fn($q) => $q->where('type', $this->filterType))
-            ->when($this->filterStatus !== '', fn($q) => $q->where('is_active', $this->filterStatus === 'active'))
+            ->when($this->filterType, fn ($q) => $q->where('type', $this->filterType))
+            ->when($this->filterStatus !== '', fn ($q) => $q->where('is_active', $this->filterStatus === 'active'))
             ->latest();
 
         // Landlord sees only own; admin sees all
@@ -65,7 +67,7 @@ class Index extends Component
 
         unset($this->properties);
 
-        \Flux\Flux::toast('Property deleted.', 'success');
+        Flux::toast('Property deleted.', 'success');
     }
 
     public function render()

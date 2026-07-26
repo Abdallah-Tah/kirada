@@ -5,6 +5,7 @@ namespace App\Livewire\Properties;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Property;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -89,7 +90,7 @@ class Edit extends Component
 
         $this->property->update($validated);
 
-        \Flux\Flux::toast('Property updated successfully.', 'success');
+        Flux::toast('Property updated successfully.', 'success');
 
         $this->redirect(route('properties.index'), navigate: true);
     }

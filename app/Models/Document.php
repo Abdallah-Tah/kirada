@@ -87,18 +87,19 @@ class Document extends Model
             $size /= 1024;
             $i++;
         }
-        return round($size, 1) . ' ' . $units[$i];
+
+        return round($size, 1).' '.$units[$i];
     }
 
     public function getTypeLabelAttribute(): string
     {
         return match ($this->type) {
-            'lease_agreement'  => 'Lease Agreement',
-            'payment_receipt'  => 'Payment Receipt',
-            'payment_proof'    => 'Payment Proof',
-            'id_document'      => 'ID Document',
-            'other'            => 'Other',
-            default            => ucfirst($this->type),
+            'lease_agreement' => 'Lease Agreement',
+            'payment_receipt' => 'Payment Receipt',
+            'payment_proof' => 'Payment Proof',
+            'id_document' => 'ID Document',
+            'other' => 'Other',
+            default => ucfirst($this->type),
         };
     }
 }

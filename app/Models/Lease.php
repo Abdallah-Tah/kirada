@@ -2,10 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Contract;
-use App\Models\Document;
-use App\Models\RentInvoice;
-use App\Models\RentPayment;
 use App\Support\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -119,7 +115,7 @@ class Lease extends Model
 
     public function getLeaseNumberAttribute(): string
     {
-        return '#L-' . str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
+        return '#L-'.str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
     }
 
     public function getFormattedRentAttribute(): string

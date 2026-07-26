@@ -31,15 +31,15 @@ class Index extends Component
         $landlordId = $user->id;
 
         $propertyCount = Property::forLandlord($landlordId)->count();
-        $unitCount = Unit::whereHas('property', fn($q) => $q->forLandlord($landlordId))->count();
-        $occupiedUnits = Unit::whereHas('property', fn($q) => $q->forLandlord($landlordId))
+        $unitCount = Unit::whereHas('property', fn ($q) => $q->forLandlord($landlordId))->count();
+        $occupiedUnits = Unit::whereHas('property', fn ($q) => $q->forLandlord($landlordId))
             ->occupied()->count();
         $tenantCount = Tenant::forLandlord($landlordId)->count();
         $activeLeases = Lease::forLandlord($landlordId)->active()->count();
 
         $invoices = RentInvoice::forLandlord($landlordId);
         $totalInvoiced = (clone $invoices)->sum('amount');
-        $totalCollected = RentPayment::whereHas('rentInvoice', fn($q) => $q->forLandlord($landlordId))
+        $totalCollected = RentPayment::whereHas('rentInvoice', fn ($q) => $q->forLandlord($landlordId))
             ->sum('amount');
         $outstanding = (clone $invoices)->unpaid()->sum('amount');
         $overdue = (clone $invoices)->overdue()->sum('amount');
@@ -84,7 +84,7 @@ class Index extends Component
                 ->whereMonth('created_at', $month->month)
                 ->sum('amount');
 
-            $collected = RentPayment::whereHas('rentInvoice', fn($q) => $q->forLandlord($landlordId))
+            $collected = RentPayment::whereHas('rentInvoice', fn ($q) => $q->forLandlord($landlordId))
                 ->whereYear('created_at', $month->year)
                 ->whereMonth('created_at', $month->month)
                 ->sum('amount');
@@ -117,11 +117,11 @@ class Index extends Component
         $landlordId = auth()->id();
 
         return Property::forLandlord($landlordId)
-            ->withSum(['rentInvoices' => fn($q) => $q->unpaid()], 'amount')
+            ->withSum(['rentInvoices' => fn ($q) => $q->unpaid()], 'amount')
             ->orderByDesc('rent_invoices_sum_amount')
             ->take(5)
             ->get()
-            ->map(fn($p) => [
+            ->map(fn ($p) => [
                 'name' => $p->full_address,
                 'outstanding' => $p->rent_invoices_sum_amount ?? 0,
             ])

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Mail\TenantInvitationMail;
 use App\Models\Tenant;
 use App\Models\TenantInvitation;
 use App\Models\User;
@@ -27,7 +28,7 @@ class TenantInvitationService
     {
         $tenant = Tenant::findOrFail($tenantId);
 
-        abort_if($tenant->landlord_id !== $landlordId && !auth()->user()->hasRole('admin'), 403);
+        abort_if($tenant->landlord_id !== $landlordId && ! auth()->user()->hasRole('admin'), 403);
 
         if (empty($email) && empty($phone)) {
             throw new \DomainException('Either email or phone is required for an invitation.');
@@ -43,13 +44,13 @@ class TenantInvitationService
         }
 
         $invitation = TenantInvitation::create([
-            'landlord_id'  => $landlordId,
-            'tenant_id'     => $tenantId,
-            'email'         => $email,
-            'phone'         => $phone,
-            'token'         => $this->generateToken(),
-            'status'        => 'pending',
-            'expires_at'    => now()->addDays(self::DEFAULT_EXPIRY_DAYS),
+            'landlord_id' => $landlordId,
+            'tenant_id' => $tenantId,
+            'email' => $email,
+            'phone' => $phone,
+            'token' => $this->generateToken(),
+            'status' => 'pending',
+            'expires_at' => now()->addDays(self::DEFAULT_EXPIRY_DAYS),
         ]);
 
         $this->sendInvitationEmail($invitation);
@@ -62,12 +63,12 @@ class TenantInvitationService
      */
     public function resendInvitation(TenantInvitation $invitation): TenantInvitation
     {
-        if (!$invitation->isPending()) {
+        if (! $invitation->isPending()) {
             throw new \DomainException('Only pending invitations can be resent.');
         }
 
         $invitation->update([
-            'token'      => $this->generateToken(),
+            'token' => $this->generateToken(),
             'expires_at' => now()->addDays(self::DEFAULT_EXPIRY_DAYS),
         ]);
 
@@ -81,7 +82,7 @@ class TenantInvitationService
      */
     public function cancelInvitation(TenantInvitation $invitation): TenantInvitation
     {
-        if (!$invitation->isPending()) {
+        if (! $invitation->isPending()) {
             throw new \DomainException('Only pending invitations can be cancelled.');
         }
 
@@ -95,16 +96,16 @@ class TenantInvitationService
      */
     protected function sendInvitationEmail(TenantInvitation $invitation): void
     {
-        if (!$invitation->email) {
+        if (! $invitation->email) {
             return;
         }
 
         $tenant = $invitation->tenant;
         $landlord = $invitation->landlord;
-        $tenantName = $tenant ? trim($tenant->first_name . ' ' . $tenant->last_name) : 'Tenant';
+        $tenantName = $tenant ? trim($tenant->first_name.' '.$tenant->last_name) : 'Tenant';
         $landlordName = $landlord?->name ?? 'Your Landlord';
 
-        Mail::to($invitation->email)->send(new \App\Mail\TenantInvitationMail(
+        Mail::to($invitation->email)->send(new TenantInvitationMail(
             $invitation,
             $tenantName,
             $landlordName,
@@ -128,7 +129,7 @@ class TenantInvitationService
     {
         $invitation = TenantInvitation::where('token', $token)->first();
 
-        if (!$invitation) {
+        if (! $invitation) {
             return null;
         }
 
@@ -147,7 +148,7 @@ class TenantInvitationService
      */
     public function acceptInvitation(TenantInvitation $invitation, string $name, string $email, string $password): User
     {
-        if (!$invitation->isPending()) {
+        if (! $invitation->isPending()) {
             throw new \DomainException('This invitation is no longer pending.');
         }
 
@@ -161,7 +162,7 @@ class TenantInvitationService
 
         if ($user) {
             // Link existing user — verify password
-            if (!password_verify($password, $user->password)) {
+            if (! password_verify($password, $user->password)) {
                 throw new \DomainException('An account with this email already exists. Please provide the correct password to link it.');
             }
         } else {
@@ -172,18 +173,18 @@ class TenantInvitationService
 
             // Create new user
             $user = User::create([
-                'name'               => $name,
-                'email'              => $email,
-                'password'            => $password,
-                'email_verified_at'   => now(),
-                'country_id'          => $invitation->landlord->country_id,
+                'name' => $name,
+                'email' => $email,
+                'password' => $password,
+                'email_verified_at' => now(),
+                'country_id' => $invitation->landlord->country_id,
                 'preferred_language' => $invitation->landlord->preferred_language ?? 'en',
-                'phone_country_code'  => $invitation->landlord->phone_country_code,
+                'phone_country_code' => $invitation->landlord->phone_country_code,
             ]);
         }
 
         // Assign tenant role if not already
-        if (!$user->hasRole('tenant')) {
+        if (! $user->hasRole('tenant')) {
             $user->assignRole('tenant');
         }
 
@@ -191,13 +192,13 @@ class TenantInvitationService
         $tenant = $invitation->tenant;
         $tenant->update([
             'user_id' => $user->id,
-            'email'   => $tenant->email ?? $email,
+            'email' => $tenant->email ?? $email,
         ]);
 
         // Mark invitation as accepted
         $invitation->update([
-            'status'           => 'accepted',
-            'accepted_at'      => now(),
+            'status' => 'accepted',
+            'accepted_at' => now(),
             'accepted_user_id' => $user->id,
         ]);
 

@@ -8,8 +8,8 @@ use App\Models\RentInvoice;
 use App\Models\RentInvoiceLineItem;
 use App\Notifications\LateFeeApplied;
 use App\Notifications\RentInvoiceGenerated;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class RentInvoiceService

@@ -5,38 +5,49 @@ namespace App\Livewire\RentInvoices;
 use App\Models\Lease;
 use App\Models\RentInvoice;
 use App\Services\RentInvoiceService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Create extends Component
 {
     public ?int $lease_id = null;
+
     public ?int $property_id = null;
+
     public ?int $unit_id = null;
+
     public ?int $tenant_id = null;
+
     public string $invoice_month = '';
+
     public string $due_date = '';
+
     public string $amount = '';
+
     public string $status = 'draft';
+
     public ?string $notes = null;
 
     // Auto-filled display fields (read-only)
     public ?string $property_name = null;
+
     public ?string $unit_number = null;
+
     public ?string $tenant_name = null;
 
     protected function rules(): array
     {
         return [
-            'lease_id'      => 'required|exists:leases,id',
-            'property_id'   => 'required|exists:properties,id',
-            'unit_id'       => 'required|exists:units,id',
-            'tenant_id'     => 'required|exists:tenants,id',
+            'lease_id' => 'required|exists:leases,id',
+            'property_id' => 'required|exists:properties,id',
+            'unit_id' => 'required|exists:units,id',
+            'tenant_id' => 'required|exists:tenants,id',
             'invoice_month' => 'required|date',
-            'due_date'      => 'required|date',
-            'amount'        => 'required|numeric|min:0|max:99999999',
-            'status'        => 'required|in:draft,unpaid,partially_paid,paid,overdue,cancelled',
-            'notes'         => 'nullable|string|max:2000',
+            'due_date' => 'required|date',
+            'amount' => 'required|numeric|min:0|max:99999999',
+            'status' => 'required|in:draft,unpaid,partially_paid,paid,overdue,cancelled',
+            'notes' => 'nullable|string|max:2000',
         ];
     }
 
@@ -59,13 +70,13 @@ class Create extends Component
      */
     public function updatedLeaseId(): void
     {
-        if (!$this->lease_id) {
+        if (! $this->lease_id) {
             return;
         }
 
         $lease = $this->leases->firstWhere('id', $this->lease_id);
 
-        if (!$lease) {
+        if (! $lease) {
             return;
         }
 
@@ -83,7 +94,7 @@ class Create extends Component
 
         $this->property_name = $lease->property?->name;
         $this->unit_number = $lease->unit?->unit_number;
-        $this->tenant_name = trim(($lease->tenant?->first_name ?? '') . ' ' . ($lease->tenant?->last_name ?? ''));
+        $this->tenant_name = trim(($lease->tenant?->first_name ?? '').' '.($lease->tenant?->last_name ?? ''));
     }
 
     public function save(): void
@@ -107,10 +118,11 @@ class Create extends Component
             ]);
         } catch (\DomainException $e) {
             $this->addError('lease_id', $e->getMessage());
+
             return;
         }
 
-        \Flux\Flux::toast('Invoice created successfully.', 'success');
+        Flux::toast('Invoice created successfully.', 'success');
 
         $this->redirect(route('rent-invoices.index'), navigate: true);
     }

@@ -5,6 +5,7 @@ namespace App\Livewire\TenantInvitations;
 use App\Models\Tenant;
 use App\Models\TenantInvitation;
 use App\Services\TenantInvitationService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -14,11 +15,14 @@ class Index extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $filterStatus = '';
 
     // Create form
     public ?int $tenant_id = null;
+
     public ?string $email = null;
+
     public ?string $phone = null;
 
     // Copied link feedback
@@ -38,8 +42,8 @@ class Index extends Component
     {
         return [
             'tenant_id' => 'required|exists:tenants,id',
-            'email'     => 'nullable|email|max:255',
-            'phone'     => 'nullable|string|max:30',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:30',
         ];
     }
 
@@ -54,11 +58,11 @@ class Index extends Component
             ->when($this->search, function ($q) {
                 $q->whereHas('tenant', function ($q) {
                     $q->where('first_name', 'like', "%{$this->search}%")
-                      ->orWhere('last_name', 'like', "%{$this->search}%");
+                        ->orWhere('last_name', 'like', "%{$this->search}%");
                 })->orWhere('email', 'like', "%{$this->search}%")
-                  ->orWhere('phone', 'like', "%{$this->search}%");
+                    ->orWhere('phone', 'like', "%{$this->search}%");
             })
-            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->latest();
 
         if (auth()->user()->hasRole('landlord')) {
@@ -90,6 +94,7 @@ class Index extends Component
 
         if (empty($validated['email']) && empty($validated['phone'])) {
             $this->addError('email', 'Either email or phone is required.');
+
             return;
         }
 
@@ -112,10 +117,11 @@ class Index extends Component
             );
         } catch (\DomainException $e) {
             $this->addError('tenant_id', $e->getMessage());
+
             return;
         }
 
-        \Flux\Flux::toast('Invitation created and email sent to the tenant.', 'success');
+        Flux::toast('Invitation created and email sent to the tenant.', 'success');
 
         $this->reset(['tenant_id', 'email', 'phone']);
         unset($this->invitations);
@@ -130,11 +136,12 @@ class Index extends Component
         try {
             app(TenantInvitationService::class)->resendInvitation($invitation);
         } catch (\DomainException $e) {
-            \Flux\Flux::toast($e->getMessage(), 'error');
+            Flux::toast($e->getMessage(), 'error');
+
             return;
         }
 
-        \Flux\Flux::toast('Invitation resent and email sent to the tenant.', 'success');
+        Flux::toast('Invitation resent and email sent to the tenant.', 'success');
         unset($this->invitations);
     }
 
@@ -146,11 +153,12 @@ class Index extends Component
         try {
             app(TenantInvitationService::class)->cancelInvitation($invitation);
         } catch (\DomainException $e) {
-            \Flux\Flux::toast($e->getMessage(), 'error');
+            Flux::toast($e->getMessage(), 'error');
+
             return;
         }
 
-        \Flux\Flux::toast('Invitation cancelled.', 'success');
+        Flux::toast('Invitation cancelled.', 'success');
         unset($this->invitations);
     }
 
@@ -161,7 +169,7 @@ class Index extends Component
 
         $invitation->delete();
 
-        \Flux\Flux::toast('Invitation deleted.', 'success');
+        Flux::toast('Invitation deleted.', 'success');
         unset($this->invitations);
     }
 
@@ -171,7 +179,7 @@ class Index extends Component
         $this->authorize('view', $invitation);
 
         $this->copiedId = $id;
-        \Flux\Flux::toast('Link: ' . $invitation->accept_url, 'success');
+        Flux::toast('Link: '.$invitation->accept_url, 'success');
     }
 
     public function render()

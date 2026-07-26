@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 class TenantInvitation extends Model
 {
@@ -26,7 +25,7 @@ class TenantInvitation extends Model
     ];
 
     protected $casts = [
-        'expires_at'  => 'datetime',
+        'expires_at' => 'datetime',
         'accepted_at' => 'datetime',
     ];
 
@@ -84,6 +83,6 @@ class TenantInvitation extends Model
 
     public function getAcceptUrlAttribute(): string
     {
-        return url('/tenant-invitations/' . $this->token);
+        return url('/tenant-invitations/'.$this->token);
     }
 }

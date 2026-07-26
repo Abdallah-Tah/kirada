@@ -34,7 +34,7 @@ class SecurityHeadersMiddleware
             "font-src 'self' data: https://fonts.bunny.net",
             "media-src 'self'",
             "connect-src 'self' https://maps.googleapis.com https://api.stripe.com",
-            "frame-src https://js.stripe.com https://hooks.stripe.com",
+            'frame-src https://js.stripe.com https://hooks.stripe.com',
             "base-uri 'self'",
             "form-action 'self'",
         ]);

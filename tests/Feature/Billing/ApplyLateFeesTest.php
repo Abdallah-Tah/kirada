@@ -20,7 +20,9 @@ class ApplyLateFeesTest extends TestCase
     use RefreshDatabase;
 
     private User $landlord;
+
     private Lease $lease;
+
     private Tenant $tenant;
 
     protected function setUp(): void
@@ -36,63 +38,63 @@ class ApplyLateFeesTest extends TestCase
         $tenantUser->assignRole('tenant');
 
         $property = Property::create([
-            'landlord_id'    => $this->landlord->id,
-            'name'           => 'Test Property',
-            'type'           => 'apartment',
+            'landlord_id' => $this->landlord->id,
+            'name' => 'Test Property',
+            'type' => 'apartment',
             'address_line_1' => '1 Rue de la Paix',
-            'city'           => 'Djibouti',
-            'is_active'      => true,
+            'city' => 'Djibouti',
+            'is_active' => true,
         ]);
 
         $unit = Unit::create([
-            'property_id'  => $property->id,
-            'unit_number'  => 'A1',
-            'type'         => 'apartment',
+            'property_id' => $property->id,
+            'unit_number' => 'A1',
+            'type' => 'apartment',
             'monthly_rent' => 50000,
-            'status'       => 'occupied',
+            'status' => 'occupied',
         ]);
 
         $this->tenant = Tenant::create([
             'landlord_id' => $this->landlord->id,
-            'user_id'     => $tenantUser->id,
-            'first_name'  => 'Jane',
-            'last_name'   => 'Doe',
-            'phone'       => '+25377000001',
-            'email'       => $tenantUser->email,
-            'status'      => 'active',
+            'user_id' => $tenantUser->id,
+            'first_name' => 'Jane',
+            'last_name' => 'Doe',
+            'phone' => '+25377000001',
+            'email' => $tenantUser->email,
+            'status' => 'active',
         ]);
 
         $this->lease = Lease::create([
-            'landlord_id'                        => $this->landlord->id,
-            'property_id'                        => $property->id,
-            'unit_id'                            => $unit->id,
-            'tenant_id'                          => $this->tenant->id,
-            'start_date'                         => now()->subMonths(2)->toDateString(),
-            'monthly_rent'                       => 50000,
-            'payment_due_day'                    => 1,
-            'status'                             => 'active',
-            'auto_generate_invoices'             => true,
+            'landlord_id' => $this->landlord->id,
+            'property_id' => $property->id,
+            'unit_id' => $unit->id,
+            'tenant_id' => $this->tenant->id,
+            'start_date' => now()->subMonths(2)->toDateString(),
+            'monthly_rent' => 50000,
+            'payment_due_day' => 1,
+            'status' => 'active',
+            'auto_generate_invoices' => true,
             'invoice_generation_days_before_due' => 7,
-            'grace_period_days'                  => 5,
-            'late_fee_type'                      => 'fixed',
-            'late_fee_amount'                    => 2000,
-            'late_fee_frequency'                 => 'once',
+            'grace_period_days' => 5,
+            'late_fee_type' => 'fixed',
+            'late_fee_amount' => 2000,
+            'late_fee_frequency' => 'once',
         ]);
     }
 
     private function makeOverdueInvoice(string $dueDate): RentInvoice
     {
         return RentInvoice::create([
-            'landlord_id'   => $this->landlord->id,
-            'lease_id'      => $this->lease->id,
-            'property_id'   => $this->lease->property_id,
-            'unit_id'       => $this->lease->unit_id,
-            'tenant_id'     => $this->tenant->id,
-            'invoice_number'=> 'INV-TEST-' . rand(1000, 9999),
+            'landlord_id' => $this->landlord->id,
+            'lease_id' => $this->lease->id,
+            'property_id' => $this->lease->property_id,
+            'unit_id' => $this->lease->unit_id,
+            'tenant_id' => $this->tenant->id,
+            'invoice_number' => 'INV-TEST-'.rand(1000, 9999),
             'invoice_month' => '2026-06-01',
-            'due_date'      => $dueDate,
-            'amount'        => 50000,
-            'status'        => 'overdue',
+            'due_date' => $dueDate,
+            'amount' => 50000,
+            'status' => 'overdue',
         ]);
     }
 
@@ -106,7 +108,7 @@ class ApplyLateFeesTest extends TestCase
         $invoice = $this->makeOverdueInvoice('2026-06-01');
 
         $service = app(RentInvoiceService::class);
-        $result  = $service->applyLateFee($invoice);
+        $result = $service->applyLateFee($invoice);
 
         $this->assertTrue($result);
         $this->assertEquals(1, RentInvoiceLineItem::where('rent_invoice_id', $invoice->id)
@@ -127,7 +129,7 @@ class ApplyLateFeesTest extends TestCase
         $invoice = $this->makeOverdueInvoice('2026-06-01');
 
         $service = app(RentInvoiceService::class);
-        $result  = $service->applyLateFee($invoice);
+        $result = $service->applyLateFee($invoice);
 
         $this->assertFalse($result);
         $this->assertEquals(0, RentInvoiceLineItem::count());
@@ -143,7 +145,7 @@ class ApplyLateFeesTest extends TestCase
         $invoice = $this->makeOverdueInvoice('2026-06-01');
         $service = app(RentInvoiceService::class);
 
-        $first  = $service->applyLateFee($invoice);
+        $first = $service->applyLateFee($invoice);
         $second = $service->applyLateFee($invoice);
 
         $this->assertTrue($first);

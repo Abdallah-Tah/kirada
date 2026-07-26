@@ -8,13 +8,14 @@ use Illuminate\Console\Command;
 
 class GenerateRentInvoices extends Command
 {
-    protected $signature   = 'kirada:generate-rent-invoices';
+    protected $signature = 'kirada:generate-rent-invoices';
+
     protected $description = 'Auto-generate rent invoices for active leases approaching their due date.';
 
     public function handle(RentInvoiceService $service): int
     {
         $generated = 0;
-        $skipped   = 0;
+        $skipped = 0;
 
         Lease::with(['tenant.user', 'property', 'unit'])
             ->where('status', 'active')

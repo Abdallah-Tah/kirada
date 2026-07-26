@@ -13,11 +13,11 @@ class DashboardRedirectService
     public function redirectFor(User $user): string
     {
         return match ($user->getRoleNames()->first()) {
-            'admin'       => 'admin.dashboard',
-            'landlord'    => 'landlord.dashboard',
-            'tenant'      => 'tenant.dashboard',
+            'admin' => 'admin.dashboard',
+            'landlord' => 'landlord.dashboard',
+            'tenant' => 'tenant.dashboard',
             'maintenance' => 'maintenance.dashboard',
-            default       => 'home',
+            default => 'home',
         };
     }
 }

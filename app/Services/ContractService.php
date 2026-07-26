@@ -279,7 +279,7 @@ class ContractService
         $canvas = $dompdf->getCanvas();
         $font = $dompdf->getFontMetrics()->getFont('DejaVu Sans');
         $ref = $contract->reference;
-        $date = \Illuminate\Support\Carbon::parse($contract->created_at)->format('d/m/Y');
+        $date = Carbon::parse($contract->created_at)->format('d/m/Y');
 
         // Footer: page numbers (anti-substitution)
         $canvas->page_text(200, 820, "{$ref} — Page {PAGE_NUM} / {PAGE_COUNT} — Kirada · Document à valeur probante", $font, 8, [0.56, 0.56, 0.56]);

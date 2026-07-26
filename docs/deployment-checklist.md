@@ -1,6 +1,6 @@
 # Kirada Deployment Checklist
 
-> Last updated: 2026-06-27 (Phase 17)
+> Last updated: 2026-07-25 (maintenance provider directory)
 
 ## 1. Server Requirements
 
@@ -68,6 +68,9 @@ php artisan key:generate
 # - DB_PASSWORD=<strong-password>
 # - SESSION_DOMAIN=.your-domain.com
 # - SESSION_SECURE_COOKIE=true
+# - TRUSTED_PROXIES=<edge IP/CIDR>  (loopback for a local cloudflared;
+#   NEVER '*' on a public origin — it lets clients spoof X-Forwarded-For
+#   and defeat the IP-keyed rate limits)
 # - MAIL_* (real SMTP credentials)
 # - OPENAI_API_KEY= (optional)
 # - KIRADA_ADMIN_EMAIL= (real admin email)
@@ -88,7 +91,10 @@ npm run build
 # Storage link
 php artisan storage:link
 
-# Cache optimization
+# Cache optimization — ALWAYS clear first. A stale bootstrap/cache/config.php
+# overrides .env and phpunit.xml, and has previously pointed the test suite at
+# the live MySQL database.
+php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
@@ -313,8 +319,8 @@ tar -czf /backups/kirada-app-$(date +%Y%m%d).tar.gz \
 
 ```bash
 # Run all checks
-php artisan test                    # Should pass (38 tests, 10 skipped)
-php artisan route:list              # Should show 90 routes
+composer test                       # Should pass (153 tests, 143 passed, 10 skipped)
+php artisan route:list              # Should show 107 routes
 php artisan migrate:status          # All migrations should be "Ran"
 php artisan config:cache            # Cache config
 php artisan route:cache             # Cache routes
@@ -328,6 +334,11 @@ Verify in browser:
 - [ ] Landlord can log in and see dashboard with metrics
 - [ ] Tenant can log in and see dashboard
 - [ ] Maintenance can log in and see dashboard
+- [ ] Maintenance can register from `/register` (account type: Maintenance pro)
+- [ ] Maintenance can publish a provider profile
+- [ ] Landlord can find that provider in `/maintenance-directory` and invite them
+- [ ] Provider accepts the invitation at `/maintenance-network/invitations`
+- [ ] Provider then appears in the assignment dropdown on a maintenance request
 - [ ] Properties/Units/Tenants/Leases CRUD works
 - [ ] Invoice creation from lease works
 - [ ] Payment recording + confirmation works

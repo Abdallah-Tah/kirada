@@ -63,7 +63,7 @@ class Tenant extends Model
 
     public function getFullNameAttribute(): string
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return trim($this->first_name.' '.$this->last_name);
     }
 
     /**
@@ -71,10 +71,10 @@ class Tenant extends Model
      */
     public function getIdDocumentUrlAttribute(): ?string
     {
-        if (!$this->id_document_path) {
+        if (! $this->id_document_path) {
             return null;
         }
 
-        return asset('storage/' . $this->id_document_path);
+        return asset('storage/'.$this->id_document_path);
     }
 }

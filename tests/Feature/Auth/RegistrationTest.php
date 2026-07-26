@@ -3,6 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\Plan;
+use App\Models\User;
 use Database\Seeders\CountryCurrencySeeder;
 use Database\Seeders\PlanSeeder;
 use Database\Seeders\RolePermissionSeeder;
@@ -96,7 +97,7 @@ class RegistrationTest extends TestCase
             'privacy_accepted' => '1',
         ]);
 
-        $user = \App\Models\User::where('email', 'legal@example.com')->first();
+        $user = User::where('email', 'legal@example.com')->first();
         $this->assertNotNull($user->terms_accepted_at);
         $this->assertNotNull($user->privacy_accepted_at);
 

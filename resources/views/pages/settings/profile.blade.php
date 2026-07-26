@@ -16,6 +16,9 @@ new #[Title('Profile settings')] class extends Component {
 
     public string $name = '';
     public string $email = '';
+    public bool $hasUnverifiedEmail = false;
+    public bool $showDeleteUser = false;
+    public string $status = '';
 
     /**
      * Mount the component.
@@ -96,7 +99,7 @@ new #[Title('Profile settings')] class extends Component {
                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
 
                 {{-- @chisel-email-verification --}}
-                @if ($hasUnverifiedEmail)
+                @if ($hasUnverifiedEmail ?? false)
                     <div>
                         <flux:text class="mt-4">
                             {{ __('Your email address is unverified.') }}
@@ -127,7 +130,7 @@ new #[Title('Profile settings')] class extends Component {
         </form>
 
         {{-- @chisel-email-verification --}}
-        @if ($showDeleteUser)
+        @if ($showDeleteUser ?? false)
         {{-- @end-chisel-email-verification --}}
             <livewire:pages::settings.delete-user-form />
         {{-- @chisel-email-verification --}}

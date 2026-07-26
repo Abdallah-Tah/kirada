@@ -45,10 +45,13 @@ npm run dev
 ## Tests
 
 ```bash
-php artisan test
+composer test
 ```
 
-The current verified test suite passes with 43 tests and 10 skipped.
+`composer test` runs `artisan optimize:clear` first. This matters: a cached
+`bootstrap/cache/config.php` overrides `phpunit.xml`, which points the destructive
+`RefreshDatabase` trait at the real MySQL database instead of sqlite `:memory:`.
+`tests/TestCase.php` fails fast if that ever happens again.
 
 ## Repository
 

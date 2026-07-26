@@ -66,7 +66,7 @@ class ConversationPolicy
      */
     public function sendMessage(User $user, Conversation $conversation): bool
     {
-        if (!$conversation->isOpen()) {
+        if (! $conversation->isOpen()) {
             return false;
         }
 

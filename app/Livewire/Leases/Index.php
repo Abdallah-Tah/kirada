@@ -4,6 +4,7 @@ namespace App\Livewire\Leases;
 
 use App\Models\Lease;
 use App\Services\LeaseService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,6 +14,7 @@ class Index extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $filterStatus = '';
 
     public function updatingSearch(): void
@@ -33,14 +35,14 @@ class Index extends Component
             ->when($this->search, function ($q) {
                 $q->whereHas('tenant', function ($q) {
                     $q->where('first_name', 'like', "%{$this->search}%")
-                      ->orWhere('last_name', 'like', "%{$this->search}%");
+                        ->orWhere('last_name', 'like', "%{$this->search}%");
                 })->orWhereHas('property', function ($q) {
                     $q->where('name', 'like', "%{$this->search}%");
                 })->orWhereHas('unit', function ($q) {
                     $q->where('unit_number', 'like', "%{$this->search}%");
                 });
             })
-            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->latest();
 
         if (auth()->user()->hasRole('landlord')) {
@@ -60,7 +62,7 @@ class Index extends Component
 
         unset($this->leases);
 
-        \Flux\Flux::toast('Lease ended. Unit marked as vacant.', 'success');
+        Flux::toast('Lease ended. Unit marked as vacant.', 'success');
     }
 
     public function cancelLease(int $id): void
@@ -73,7 +75,7 @@ class Index extends Component
 
         unset($this->leases);
 
-        \Flux\Flux::toast('Lease cancelled. Unit marked as vacant.', 'success');
+        Flux::toast('Lease cancelled. Unit marked as vacant.', 'success');
     }
 
     public function delete(int $id): void
@@ -86,7 +88,7 @@ class Index extends Component
 
         unset($this->leases);
 
-        \Flux\Flux::toast('Lease deleted.', 'success');
+        Flux::toast('Lease deleted.', 'success');
     }
 
     public function render()

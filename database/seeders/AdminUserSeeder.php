@@ -37,6 +37,7 @@ class AdminUserSeeder extends Seeder
 
             $this->command->info("Production admin created: {$adminEmail}");
             $this->command->warn('Change the admin password immediately after first login!');
+
             return;
         }
 

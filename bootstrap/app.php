@@ -18,10 +18,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Behind Cloudflare Tunnel (cloudflared on loopback): trust the proxy so
-        // X-Forwarded-Proto=https is honored and asset()/url() emit https URLs.
+        // Behind a reverse proxy (Cloudflare Tunnel on loopback, or Nginx): trust it
+        // so X-Forwarded-Proto=https is honored and asset()/url() emit https URLs.
         // Prevents mixed-content (http) asset URLs that break images over the tunnel.
-        $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_FOR |
+        //
+        // TRUSTED_PROXIES must name the actual edge — a public origin that trusts '*'
+        // lets any client spoof X-Forwarded-For (defeating the IP-keyed throttles) and
+        // X-Forwarded-Proto (faking $request->isSecure()). Defaults to loopback.
+        $proxies = env('TRUSTED_PROXIES', '127.0.0.1,::1');
+
+        $middleware->trustProxies(at: $proxies === '*' ? '*' : array_values(array_filter(
+            array_map('trim', explode(',', (string) $proxies)),
+        )), headers: Request::HEADER_X_FORWARDED_FOR |
             Request::HEADER_X_FORWARDED_HOST |
             Request::HEADER_X_FORWARDED_PORT |
             Request::HEADER_X_FORWARDED_PROTO
@@ -36,6 +44,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'webhooks/payments/*',
             'webhooks/stripe',
+        ]);
+
+        // The shell every authenticated feature route sits behind. Centralised so
+        // the rate limit can't be forgotten on a new route group — 120/min per
+        // user covers page loads and form posts (Livewire registers its own
+        // /livewire/update route, which this does not cover).
+        $middleware->group('kirada-auth', [
+            'auth',
+            'verified',
+            'throttle:kirada-authenticated-actions',
         ]);
 
         $middleware->alias([

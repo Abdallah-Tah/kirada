@@ -4,6 +4,7 @@ namespace App\Livewire\Documents;
 
 use App\Models\Document;
 use App\Services\DocumentService;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,6 +14,7 @@ class Index extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $filterType = '';
 
     public function updatingSearch(): void
@@ -33,11 +35,11 @@ class Index extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('title', 'like', "%{$this->search}%")
-                  ->orWhere('original_filename', 'like', "%{$this->search}%")
-                  ->orWhereHas('tenant', function ($q) {
-                      $q->where('first_name', 'like', "%{$this->search}%")
-                        ->orWhere('last_name', 'like', "%{$this->search}%");
-                  });
+                    ->orWhere('original_filename', 'like', "%{$this->search}%")
+                    ->orWhereHas('tenant', function ($q) {
+                        $q->where('first_name', 'like', "%{$this->search}%")
+                            ->orWhere('last_name', 'like', "%{$this->search}%");
+                    });
             });
         }
 
@@ -57,7 +59,7 @@ class Index extends Component
 
         unset($this->documents);
 
-        \Flux\Flux::toast('Document deleted.', 'success');
+        Flux::toast('Document deleted.', 'success');
     }
 
     public function render()
