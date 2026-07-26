@@ -1,0 +1,3607 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Using nullsafe property access "\?\-\>version" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Actions/Fortify/CreateNewUser.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$reminder_schedule\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Console/Commands/SendRentReminders.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Console/Commands/SendRentReminders.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>reminder_schedule" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Console/Commands/SendRentReminders.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Console/Commands/StripeSyncPlans.php
+
+		-
+			message: '#^Parameter \#1 \$params of static method Stripe\\Product\:\:create\(\) expects array\{active\?\: bool, default_price_data\?\: array\{currency\: string, currency_options\?\: array\<string, array\{custom_unit_amount\?\: array\{enabled\: bool, maximum\?\: int, minimum\?\: int, preset\?\: int\}, tax_behavior\?\: string, tiers\?\: array\<array\{flat_amount\?\: int, flat_amount_decimal\?\: string, unit_amount\?\: int, unit_amount_decimal\?\: string, up_to\: array\|int\|string\}\>, unit_amount\?\: int, unit_amount_decimal\?\: string\}\>, custom_unit_amount\?\: array\{enabled\: bool, maximum\?\: int, minimum\?\: int, preset\?\: int\}, metadata\?\: array\<string, string\>, recurring\?\: array\{interval\: string, interval_count\?\: int\}, tax_behavior\?\: string, unit_amount\?\: int, unit_amount_decimal\?\: string\}, description\?\: string, expand\?\: array\<string\>, id\?\: string, images\?\: array\<string\>, marketing_features\?\: array\<array\{name\: string\}\>, metadata\?\: array\<string, string\>, \.\.\.\}\|null, array\{name\: non\-falsy\-string, metadata\: array\{kirada_plan_slug\: string, kirada_plan_id\: int\}\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/StripeSyncPlans.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>code" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Console/Commands/StripeSyncPlans.php
+
+		-
+			message: '#^Method App\\Contracts\\SubscriptionBillingGateway\:\:initiate\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Contracts/SubscriptionBillingGateway.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$file_path\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$mime_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$original_filename\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/ContractController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MaintenanceAttachmentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\MaintenanceAttachmentController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/MaintenanceAttachmentController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:notify\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/PaymentWebhookController.php
+
+		-
+			message: '#^Offset ''gateway_event_id'' on array\{payment_reference\: string, amount\: float, method\?\: string, reference_number\?\: string\} on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Http/Controllers/PaymentWebhookController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\StripeWebhookController\:\:handle\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/StripeWebhookController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\StripeWebhookController\:\:handleInvoice\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/StripeWebhookController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\StripeWebhookController\:\:handleSubscription\(\) has parameter \$event with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/StripeWebhookController.php
+
+		-
+			message: '#^Offset ''event'' on array\{event\: string, gateway_subscription_id\?\: string, gateway_status\?\: string, stripe_customer_id\?\: string, plan_id\?\: int, ends_at\?\: Carbon\\Carbon\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Http/Controllers/StripeWebhookController.php
+
+		-
+			message: '#^Property App\\Http\\Controllers\\StripeWebhookController\:\:\$subscriptions is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Http/Controllers/StripeWebhookController.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\LocaleMiddleware\:\:resolveLocale\(\) should return string but returns array\|string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/LocaleMiddleware.php
+
+		-
+			message: '#^Parameter \#1 \$locale of method App\\Http\\Middleware\\LocaleMiddleware\:\:isSupported\(\) expects string\|null, array\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/LocaleMiddleware.php
+
+		-
+			message: '#^Method App\\Livewire\\Contracts\\Create\:\:leases\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Contracts/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Contracts\\Create\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Contracts/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Contracts\\Create\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Contracts/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Contracts\\Create\:\:templateOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Contracts/Create.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Lease\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Livewire/Contracts/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Contracts\\Index\:\:contracts\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Contracts/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Contracts\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Contracts/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Contract\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Contracts/Index.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Contracts/Show.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Contracts/Show.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Contracts/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Contracts\\Show\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Contracts/Show.php
+
+		-
+			message: '#^Parameter \#1 \$signature of method App\\Services\\ContractService\:\:sendSignatureRequest\(\) expects App\\Models\\ContractSignature, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Contracts/Show.php
+
+		-
+			message: '#^Property App\\Livewire\\Contracts\\Show\:\:\$sections type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Contracts/Show.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Contracts\\Sign\:\:\$signature\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Livewire/Contracts/Sign.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:isSent\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Contracts/Sign.php
+
+		-
+			message: '#^Method App\\Livewire\\Contracts\\Sign\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Contracts/Sign.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Tenant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Tenant\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Documents/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Documents\\Create\:\:allowedVisibilities\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Documents/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Documents\\Create\:\:invoices\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Documents/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Documents\\Create\:\:leases\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Documents/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Documents\\Create\:\:payments\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Documents/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Documents\\Create\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Documents/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Documents\\Create\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Documents/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Documents\\Create\:\:tenants\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Documents/Create.php
+
+		-
+			message: '#^Property App\\Livewire\\Documents\\Create\:\:\$file has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Documents/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Documents\\Index\:\:documents\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Documents/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Documents\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Documents/Index.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Leases\\Create\:\:\$units\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Tenant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Tenant\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Unit\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Unit\>\:\:\$property\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:forLandlord\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Create\:\:properties\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Create\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Create\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Create\:\:tenants\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Create\:\:units\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Property\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Tenant\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Property App\\Livewire\\Leases\\Create\:\:\$reminder_keys type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leases/Create.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Tenant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Tenant\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Unit\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Unit\>\:\:\$property\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:forLandlord\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Edit\:\:properties\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Edit\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Edit\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Edit\:\:tenants\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Edit\:\:units\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Property\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Tenant\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Property App\\Livewire\\Leases\\Edit\:\:\$reminder_keys type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Carbon\\CarbonImmutable\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/Leases/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Index\:\:leases\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Lease\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Leases/Index.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Leases\\Show\:\:\$contract\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Leases\\Show\:\:\$invoices\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\Leases\\Show\:\:\$payments\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Show\:\:contract\(\) should return App\\Models\\Contract\|null but returns Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Show\:\:documents\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Show\:\:history\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Show\:\:invoices\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Show\:\:payments\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Show\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Leases\\Show\:\:stats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Leases/Show.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Create\:\:categoryOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Create\:\:properties\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Create\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Create\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Create\:\:tenants\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Create\:\:units\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Create.php
+
+		-
+			message: '#^Property App\\Livewire\\MaintenanceRequests\\Create\:\:\$photos type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Index\:\:requests\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Index.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\MaintenanceRequests\\Show\:\:\$canManage\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\MaintenanceRequests\\Show\:\:\$canMessage\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Show\:\:allowedTransitions\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Show\:\:canManage\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Show\:\:maintenanceUsers\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Show\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Show\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Show\:\:timeline\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Show\:\:visibleAttachments\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\MaintenanceRequests\\Show\:\:visibleComments\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Property App\\Livewire\\MaintenanceRequests\\Show\:\:\$commentPhotos type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Property App\\Livewire\\MaintenanceRequests\\Show\:\:\$statusPhotos type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/MaintenanceRequests/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Messages\\Index\:\:availableTenants\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Messages/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Messages\\Index\:\:conversations\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Messages/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Messages\\Index\:\:currentTenant\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Messages/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Messages\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Messages/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Messages\\Show\:\:messages\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Messages/Show.php
+
+		-
+			message: '#^Method App\\Livewire\\Messages\\Show\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Messages/Show.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\:\:active\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Create\:\:countries\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Create\:\:currencies\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Create\:\:landlords\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Create\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Create\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Property App\\Livewire\\Properties\\Create\:\:\$landlord_id \(int\|null\) does not accept int\|string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>country_id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/Properties/Create.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\:\:active\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Properties/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Edit\:\:countries\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Properties/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Edit\:\:currencies\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Properties/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Edit\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Properties/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Edit\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Properties/Edit.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>country_id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/Properties/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Index\:\:properties\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Properties/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Properties\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Properties/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Property\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Properties/Index.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\RentInvoices\\Create\:\:\$leases\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/RentInvoices/Create.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/RentInvoices/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\RentInvoices\\Create\:\:leases\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentInvoices/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\RentInvoices\\Create\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentInvoices/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\RentInvoices\\Create\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/RentInvoices/Create.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Lease\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/RentInvoices/Create.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>first_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/RentInvoices/Create.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>last_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/RentInvoices/Create.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/RentInvoices/Edit.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 2
+			path: app/Livewire/RentInvoices/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentInvoices\\Edit\:\:leases\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentInvoices/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentInvoices\\Edit\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentInvoices/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentInvoices\\Edit\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/RentInvoices/Edit.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Lease\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/RentInvoices/Edit.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Carbon\\CarbonImmutable\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Livewire/RentInvoices/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentInvoices\\Index\:\:invoices\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentInvoices/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\RentInvoices\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentInvoices/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\RentInvoice\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/RentInvoices/Index.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\RentPayments\\Create\:\:\$invoices\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Create\:\:invoices\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Create\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Create\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\RentInvoice\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Property App\\Livewire\\RentPayments\\Create\:\:\$proof has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>first_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>last_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/RentPayments/Create.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Edit\:\:invoices\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Edit\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Edit\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\RentInvoice\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Property App\\Livewire\\RentPayments\\Edit\:\:\$proof has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Carbon\\CarbonImmutable\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/RentPayments/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Index\:\:payments\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentPayments/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentPayments/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\RentPayment\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/RentPayments/Index.php
+
+		-
+			message: '#^Parameter \#2 \$userId of method App\\Services\\RentPaymentService\:\:confirmPayment\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/RentPayments/Index.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:notify\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/RentPayments/Submit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Submit\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/RentPayments/Submit.php
+
+		-
+			message: '#^Method App\\Livewire\\RentPayments\\Submit\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/RentPayments/Submit.php
+
+		-
+			message: '#^Property App\\Livewire\\RentPayments\\Submit\:\:\$proof has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/RentPayments/Submit.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<TRelatedModel of Illuminate\\Database\\Eloquent\\Model\>\:\:forLandlord\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: app/Livewire/Reports/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Reports\\Index\:\:maintenanceBreakdown\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Reports/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Reports\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Reports/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Reports\\Index\:\:rentChart\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Reports/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Reports\\Index\:\:summary\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Reports/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Reports\\Index\:\:topPropertiesByOutstanding\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Reports/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of static method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\MaintenanceRequest\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Reports/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of static method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Property\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Reports/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of static method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\RentInvoice\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Reports/Index.php
+
+		-
+			message: '#^Call to an undefined method App\\Livewire\\Subscriptions\\Status\:\:redirectAway\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Subscriptions/Status.php
+
+		-
+			message: '#^Method App\\Livewire\\Subscriptions\\Status\:\:enabledGateways\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Subscriptions/Status.php
+
+		-
+			message: '#^Method App\\Livewire\\Subscriptions\\Status\:\:plans\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Subscriptions/Status.php
+
+		-
+			message: '#^Method App\\Livewire\\Subscriptions\\Status\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Subscriptions/Status.php
+
+		-
+			message: '#^Method App\\Livewire\\Subscriptions\\Status\:\:summary\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Subscriptions/Status.php
+
+		-
+			message: '#^Property App\\Livewire\\Subscriptions\\Status\:\:\$inlineResult type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Subscriptions/Status.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$first_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/TenantInvitations/Accept.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$last_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/TenantInvitations/Accept.php
+
+		-
+			message: '#^Method App\\Livewire\\TenantInvitations\\Accept\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/TenantInvitations/Accept.php
+
+		-
+			message: '#^Method App\\Livewire\\TenantInvitations\\Accept\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/TenantInvitations/Accept.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Tenant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Tenant\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/TenantInvitations/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\TenantInvitations\\Index\:\:availableTenants\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/TenantInvitations/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\TenantInvitations\\Index\:\:invitations\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/TenantInvitations/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\TenantInvitations\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/TenantInvitations/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\TenantInvitations\\Index\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/TenantInvitations/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method App\\Services\\TenantInvitationService\:\:createInvitation\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/TenantInvitations/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Tenant\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/TenantInvitations/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\TenantInvitation\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/TenantInvitations/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Tenants\\Create\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Tenants/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Tenants\\Create\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Tenants/Create.php
+
+		-
+			message: '#^Property App\\Livewire\\Tenants\\Create\:\:\$id_document has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tenants/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Tenants\\Edit\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Tenants/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Tenants\\Edit\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Tenants/Edit.php
+
+		-
+			message: '#^Property App\\Livewire\\Tenants\\Edit\:\:\$id_document has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Livewire/Tenants/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Tenants\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Tenants/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Tenants\\Index\:\:tenants\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Tenants/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Tenant\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Tenants/Index.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$landlord\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Units/Create.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Units/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Create\:\:buildings\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Units/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Create\:\:properties\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Units/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Create\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Units/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Create\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Units/Create.php
+
+		-
+			message: '#^Parameter \#1 \$landlord of method App\\Services\\SubscriptionService\:\:enforceActiveUnitLimit\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Units/Create.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Property\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Units/Create.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Edit\:\:buildings\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Units/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Edit\:\:properties\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Units/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Edit\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Units/Edit.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Edit\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Units/Edit.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Property\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Units/Edit.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:forLandlord\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Units/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Index\:\:properties\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Units/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Index\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Units/Index.php
+
+		-
+			message: '#^Method App\\Livewire\\Units\\Index\:\:units\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Livewire/Units/Index.php
+
+		-
+			message: '#^Parameter \#1 \$landlordId of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Property\>\:\:forLandlord\(\) expects int, int\|string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/Units/Index.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$reference\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Mail/ContractSignatureRequest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Mail/ContractSignatureRequest.php
+
+		-
+			message: '#^Class App\\Models\\Building uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Building.php
+
+		-
+			message: '#^Method App\\Models\\Building\:\:property\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Building.php
+
+		-
+			message: '#^Method App\\Models\\Building\:\:scopeActive\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Building.php
+
+		-
+			message: '#^Method App\\Models\\Building\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Building.php
+
+		-
+			message: '#^Method App\\Models\\Building\:\:units\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Building.php
+
+		-
+			message: '#^Class App\\Models\\Contract uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Match arm comparison between ''declined'' and ''declined'' is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:creator\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:document\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:lease\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:property\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:scopeForLandlord\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:scopeForLandlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:signatures\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:tenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Method App\\Models\\Contract\:\:unit\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Support\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:every\(\) expects \(callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: bool\)\|Illuminate\\Database\\Eloquent\\Model\|string, Closure\(App\\Models\\ContractSignature\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Contract.php
+
+		-
+			message: '#^Class App\\Models\\ContractSignature uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ContractSignature.php
+
+		-
+			message: '#^Method App\\Models\\ContractSignature\:\:contract\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ContractSignature.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$first_name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$last_name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Class App\\Models\\Conversation uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:latestMessage\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasOne does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:maintenanceRequest\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:messages\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:scopeOpen\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:scopeOpen\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Method App\\Models\\Conversation\:\:tenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Models/Conversation.php
+
+		-
+			message: '#^Class App\\Models\\Country uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Country.php
+
+		-
+			message: '#^Method App\\Models\\Country\:\:currencies\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Country.php
+
+		-
+			message: '#^Method App\\Models\\Country\:\:defaultCurrency\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Country.php
+
+		-
+			message: '#^Method App\\Models\\Country\:\:properties\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Country.php
+
+		-
+			message: '#^Method App\\Models\\Country\:\:scopeActive\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Country.php
+
+		-
+			message: '#^Method App\\Models\\Country\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Country.php
+
+		-
+			message: '#^Class App\\Models\\Currency uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Currency.php
+
+		-
+			message: '#^Method App\\Models\\Currency\:\:countries\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Currency.php
+
+		-
+			message: '#^Method App\\Models\\Currency\:\:properties\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/Currency.php
+
+		-
+			message: '#^Method App\\Models\\Currency\:\:scopeActive\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Currency.php
+
+		-
+			message: '#^Method App\\Models\\Currency\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Currency.php
+
+		-
+			message: '#^Class App\\Models\\Document uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Match arm comparison between ''other'' and ''other'' is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:lease\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:rentInvoice\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:rentPayment\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:scopeForLandlord\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:scopeForLandlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:scopeForTenant\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:scopeForTenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:tenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:uploader\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Class App\\Models\\Lease uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:contracts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:documents\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:invoices\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:payments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:property\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:scopeActive\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:scopeForLandlord\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:scopeForLandlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:tenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\Lease\:\:unit\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Lease.php
+
+		-
+			message: '#^Method App\\Models\\LegalAcceptance\:\:legalDocument\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/LegalAcceptance.php
+
+		-
+			message: '#^Method App\\Models\\LegalAcceptance\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/LegalAcceptance.php
+
+		-
+			message: '#^Method App\\Models\\LegalDocument\:\:acceptances\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/LegalDocument.php
+
+		-
+			message: '#^Class App\\Models\\MaintenanceAttachment uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceAttachment.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceAttachment\:\:comment\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceAttachment.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceAttachment\:\:maintenanceRequest\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceAttachment.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceAttachment\:\:uploader\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceAttachment.php
+
+		-
+			message: '#^Class App\\Models\\MaintenanceComment uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceComment.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceComment\:\:attachments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceComment.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceComment\:\:maintenanceRequest\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceComment.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceComment\:\:publicAttachments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceComment.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceComment\:\:scopePublic\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceComment.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceComment\:\:scopePublic\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceComment.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceComment\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceComment.php
+
+		-
+			message: '#^Class App\\Models\\MaintenanceRequest uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Match arm comparison between ''low'' and ''low'' is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:assignee\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:attachments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:comments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:lease\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:property\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:publicAttachments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:publicComments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:reporter\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:scopeAssignedTo\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:scopeAssignedTo\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:scopeForLandlord\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:scopeForLandlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:scopeForTenant\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:scopeForTenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:scopeOpen\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:scopeOpen\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:tenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Method App\\Models\\MaintenanceRequest\:\:unit\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/MaintenanceRequest.php
+
+		-
+			message: '#^Class App\\Models\\Message uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Message.php
+
+		-
+			message: '#^Method App\\Models\\Message\:\:conversation\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Message.php
+
+		-
+			message: '#^Method App\\Models\\Message\:\:scopeUnread\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Message.php
+
+		-
+			message: '#^Method App\\Models\\Message\:\:scopeUnread\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Message.php
+
+		-
+			message: '#^Method App\\Models\\Message\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Message.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:format\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/Plan.php
+
+		-
+			message: '#^Class App\\Models\\Plan uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Plan.php
+
+		-
+			message: '#^Method App\\Models\\Plan\:\:currency\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Plan.php
+
+		-
+			message: '#^Method App\\Models\\Plan\:\:scopeActive\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Plan.php
+
+		-
+			message: '#^Method App\\Models\\Plan\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Plan.php
+
+		-
+			message: '#^Method App\\Models\\Plan\:\:subscriptions\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Plan.php
+
+		-
+			message: '#^Class App\\Models\\Property uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:buildings\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:country\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:currency\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:rentInvoices\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:scopeActive\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:scopeForLandlord\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:scopeForLandlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Method App\\Models\\Property\:\:units\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Property.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Class App\\Models\\RentInvoice uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:currency\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:lease\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:lineItems\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:payments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:property\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:scopeActionable\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:scopeActionable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:scopeForLandlord\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:scopeForLandlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:scopeOverdue\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:scopeOverdue\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:scopeUnpaid\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:scopeUnpaid\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:tenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoice\:\:unit\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Carbon\\CarbonImmutable\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Models/RentInvoice.php
+
+		-
+			message: '#^Method App\\Models\\RentInvoiceLineItem\:\:invoice\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentInvoiceLineItem.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Class App\\Models\\RentPayment uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:confirmer\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:currency\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:lease\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:property\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:rentInvoice\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:scopeConfirmed\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:scopeConfirmed\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:scopeForLandlord\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:scopeForLandlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:scopePending\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:scopePending\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:tenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Method App\\Models\\RentPayment\:\:unit\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>currency" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Models/RentPayment.php
+
+		-
+			message: '#^Class App\\Models\\Subscription uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Subscription.php
+
+		-
+			message: '#^Method App\\Models\\Subscription\:\:plan\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Subscription.php
+
+		-
+			message: '#^Method App\\Models\\Subscription\:\:scopeActive\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Subscription.php
+
+		-
+			message: '#^Method App\\Models\\Subscription\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Subscription.php
+
+		-
+			message: '#^Method App\\Models\\Subscription\:\:scopeTrialing\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Subscription.php
+
+		-
+			message: '#^Method App\\Models\\Subscription\:\:scopeTrialing\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Subscription.php
+
+		-
+			message: '#^Method App\\Models\\Subscription\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Subscription.php
+
+		-
+			message: '#^Class App\\Models\\Tenant uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:scopeActive\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:scopeForLandlord\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:scopeForLandlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\Models\\Tenant\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Class App\\Models\\TenantInvitation uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TenantInvitation.php
+
+		-
+			message: '#^Method App\\Models\\TenantInvitation\:\:acceptedUser\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TenantInvitation.php
+
+		-
+			message: '#^Method App\\Models\\TenantInvitation\:\:landlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TenantInvitation.php
+
+		-
+			message: '#^Method App\\Models\\TenantInvitation\:\:scopeForLandlord\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TenantInvitation.php
+
+		-
+			message: '#^Method App\\Models\\TenantInvitation\:\:scopeForLandlord\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TenantInvitation.php
+
+		-
+			message: '#^Method App\\Models\\TenantInvitation\:\:scopePending\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TenantInvitation.php
+
+		-
+			message: '#^Method App\\Models\\TenantInvitation\:\:scopePending\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TenantInvitation.php
+
+		-
+			message: '#^Method App\\Models\\TenantInvitation\:\:tenant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TenantInvitation.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Class App\\Models\\Unit uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:building\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:leases\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:property\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:scopeActive\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:scopeActive\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:scopeForProperty\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:scopeForProperty\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:scopeOccupied\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:scopeOccupied\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:scopeVacant\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Method App\\Models\\Unit\:\:scopeVacant\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Unit.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$subscription\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:subscription\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/LateFeeApplied.php
+
+		-
+			message: '#^Method App\\Notifications\\LateFeeApplied\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/LateFeeApplied.php
+
+		-
+			message: '#^Method App\\Notifications\\MaintenanceCommentAdded\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/MaintenanceCommentAdded.php
+
+		-
+			message: '#^Method App\\Notifications\\MaintenanceRequestCreated\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/MaintenanceRequestCreated.php
+
+		-
+			message: '#^Method App\\Notifications\\MaintenanceStatusChanged\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/MaintenanceStatusChanged.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/RentInvoiceGenerated.php
+
+		-
+			message: '#^Method App\\Notifications\\RentInvoiceGenerated\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/RentInvoiceGenerated.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/RentReminderDue.php
+
+		-
+			message: '#^Method App\\Notifications\\RentReminderDue\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/RentReminderDue.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$full_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Notifications/TenantPaymentSubmitted.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$invoice_number\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Notifications/TenantPaymentSubmitted.php
+
+		-
+			message: '#^Method App\\Notifications\\TenantPaymentSubmitted\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/TenantPaymentSubmitted.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$assigned_to\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/ConversationPolicy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/ConversationPolicy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/DocumentPolicy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Policies/MaintenanceRequestPolicy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/RentInvoicePolicy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Policies/RentPaymentPolicy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Policies/UnitPolicy.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractService.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:isSent\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/ContractService.php
+
+		-
+			message: '#^Method App\\Services\\ContractService\:\:createSigner\(\) should return App\\Models\\ContractSignature but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/ContractService.php
+
+		-
+			message: '#^Method App\\Services\\ContractService\:\:defaultTitle\(\) has parameter \$variables with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/ContractService.php
+
+		-
+			message: '#^Parameter \#1 \$contract of method App\\Services\\ContractService\:\:finalizeIfComplete\(\) expects App\\Models\\Contract, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ContractService.php
+
+		-
+			message: '#^Parameter \#1 \$signature of method App\\Services\\ContractService\:\:sendSignatureRequest\(\) expects App\\Models\\ContractSignature, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/ContractService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$address_line_1\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$address_line_2\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$area_sqm\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$city\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$country\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$full_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$national_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$region\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$unit_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/ContractTemplateService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DashboardMetricsService.php
+
+		-
+			message: '#^Method App\\Services\\DashboardMetricsService\:\:getAdminMetrics\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/DashboardMetricsService.php
+
+		-
+			message: '#^Method App\\Services\\DashboardMetricsService\:\:getLandlordMetrics\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/DashboardMetricsService.php
+
+		-
+			message: '#^Method App\\Services\\DashboardMetricsService\:\:getMaintenanceMetrics\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/DashboardMetricsService.php
+
+		-
+			message: '#^Method App\\Services\\DashboardMetricsService\:\:getTenantMetrics\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/DashboardMetricsService.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Services/DashboardMetricsService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$lease_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentPayment\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentPayment\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentPayment\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentPayment\>\:\:\$lease_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentPayment\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentPayment\>\:\:\$rent_invoice_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentPayment\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentPayment\>\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Tenant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Tenant\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Method App\\Services\\DocumentService\:\:downloadDocument\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Method App\\Services\\DocumentService\:\:getDocumentsForUser\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Method App\\Services\\DocumentService\:\:uploadDocument\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/DocumentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$landlord\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Tenant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Tenant\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Tenant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Tenant\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Unit\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Unit\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Unit\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Unit\>\:\:\$property_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Unit\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Unit\>\:\:isVacant\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Unit\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Unit\>\:\:update\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Method App\\Services\\LeaseService\:\:createLease\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Method App\\Services\\LeaseService\:\:updateLease\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Parameter \#1 \$landlord of method App\\Services\\SubscriptionService\:\:enforceActiveLeaseLimit\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Parameter \#1 \$unit of method App\\Services\\LeaseService\:\:freeUnit\(\) expects App\\Models\\Unit, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 4
+			path: app/Services/LeaseService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$property_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$unit_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Tenant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Tenant\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Unit\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Unit\>\:\:\$property_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Instanceof between Illuminate\\Http\\UploadedFile and Illuminate\\Http\\UploadedFile will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Method App\\Services\\MaintenanceRequestService\:\:createRequest\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Method App\\Services\\MaintenanceRequestService\:\:getAllowedTransitions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Method App\\Services\\MaintenanceRequestService\:\:getAllowedTransitionsForUser\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Method App\\Services\\MaintenanceRequestService\:\:getMaintenanceUsers\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Method App\\Services\\MaintenanceRequestService\:\:getVisibleComments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Services/MaintenanceRequestService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Tenant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Tenant\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/MessagingService.php
+
+		-
+			message: '#^Method App\\Services\\MessagingService\:\:getConversationIdsForUser\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/MessagingService.php
+
+		-
+			message: '#^Method App\\Services\\MessagingService\:\:getConversationsForUser\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Services/MessagingService.php
+
+		-
+			message: '#^Method App\\Services\\MessagingService\:\:startConversation\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/MessagingService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$monthly_rent\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$property_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Lease\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Lease\>\:\:\$unit_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Property\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Property\>\:\:\$currency_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$currency_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$grace_period_days\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$late_fee_amount\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$late_fee_frequency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$late_fee_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$tenant\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Method App\\Services\\RentInvoiceService\:\:createInvoice\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Method App\\Services\\RentInvoiceService\:\:currencyIdFor\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Method App\\Services\\RentInvoiceService\:\:dataFromLease\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Method App\\Services\\RentInvoiceService\:\:updateInvoice\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/RentInvoiceService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$landlord_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$lease_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$property_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\>\:\:\$unit_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$currency_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Method App\\Services\\RentPaymentService\:\:createPayment\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Method App\\Services\\RentPaymentService\:\:dataFromInvoice\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Method App\\Services\\RentPaymentService\:\:storeProof\(\) should return string but returns string\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Method App\\Services\\RentPaymentService\:\:updatePayment\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Parameter \#1 \$invoice of method App\\Services\\RentPaymentService\:\:getRemainingAmount\(\) expects App\\Models\\RentInvoice, App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Parameter \#1 \$invoice of method App\\Services\\RentPaymentService\:\:syncInvoiceStatus\(\) expects App\\Models\\RentInvoice, App\\Models\\RentInvoice\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\RentInvoice\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Parameter \#1 \$invoice of method App\\Services\\RentPaymentService\:\:syncInvoiceStatus\(\) expects App\\Models\\RentInvoice, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/RentPaymentService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/SubscriptionGateways/CacBankGateway.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionGateways\\CacBankGateway\:\:initiate\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SubscriptionGateways/CacBankGateway.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>code" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Services/SubscriptionGateways/CacBankGateway.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$data\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/SubscriptionGateways/StripeGateway.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/SubscriptionGateways/StripeGateway.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionGateways\\StripeGateway\:\:initiate\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SubscriptionGateways/StripeGateway.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionGateways\\StripeGateway\:\:mapInvoiceEvent\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SubscriptionGateways/StripeGateway.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionGateways\\StripeGateway\:\:mapSubscriptionEvent\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SubscriptionGateways/StripeGateway.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionGateways\\StripeGateway\:\:parseWebhook\(\) should return array\{event\: string, gateway_subscription_id\?\: string, gateway_status\?\: string, stripe_customer_id\?\: string, plan_id\?\: int, ends_at\?\: Carbon\\Carbon\}\|null but returns array\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/SubscriptionGateways/StripeGateway.php
+
+		-
+			message: '#^Parameter \#1 \$params of static method Stripe\\Checkout\\Session\:\:create\(\) expects array\{adaptive_pricing\?\: array\{enabled\?\: bool\}, after_expiration\?\: array\{recovery\?\: array\{allow_promotion_codes\?\: bool, enabled\: bool\}\}, allow_promotion_codes\?\: bool, automatic_tax\?\: array\{enabled\: bool, liability\?\: array\{account\?\: string, type\: string\}\}, billing_address_collection\?\: string, branding_settings\?\: array\{background_color\?\: string\|null, border_style\?\: string\|null, button_color\?\: string\|null, display_name\?\: string, font_family\?\: string\|null, icon\?\: array\{file\?\: string, type\: string, url\?\: string\}, logo\?\: array\{file\?\: string, type\: string, url\?\: string\}\}, cancel_url\?\: string, client_reference_id\?\: string, \.\.\.\}\|null, array\{mode\: ''subscription'', customer\: string, line_items\: array\{array\{price\: non\-falsy\-string, quantity\: 1\}\}, success_url\: mixed, cancel_url\: mixed, metadata\: array\{plan_id\: int, user_id\: int\}, subscription_data\: array\{metadata\: array\{plan_id\: int, user_id\: int\}\}, allow_promotion_codes\: true\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/SubscriptionGateways/StripeGateway.php
+
+		-
+			message: '#^Parameter \#1 \$params of static method Stripe\\Customer\:\:create\(\) expects array\{address\?\: array\{city\?\: string, country\?\: string, line1\?\: string, line2\?\: string, postal_code\?\: string, state\?\: string\}\|null, balance\?\: int, business_name\?\: string\|null, cash_balance\?\: array\{settings\?\: array\{reconciliation_mode\?\: string\}\}, description\?\: string, email\?\: string, expand\?\: array\<string\>, individual_name\?\: string\|null, \.\.\.\}\|null, array\{email\: string, name\: string, metadata\: array\{user_id\: int\}\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/SubscriptionGateways/StripeGateway.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionGateways\\WaafiPayGateway\:\:initiate\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SubscriptionGateways/WaafiPayGateway.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionGateways\\WaafiPayGateway\:\:parseWebhook\(\) should return array\{event\: string, gateway_subscription_id\?\: string, gateway_status\?\: string, stripe_customer_id\?\: string, plan_id\?\: int, ends_at\?\: Carbon\\Carbon\}\|null but returns array\{event\: non\-falsy\-string, gateway_subscription_id\: mixed, gateway_status\: non\-falsy\-string, override_status\: ''active''\|''past_due'', plan_id\: null, ends_at\: Carbon\\CarbonImmutable\|null\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/SubscriptionGateways/WaafiPayGateway.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$subscription\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Services/SubscriptionService.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionService\:\:enabledGateways\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SubscriptionService.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionService\:\:getAvailablePlans\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Services/SubscriptionService.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionService\:\:getStatusSummary\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SubscriptionService.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionService\:\:initiateCheckout\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SubscriptionService.php
+
+		-
+			message: '#^Method App\\Services\\SubscriptionService\:\:initiateCheckout\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SubscriptionService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$country_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/TenantInvitationService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$first_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/TenantInvitationService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$last_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/TenantInvitationService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/TenantInvitationService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$phone_country_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/TenantInvitationService.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Services/TenantInvitationService.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 1
+			path: bootstrap/app.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\Blueprint\:\:dropColumns\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2026_07_08_185400_add_billing_columns_to_users_and_plans_and_subscriptions.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 2
+			path: database/seeders/AdminUserSeeder.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:make\(\) expects string, bool\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: database/seeders/AdminUserSeeder.php
