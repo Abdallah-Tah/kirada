@@ -32,6 +32,12 @@ class MaintenanceReviewService
             throw new \DomainException('This completed job has already been reviewed.');
         }
 
+        foreach (['rating', 'quality_rating', 'communication_rating', 'professionalism_rating'] as $field) {
+            if (! isset($data[$field]) || ! is_numeric($data[$field]) || (int) $data[$field] < 1 || (int) $data[$field] > 5) {
+                throw new \DomainException('Review ratings must be between 1 and 5.');
+            }
+        }
+
         return MaintenanceReview::create([
             'maintenance_request_id' => $request->id,
             'landlord_id' => $request->landlord_id,

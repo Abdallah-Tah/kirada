@@ -61,7 +61,7 @@ class Index extends Component
             ->orderBy('first_name');
 
         if ($user->canAccessLandlordPortal()) {
-            $query->forLandlord($user->id);
+            $query->forLandlord($user->landlordAccountId());
         } elseif ($user->hasRole('tenant')) {
             $tenant = Tenant::where('user_id', $user->id)->first();
             if ($tenant && $tenant->landlord_id) {

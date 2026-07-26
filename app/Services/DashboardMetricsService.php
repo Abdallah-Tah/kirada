@@ -35,14 +35,15 @@ class DashboardMetricsService
 
     public function getLandlordMetrics(User $landlord): array
     {
-        $propertyIds = Property::forLandlord($landlord->id)->pluck('id');
+        $landlordId = $landlord->landlordAccountId();
+        $propertyIds = Property::forLandlord($landlordId)->pluck('id');
         $unitIds = Unit::whereIn('property_id', $propertyIds)->pluck('id');
-        $tenantIds = Tenant::forLandlord($landlord->id)->pluck('id');
+        $tenantIds = Tenant::forLandlord($landlordId)->pluck('id');
 
         $occupiedUnits = Unit::whereIn('property_id', $propertyIds)->where('status', 'occupied')->count();
         $vacantUnits = Unit::whereIn('property_id', $propertyIds)->where('status', 'vacant')->count();
 
-        $collectedThisMonth = RentPayment::where('landlord_id', $landlord->id)
+        $collectedThisMonth = RentPayment::where('landlord_id', $landlordId)
             ->where('status', 'confirmed')
             ->whereMonth('payment_date', now()->month)
             ->whereYear('payment_date', now()->year)
@@ -50,20 +51,20 @@ class DashboardMetricsService
 
         $unreadMessages = $this->getUnreadMessageCount($landlord);
 
-        $rentDueThisMonth = RentInvoice::forLandlord($landlord->id)
+        $rentDueThisMonth = RentInvoice::forLandlord($landlordId)
             ->whereIn('status', ['unpaid', 'partially_paid', 'overdue', 'sent'])
             ->whereMonth('due_date', now()->month)
             ->whereYear('due_date', now()->year)
             ->sum('amount');
 
-        $overdueInvoices = RentInvoice::forLandlord($landlord->id)
+        $overdueInvoices = RentInvoice::forLandlord($landlordId)
             ->where('status', 'overdue')
             ->with(['tenant:id,first_name,last_name'])
             ->latest('due_date')
             ->limit(10)
             ->get();
 
-        $upcomingInvoices = RentInvoice::forLandlord($landlord->id)
+        $upcomingInvoices = RentInvoice::forLandlord($landlordId)
             ->whereIn('status', ['unpaid', 'sent'])
             ->where('due_date', '>=', now()->toDateString())
             ->where('due_date', '<=', now()->addDays(14)->toDateString())
@@ -75,26 +76,26 @@ class DashboardMetricsService
         return [
             // Aggregate sums are labelled with the landlord's first property
             // currency (true multi-currency aggregation is out of scope).
-            'dashboard_currency' => Property::forLandlord($landlord->id)
+            'dashboard_currency' => Property::forLandlord($landlordId)
                 ->whereNotNull('currency_id')->with('currency')->first()?->currency,
-            'my_properties' => Property::forLandlord($landlord->id)->count(),
+            'my_properties' => Property::forLandlord($landlordId)->count(),
             'my_units' => Unit::whereIn('property_id', $propertyIds)->count(),
             'occupied_units' => $occupiedUnits,
             'vacant_units' => $vacantUnits,
-            'active_leases' => Lease::where('landlord_id', $landlord->id)->where('status', 'active')->count(),
-            'unpaid_invoices' => RentInvoice::forLandlord($landlord->id)
+            'active_leases' => Lease::where('landlord_id', $landlordId)->where('status', 'active')->count(),
+            'unpaid_invoices' => RentInvoice::forLandlord($landlordId)
                 ->whereIn('status', ['unpaid', 'partially_paid', 'overdue'])->count(),
             'rent_due_this_month' => $rentDueThisMonth,
             'overdue_invoices' => $overdueInvoices,
             'upcoming_invoices' => $upcomingInvoices,
             'collected_this_month' => $collectedThisMonth,
-            'open_maintenance' => MaintenanceRequest::forLandlord($landlord->id)
+            'open_maintenance' => MaintenanceRequest::forLandlord($landlordId)
                 ->whereIn('status', ['open', 'in_progress'])->count(),
             'unread_messages' => $unreadMessages,
-            'recent_leases' => Lease::where('landlord_id', $landlord->id)
+            'recent_leases' => Lease::where('landlord_id', $landlordId)
                 ->with(['tenant:id,first_name,last_name', 'property:id,name', 'unit:id,unit_number'])
                 ->latest()->limit(5)->get(),
-            'recent_payments' => RentPayment::where('landlord_id', $landlord->id)
+            'recent_payments' => RentPayment::where('landlord_id', $landlordId)
                 ->with(['tenant:id,first_name,last_name', 'rentInvoice:id,invoice_number'])
                 ->latest()->limit(5)->get(),
         ];

@@ -76,12 +76,7 @@ class RolePermissionSeeder extends Seeder
         // ──────────────────────────────────────────────
 
         $admin = Role::firstOrCreate(['name' => 'admin']);
-        $admin->givePermissionTo([
-            'users.view', 'users.create', 'users.edit', 'users.delete',
-            'landlords.view', 'landlords.create', 'landlords.edit', 'landlords.delete',
-            'subscriptions.view', 'subscriptions.manage',
-            'system.settings', 'reports.view', 'audit.view',
-        ]);
+        $admin->syncPermissions(Permission::all());
 
         $landlord = Role::firstOrCreate(['name' => 'landlord']);
         $landlord->givePermissionTo([
@@ -117,6 +112,7 @@ class RolePermissionSeeder extends Seeder
             'units.view', 'units.create', 'units.edit',
             'tenants.view', 'tenants.create', 'tenants.edit',
             'leases.view', 'leases.create', 'leases.edit',
+            'invoices.view',
             'maintenance.view', 'maintenance.respond',
             'messages.send', 'messages.view',
             'documents.view', 'documents.manage',

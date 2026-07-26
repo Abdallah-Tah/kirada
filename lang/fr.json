@@ -1479,5 +1479,10 @@
     "You have been invited to help manage this property portfolio as :role.": "Vous avez été invité à gérer ce portefeuille immobilier avec le rôle :role.",
     "You were invited by :name as :role.": "Vous avez été invité par :name en tant que :role.",
     "e.g. Licensed electrician for residential and commercial work": "ex. Électricien agréé pour travaux résidentiels et commerciaux",
-    "e.g. Somali, French, Arabic": "ex. Somali, français, arabe"
+    "e.g. Somali, French, Arabic": "ex. Somali, français, arabe",
+    "Property Team Access": "Accès de l’équipe immobilière",
+    "Invite administrators, property managers, accountants, and viewers with role-based permissions.": "Invitez des administrateurs, gestionnaires immobiliers, comptables et observateurs avec des autorisations par rôle.",
+    "Find provider profiles, compare verified job reviews, assign work, approve quotes, and track repairs.": "Trouvez des profils de prestataires, comparez les avis vérifiés, attribuez les travaux, approuvez les devis et suivez les réparations.",
+    "Provider marketplace & reviews": "Place de marché des prestataires et avis",
+    "Role-based property team": "Équipe immobilière avec rôles"
 }

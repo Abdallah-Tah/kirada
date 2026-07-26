@@ -16,7 +16,7 @@
             <thead>
                 <tr>
                     <th class="px-4 py-3 font-medium">{{ __('Provider') }}</th>
-                    <th class="px-4 py-3 font-medium">{{ __('Trades') }}</th>
+                    <th class="px-4 py-3 font-medium">{{ __('Trades you offer') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Contact') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Status') }}</th>
                     <th class="px-4 py-3 font-medium text-end">{{ __('Actions') }}</th>
@@ -32,7 +32,7 @@
                                 <flux:badge color="blue" size="sm" icon="shield-check" class="ms-1">{{ __('Verified') }}</flux:badge>
                             @endif
                         </td>
-                        <td data-label="{{ __('Trades') }}" class="px-4 py-3 text-zinc-500">
+                        <td data-label="{{ __('Trades you offer') }}" class="px-4 py-3 text-zinc-500">
                             {{ collect($profile?->trades ?? [])->map(fn ($t) => __('trades.'.$t))->join(', ') ?: '—' }}
                         </td>
                         <td data-label="{{ __('Contact') }}" class="px-4 py-3 text-zinc-500">
