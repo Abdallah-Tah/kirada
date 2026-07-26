@@ -77,6 +77,76 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasRole('admin');
     }
 
+    public function payoutAccounts()
+    {
+        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function primaryPayoutAccount()
+    {
+        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->where('is_primary', true)
+            ->where('is_active', true);
+    }
+
+    public function payoutAccounts()
+    {
+        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function primaryPayoutAccount()
+    {
+        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->where('is_primary', true)
+            ->where('is_active', true);
+    }
+
+    public function payoutAccounts()
+    {
+        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function primaryPayoutAccount()
+    {
+        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->where('is_primary', true)
+            ->where('is_active', true);
+    }
+
+    public function payoutAccounts()
+    {
+        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function primaryPayoutAccount()
+    {
+        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->where('is_primary', true)
+            ->where('is_active', true);
+    }
+
+    public function payoutAccounts()
+    {
+        return $this->hasMany(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->orderBy('sort_order')
+            ->orderBy('id');
+    }
+
+    public function primaryPayoutAccount()
+    {
+        return $this->hasOne(\App\Models\LandlordPayoutAccount::class, 'landlord_id')
+            ->where('is_primary', true)
+            ->where('is_active', true);
+    }
+
     public function isLandlord(): bool
     {
         return $this->hasRole('landlord');

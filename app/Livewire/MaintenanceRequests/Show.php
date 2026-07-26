@@ -2,7 +2,9 @@
 
 namespace App\Livewire\MaintenanceRequests;
 
+use App\Models\MaintenanceQuote;
 use App\Models\MaintenanceRequest;
+use App\Services\MaintenanceQuoteService;
 use App\Services\MaintenanceRequestService;
 use App\Services\MessagingService;
 use Flux\Flux;
@@ -27,6 +29,15 @@ class Show extends Component
     public array $commentPhotos = [];
 
     public array $statusPhotos = [];
+
+    // ── Quote state ──
+    public bool $showQuoteForm = false;
+
+    public array $quoteItems = [];
+
+    public float $quoteTaxRate = 0;
+
+    public string $quoteNotes = '';
 
     protected function rules(): array
     {
@@ -79,6 +90,32 @@ class Show extends Component
         $user = auth()->user();
 
         return $user->hasRole('admin') || $this->maintenanceRequest->landlord_id === $user->id;
+    }
+
+    #[Computed]
+    public function isAssignedPro(): bool
+    {
+        $user = auth()->user();
+
+        return $this->maintenanceRequest->assigned_to === $user->id
+            && $user->hasRole('maintenance');
+    }
+
+    #[Computed]
+    public function quotes()
+    {
+        return $this->maintenanceRequest->quotes()
+            ->with(['items', 'currency', 'maintenanceUser'])
+            ->latest()
+            ->get();
+    }
+
+    #[Computed]
+    public function activeQuote(): ?MaintenanceQuote
+    {
+        return $this->quotes->firstWhere('status', 'approved')
+            ?? $this->quotes->firstWhere('status', 'invoiced')
+            ?? $this->quotes->firstWhere('status', 'paid');
     }
 
     #[Computed]
@@ -283,6 +320,130 @@ class Show extends Component
             ->getOrCreateMaintenanceConversation($this->maintenanceRequest);
 
         $this->redirect(route('messages.show', $conversation), navigate: true);
+    }
+
+    // ── Quote actions ────────────────────────────────────
+
+    public function startQuote(): void
+    {
+        $this->authorize('view', $this->maintenanceRequest);
+
+        $this->quoteItems = [
+            ['description' => '', 'quantity' => 1, 'unit_price' => 0],
+        ];
+        $this->quoteTaxRate = 0;
+        $this->quoteNotes = '';
+        $this->showQuoteForm = true;
+    }
+
+    public function addQuoteItem(): void
+    {
+        $this->quoteItems[] = ['description' => '', 'quantity' => 1, 'unit_price' => 0];
+    }
+
+    public function removeQuoteItem(int $index): void
+    {
+        unset($this->quoteItems[$index]);
+        $this->quoteItems = array_values($this->quoteItems);
+    }
+
+    public function submitQuote(): void
+    {
+        $this->authorize('view', $this->maintenanceRequest);
+
+        if (! $this->isAssignedPro) {
+            Flux::toast('Only the assigned maintenance professional can submit a quote.', 'error');
+
+            return;
+        }
+
+        $validated = $this->validate([
+            'quoteItems' => 'required|array|min:1',
+            'quoteItems.*.description' => 'required|string|max:255',
+            'quoteItems.*.quantity' => 'required|numeric|min:0.01',
+            'quoteItems.*.unit_price' => 'required|numeric|min:0',
+            'quoteTaxRate' => 'nullable|numeric|min:0|max:100',
+            'quoteNotes' => 'nullable|string|max:2000',
+        ]);
+
+        try {
+            app(MaintenanceQuoteService::class)->submitQuote(
+                $this->maintenanceRequest,
+                auth()->user(),
+                $validated['quoteItems'],
+                (float) ($validated['quoteTaxRate'] ?? 0),
+                $validated['quoteNotes'] ?? null,
+                $this->maintenanceRequest->property?->currency_id,
+            );
+
+            $this->showQuoteForm = false;
+            $this->quoteItems = [];
+            unset($this->quotes, $this->activeQuote);
+
+            Flux::toast('Quote submitted for landlord approval.', 'success');
+        } catch (\DomainException $e) {
+            Flux::toast($e->getMessage(), 'error');
+        }
+    }
+
+    public function approveQuote(int $quoteId): void
+    {
+        $this->authorize('update', $this->maintenanceRequest);
+
+        $quote = MaintenanceQuote::findOrFail($quoteId);
+
+        try {
+            app(MaintenanceQuoteService::class)->approve($quote);
+            unset($this->quotes, $this->activeQuote);
+            Flux::toast('Quote approved.', 'success');
+        } catch (\DomainException $e) {
+            Flux::toast($e->getMessage(), 'error');
+        }
+    }
+
+    public function declineQuote(int $quoteId): void
+    {
+        $this->authorize('update', $this->maintenanceRequest);
+
+        $quote = MaintenanceQuote::findOrFail($quoteId);
+
+        try {
+            app(MaintenanceQuoteService::class)->decline($quote);
+            unset($this->quotes, $this->activeQuote);
+            Flux::toast('Quote declined.', 'success');
+        } catch (\DomainException $e) {
+            Flux::toast($e->getMessage(), 'error');
+        }
+    }
+
+    public function invoiceQuote(int $quoteId): void
+    {
+        $this->authorize('update', $this->maintenanceRequest);
+
+        $quote = MaintenanceQuote::findOrFail($quoteId);
+
+        try {
+            app(MaintenanceQuoteService::class)->markInvoiced($quote);
+            unset($this->quotes, $this->activeQuote);
+            Flux::toast('Quote converted to invoice.', 'success');
+        } catch (\DomainException $e) {
+            Flux::toast($e->getMessage(), 'error');
+        }
+    }
+
+    public function payQuote(int $quoteId): void
+    {
+        $this->authorize('update', $this->maintenanceRequest);
+
+        $quote = MaintenanceQuote::findOrFail($quoteId);
+
+        try {
+            app(MaintenanceQuoteService::class)->markPaid($quote);
+            unset($this->quotes, $this->activeQuote);
+            Flux::toast('Invoice marked as paid.', 'success');
+        } catch (\DomainException $e) {
+            Flux::toast($e->getMessage(), 'error');
+        }
     }
 
     public function render()

@@ -206,6 +206,113 @@
         </div>
     @endcan
 
+    {{-- ─── Quotes & Invoices ─────────────────────────────────────────── --}}
+    @if ($this->quotes->isNotEmpty() || $this->isAssignedPro)
+        <div class="kirada-card mt-6">
+            <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Quotes & Invoices') }}</h3>
+                @if ($this->isAssignedPro && ! $showQuoteForm)
+                    <flux:button wire:click="startQuote" variant="primary" size="sm" icon="plus">
+                        {{ __('Submit Quote') }}
+                    </flux:button>
+                @endif
+            </div>
+
+            {{-- Quote form --}}
+            @if ($showQuoteForm)
+                <div class="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-900">
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white">{{ __('New Quote') }}</h4>
+
+                    <div class="mt-3 space-y-3">
+                        @foreach ($quoteItems as $index => $item)
+                            <div class="flex gap-2" wire:key="quote-item-{{ $index }}">
+                                <flux:input wire:model="quoteItems.{{ $index }}.description" :placeholder="__('Description')" class="flex-1" />
+                                <flux:input wire:model="quoteItems.{{ $index }}.quantity" type="number" step="0.01" min="0.01" :placeholder="__('Qty')" class="w-20" />
+                                <flux:input wire:model="quoteItems.{{ $index }}.unit_price" type="number" step="0.01" min="0" :placeholder="__('Price')" class="w-24" />
+                                @if (count($quoteItems) > 1)
+                                    <flux:button wire:click="removeQuoteItem({{ $index }})" variant="ghost" size="sm" icon="x-mark" />
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-3 flex items-center gap-3">
+                        <flux:button wire:click="addQuoteItem" variant="ghost" size="sm" icon="plus">{{ __('Add Item') }}</flux:button>
+                        <flux:input wire:model="quoteTaxRate" type="number" step="0.01" min="0" max="100" :placeholder="__('Tax %')" class="w-24" />
+                    </div>
+
+                    <flux:textarea wire:model="quoteNotes" rows="2" :placeholder="__('Notes (optional)')" class="mt-3" />
+
+                    <div class="mt-4 flex gap-2">
+                        <flux:button wire:click="submitQuote" variant="primary">{{ __('Submit Quote') }}</flux:button>
+                        <flux:button wire:click="$set('showQuoteForm', false)" variant="ghost">{{ __('Cancel') }}</flux:button>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Quote list --}}
+            <div class="mt-4 space-y-3">
+                @foreach ($this->quotes as $quote)
+                    <div class="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700" wire:key="quote-{{ $quote->id }}">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-sm font-semibold text-zinc-900 dark:text-white">{{ $quote->reference }}</span>
+                                <span class="ml-2 text-xs text-zinc-400">{{ $quote->maintenanceUser?->name }}</span>
+                            </div>
+                            <flux:badge color="{{ $quote->status_color }}" size="sm">{{ $quote->status_label }}</flux:badge>
+                        </div>
+
+                        <div class="mt-3 space-y-1">
+                            @foreach ($quote->items as $item)
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-zinc-600 dark:text-zinc-300">{{ $item->description }}</span>
+                                    <span class="text-zinc-900 dark:text-white">{{ $item->quantity }} × {{ number_format($item->unit_price, 2) }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="mt-3 border-t border-zinc-200 pt-3 dark:border-zinc-700">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-zinc-500">{{ __('Subtotal') }}</span>
+                                <span class="text-zinc-900 dark:text-white">{{ number_format($quote->subtotal, 2) }}</span>
+                            </div>
+                            @if ($quote->tax_rate > 0)
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-zinc-500">{{ __('Tax') }} ({{ $quote->tax_rate }}%)</span>
+                                    <span class="text-zinc-900 dark:text-white">{{ number_format($quote->tax_amount, 2) }}</span>
+                                </div>
+                            @endif
+                            <div class="flex justify-between text-sm font-semibold">
+                                <span class="text-zinc-900 dark:text-white">{{ __('Total') }}</span>
+                                <span class="text-zinc-900 dark:text-white">{{ $quote->formatted_total }}</span>
+                            </div>
+                        </div>
+
+                        @if ($quote->notes)
+                            <p class="mt-2 text-xs text-zinc-500">{{ $quote->notes }}</p>
+                        @endif
+
+                        {{-- Actions --}}
+                        <div class="mt-3 flex gap-2">
+                            @if ($quote->isPending() && $this->canManage)
+                                <flux:button wire:click="approveQuote({{ $quote->id }})" variant="primary" size="sm">{{ __('Approve') }}</flux:button>
+                                <flux:button wire:click="declineQuote({{ $quote->id }})" variant="ghost" size="sm">{{ __('Decline') }}</flux:button>
+                            @endif
+
+                            @if ($quote->isApproved() && $this->isAssignedPro)
+                                <flux:button wire:click="invoiceQuote({{ $quote->id }})" variant="primary" size="sm">{{ __('Convert to Invoice') }}</flux:button>
+                            @endif
+
+                            @if ($quote->status === 'invoiced' && $this->canManage)
+                                <flux:button wire:click="payQuote({{ $quote->id }})" variant="primary" size="sm">{{ __('Mark Paid') }}</flux:button>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <div class="mt-6">
         <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Comments') }}</h3>
 

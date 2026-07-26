@@ -5,14 +5,16 @@
      one frame late and the page flashes light before going dark. --}}
 <script>
 window.Flux = {
+    _media: window.matchMedia('(prefers-color-scheme: dark)'),
     applyAppearance: function (appearance) {
-        document.documentElement.classList.toggle('dark', appearance === 'dark');
+        var dark = appearance === 'dark' || (appearance === 'system' && this._media.matches);
+        document.documentElement.classList.toggle('dark', dark);
     },
     get appearance() {
-        return window.localStorage.getItem('flux.appearance') || 'light';
+        return window.localStorage.getItem('flux.appearance') || 'system';
     },
     set appearance(value) {
-        var next = value === 'dark' ? 'dark' : 'light';
+        var next = ['light', 'dark', 'system'].includes(value) ? value : 'system';
         window.localStorage.setItem('flux.appearance', next);
         this.applyAppearance(next);
         // Alpine can't observe a plain window property, so the toggle listens
@@ -22,6 +24,11 @@ window.Flux = {
 };
 
 window.Flux.applyAppearance(window.Flux.appearance);
+window.Flux._media.addEventListener('change', function () {
+    if (window.Flux.appearance === 'system') {
+        window.Flux.applyAppearance('system');
+    }
+});
 </script>
 
 <title>

@@ -59,7 +59,7 @@ class Edit extends Component
             'building_id' => 'nullable|exists:buildings,id',
             'unit_number' => 'required|string|max:50',
             'floor' => 'nullable|string|max:20',
-            'type' => 'required|in:apartment,office,shop,warehouse,other',
+            'type' => 'required|in:apartment,house,villa,studio,duplex,room,office,shop,warehouse,other',
             'area_sqm' => 'nullable|numeric|min:0|max:999999',
             'bedrooms' => 'required|integer|min:0|max:50',
             'bathrooms' => 'required|integer|min:0|max:50',

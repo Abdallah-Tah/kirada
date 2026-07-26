@@ -49,6 +49,11 @@
                     <flux:label>{{ __('Type') }}</flux:label>
                     <flux:select wire:model="type" class="mt-1">
                         <option value="apartment">{{ __('Apartment') }}</option>
+                        <option value="house">{{ __('House') }}</option>
+                        <option value="villa">{{ __('Villa') }}</option>
+                        <option value="studio">{{ __('Studio') }}</option>
+                        <option value="duplex">{{ __('Duplex') }}</option>
+                        <option value="room">{{ __('Room') }}</option>
                         <option value="office">{{ __('Office') }}</option>
                         <option value="shop">{{ __('Shop') }}</option>
                         <option value="warehouse">{{ __('Warehouse') }}</option>
