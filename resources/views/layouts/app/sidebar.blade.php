@@ -3,22 +3,26 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="bg-white text-slate-900 antialiased lg:min-h-screen dark:bg-slate-900 dark:text-slate-100">
-        <flux:sidebar sticky collapsible="true" class="kirada-sidebar">
-            {{-- ── Sidebar header: toggle row above logo ── --}}
-            <div class="kirada-sidebar-header">
-                <div class="kirada-sidebar-toggle-row">
-                    <flux:sidebar.collapse class="kirada-sidebar-collapse-btn" />
-                </div>
-                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center justify-center px-2 pb-2">
-                    <div class="inline-flex items-center justify-center rounded-xl bg-white px-3 py-1.5 shadow-lg shadow-slate-950/10 ring-1 ring-white/30 backdrop-blur-sm">
-                                <img src="{{ asset('brand/kirada-logo.jpg') }}?v=kirada-approved-20260627"
-                                     alt="Kirada"
-                                     class="h-auto w-auto"
-                                     decoding="async">
-                            </div>
+    <body class="kirada-app-body bg-white text-slate-900 antialiased lg:min-h-screen dark:bg-slate-900 dark:text-slate-100">
+        <flux:sidebar sticky collapsible="mobile" class="kirada-sidebar">
+            <flux:sidebar.header class="kirada-sidebar-header">
+                <a href="{{ route('dashboard') }}" wire:navigate class="kirada-sidebar-brand">
+                    <span class="kirada-sidebar-logo">
+                        <img
+                            src="{{ asset('brand/kirada-icon.webp') }}?v=kirada-brand-20260730"
+                            alt=""
+                            decoding="async"
+                        >
+                    </span>
+                    <span class="min-w-0">
+                        <span class="block truncate text-[15px] font-bold leading-tight text-slate-950 dark:text-white">Kirada</span>
+                        <span class="mt-0.5 block truncate text-[10px] font-medium text-slate-500 dark:text-slate-400">
+                            {{ __('Smart Rent Management') }}
+                        </span>
+                    </span>
                 </a>
-            </div>
+                <flux:sidebar.collapse class="kirada-sidebar-collapse-btn lg:hidden" />
+            </flux:sidebar.header>
             <flux:sidebar.nav class="kirada-sidebar-nav">
 
 
@@ -78,6 +82,11 @@
                     <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
                         {{ __('Reports') }}
                     </flux:sidebar.item>
+                    @can('audit.view')
+                        <flux:sidebar.item icon="shield-check" :href="route('audit.index')" :current="request()->routeIs('audit.*')" wire:navigate>
+                            {{ __('Audit Center') }}
+                        </flux:sidebar.item>
+                    @endcan
                 </flux:sidebar.group>
                 @endhasrole
 
@@ -96,6 +105,11 @@
                     <flux:sidebar.item icon="envelope" :href="route('tenant-invitations.index')" :current="request()->routeIs('tenant-invitations.index')" wire:navigate>
                         {{ __('Invitations') }}
                     </flux:sidebar.item>
+                    @if(auth()->user()->isLandlord() || auth()->user()->can('team.view'))
+                        <flux:sidebar.item icon="user-group" :href="route('property-team.index')" :current="request()->routeIs('property-team.*')" wire:navigate>
+                            {{ __('Property Team') }}
+                        </flux:sidebar.item>
+                    @endif
                 </flux:sidebar.group>
 
                 {{-- OPERATIONS --}}
@@ -129,15 +143,15 @@
                     <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
                         {{ __('Reports') }}
                     </flux:sidebar.item>
+                    @can('audit.view')
+                        <flux:sidebar.item icon="shield-check" :href="route('audit.index')" :current="request()->routeIs('audit.*')" wire:navigate>
+                            {{ __('Audit Center') }}
+                        </flux:sidebar.item>
+                    @endcan
                 </flux:sidebar.group>
 
                 {{-- ADMIN --}}
                 <flux:sidebar.group :heading="__('ADMIN')" class="kirada-sidebar-section">
-                    @can('team.view')
-                    <flux:sidebar.item icon="user-group" :href="route('property-team.index')" :current="request()->routeIs('property-team.*')" wire:navigate>
-                        {{ __('Property Team') }}
-                    </flux:sidebar.item>
-                    @endcan
                     @role('landlord')
                     <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
                         {{ __('Subscription') }}

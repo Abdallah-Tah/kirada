@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Settings;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,7 +17,35 @@ class SecurityTest extends TestCase
      */
     public function test_security_settings_page_can_be_rendered(): void
     {
-        $this->markTestSkipped('Volt settings pages — to be converted to pure Livewire.');
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->withSession(['auth.password_confirmed_at' => time()])
+            ->get(route('security.edit'));
+
+        $response
+            ->assertOk()
+            ->assertSee('Two-factor authentication')
+            ->assertSee('Passkeys')
+            ->assertSee('lg:grid-cols-[13rem_minmax(0,1fr)]', false)
+            ->assertSee('grid-cols-2', false)
+            ->assertSee('lg:sticky', false);
+    }
+
+    public function test_security_settings_page_renders_recovery_codes_for_two_factor_user(): void
+    {
+        $user = User::factory()->withTwoFactor()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->withSession(['auth.password_confirmed_at' => time()])
+            ->get(route('security.edit'));
+
+        $response
+            ->assertOk()
+            ->assertSee('2FA recovery codes')
+            ->assertSee('View recovery codes');
     }
 
     public function test_security_settings_page_renders_without_two_factor_when_feature_is_disabled(): void

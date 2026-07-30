@@ -8,7 +8,7 @@ use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Livewire\Attributes\Title;
-use Livewire\Component;
+use Livewire\Volt\Component;
 /* @chisel-passkeys */
 use Laravel\Passkeys\Actions\DeletePasskey;
 use Livewire\Attributes\Locked;
@@ -224,13 +224,13 @@ new #[Title('Security settings')] class extends Component {
         </form>
 
         {{-- @chisel-2fa --}}
-        @if ($canManageTwoFactor)
-            <section class="mt-12">
+        @if ($this->canManageTwoFactor)
+            <section id="two-factor-authentication" class="mt-12 scroll-mt-24">
                 <flux:heading>{{ __('Two-factor authentication') }}</flux:heading>
                 <flux:subheading>{{ __('Manage your two-factor authentication settings') }}</flux:subheading>
 
                 <div class="flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
-                    @if ($twoFactorEnabled)
+                    @if ($this->twoFactorEnabled)
                         <div class="space-y-4">
                             <flux:text>
                                 {{ __('You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.') }}
@@ -245,7 +245,7 @@ new #[Title('Security settings')] class extends Component {
                                 </flux:button>
                             </div>
 
-                            <livewire:pages::settings.two-factor.recovery-codes :$requiresConfirmation />
+                            <livewire:pages.settings.two-factor.recovery-codes :requires-confirmation="$this->requiresConfirmation" />
                         </div>
                     @else
                         <div class="space-y-4">
@@ -262,7 +262,7 @@ new #[Title('Security settings')] class extends Component {
                                 </flux:button>
                             </flux:modal.trigger>
 
-                            <livewire:pages::settings.two-factor-setup-modal :requires-confirmation="$requiresConfirmation" />
+                            <livewire:pages.settings.two-factor-setup-modal :requires-confirmation="$this->requiresConfirmation" />
                         </div>
                     @endif
                 </div>
@@ -271,14 +271,14 @@ new #[Title('Security settings')] class extends Component {
         {{-- @end-chisel-2fa --}}
 
         {{-- @chisel-passkeys --}}
-        @if ($canManagePasskeys)
-            <section class="mt-12">
+        @if ($this->canManagePasskeys)
+            <section id="passkeys" class="mt-12 scroll-mt-24">
                 <flux:heading>{{ __('Passkeys') }}</flux:heading>
                 <flux:subheading>{{ __('Manage your passkeys for passwordless sign-in') }}</flux:subheading>
 
                 <div class="mt-6 flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
                     <div class="border rounded-lg border-zinc-200 dark:border-zinc-700 overflow-hidden">
-                        @forelse ($passkeys as $passkey)
+                        @forelse ($this->passkeys as $passkey)
                             <div class="flex items-center justify-between p-4 {{ ! $loop->last ? 'border-b border-zinc-200 dark:border-zinc-700' : '' }}">
                                 <div class="flex items-center gap-4">
                                     <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800">
@@ -339,7 +339,7 @@ new #[Title('Security settings')] class extends Component {
             <div class="space-y-2">
                 <flux:heading size="lg">{{ __('Remove passkey') }}</flux:heading>
                 <flux:text>
-                    {{ __('Are you sure you want to remove the passkey ":name"? You will no longer be able to use it to sign in.', ['name' => $deletingPasskeyName]) }}
+                    {{ __('Are you sure you want to remove the passkey ":name"? You will no longer be able to use it to sign in.', ['name' => $this->deletingPasskeyName]) }}
                 </flux:text>
             </div>
 

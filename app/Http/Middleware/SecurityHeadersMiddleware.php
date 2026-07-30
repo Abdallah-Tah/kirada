@@ -13,7 +13,10 @@ class SecurityHeadersMiddleware
         $response = $next($request);
 
         $response->headers->set('X-Content-Type-Options', 'nosniff');
+        $response->headers->set('X-Frame-Options', 'DENY');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
+        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
+        $response->headers->set('Cross-Origin-Resource-Policy', 'same-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(self)');
         $response->headers->set('Content-Security-Policy', $this->contentSecurityPolicy());
 
@@ -26,17 +29,40 @@ class SecurityHeadersMiddleware
 
     private function contentSecurityPolicy(): string
     {
-        return implode('; ', [
+        $scriptSources = [
+            "'self'",
+            "'unsafe-inline'",
+            'https://maps.googleapis.com',
+            'https://js.stripe.com',
+        ];
+
+        // Vite and framework debugging may evaluate generated JavaScript while
+        // developing. Production never receives unsafe-eval.
+        if (! app()->isProduction()) {
+            $scriptSources[] = "'unsafe-eval'";
+        }
+
+        $directives = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://js.stripe.com",
+            'script-src '.implode(' ', $scriptSources),
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net",
             "img-src 'self' data: blob: https:",
             "font-src 'self' data: https://fonts.bunny.net",
             "media-src 'self'",
             "connect-src 'self' https://maps.googleapis.com https://api.stripe.com",
             'frame-src https://js.stripe.com https://hooks.stripe.com',
+            "worker-src 'self' blob:",
+            "manifest-src 'self'",
+            "object-src 'none'",
             "base-uri 'self'",
+            "frame-ancestors 'none'",
             "form-action 'self'",
-        ]);
+        ];
+
+        if (app()->isProduction()) {
+            $directives[] = 'upgrade-insecure-requests';
+        }
+
+        return implode('; ', $directives);
     }
 }

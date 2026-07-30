@@ -14,6 +14,13 @@ class Index extends Component
 
     public string $role = 'property-manager';
 
+    public function mount(): void
+    {
+        $user = auth()->user();
+
+        abort_unless($user->isLandlord() || $user->can('team.view'), 403);
+    }
+
     #[Computed]
     public function members()
     {
@@ -26,7 +33,7 @@ class Index extends Component
 
     public function invite(): void
     {
-        abort_unless(auth()->user()->can('team.invite'), 403);
+        abort_unless(auth()->user()->isLandlord() || auth()->user()->can('team.invite'), 403);
 
         $validated = $this->validate([
             'email' => 'required|email|max:255',

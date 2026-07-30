@@ -11,7 +11,7 @@
 
 {{-- PWA --}}
 <link rel="manifest" href="/manifest.json?v=kirada-approved-20260627">
-<meta name="theme-color" content="#0EA5E9">
+<meta name="theme-color" content="#0B84F3">
 <meta name="application-name" content="Kirada">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -29,7 +29,6 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
-            .then((reg) => console.log('[PWA] Service Worker registered:', reg.scope))
             .catch((err) => console.warn('[PWA] Service Worker registration failed:', err));
     });
 }

@@ -11,38 +11,40 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
-    /* Kirada application palette.
-       The welcome page establishes a crisp white/slate interface with blue
-       and green reserved for actions and status. Keep the application canvas
-       neutral so long forms, tables, and financial data stay easy to read. */
-
-    /* Brand accents */
-    --color-kirada-teal: #0369A1;        /* legacy name: primary brand blue */
-    --color-kirada-teal-bright: #38BDF8; /* dark-mode accent */
-    --color-kirada-teal-soft: #E0F2FE;   /* tint fills */
-    --color-kirada-amber: #D97706;       /* accent — CTA / money */
+    /* Kirada brand system, sampled from the approved logo. Neutral surfaces
+       keep data readable; blue drives actions, cyan and green communicate
+       progress, navy anchors dark mode, and red is reserved for risk. */
+    --color-kirada-teal: #0B84F3;        /* legacy name: Kirada primary blue */
+    --color-kirada-teal-bright: #55B8FF; /* accessible dark-mode accent */
+    --color-kirada-teal-soft: #EAF5FF;   /* primary tint */
+    --color-kirada-cyan: #16B6CF;
+    --color-kirada-cyan-soft: #E8FAFC;
+    --color-kirada-brand-green: #12C79B;
+    --color-kirada-brand-green-soft: #E8FBF6;
+    --color-kirada-brand-red: #EE2335;
+    --color-kirada-amber: #D97706;       /* warning / money */
     --color-kirada-amber-bright: #F59E0B;
     --color-kirada-amber-soft: #FEF3C7;
 
     /* Semantic */
-    --color-kirada-success: #059669;
-    --color-kirada-danger: #DC2626;
+    --color-kirada-success: #079A76;
+    --color-kirada-danger: #D91F32;
     --color-kirada-warning: #D97706;
 
     /* Neutral base */
-    --color-kirada-ink: #0F172A;
+    --color-kirada-ink: #031A46;
     --color-kirada-paper: #F8FAFC;
     --color-kirada-soft: #F1F5F9;
 
     /* Dark-mode surfaces echo the welcome hero. */
-    --color-kirada-night: #05070D;
-    --color-kirada-night-2: #0F172A;
-    --color-kirada-night-3: #1E293B;
+    --color-kirada-night: #020B1D;
+    --color-kirada-night-2: #07142C;
+    --color-kirada-night-3: #10213F;
 
     /* ── Legacy aliases (kept so existing blades don't break) ── */
     --color-kirada-ocean: var(--color-kirada-teal);
     --color-kirada-green: var(--color-kirada-success);
-    --color-kirada-sky: #0EA5E9;
+    --color-kirada-sky: var(--color-kirada-cyan);
     --color-kirada-navy: var(--color-kirada-ink);
     --color-kirada-red: var(--color-kirada-danger);
     --color-kirada-blue: var(--color-kirada-teal);
@@ -77,6 +79,33 @@
 }
 
 @layer base {
+    :root {
+        color-scheme: light;
+        --kirada-canvas: #F6F8FC;
+        --kirada-surface: #FFFFFF;
+        --kirada-surface-muted: #F7F9FC;
+        --kirada-border: #DCE4EF;
+        --kirada-border-strong: #C8D4E3;
+        --kirada-text: #0A1930;
+        --kirada-text-muted: #5E6E85;
+        --kirada-focus: #0B84F3;
+        --kirada-shadow: 0 12px 36px rgba(3, 26, 70, 0.08);
+        --kirada-shadow-raised: 0 18px 48px rgba(3, 26, 70, 0.12);
+    }
+
+    .dark {
+        color-scheme: dark;
+        --kirada-canvas: #020B1D;
+        --kirada-surface: #07142C;
+        --kirada-surface-muted: #0C1B36;
+        --kirada-border: rgba(143, 170, 207, 0.18);
+        --kirada-border-strong: rgba(143, 170, 207, 0.30);
+        --kirada-text: #F2F7FF;
+        --kirada-text-muted: #A6B5CA;
+        --kirada-focus: #55B8FF;
+        --kirada-shadow: 0 16px 42px rgba(0, 4, 14, 0.34);
+        --kirada-shadow-raised: 0 24px 58px rgba(0, 4, 14, 0.46);
+    }
 
     *,
     ::after,
@@ -119,18 +148,18 @@ select:focus[data-flux-control] {
         /* Flux's <main> ships p-6 lg:p-8 by default. Kill it: .kirada-app-content
            owns the gutters, and the footer must reach the main edges. */
         padding: 0 !important;
-        color: #0F172A;
+        color: var(--kirada-text);
         background:
-            radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.035), transparent 24rem),
-            linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 38%, #F8FAFC 100%);
+            radial-gradient(circle at 100% 0%, rgba(11, 132, 243, 0.055), transparent 28rem),
+            linear-gradient(180deg, #FFFFFF 0%, var(--kirada-canvas) 34%, var(--kirada-canvas) 100%);
     }
 
     /* Dark mode unifies the app around the welcome hero's deep navy surface. */
     .dark .kirada-app-main {
-        color: #E2E8F0;
+        color: var(--kirada-text);
         background:
-            radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.08), transparent 26rem),
-            linear-gradient(180deg, #0B1120 0%, #05070D 42%, #070B12 100%);
+            radial-gradient(circle at 100% 0%, rgba(22, 182, 207, 0.10), transparent 28rem),
+            linear-gradient(180deg, #07142C 0%, var(--kirada-canvas) 44%, #030D21 100%);
     }
 
     .kirada-app-content {
@@ -155,9 +184,9 @@ select:focus[data-flux-control] {
         @apply flex w-full items-center border-t;
         margin-top: auto;
         min-height: 3.25rem;
-        border-color: #E2E8F0;
-        background: rgba(255, 255, 255, 0.94);
-        color: #64748B;
+        border-color: var(--kirada-border);
+        background: color-mix(in srgb, var(--kirada-surface) 94%, transparent);
+        color: var(--kirada-text-muted);
     }
 
     .kirada-footer-inner {
@@ -175,21 +204,21 @@ select:focus[data-flux-control] {
 
     .kirada-footer-link {
         @apply rounded-sm text-xs font-medium transition-colors;
-        color: #64748B;
+        color: var(--kirada-text-muted);
         text-decoration: none;
     }
 
     .kirada-footer-link:hover {
-        color: #0369A1;
+        color: var(--color-kirada-teal);
     }
 
     .kirada-footer-link.is-current {
-        color: #0369A1;
+        color: var(--color-kirada-teal);
     }
 
     .kirada-footer-link:focus-visible {
         @apply outline-2 outline-offset-4;
-        outline-color: #0EA5E9;
+        outline-color: var(--kirada-focus);
     }
 
     .dark .kirada-footer {
@@ -211,36 +240,29 @@ select:focus[data-flux-control] {
     }
 
 
-    /* ── Dark navy sidebar (sticky full-height, preserves Flux grid) ── */
-    /* The sidebar is position:sticky with height:100dvh and align-self:start
-       so it pins to the viewport top while the main content scrolls.
-
-       Gap fix: The Flux grid cell for the sidebar column grows taller than
-       100dvh when page content is long. The sticky sidebar only covers 100dvh,
-       leaving the grid cell below it showing the body background. We solve
-       this by giving the body a dark left-column background that matches the
-       sidebar gradient, so the gap is invisible. The main content area has
-       its own background (.kirada-app-main) that paints over this on the
-       right side. */
+    /* Authenticated application shell follows the compact Djib-Payroll
+       structure: a fixed-width surface sidebar, 74px brand/header rows,
+       scrollable navigation, and a separated user block. Kirada retains its
+       own blue identity and neutral welcome-page surfaces. */
     body:has(>[data-flux-sidebar]) {
         min-height: 100dvh;
-        background: linear-gradient(175deg, #05070D 0%, #0F172A 52%, #05070D 100%) left / 16rem 100dvh no-repeat fixed;
+        background: var(--kirada-canvas);
     }
-    /* When sidebar is collapsed (w-14 = 3.5rem), shrink the dark column */
-    body:has(>[data-flux-sidebar-collapsed-desktop]) {
-        background-size: 3.5rem 100dvh;
+    .dark body:has(>[data-flux-sidebar]) {
+        background: var(--kirada-canvas);
     }
     @media (max-width: 1023px) {
         body:has(>[data-flux-sidebar]) {
-            background: #F8FAFC !important;
+            background: var(--kirada-canvas) !important;
         }
         .dark body:has(>[data-flux-sidebar]) {
-            background: #05070D !important;
+            background: var(--kirada-canvas) !important;
         }
     }
     .kirada-sidebar {
-        background: linear-gradient(175deg, #05070D 0%, #0F172A 52%, #05070D 100%) !important;
-        border-right: 1px solid rgba(148, 163, 184, 0.16);
+        width: 14.25rem !important;
+        background: var(--kirada-surface) !important;
+        border-right: 1px solid var(--kirada-border);
         gap: 0 !important;
         padding: 0 !important;
         height: 100dvh !important;
@@ -248,6 +270,23 @@ select:focus[data-flux-control] {
         overflow: hidden !important;
         display: flex !important;
         flex-direction: column !important;
+        box-shadow: none !important;
+    }
+    .dark .kirada-sidebar {
+        background: var(--kirada-surface) !important;
+        border-right-color: var(--kirada-border);
+    }
+    .kirada-sidebar img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+    @media (max-width: 1023px) {
+        .kirada-sidebar {
+            width: min(18rem, calc(100vw - 2rem)) !important;
+            max-width: calc(100vw - 2rem) !important;
+            box-shadow: 14px 0 48px rgba(2, 6, 23, 0.5);
+        }
     }
     /* Desktop only: pin the sidebar as a sticky in-flow column.
        On mobile Flux renders it as a fixed off-canvas drawer and collapses
@@ -260,35 +299,67 @@ select:focus[data-flux-control] {
             top: 0 !important;
             align-self: start !important;
             z-index: 10 !important;
-            /* Shadow only where the sidebar is in view: off-canvas on mobile,
-               its 40px blur would bleed into the page as a grey smudge. */
-            box-shadow: 4px 0 40px rgba(15, 23, 42, 0.40);
+            box-shadow: none !important;
         }
     }
 
-    /* ── Sidebar header: toggle above logo ── */
+    /* ── Sidebar brand row ── */
     .kirada-sidebar-header {
-        flex-shrink: 0 !important;
-        padding: 0.75rem 1rem 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .kirada-sidebar-toggle-row {
         display: flex;
-        justify-content: flex-end;
         align-items: center;
-        margin-bottom: 0.75rem;
+        justify-content: space-between;
+        flex-shrink: 0 !important;
+        min-height: 74px;
+        padding: 0.5rem !important;
+        border-bottom: 1px solid var(--kirada-border);
+    }
+    .dark .kirada-sidebar-header {
+        border-bottom-color: var(--kirada-border);
+    }
+    .kirada-sidebar-brand {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        flex: 1 1 0%;
+        gap: 0.75rem;
+        border-radius: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        transition: background-color 150ms;
+    }
+    .kirada-sidebar-brand:hover {
+        background: var(--kirada-surface-muted);
+    }
+    .dark .kirada-sidebar-brand:hover {
+        background: rgba(30, 41, 59, 0.72);
+    }
+    .kirada-sidebar-logo {
+        display: flex;
+        width: 2.5rem;
+        height: 2.5rem;
+        flex: 0 0 2.5rem;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 0.625rem;
+        border: 1px solid var(--kirada-border);
+        background: #FFFFFF;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+    .kirada-sidebar-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
     .kirada-sidebar-collapse-btn {
-        color: rgba(255, 255, 255, 0.5) !important;
+        color: #64748B !important;
         cursor: pointer !important;
     }
     .kirada-sidebar-collapse-btn:hover {
-        color: #2DD4BF !important;
+        color: var(--color-kirada-teal) !important;
     }
     .kirada-sidebar-collapse-btn button {
         cursor: pointer !important;
     }
-
     /* ── Scrollable nav ── */
     .kirada-sidebar-nav {
         flex: 1 1 0% !important;
@@ -305,8 +376,11 @@ select:focus[data-flux-control] {
         background: transparent;
     }
     .kirada-sidebar-nav::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.1);
+        background: #CBD5E1;
         border-radius: 4px;
+    }
+    .dark .kirada-sidebar-nav::-webkit-scrollbar-thumb {
+        background: #334155;
     }
 
     /* ── Section groups ── */
@@ -319,7 +393,7 @@ select:focus[data-flux-control] {
 
     /* Section heading labels */
     .kirada-sidebar-section [data-flux-sidebar-group] > div:first-child {
-        color: rgba(255, 255, 255, 0.35);
+        color: #94A3B8;
         font-size: 0.6rem !important;
         font-weight: 700;
         letter-spacing: 0.1em;
@@ -329,48 +403,73 @@ select:focus[data-flux-control] {
 
     /* ── Menu items ── */
     .kirada-sidebar [data-flux-sidebar-item] {
-        color: rgba(255, 255, 255, 0.7) !important;
+        color: var(--kirada-text-muted) !important;
         border-radius: 0.5rem !important;
-        height: 2rem !important;
+        min-height: 2.5rem !important;
         margin: 1px 0 !important;
         transition: background 0.15s ease, color 0.15s ease;
     }
     .kirada-sidebar [data-flux-sidebar-item]:hover {
-        background: rgba(255, 255, 255, 0.06) !important;
-        color: #ffffff !important;
+        background: var(--kirada-surface-muted) !important;
+        color: var(--kirada-text) !important;
     }
     .kirada-sidebar [data-flux-sidebar-item] svg {
-        color: rgba(255, 255, 255, 0.6) !important;
+        color: #64748B !important;
     }
     .kirada-sidebar [data-flux-sidebar-item]:hover svg {
-        color: #ffffff !important;
+        color: var(--color-kirada-teal) !important;
+    }
+    .dark .kirada-sidebar [data-flux-sidebar-item] {
+        color: #CBD5E1 !important;
+    }
+    .dark .kirada-sidebar [data-flux-sidebar-item]:hover {
+        background: rgba(30, 41, 59, 0.78) !important;
+        color: #FFFFFF !important;
+    }
+    .dark .kirada-sidebar [data-flux-sidebar-item] svg {
+        color: #94A3B8 !important;
     }
 
     /* ── Active nav item ── */
     .kirada-sidebar [data-current],
     .kirada-sidebar [aria-current="page"] {
-        background: rgba(14, 165, 233, 0.14) !important;
-        color: #7DD3FC !important;
-        border: 1px solid rgba(56, 189, 248, 0.28) !important;
-        border-radius: 0.625rem !important;
+        background: var(--color-kirada-teal-soft) !important;
+        color: #096AC1 !important;
+        border-inline-start: 3px solid var(--color-kirada-teal) !important;
+        font-weight: 600;
     }
     .kirada-sidebar [data-current] svg,
     .kirada-sidebar [aria-current="page"] svg {
-        color: #7DD3FC !important;
+        color: var(--color-kirada-teal) !important;
+    }
+    .dark .kirada-sidebar [data-current],
+    .dark .kirada-sidebar [aria-current="page"] {
+        background: rgba(11, 132, 243, 0.18) !important;
+        color: #83C9FF !important;
     }
 
     /* ── User profile at bottom ── */
     .kirada-sidebar-user-section {
         flex-shrink: 0 !important;
-        padding: 0.5rem 0.75rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom, 0px));
+        border-top: 1px solid var(--kirada-border);
     }
     .kirada-sidebar-user-section [data-flux-sidebar-profile] {
-        color: rgba(255, 255, 255, 0.8) !important;
+        color: #334155 !important;
     }
     .kirada-sidebar-user-section [data-flux-sidebar-profile]:hover {
-        background: rgba(255, 255, 255, 0.06) !important;
-        color: #ffffff !important;
+        background: #F1F5F9 !important;
+        color: #0F172A !important;
+    }
+    .dark .kirada-sidebar-user-section {
+        border-top-color: rgba(148, 163, 184, 0.16);
+    }
+    .dark .kirada-sidebar-user-section [data-flux-sidebar-profile] {
+        color: #E2E8F0 !important;
+    }
+    .dark .kirada-sidebar-user-section [data-flux-sidebar-profile]:hover {
+        background: rgba(30, 41, 59, 0.78) !important;
+        color: #FFFFFF !important;
     }
 
     /* User dropdown lives in the browser's popover layer but remains a DOM
@@ -397,14 +496,18 @@ select:focus[data-flux-control] {
         background: #334155;
     }
 
-    /* ── App header (all breakpoints) ──
-       Matches the sidebar's dark slate so the shell reads as one surface. */
+    /* ── App header ── */
     .kirada-app-header {
-        min-height: 64px;
-        background: #05070D;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.16);
-        padding: 0.5rem 1rem;
+        min-height: 74px;
+        background: color-mix(in srgb, var(--kirada-surface) 94%, transparent);
+        border-bottom: 1px solid var(--kirada-border);
+        padding: 0.5rem 1rem !important;
         gap: 0.75rem;
+        backdrop-filter: blur(16px);
+    }
+    .dark .kirada-app-header {
+        background: color-mix(in srgb, var(--kirada-surface) 94%, transparent);
+        border-bottom-color: var(--kirada-border);
     }
     .kirada-app-header button {
         cursor: pointer !important;
@@ -421,26 +524,36 @@ select:focus[data-flux-control] {
         display: flex;
         align-items: center;
         width: 100%;
-        height: 2.25rem;
+        height: 2.5rem;
         border-radius: 0.75rem;
-        border: 1px solid rgba(148, 163, 184, 0.22);
-        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--kirada-border);
+        background: var(--kirada-surface-muted);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
         transition: border-color 200ms, background-color 200ms, box-shadow 200ms;
     }
     .kirada-header-search-field:hover {
-        background: rgba(255, 255, 255, 0.1);
+        border-color: #CBD5E1;
+        background: #FFFFFF;
     }
     .kirada-header-search-field:focus-within {
-        border-color: rgba(56, 189, 248, 0.7);
-        background: rgba(255, 255, 255, 0.1);
-        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        border-color: var(--kirada-focus);
+        background: var(--kirada-surface);
+        box-shadow: 0 0 0 3px rgba(11, 132, 243, 0.14);
+    }
+    .dark .kirada-header-search-field {
+        border-color: #334155;
+        background: rgba(30, 41, 59, 0.7);
+    }
+    .dark .kirada-header-search-field:hover,
+    .dark .kirada-header-search-field:focus-within {
+        background: #1E293B;
     }
     .kirada-header-search-icon {
         position: absolute;
         inset-inline-start: 0.75rem;
         width: 1.125rem;
         height: 1.125rem;
-        color: rgba(148, 163, 184, 0.9);
+        color: #94A3B8;
         pointer-events: none;
     }
     .kirada-header-search-field input {
@@ -451,13 +564,16 @@ select:focus[data-flux-control] {
         padding: 0 4rem 0 2.5rem;
         font-size: 0.8125rem;
         font-weight: 500;
-        color: #ffffff;
+        color: #0F172A;
         outline: none;
         box-shadow: none;
     }
     .kirada-header-search-field input::placeholder {
         font-weight: 400;
-        color: rgba(148, 163, 184, 0.8);
+        color: #94A3B8;
+    }
+    .dark .kirada-header-search-field input {
+        color: #F8FAFC;
     }
     .kirada-header-search-kbd {
         position: absolute;
@@ -467,12 +583,12 @@ select:focus[data-flux-control] {
         height: 1.25rem;
         padding: 0 0.375rem;
         border-radius: 0.375rem;
-        border: 1px solid rgba(148, 163, 184, 0.25);
-        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid #E2E8F0;
+        background: #F1F5F9;
         font-family: inherit;
         font-size: 0.625rem;
         font-weight: 500;
-        color: rgba(148, 163, 184, 0.9);
+        color: #94A3B8;
         pointer-events: none;
     }
     @media (min-width: 640px) {
@@ -495,12 +611,19 @@ select:focus[data-flux-control] {
         border-radius: 0.5rem;
         font-size: 0.8125rem;
         font-weight: 500;
-        color: rgba(226, 232, 240, 0.85);
+        color: #64748B;
         transition: background-color 150ms, color 150ms;
     }
     .kirada-header-btn:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: #ffffff;
+        background: #F1F5F9;
+        color: #0F172A;
+    }
+    .dark .kirada-header-btn {
+        color: #CBD5E1;
+    }
+    .dark .kirada-header-btn:hover {
+        background: #1E293B;
+        color: #FFFFFF;
     }
     .kirada-header-btn-wide {
         padding-inline: 0.625rem;
@@ -520,7 +643,30 @@ select:focus[data-flux-control] {
         font-size: 0.5625rem;
         font-weight: 700;
         color: #ffffff;
-        box-shadow: 0 0 0 2px #05070D;
+        box-shadow: 0 0 0 2px #FFFFFF;
+    }
+    .dark .kirada-header-badge {
+        box-shadow: 0 0 0 2px #0B1120;
+    }
+    @media (max-width: 639px) {
+        .kirada-app-header {
+            min-height: 56px;
+            padding: 0.375rem 0.5rem;
+            gap: 0.25rem;
+        }
+        .kirada-header-search {
+            display: none;
+        }
+        .kirada-header-actions {
+            gap: 0;
+        }
+        .kirada-header-btn-wide {
+            min-width: 2.25rem;
+            padding-inline: 0;
+        }
+        .kirada-header-btn-wide span {
+            display: none;
+        }
     }
 
     /* Language menu (plain Alpine, not a Flux dropdown) */
@@ -589,48 +735,48 @@ select:focus[data-flux-control] {
     }
 
     .kirada-page-header {
-        @apply overflow-hidden rounded-[1.5rem] border p-4 sm:p-6 shadow-[0_24px_80px_rgba(15,23,42,0.10)] ring-1 backdrop-blur-xl sm:p-7;
-        border-color: #E2E8F0;
-        ring-color: rgba(15, 23, 42, 0.03);
+        @apply relative overflow-hidden rounded-2xl border p-4 sm:p-6;
+        border-color: var(--kirada-border);
         background:
-            radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.055), transparent 18rem),
-            #FFFFFF;
-        box-shadow:
-            0 18px 55px rgba(15, 23, 42, 0.07),
-            inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            linear-gradient(90deg, rgba(11, 132, 243, 0.065), transparent 42%),
+            var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
+    }
+
+    .kirada-page-header::before {
+        content: "";
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: 0;
+        width: 0.25rem;
+        background: linear-gradient(180deg, var(--color-kirada-teal), var(--color-kirada-cyan), var(--color-kirada-brand-green));
     }
 
     .kirada-card {
-        @apply rounded-[1.25rem] border p-4 sm:p-5 backdrop-blur-xl w-full max-w-full overflow-hidden;
-        border-color: #E2E8F0;
-        background: rgba(255, 255, 255, 0.96);
-        box-shadow:
-            0 18px 55px rgba(15, 23, 42, 0.07),
-            inset 0 1px 0 rgba(255, 255, 255, 0.85);
-        transition: transform 0.4s var(--ease-kirada), box-shadow 0.4s var(--ease-kirada),
-            border-color 0.4s var(--ease-kirada);
+        @apply w-full max-w-full overflow-hidden rounded-2xl border p-4 sm:p-5;
+        border-color: var(--kirada-border);
+        background: var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
+        transition: box-shadow 0.25s var(--ease-kirada), border-color 0.25s var(--ease-kirada);
     }
 
     .kirada-card:hover {
-        border-color: #CBD5E1;
-        box-shadow:
-            0 24px 70px rgba(15, 23, 42, 0.10),
-            0 4px 16px rgba(15, 23, 42, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.90);
+        border-color: var(--kirada-border-strong);
+        box-shadow: var(--kirada-shadow-raised);
     }
 
     .kirada-stat-card {
-        @apply rounded-[1.25rem] p-5 backdrop-blur-xl hover:-translate-y-1;
-        border: 1px solid #E2E8F0;
-        background: #FFFFFF;
-        box-shadow: 0 18px 55px rgba(15, 23, 42, 0.07);
-        transition: transform 0.4s var(--ease-kirada), box-shadow 0.4s var(--ease-kirada),
-            border-color 0.4s var(--ease-kirada);
+        @apply rounded-2xl p-5;
+        border: 1px solid var(--kirada-border);
+        background: var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
+        transition: transform 0.25s var(--ease-kirada), box-shadow 0.25s var(--ease-kirada), border-color 0.25s var(--ease-kirada);
     }
 
     .kirada-stat-card:hover {
-        border-color: #BAE6FD;
-        box-shadow: 0 28px 72px rgba(15, 23, 42, 0.11), 0 4px 16px rgba(15, 23, 42, 0.06);
+        transform: translateY(-2px);
+        border-color: color-mix(in srgb, var(--color-kirada-teal) 36%, var(--kirada-border));
+        box-shadow: var(--kirada-shadow-raised);
     }
 
     .kirada-stat-label {
@@ -646,7 +792,7 @@ select:focus[data-flux-control] {
     }
 
     .kirada-primary-button {
-        @apply inline-flex min-h-10 items-center justify-center rounded-xl bg-kirada-ocean px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(14,165,233,0.22)] hover:bg-kirada-navy hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(14,165,233,0.28)] active:translate-y-0 active:scale-[0.97];
+        @apply inline-flex min-h-10 items-center justify-center rounded-xl bg-kirada-ocean px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(11,132,243,0.24)] hover:bg-kirada-navy hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(11,132,243,0.30)] active:translate-y-0 active:scale-[0.97];
         transition: transform 0.25s var(--ease-kirada), box-shadow 0.25s var(--ease-kirada),
             background-color 0.25s var(--ease-kirada);
     }
@@ -662,12 +808,18 @@ select:focus[data-flux-control] {
     }
 
     .kirada-toolbar {
-        @apply flex flex-wrap items-center gap-3 rounded-[1.25rem] border border-white/70 bg-white/82 p-4 shadow-[0_18px_55px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/[0.03] backdrop-blur-xl;
+        @apply flex flex-wrap items-center gap-3 rounded-2xl border p-4;
+        border-color: var(--kirada-border);
+        background: var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
     }
 
     .kirada-table-card {
         /* overflow-x-auto (not hidden) so wide tables scroll instead of clip. */
-        @apply overflow-x-auto rounded-[1.25rem] border border-white/75 bg-white/92 shadow-[0_18px_55px_rgba(15,23,42,0.07)] ring-1 ring-slate-900/[0.03] backdrop-blur-xl;
+        @apply overflow-x-auto rounded-2xl border;
+        border-color: var(--kirada-border);
+        background: var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
     }
 
     .kirada-table-card table {
@@ -675,7 +827,9 @@ select:focus[data-flux-control] {
     }
 
     .kirada-table-card thead {
-        @apply bg-slate-50/80 text-xs uppercase tracking-[0.08em] text-slate-500;
+        @apply text-xs uppercase tracking-[0.08em];
+        background: var(--kirada-surface-muted);
+        color: var(--kirada-text-muted);
     }
 
     .kirada-table-card tbody {
@@ -683,11 +837,18 @@ select:focus[data-flux-control] {
     }
 
     .kirada-table-card tbody tr {
-        @apply transition hover:bg-sky-50/45;
+        @apply transition;
+    }
+
+    .kirada-table-card tbody tr:hover {
+        background: color-mix(in srgb, var(--color-kirada-teal) 5%, var(--kirada-surface));
     }
 
     .kirada-form-card {
-        @apply rounded-[1.25rem] border border-white/75 bg-white/92 p-6 shadow-[0_18px_55px_rgba(15,23,42,0.07)] ring-1 ring-slate-900/[0.03] backdrop-blur-xl;
+        @apply rounded-2xl border p-6;
+        border-color: var(--kirada-border);
+        background: var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
     }
 
     /* Segmented account-type picker (registration). Single column on phones so
@@ -903,41 +1064,34 @@ select:focus[data-flux-control] {
 
     /* ── Shell ── */
     .dark .kirada-page-header {
-        border-color: rgba(148, 163, 184, 0.18);
+        border-color: var(--kirada-border);
         background:
-            radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.12), transparent 20rem),
-            linear-gradient(135deg, #111827 0%, #0B1120 55%, #0F172A 100%);
-        box-shadow:
-            0 24px 80px rgba(0, 0, 0, 0.45),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            linear-gradient(90deg, rgba(11, 132, 243, 0.12), transparent 42%),
+            var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
     }
 
     /* ── Cards ── */
     .dark .kirada-card {
-        border-color: rgba(148, 163, 184, 0.16);
-        background: linear-gradient(145deg, #111827 0%, #0B1120 58%, #0F172A 100%);
-        box-shadow:
-            0 18px 55px rgba(0, 0, 0, 0.40),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        border-color: var(--kirada-border);
+        background: var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
     }
 
     .dark .kirada-card:hover {
-        border-color: rgba(56, 189, 248, 0.32);
-        box-shadow:
-            0 24px 70px rgba(2, 132, 199, 0.12),
-            0 4px 16px rgba(0, 0, 0, 0.35),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        border-color: var(--kirada-border-strong);
+        box-shadow: var(--kirada-shadow-raised);
     }
 
     .dark .kirada-stat-card {
-        border-color: rgba(148, 163, 184, 0.16);
-        background: linear-gradient(145deg, #111827 0%, #0B1120 58%, #0F172A 100%);
-        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.40);
+        border-color: var(--kirada-border);
+        background: var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
     }
 
     .dark .kirada-stat-card:hover {
-        border-color: rgba(56, 189, 248, 0.34);
-        box-shadow: 0 28px 72px rgba(2, 132, 199, 0.16), 0 4px 16px rgba(0, 0, 0, 0.35);
+        border-color: var(--kirada-border-strong);
+        box-shadow: var(--kirada-shadow-raised);
     }
 
     .dark .kirada-stat-label {
@@ -954,13 +1108,14 @@ select:focus[data-flux-control] {
     .dark .kirada-form-card,
     .dark .kirada-provider-card,
     .dark .kirada-status-strip {
-        border-color: rgba(148, 163, 184, 0.16);
-        background: linear-gradient(145deg, #111827 0%, #0B1120 58%, #0F172A 100%);
-        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.40);
+        border-color: var(--kirada-border);
+        background: var(--kirada-surface);
+        box-shadow: var(--kirada-shadow);
     }
 
     .dark .kirada-table-card thead {
-        @apply bg-stone-900/60 text-stone-400;
+        background: var(--kirada-surface-muted);
+        color: var(--kirada-text-muted);
     }
 
     .dark .kirada-table-card tbody {
@@ -968,7 +1123,7 @@ select:focus[data-flux-control] {
     }
 
     .dark .kirada-table-card tbody tr:hover {
-        @apply bg-sky-500/10;
+        background: rgba(11, 132, 243, 0.10);
     }
 
     .dark .kirada-table-card tbody td {

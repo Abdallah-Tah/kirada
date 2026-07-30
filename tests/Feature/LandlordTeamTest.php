@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\LandlordTeamService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class LandlordTeamTest extends TestCase
@@ -45,6 +46,43 @@ class LandlordTeamTest extends TestCase
         $this->assertTrue($member->hasRole('property-manager'));
         $this->assertSame($owner->id, $member->landlordAccountId());
         $this->assertTrue($membership->fresh()->isActive());
+    }
+
+    public function test_owner_can_open_team_workspace_and_understand_each_role(): void
+    {
+        $owner = User::factory()->create(['email_verified_at' => now()]);
+        $owner->assignRole('landlord');
+
+        $response = $this->actingAs($owner)->get(route('property-team.index'));
+
+        $response
+            ->assertOk()
+            ->assertSee('Property Team')
+            ->assertSee('Choose the right role')
+            ->assertSee('Landlord Admin')
+            ->assertSee('Property Manager')
+            ->assertSee('Accountant')
+            ->assertSee('Viewer')
+            ->assertSee('Send invitation');
+    }
+
+    public function test_owner_team_navigation_survives_stale_team_permissions(): void
+    {
+        $owner = User::factory()->create(['email_verified_at' => now()]);
+        $owner->assignRole('landlord');
+
+        Role::findByName('landlord')->revokePermissionTo([
+            'team.view',
+            'team.invite',
+            'team.manage',
+        ]);
+
+        $response = $this->actingAs($owner)->get(route('property-team.index'));
+
+        $response
+            ->assertOk()
+            ->assertSee('Property Team')
+            ->assertSee('Invite a team member');
     }
 
     public function test_team_member_cannot_join_a_second_landlord_account(): void

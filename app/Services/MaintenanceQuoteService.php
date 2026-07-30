@@ -27,6 +27,10 @@ class MaintenanceQuoteService
             throw new \DomainException('A quote needs at least one line item.');
         }
 
+        if ($request->assigned_to !== $pro->id || ! $pro->hasRole('maintenance')) {
+            throw new \DomainException('Only the assigned maintenance professional can submit a quote.');
+        }
+
         return DB::transaction(function () use ($request, $pro, $items, $taxRate, $notes, $currencyId) {
             $quote = MaintenanceQuote::create([
                 'maintenance_request_id' => $request->id,

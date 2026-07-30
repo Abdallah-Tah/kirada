@@ -36,6 +36,21 @@ class DashboardTest extends TestCase
         $response->assertRedirect(route('landlord.dashboard'));
     }
 
+    public function test_authenticated_shell_uses_compact_brand_header_sidebar_and_footer(): void
+    {
+        $landlord = User::factory()->create(['email_verified_at' => now()]);
+        $landlord->assignRole('landlord');
+
+        $response = $this->actingAs($landlord)->get(route('landlord.dashboard'));
+
+        $response
+            ->assertOk()
+            ->assertSee('Smart Rent Management')
+            ->assertSee('data-test="global-search"', false)
+            ->assertSee('Property Team')
+            ->assertSee('All rights reserved.');
+    }
+
     public function test_tenant_user_is_redirected_to_tenant_dashboard(): void
     {
         $tenant = User::factory()->create(['email_verified_at' => now()]);

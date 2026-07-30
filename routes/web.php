@@ -9,6 +9,7 @@ use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\SubscriptionCheckoutController;
+use App\Livewire\Audit\Index as AuditIndex;
 use App\Livewire\Contracts\Create as ContractCreate;
 use App\Livewire\Contracts\Index as ContractIndex;
 use App\Livewire\Contracts\Show as ContractShow;
@@ -223,9 +224,16 @@ Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|accountant
     Route::get('/reports', ReportsIndex::class)->name('reports.index');
 });
 
+Route::middleware([
+    'kirada-auth',
+    'role:admin|landlord|landlord-admin',
+    'permission:audit.view',
+])->group(function () {
+    Route::get('/audit', AuditIndex::class)->name('audit.index');
+});
+
 Route::middleware(['kirada-auth', 'role:landlord|landlord-admin|property-manager|accountant|viewer'])->group(function () {
     Route::get('/property-team', LandlordTeamIndex::class)
-        ->middleware('permission:team.view')
         ->name('property-team.index');
 });
 

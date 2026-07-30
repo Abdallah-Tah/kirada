@@ -16,7 +16,7 @@ class LandlordTeamService
     {
         $landlordId = $actor->landlordAccountId();
 
-        if (! $landlordId || ! $actor->can('team.invite')) {
+        if (! $landlordId || (! $actor->isLandlord() && ! $actor->can('team.invite'))) {
             throw new \DomainException('You are not allowed to invite team members.');
         }
 
@@ -144,7 +144,10 @@ class LandlordTeamService
 
     private function assertManageable(User $actor, LandlordTeamMembership $membership): void
     {
-        if ($membership->landlord_id !== $actor->landlordAccountId() || ! $actor->can('team.manage')) {
+        if (
+            $membership->landlord_id !== $actor->landlordAccountId()
+            || (! $actor->isLandlord() && ! $actor->can('team.manage'))
+        ) {
             throw new \DomainException('You are not allowed to manage this team member.');
         }
     }
