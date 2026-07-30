@@ -135,7 +135,15 @@
                         </div>
                         <div class="mt-auto">
                             @if(in_array($summary['state'], ['none', 'trialing'], true))
-                                <flux:button wire:click="selectPlan('{{ $plan->slug }}')" variant="{{ $isCurrentPlan ? 'filled' : 'primary' }}" class="w-full">
+                                <flux:button
+                                    wire:click="selectPlan('{{ $plan->slug }}')"
+                                    data-confirm="{{ __('Use this plan during your free trial? Your portfolio limits will update immediately.') }}"
+                                    data-confirm-title="{{ __('Confirm plan selection') }}"
+                                    data-confirm-button="{{ __('Select plan') }}"
+                                    data-confirm-variant="warning"
+                                    variant="{{ $isCurrentPlan ? 'filled' : 'primary' }}"
+                                    class="w-full"
+                                >
                                     {{ $isCurrentPlan ? __('Selected for trial') : __('Use during free trial') }}
                                 </flux:button>
                             @else
@@ -171,7 +179,14 @@
                             <p>{{ __('You will continue to Stripe Checkout. Kirada never stores your full card number. Stripe handles card validation, invoices, renewals, and payment authentication.') }}</p>
                         </div>
                     </div>
-                    <form method="POST" action="{{ route('subscription.checkout', $selectedPlanSlug) }}">
+                    <form
+                        method="POST"
+                        action="{{ route('subscription.checkout', $selectedPlanSlug) }}"
+                        data-confirm="{{ __('Continue to Stripe Checkout? You can review the final price before authorizing payment.') }}"
+                        data-confirm-title="{{ __('Secure subscription') }}"
+                        data-confirm-button="{{ __('Continue') }}"
+                        data-confirm-variant="primary"
+                    >
                         @csrf
                         <flux:button type="submit" variant="primary" class="w-full" icon="arrow-top-right-on-square">
                             {{ __('Continue to secure Stripe checkout') }}

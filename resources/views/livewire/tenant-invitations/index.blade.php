@@ -46,7 +46,15 @@
         <p class="text-xs text-zinc-400">{{ __('Either email or phone is required. If email is provided, an invitation email will be sent automatically.') }}</p>
 
         <div>
-            <flux:button wire:click="sendInvitation" variant="primary" icon="paper-airplane">
+            <flux:button
+                wire:click="sendInvitation"
+                data-confirm="{{ __('Send this tenant invitation? The tenant will receive a private account-creation link.') }}"
+                data-confirm-title="{{ __('Invite tenant') }}"
+                data-confirm-button="{{ __('Send invitation') }}"
+                data-confirm-variant="primary"
+                variant="primary"
+                icon="paper-airplane"
+            >
                 {{ __('Send Invitation') }}
             </flux:button>
         </div>
@@ -138,6 +146,7 @@
                                         <flux:menu.item
                                             wire:click="resendInvitation({{ $invitation->id }})"
                                             data-confirm="{{ __('Resend this invitation with a new link?') }}"
+                                            data-confirm-variant="primary"
                                             icon="arrow-path"
                                         >
                                             {{ __('Resend') }}

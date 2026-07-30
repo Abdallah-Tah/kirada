@@ -130,7 +130,14 @@
 
     {{-- ── Invite modal ── --}}
     <flux:modal name="connect-provider" class="md:w-[28rem]">
-        <form wire:submit="sendRequest" class="space-y-4">
+        <form
+            wire:submit="sendRequest"
+            class="space-y-4"
+            data-confirm="{{ __('Send this maintenance team invitation? The provider must accept before work can be assigned.') }}"
+            data-confirm-title="{{ __('Invite maintenance provider') }}"
+            data-confirm-button="{{ __('Send invitation') }}"
+            data-confirm-variant="primary"
+        >
             <div>
                 <flux:heading size="lg">{{ __('Invite to your team') }}</flux:heading>
                 <flux:subheading>

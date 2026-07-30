@@ -79,7 +79,7 @@
                     {{ __('Close') }}
                 </flux:button>
             @else
-                <flux:button wire:click="reopenConversation" data-confirm="{{ __('Reopen this conversation?') }}" variant="ghost" icon="lock-open">
+                <flux:button wire:click="reopenConversation" data-confirm="{{ __('Reopen this conversation?') }}" data-confirm-variant="primary" variant="ghost" icon="lock-open">
                     {{ __('Reopen') }}
                 </flux:button>
             @endif

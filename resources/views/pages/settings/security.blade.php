@@ -240,6 +240,10 @@ new #[Title('Security settings')] class extends Component {
                                 <flux:button
                                     variant="danger"
                                     wire:click="disable"
+                                    data-confirm="{{ __('Disable two-factor authentication? Password sign-in will no longer require an authentication code.') }}"
+                                    data-confirm-title="{{ __('Disable 2FA') }}"
+                                    data-confirm-button="{{ __('Disable 2FA') }}"
+                                    data-confirm-variant="danger"
                                 >
                                     {{ __('Disable 2FA') }}
                                 </flux:button>

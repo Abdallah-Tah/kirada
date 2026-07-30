@@ -149,7 +149,7 @@
                         </flux:select>
                     </div>
                     <div class="flex items-end">
-                        <flux:button wire:click="assign" data-confirm="{{ __('Assign this maintenance request?') }}" variant="primary" class="w-full">
+                        <flux:button wire:click="assign" data-confirm="{{ __('Assign this maintenance request?') }}" data-confirm-variant="primary" variant="primary" class="w-full">
                             {{ __('Assign') }}
                         </flux:button>
                     </div>
@@ -178,7 +178,7 @@
                         </flux:select>
                     </div>
                     <div class="flex items-end">
-                        <flux:button wire:click="changeStatus" data-confirm="{{ __('Update this maintenance request status?') }}" variant="primary" class="w-full">
+                        <flux:button wire:click="changeStatus" data-confirm="{{ __('Update this maintenance request status?') }}" data-confirm-variant="primary" variant="primary" class="w-full">
                             {{ __('Update Status') }}
                         </flux:button>
                     </div>
@@ -322,16 +322,48 @@
                         {{-- Actions --}}
                         <div class="mt-3 flex gap-2">
                             @if ($quote->isPending() && $this->canManage)
-                                <flux:button wire:click="approveQuote({{ $quote->id }})" variant="primary" size="sm">{{ __('Approve') }}</flux:button>
-                                <flux:button wire:click="declineQuote({{ $quote->id }})" variant="ghost" size="sm">{{ __('Decline') }}</flux:button>
+                                <flux:button
+                                    wire:click="approveQuote({{ $quote->id }})"
+                                    data-confirm="{{ __('Approve this quote for :amount? The provider will be notified.', ['amount' => $quote->formatted_total]) }}"
+                                    data-confirm-title="{{ __('Approve quote') }}"
+                                    data-confirm-button="{{ __('Approve') }}"
+                                    data-confirm-variant="primary"
+                                    variant="primary"
+                                    size="sm"
+                                >{{ __('Approve') }}</flux:button>
+                                <flux:button
+                                    wire:click="declineQuote({{ $quote->id }})"
+                                    data-confirm="{{ __('Decline this quote? The provider will be notified and the quote cannot be approved afterward.') }}"
+                                    data-confirm-title="{{ __('Decline quote') }}"
+                                    data-confirm-button="{{ __('Decline') }}"
+                                    data-confirm-variant="danger"
+                                    variant="ghost"
+                                    size="sm"
+                                >{{ __('Decline') }}</flux:button>
                             @endif
 
                             @if ($quote->isApproved() && $this->isAssignedPro)
-                                <flux:button wire:click="invoiceQuote({{ $quote->id }})" variant="primary" size="sm">{{ __('Convert to Invoice') }}</flux:button>
+                                <flux:button
+                                    wire:click="invoiceQuote({{ $quote->id }})"
+                                    data-confirm="{{ __('Convert this approved quote into an invoice?') }}"
+                                    data-confirm-title="{{ __('Create invoice') }}"
+                                    data-confirm-button="{{ __('Convert to Invoice') }}"
+                                    data-confirm-variant="warning"
+                                    variant="primary"
+                                    size="sm"
+                                >{{ __('Convert to Invoice') }}</flux:button>
                             @endif
 
                             @if ($quote->status === 'invoiced' && $this->canManage)
-                                <flux:button wire:click="payQuote({{ $quote->id }})" variant="primary" size="sm">{{ __('Mark Paid') }}</flux:button>
+                                <flux:button
+                                    wire:click="payQuote({{ $quote->id }})"
+                                    data-confirm="{{ __('Mark this maintenance invoice as paid?') }}"
+                                    data-confirm-title="{{ __('Confirm payment status') }}"
+                                    data-confirm-button="{{ __('Mark Paid') }}"
+                                    data-confirm-variant="primary"
+                                    variant="primary"
+                                    size="sm"
+                                >{{ __('Mark Paid') }}</flux:button>
                             @endif
                         </div>
                     </div>

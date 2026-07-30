@@ -1,6 +1,6 @@
 <div>
     <div class="kirada-page-header kirada-reveal">
-        <flux:heading size="xl">{{ __('messages.Documents') }}</flux:heading>
+        <flux:heading size="xl">{{ __('Documents') }}</flux:heading>
         <flux:subheading>{{ __('Lease agreements, receipts, payment proofs, and more') }}</flux:subheading>
     </div>
 

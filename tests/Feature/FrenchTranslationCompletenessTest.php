@@ -9,6 +9,26 @@ use Tests\TestCase;
 
 class FrenchTranslationCompletenessTest extends TestCase
 {
+    public function test_shared_navigation_labels_resolve_without_leaking_translation_keys(): void
+    {
+        app()->setLocale('fr');
+
+        $this->assertSame('Messages', __('Messages'));
+        $this->assertSame('Documents', __('Documents'));
+        $this->assertSame('Abonnement', __('Subscription'));
+
+        $translations = json_decode(
+            file_get_contents(lang_path('fr.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+
+        $this->assertArrayNotHasKey('messages.Messages', $translations);
+        $this->assertArrayNotHasKey('messages.Documents', $translations);
+        $this->assertArrayNotHasKey('messages.Subscription', $translations);
+    }
+
     public function test_unit_type_dropdown_labels_resolve_in_french(): void
     {
         app()->setLocale('fr');

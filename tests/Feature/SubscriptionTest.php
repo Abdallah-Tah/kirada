@@ -69,4 +69,20 @@ class SubscriptionTest extends TestCase
         $this->assertSame('trialing', $subscription->status);
         $this->assertFalse($subscription->plan?->is($business) ?? false);
     }
+
+    public function test_plan_selection_renders_the_shared_confirmation_contract(): void
+    {
+        $landlord = User::factory()->create();
+        $landlord->assignRole('landlord');
+
+        app(SubscriptionService::class)->startTrial(
+            $landlord,
+            Plan::where('slug', 'starter')->firstOrFail(),
+        );
+
+        Livewire::actingAs($landlord)
+            ->test(Status::class)
+            ->assertSee('data-confirm-title="Confirm plan selection"', false)
+            ->assertSee('data-confirm-variant="warning"', false);
+    }
 }

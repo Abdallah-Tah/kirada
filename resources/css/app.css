@@ -1867,6 +1867,21 @@ select:focus[data-flux-control] {
     color: #0f172a;
     line-height: 1.65;
 }
+.kirada-contract-scroll {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    max-height: min(72dvh, 52rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    padding-inline-end: 0.5rem;
+}
+.kirada-contract-scroll:focus-visible {
+    border-radius: 0.75rem;
+    outline: 2px solid color-mix(in srgb, var(--color-kirada-teal) 70%, white);
+    outline-offset: 3px;
+}
 .kirada-contract-body .contract-title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -1895,8 +1910,25 @@ select:focus[data-flux-control] {
     font-style: italic;
 }
 
+/* The contract preview lives on the application surface rather than on a
+   permanent white "paper" background, so its ink must follow dark mode. */
+.dark .kirada-contract-body {
+    color: var(--color-stone-100);
+}
+.dark .kirada-contract-body .contract-title,
+.dark .kirada-contract-body h2 {
+    color: var(--color-stone-50);
+}
+.dark .kirada-contract-body .contract-subtitle {
+    color: var(--color-stone-300);
+}
+
 /* ── Mobile responsive overrides for contract body ── */
 @media (max-width: 767px) {
+    .kirada-contract-scroll {
+        max-height: 68dvh;
+        padding-inline-end: 0.25rem;
+    }
     .kirada-contract-body {
         overflow-wrap: anywhere;
         word-break: break-word;

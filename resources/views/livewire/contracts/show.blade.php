@@ -33,7 +33,7 @@
             <div class="flex flex-wrap items-center gap-2 max-md:flex-col max-md:items-stretch">
                 @can('update', $contract)
                     @if ($contract->isDraft())
-                        <flux:button variant="primary" wire:click="send" class="max-md:w-full" data-confirm="{{ __('Send this contract for signature?') }}">{{ __('Send for signature') }}</flux:button>
+                        <flux:button variant="primary" wire:click="send" class="max-md:w-full" data-confirm="{{ __('Send this contract for signature?') }}" data-confirm-variant="primary">{{ __('Send for signature') }}</flux:button>
                     @endif
                     @if (! $contract->isCompleted() && ! $contract->isCancelled())
                         <flux:button variant="ghost" wire:click="cancel" class="max-md:w-full" data-confirm="{{ __('Cancel this contract?') }}">{{ __('Cancel') }}</flux:button>
@@ -48,10 +48,10 @@
     </div>
 
     {{-- ─── Body + signers ───────────────────────────────────────────────── --}}
-    <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr] max-lg:grid-cols-1">
+    <div class="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,1fr)] max-lg:grid-cols-1">
 
         {{-- ── Contract body card ──────────────────────────────────────── --}}
-        <div class="kirada-card overflow-hidden">
+        <div class="kirada-card min-w-0 overflow-hidden">
 
             @if ($editing)
                 {{-- ══════════════════ EDIT MODE ══════════════════ --}}
@@ -221,7 +221,12 @@
 
             @else
                 {{-- ══════════════════ VIEW MODE ══════════════════ --}}
-                <div class="kirada-contract-body max-w-full overflow-hidden">
+                <div
+                    class="kirada-contract-body kirada-contract-scroll"
+                    role="region"
+                    tabindex="0"
+                    aria-label="{{ __('Contract') }}"
+                >
                     {!! $contract->body_html !!}
                 </div>
 
@@ -281,6 +286,7 @@
                                     @if ($sig->email)
                                         <button type="button" wire:click="resend({{ $sig->id }})" wire:loading.attr="disabled" wire:target="resend({{ $sig->id }})"
                                             data-confirm="{{ __('Email this signing link again?') }}"
+                                            data-confirm-variant="primary"
                                             class="mt-2 text-xs font-medium text-kirada-ocean hover:text-kirada-navy">
                                             {{ __('Email signing link to :email', ['email' => $sig->email]) }}
                                         </button>

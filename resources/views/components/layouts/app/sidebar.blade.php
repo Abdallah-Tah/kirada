@@ -66,7 +66,7 @@
                         {{ __('Find Maintenance') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        Messages
+                        {{ __('Messages') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
@@ -117,7 +117,7 @@
                         {{ __('Find Maintenance') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        Messages
+                        {{ __('Messages') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
@@ -158,7 +158,7 @@
                         {{ __('Documents') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        Messages
+                        {{ __('Messages') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole
@@ -170,7 +170,7 @@
                         {{ __('Assigned Requests') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        Messages
+                        {{ __('Messages') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 

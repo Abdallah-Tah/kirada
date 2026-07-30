@@ -37,7 +37,13 @@
             </div>
 
             {{-- Signature pad --}}
-            <form @submit.prevent="submit()" class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+            <form
+                @submit.prevent="submit()"
+                class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+                data-confirm="{{ __('Sign this contract electronically? Your signature will be securely recorded and cannot be withdrawn from the completed document.') }}"
+                data-confirm-title="{{ __('Confirm electronic signature') }}"
+                data-confirm-button="{{ __('Sign contract') }}"
+                data-confirm-variant="primary"
                 x-data="{
                     drawing: false,
                     hasInk: false,

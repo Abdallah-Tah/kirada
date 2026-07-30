@@ -154,6 +154,10 @@ new #[Title('Payment accounts')] class extends Component {
                             size="sm"
                             icon="trash"
                             wire:click="removeAccount({{ $index }})"
+                            data-confirm="{{ __('Remove this payment account from the form? Save your changes to make the removal permanent.') }}"
+                            data-confirm-title="{{ __('Remove payment account') }}"
+                            data-confirm-button="{{ __('Remove') }}"
+                            data-confirm-variant="danger"
                         >
                             {{ __('Remove') }}
                         </flux:button>

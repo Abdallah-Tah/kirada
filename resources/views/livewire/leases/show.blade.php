@@ -306,7 +306,8 @@
                                         size="sm"
                                         class="max-md:w-full"
                                         wire:click="sendContract"
-                                        data-confirm="{{ __('Send this contract for signature?') }}">
+                                        data-confirm="{{ __('Send this contract for signature?') }}"
+                                        data-confirm-variant="primary">
                                         {{ __('Send for Signature') }}
                                     </flux:button>
                                 @endif
@@ -348,11 +349,16 @@
                     </div>
 
                     {{-- Two-column: body + signers --}}
-                    <div class="grid gap-6 lg:grid-cols-[1.6fr_1fr] max-lg:grid-cols-1">
+                    <div class="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,1fr)] max-lg:grid-cols-1">
 
                         {{-- Contract body --}}
-                        <div class="kirada-card overflow-hidden">
-                            <div class="kirada-contract-body max-w-full overflow-hidden">
+                        <div class="kirada-card min-w-0 overflow-hidden">
+                            <div
+                                class="kirada-contract-body kirada-contract-scroll"
+                                role="region"
+                                tabindex="0"
+                                aria-label="{{ __('Contract') }}"
+                            >
                                 {!! $contract->body_html !!}
                             </div>
                             @can('update', $contract)
@@ -413,6 +419,7 @@
                                                         <button type="button"
                                                             wire:click="resendSignature({{ $sig->id }})"
                                                             data-confirm="{{ __('Email this signing link again?') }}"
+                                                            data-confirm-variant="primary"
                                                             class="mt-2 text-xs font-medium text-kirada-ocean hover:text-kirada-navy">
                                                             {{ __('Email link to :email', ['email' => $sig->email]) }}
                                                         </button>

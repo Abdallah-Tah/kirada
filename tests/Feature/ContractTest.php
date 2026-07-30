@@ -302,7 +302,10 @@ class ContractTest extends TestCase
         $this->actingAs($this->landlord)
             ->get(route('contracts.show', $contract))
             ->assertOk()
-            ->assertSee($contract->reference);
+            ->assertSee($contract->reference)
+            ->assertSee('kirada-contract-scroll', false)
+            ->assertSee('role="region"', false)
+            ->assertSee('tabindex="0"', false);
     }
 
     public function test_draft_contract_does_not_show_signing_links(): void
@@ -356,7 +359,9 @@ class ContractTest extends TestCase
 
         $this->get(route('contracts.sign', $token))
             ->assertOk()
-            ->assertSee('CONTRAT DE BAIL COMMERCIAL');
+            ->assertSee('CONTRAT DE BAIL COMMERCIAL')
+            ->assertSee('data-confirm-title="Confirm electronic signature"', false)
+            ->assertSee('kirada-confirmation-modal', false);
     }
 
     public function test_expired_token_cannot_sign(): void

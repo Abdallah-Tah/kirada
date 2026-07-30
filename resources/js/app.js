@@ -177,6 +177,29 @@ if (document.readyState === 'loading') {
 document.addEventListener('livewire:navigated', initGoogleAddressAutocomplete);
 
 let pendingConfirmedAction = null;
+let confirmationReturnFocus = null;
+let confirmationAddedBodyLock = false;
+const confirmedForms = new WeakSet();
+
+const confirmationVariants = {
+    danger: {
+        icon: ['bg-red-50', 'text-red-600', 'dark:bg-red-950/60', 'dark:text-red-300'],
+        button: ['bg-red-600', 'hover:bg-red-700', 'focus:ring-red-500'],
+    },
+    primary: {
+        icon: ['bg-sky-50', 'text-sky-700', 'dark:bg-sky-950/60', 'dark:text-sky-300'],
+        button: ['bg-kirada-ocean', 'hover:bg-kirada-navy', 'focus:ring-kirada-ocean'],
+    },
+    warning: {
+        icon: ['bg-amber-50', 'text-amber-600', 'dark:bg-amber-950/60', 'dark:text-amber-300'],
+        button: ['bg-amber-600', 'hover:bg-amber-700', 'focus:ring-amber-500'],
+    },
+};
+
+const confirmationVariantClasses = {
+    icon: Object.values(confirmationVariants).flatMap((variant) => variant.icon),
+    button: Object.values(confirmationVariants).flatMap((variant) => variant.button),
+};
 
 function splitWireArguments(argsString) {
     const args = [];
@@ -277,29 +300,56 @@ function closeConfirmationModal() {
 
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+    modal.setAttribute('aria-hidden', 'true');
     pendingConfirmedAction = null;
+    if (confirmationAddedBodyLock) {
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    if (confirmationReturnFocus?.isConnected) {
+        confirmationReturnFocus.focus();
+    }
+
+    confirmationReturnFocus = null;
+    confirmationAddedBodyLock = false;
 }
 
-function openConfirmationModal({ message, confirmText, action }) {
+function openConfirmationModal({ message, confirmText, title, variant = 'danger', action, trigger = null }) {
     const modal = document.getElementById('kirada-confirmation-modal');
     const messageEl = document.getElementById('kirada-confirmation-message');
+    const titleEl = document.getElementById('kirada-confirmation-title');
+    const iconEl = modal?.querySelector('[data-confirm-icon]');
     const continueButton = modal?.querySelector('[data-confirm-continue]');
 
-    if (!modal || !messageEl || !continueButton) {
+    if (!modal || !messageEl || !titleEl || !iconEl || !continueButton) {
         return false;
     }
 
+    const selectedVariant = confirmationVariants[variant] || confirmationVariants.warning;
+
     pendingConfirmedAction = action;
-    messageEl.textContent = message || 'Are you sure you want to continue?';
-    continueButton.textContent = confirmText || 'Confirm';
+    confirmationReturnFocus = trigger || document.activeElement;
+    titleEl.textContent = title || modal.dataset.defaultTitle;
+    messageEl.textContent = message || modal.dataset.defaultMessage;
+    continueButton.textContent = confirmText || modal.dataset.defaultConfirm;
+    modal.dataset.variant = confirmationVariants[variant] ? variant : 'warning';
+    iconEl.classList.remove(...confirmationVariantClasses.icon);
+    iconEl.classList.add(...selectedVariant.icon);
+    continueButton.classList.remove(...confirmationVariantClasses.button);
+    continueButton.classList.add(...selectedVariant.button);
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    modal.setAttribute('aria-hidden', 'false');
+    confirmationAddedBodyLock = !document.body.classList.contains('overflow-hidden');
+    document.body.classList.add('overflow-hidden');
     continueButton.focus();
 
     return true;
 }
 
-document.addEventListener('click', (event) => {
+// Capture at window level so consequential Livewire actions are intercepted
+// before Livewire's delegated document listeners can execute them.
+window.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-confirm]');
 
     if (!trigger) {
@@ -310,8 +360,16 @@ document.addEventListener('click', (event) => {
     const componentId = trigger.closest('[wire\\:id]')?.getAttribute('wire:id');
     const component = componentId ? window.Livewire?.find(componentId) : null;
     const parsed = wireClick ? parseWireClick(wireClick) : null;
+    const link = trigger.closest('a[href]');
+    let action = null;
 
-    if (!component || !parsed) {
+    if (component && parsed) {
+        action = () => component.call(parsed.method, ...parsed.args);
+    } else if (link) {
+        action = () => window.location.assign(link.href);
+    } else {
+        // Form submissions are handled by the submit listener below so native
+        // validation still runs before the confirmation dialog is opened.
         return;
     }
 
@@ -325,7 +383,49 @@ document.addEventListener('click', (event) => {
     openConfirmationModal({
         message: trigger.getAttribute('data-confirm'),
         confirmText,
-        action: () => component.call(parsed.method, ...parsed.args),
+        title: trigger.getAttribute('data-confirm-title'),
+        variant: trigger.getAttribute('data-confirm-variant') || 'danger',
+        action,
+        trigger,
+    });
+}, true);
+
+window.addEventListener('submit', (event) => {
+    const form = event.target.closest('form[data-confirm]');
+
+    if (!form) {
+        return;
+    }
+
+    if (confirmedForms.has(form)) {
+        confirmedForms.delete(form);
+
+        return;
+    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const submitter = event.submitter;
+    const submitterText = submitter?.textContent?.trim() || '';
+    const confirmText = form.getAttribute('data-confirm-button')
+        || (submitterText.length > 0 && submitterText.length <= 32 ? submitterText : null);
+
+    openConfirmationModal({
+        message: form.getAttribute('data-confirm'),
+        confirmText,
+        title: form.getAttribute('data-confirm-title'),
+        variant: form.getAttribute('data-confirm-variant') || 'danger',
+        trigger: submitter || form,
+        action: () => {
+            confirmedForms.add(form);
+
+            if (submitter) {
+                form.requestSubmit(submitter);
+            } else {
+                form.requestSubmit();
+            }
+        },
     });
 }, true);
 

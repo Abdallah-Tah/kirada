@@ -78,6 +78,7 @@
                                         <flux:menu.item
                                             wire:click="confirmPayment({{ $payment->id }})"
                                             data-confirm="{{ __('Confirm this payment?') }}"
+                                            data-confirm-variant="primary"
                                             icon="check-circle"
                                         >
                                             {{ __('Confirm') }}

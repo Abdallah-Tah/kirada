@@ -30,7 +30,14 @@
     </div>
 
     @if(auth()->user()->isLandlord() || auth()->user()->can('team.invite'))
-        <form wire:submit="invite" class="kirada-form-card mt-6 grid gap-4">
+        <form
+            wire:submit="invite"
+            class="kirada-form-card mt-6 grid gap-4"
+            data-confirm="{{ __('Send this team invitation? The member will receive access based on the selected role.') }}"
+            data-confirm-title="{{ __('Invite team member') }}"
+            data-confirm-button="{{ __('Send invitation') }}"
+            data-confirm-variant="primary"
+        >
             <div>
                 <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Invite a team member') }}</h3>
                 <p class="mt-1 text-sm text-zinc-500">{{ __('Each team member belongs to one landlord account and receives role-based permissions.') }}</p>
@@ -135,7 +142,15 @@
                         <td class="px-4 py-3 text-zinc-500">{{ $member->inviter?->name }}</td>
                         <td class="px-4 py-3 text-end">
                             @if(!in_array($member->status, ['revoked'], true) && (auth()->user()->isLandlord() || auth()->user()->can('team.manage')))
-                                <flux:button wire:click="remove({{ $member->id }})" wire:confirm="{{ __('Remove this team member?') }}" variant="danger" size="sm">{{ __('Remove') }}</flux:button>
+                                <flux:button
+                                    wire:click="remove({{ $member->id }})"
+                                    data-confirm="{{ __('Remove this team member? Their access will be revoked immediately.') }}"
+                                    data-confirm-title="{{ __('Remove team member') }}"
+                                    data-confirm-button="{{ __('Remove') }}"
+                                    data-confirm-variant="danger"
+                                    variant="danger"
+                                    size="sm"
+                                >{{ __('Remove') }}</flux:button>
                             @endif
                         </td>
                     </tr>

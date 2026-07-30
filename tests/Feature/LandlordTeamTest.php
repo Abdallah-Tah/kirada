@@ -63,7 +63,10 @@ class LandlordTeamTest extends TestCase
             ->assertSee('Property Manager')
             ->assertSee('Accountant')
             ->assertSee('Viewer')
-            ->assertSee('Send invitation');
+            ->assertSee('Send invitation')
+            ->assertSee('data-confirm-title="Invite team member"', false)
+            ->assertSee('data-confirm-variant="primary"', false)
+            ->assertSee('kirada-confirmation-modal', false);
     }
 
     public function test_owner_team_navigation_survives_stale_team_permissions(): void

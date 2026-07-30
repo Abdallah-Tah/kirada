@@ -84,7 +84,17 @@
                     <a href="{{ asset('storage/' . $tenant->id_document_path) }}" target="_blank" class="text-sm text-kirada-ocean hover:underline">
                         {{ __('View') }}
                     </a>
-                    <flux:button type="button" wire:click="removeIdDocument" wire:confirm="{{ __('Remove this document?') }}" variant="ghost" size="sm" icon="trash" />
+                    <flux:button
+                        type="button"
+                        wire:click="removeIdDocument"
+                        data-confirm="{{ __('Remove this identity document? Save the tenant to make the removal permanent.') }}"
+                        data-confirm-title="{{ __('Remove identity document') }}"
+                        data-confirm-button="{{ __('Remove') }}"
+                        data-confirm-variant="danger"
+                        variant="ghost"
+                        size="sm"
+                        icon="trash"
+                    />
                 </div>
             @endif
 

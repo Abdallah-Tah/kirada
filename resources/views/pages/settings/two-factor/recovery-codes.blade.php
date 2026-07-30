@@ -92,6 +92,10 @@ new class extends Component {
                     icon="arrow-path"
                     variant="filled"
                     wire:click="regenerateRecoveryCodes"
+                    data-confirm="{{ __('Regenerate recovery codes? Your existing recovery codes will stop working immediately.') }}"
+                    data-confirm-title="{{ __('Regenerate recovery codes') }}"
+                    data-confirm-button="{{ __('Regenerate codes') }}"
+                    data-confirm-variant="danger"
                 >
                     {{ __('Regenerate codes') }}
                 </flux:button>
