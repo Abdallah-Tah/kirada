@@ -8,13 +8,11 @@ use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\Unit;
 use App\Models\User;
-use App\Services\SubscriptionGateways\CacBankGateway;
 use App\Services\SubscriptionGateways\StripeGateway;
-use App\Services\SubscriptionGateways\WaafiPayGateway;
 
 class SubscriptionService
 {
-    private const GATEWAYS = ['stripe', 'waafi', 'cacbank'];
+    private const GATEWAYS = ['stripe'];
 
     public const TRIAL_DAYS = 30;
 
@@ -43,30 +41,6 @@ class SubscriptionService
             'status' => 'trialing',
             'trial_ends_at' => now()->addDays(self::TRIAL_DAYS),
         ]);
-    }
-
-    /**
-     * Activate a subscription with a plan.
-     */
-    public function activateSubscription(User $user, Plan $plan, string $paymentMethod = 'manual'): Subscription
-    {
-        $sub = Subscription::where('user_id', $user->id)->first();
-
-        if (! $sub) {
-            $sub = new Subscription(['user_id' => $user->id]);
-        }
-
-        $sub->fill([
-            'plan_id' => $plan->id,
-            'status' => 'active',
-            'starts_at' => now(),
-            'ends_at' => now()->addMonth(),
-            'payment_method' => $paymentMethod,
-        ]);
-
-        $sub->save();
-
-        return $sub->fresh();
     }
 
     /**
@@ -102,7 +76,7 @@ class SubscriptionService
 
     public function enforceActiveUnitLimit(User $landlord): void
     {
-        $plan = $landlord->subscription?->plan;
+        $plan = $landlord->kiradaSubscription?->plan;
 
         if (! $plan || $plan->max_active_units === null) {
             return;
@@ -120,7 +94,7 @@ class SubscriptionService
 
     public function enforceActiveLeaseLimit(User $landlord): void
     {
-        $plan = $landlord->subscription?->plan;
+        $plan = $landlord->kiradaSubscription?->plan;
 
         if (! $plan || $plan->max_active_leases === null) {
             return;
@@ -158,29 +132,8 @@ class SubscriptionService
     {
         return match ($name) {
             'stripe' => app(StripeGateway::class),
-            'waafi' => app(WaafiPayGateway::class),
-            'cacbank' => app(CacBankGateway::class),
             default => throw new \InvalidArgumentException("Unknown gateway: {$name}"),
         };
-    }
-
-    /**
-     * List the enabled subscription gateways.
-     */
-    public function enabledGateways(): array
-    {
-        $enabled = [];
-
-        if (config('services.stripe.secret')) {
-            $enabled[] = 'stripe';
-        }
-        if (config('services.waafi.merchant_uid')) {
-            $enabled[] = 'waafi';
-        }
-        // CAC Bank is always available (reference-based, no API credentials needed)
-        $enabled[] = 'cacbank';
-
-        return $enabled;
     }
 
     /**
@@ -196,7 +149,7 @@ class SubscriptionService
      */
     public function getStatusSummary(User $user): array
     {
-        $sub = $user->subscription;
+        $sub = $user->kiradaSubscription;
 
         if (! $sub) {
             return [

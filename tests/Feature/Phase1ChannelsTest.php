@@ -42,6 +42,7 @@ class Phase1ChannelsTest extends TestCase
         parent::setUp();
 
         $this->withoutVite();
+        config(['payments.gateways.manual.enabled' => true]);
 
         $this->artisan('db:seed', ['--class' => 'RolePermissionSeeder']);
 

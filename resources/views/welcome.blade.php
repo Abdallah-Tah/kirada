@@ -9,7 +9,7 @@
     @php
         $topFeatures = [
             ['title' => 'Properties', 'desc' => 'Buildings, units, vacancy and occupancy tracking.', 'tone' => 'blue'],
-            ['title' => 'Rent Collection', 'desc' => 'Invoices, payments, receipts and proofs.', 'tone' => 'green'],
+            ['title' => 'Rent Tracking', 'desc' => 'Invoices, landlord payment instructions, receipts and proof review.', 'tone' => 'green'],
             ['title' => 'Digital Contracts', 'desc' => 'Create, send and e-sign agreements.', 'tone' => 'purple'],
             ['title' => 'Maintenance', 'desc' => 'Requests, assignment and progress tracking.', 'tone' => 'orange'],
             ['title' => 'Messaging', 'desc' => 'Landlord and tenant communication.', 'tone' => 'blue'],
@@ -32,8 +32,8 @@
                 'tone' => 'purple',
             ],
             [
-                'title' => 'Invoices & Payments',
-                'desc' => 'Generate invoices, record payments, upload proofs, and track balances.',
+                'title' => 'Manual Rent Payments',
+                'desc' => 'Publish Waafi, D-Money, CAC Bank, cash, or custom landlord accounts. Tenants pay directly and upload proof for review.',
                 'tone' => 'blue',
             ],
             [
@@ -52,6 +52,11 @@
                 'tone' => 'purple',
             ],
             [
+                'title' => 'Tenant Account Invitations',
+                'desc' => 'Send secure, expiring links so tenants can create or link an account and access only their own tenancy.',
+                'tone' => 'green',
+            ],
+            [
                 'title' => 'Messaging',
                 'desc' => 'Built-in conversations keep landlords, tenants, and teams connected.',
                 'tone' => 'blue',
@@ -66,32 +71,23 @@
                 'desc' => 'Financial summaries, occupancy, and collection insights at a glance.',
                 'tone' => 'purple',
             ],
-            [
-                'title' => 'Multi-Country & Currency',
-                'desc' => 'Built for local, regional, and global landlords.',
-                'tone' => 'blue',
-            ],
         ];
 
-        $countries = ['Djibouti', 'Ethiopia', 'Somalia', 'Saudi Arabia', 'UAE', 'United States'];
         $trustItems = [
             'Secure Documents',
             'Private Storage',
             'Role-Based Access',
             'Digital Contracts',
-            'Reports & Analytics',
-            'Multi-Currency',
+            'Two-Factor Authentication',
+            'Passkeys',
             'Multi-Language',
-            'PWA Support',
         ];
-        // DJF is the local currency; USD equivalent shown at ~177 DJF/USD
         $pricingPlans = [
             [
                 'name'     => 'Starter',
                 'slug'     => 'starter',
                 'audience' => 'For independent landlords.',
                 'djf'      => 5000,
-                'usd'      => 28,
                 'cta'      => 'Start free trial',
                 'featured' => false,
                 'features' => [
@@ -107,7 +103,6 @@
                 'slug'     => 'growth',
                 'audience' => 'For growing portfolios.',
                 'djf'      => 15000,
-                'usd'      => 85,
                 'cta'      => 'Start free trial',
                 'featured' => true,
                 'badge'    => 'Most popular',
@@ -126,14 +121,12 @@
                 'slug'     => 'business',
                 'audience' => 'For agencies & teams.',
                 'djf'      => 40000,
-                'usd'      => 226,
                 'cta'      => 'Start free trial',
                 'featured' => false,
                 'features' => [
-                    'Unlimited units',
+                    'Up to 200 units',
                     'Everything in Growth',
                     'Reports & analytics',
-                    'Multi-country & currency',
                     'Multiple managers',
                     'Role-based property team',
                     'Priority support',
@@ -182,7 +175,6 @@
                             <a href="#features" class="transition hover:text-white">{{ __('Features') }}</a>
                             <a href="#workflow" class="transition hover:text-white">{{ __('Product') }}</a>
                             <a href="#pricing" class="transition hover:text-white">{{ __('Pricing') }}</a>
-                            <a href="#regions" class="transition hover:text-white">{{ __('Regions') }}</a>
                         </nav>
 
                         <div class="flex items-center gap-2 sm:gap-3">
@@ -223,7 +215,7 @@
 
                             <p
                                 class="kirada-reveal kirada-reveal-delay-4 mt-6 max-w-3xl text-lg leading-8 text-slate-200/95 sm:text-xl">
-                                {{ __('Manage properties, tenants, leases, invoices, payments, digital contracts, maintenance requests, documents, and messaging — all from one secure platform.') }}
+                                {{ __('Manage properties, tenant invitations, leases, invoices, manual payment proofs, digital contracts, maintenance work, documents, teams, and messaging — all from one secure platform.') }}
                             </p>
 
                             <div class="kirada-reveal kirada-reveal-delay-5 mt-9 flex flex-col gap-4 sm:flex-row">
@@ -280,7 +272,7 @@
                                                             ⌂
                                                         @break
 
-                                                        @case('Rent Collection')
+                                                        @case('Rent Tracking')
                                                             $
                                                         @break
 
@@ -323,7 +315,7 @@
                                                 ⌂
                                             @break
 
-                                            @case('Rent Collection')
+                                            @case('Rent Tracking')
                                                 $
                                             @break
 
@@ -372,15 +364,13 @@
                                 <span class="text-lg font-bold">
                                     @if ($feature['title'] === 'Reports & Analytics')
                                         RPT
-                                    @elseif ($feature['title'] === 'Multi-Country & Currency')
-                                        FX
                                     @elseif ($feature['title'] === 'Documents & Receipts')
                                         DOC
                                     @elseif ($feature['title'] === 'Tenant Management')
                                         TEN
                                     @elseif ($feature['title'] === 'Lease Management')
                                         LSE
-                                    @elseif ($feature['title'] === 'Invoices & Payments')
+                                    @elseif ($feature['title'] === 'Manual Rent Payments')
                                         PAY
                                     @elseif ($feature['title'] === 'Maintenance Requests')
                                         FIX
@@ -415,7 +405,7 @@
                         ['num'=>'02','label'=>__('Tenant'),       'desc'=>__('Invite & onboard tenants to the portal.'),    'icon'=>'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75'],
                         ['num'=>'03','label'=>__('Lease'),        'desc'=>__('Draft & e-sign leases securely.'),           'icon'=>'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-4-5ZM14 3v5h4M8 13h4M8 17h4'],
                         ['num'=>'04','label'=>__('Invoice'),      'desc'=>__('Generate monthly rent invoices.'),             'icon'=>'M7 3h10a1 1 0 0 1 1 1v17l-3-2-2 2-2-2-2 2-2-2L6 21V4a1 1 0 0 1 1-1ZM10 8h4M10 12h4'],
-                        ['num'=>'05','label'=>__('Payment'),      'desc'=>__('Collect, reconcile & track balances.'),       'icon'=>'M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1ZM3 10h18M7 14h3', 'focal'=>true],
+                        ['num'=>'05','label'=>__('Payment proof'),'desc'=>__('Tenant pays landlord directly; landlord verifies proof.'), 'icon'=>'M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1ZM3 10h18M7 14h3', 'focal'=>true],
                         ['num'=>'06','label'=>__('Maintenance'),  'desc'=>__('Handle requests & track resolution.'),        'icon'=>'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z'],
                         ['num'=>'07','label'=>__('Reports'),      'desc'=>__('Track performance & grow.'),                 'icon'=>'M4 20V10M10 20V4M16 20v-7M22 20H2'],
                     ];
@@ -473,31 +463,6 @@
             </div>
         </section>
 
-        <section id="regions" class="bg-white px-5 py-20 sm:px-8 lg:px-10">
-            <div class="mx-auto max-w-[1320px]">
-                <div
-                    class="overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,rgba(15,23,42,1),rgba(14,165,233,0.92)_62%,rgba(16,185,129,0.88))] px-8 py-10 text-white shadow-[0_30px_90px_rgba(15,23,42,0.18)] sm:px-10">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-sky-100">
-                        {{ __('Global foundation') }}</p>
-                    <h2 class="mt-4 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
-                        {{ __('Built for local markets. Ready for the world.') }}
-                    </h2>
-                    <p class="mt-5 max-w-3xl text-lg leading-8 text-white/80">
-                        {{ __('Support your rental business across countries, currencies, and languages.') }}
-                    </p>
-
-                    <div class="mt-8 flex flex-wrap gap-3">
-                        @foreach ($countries as $country)
-                            <span
-                                class="rounded-full border border-white/18 bg-white/12 px-4 py-2.5 text-sm font-semibold text-white">
-                                {{ __($country) }}
-                            </span>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section
             class="bg-[radial-gradient(circle_at_15%_15%,rgba(14,165,233,0.08),transparent_32%),#ffffff] px-5 py-20 sm:px-8 lg:px-10">
             <div class="mx-auto max-w-[1320px]">
@@ -522,8 +487,7 @@
         </section>
 
         <section id="pricing"
-            class="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-20 sm:px-8 lg:px-10"
-            x-data="{ billing: 'monthly', currency: 'djf' }">
+            class="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-20 sm:px-8 lg:px-10">
             <div class="mx-auto max-w-[1320px]">
 
                 {{-- Header --}}
@@ -537,39 +501,13 @@
                         {{ __('Start with a 30-day free trial. No credit card required.') }}
                     </p>
 
-                    {{-- Monthly / Annual toggle --}}
-                    <div class="mt-8 inline-flex items-center rounded-full border border-slate-200 bg-white p-1 shadow-sm">
-                        <button type="button" @click="billing = 'monthly'"
-                            :class="billing === 'monthly' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
-                            class="cursor-pointer rounded-full px-6 py-3 text-base font-semibold transition">{{ __('Monthly') }}</button>
-                        <button type="button" @click="billing = 'annual'"
-                            :class="billing === 'annual' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
-                            class="cursor-pointer rounded-full px-6 py-3 text-base font-semibold transition">
-                            {{ __('Annual') }} <span class="text-kirada-green">-20%</span>
-                        </button>
-                    </div>
-
-                    {{-- Currency switcher — updates `currency` in the section x-data scope --}}
-                    <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm">
-                        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wide">{{ __('Show in') }}</span>
-                        <button type="button" @click="currency = 'djf'"
-                            :class="currency === 'djf' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
-                            class="cursor-pointer rounded-full px-3 py-1 text-xs font-bold transition">DJF</button>
-                        <button type="button" @click="currency = 'usd'"
-                            :class="currency === 'usd' ? 'bg-kirada-navy text-white' : 'text-slate-500 hover:text-kirada-navy'"
-                            class="cursor-pointer rounded-full px-3 py-1 text-xs font-bold transition">USD</button>
+                    <div class="mt-8 inline-flex items-center rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 shadow-sm">
+                        {{ __('Monthly billing in DJF') }}
                     </div>
                 </div>
 
-                {{-- Plan cards — inherit `billing` and `currency` from section scope --}}
                 <div class="mt-14 grid gap-6 xl:grid-cols-3">
                     @foreach ($pricingPlans as $plan)
-                        @php
-                            $djfMonthly  = $plan['djf'];
-                            $djfAnnual   = round($djfMonthly * 0.8);
-                            $usdMonthly  = $plan['usd'];
-                            $usdAnnual   = round($usdMonthly * 0.8);
-                        @endphp
                         <article
                             class="relative flex flex-col rounded-[2rem] border {{ $plan['featured'] ? 'border-slate-900 bg-slate-900 text-white shadow-[0_28px_80px_rgba(15,23,42,0.24)]' : 'border-slate-200 bg-white text-kirada-navy shadow-[0_20px_60px_rgba(15,23,42,0.08)]' }} p-8">
 
@@ -585,39 +523,9 @@
 
                             {{-- Price display --}}
                             <div class="mt-8">
-                                {{-- DJF monthly --}}
-                                <div x-show="currency === 'djf' && billing === 'monthly'">
-                                    <div class="flex items-end gap-2">
-                                        <span class="text-5xl font-semibold tracking-[-0.05em]">{{ number_format($djfMonthly) }}</span>
-                                        <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">DJF/mo</span>
-                                    </div>
-                                </div>
-                                {{-- DJF annual --}}
-                                <div x-show="currency === 'djf' && billing === 'annual'" x-cloak>
-                                    <div class="flex items-end gap-2">
-                                        <span class="text-5xl font-semibold tracking-[-0.05em]">{{ number_format($djfAnnual) }}</span>
-                                        <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">DJF/mo</span>
-                                    </div>
-                                    <p class="mt-1.5 text-sm text-slate-400">
-                                        {{ __('billed') }} {{ number_format($djfAnnual * 12) }} DJF/yr — <span class="text-kirada-green font-semibold">{{ __('save') }} {{ number_format($djfMonthly * 12 - $djfAnnual * 12) }} DJF</span>
-                                    </p>
-                                </div>
-                                {{-- USD monthly --}}
-                                <div x-show="currency === 'usd' && billing === 'monthly'" x-cloak>
-                                    <div class="flex items-end gap-2">
-                                        <span class="text-5xl font-semibold tracking-[-0.05em]">${{ $usdMonthly }}</span>
-                                        <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">/mo</span>
-                                    </div>
-                                </div>
-                                {{-- USD annual --}}
-                                <div x-show="currency === 'usd' && billing === 'annual'" x-cloak>
-                                    <div class="flex items-end gap-2">
-                                        <span class="text-5xl font-semibold tracking-[-0.05em]">${{ $usdAnnual }}</span>
-                                        <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">/mo</span>
-                                    </div>
-                                    <p class="mt-1.5 text-sm text-slate-400">
-                                        {{ __('billed') }} ${{ $usdAnnual * 12 }}/yr — <span class="text-kirada-green font-semibold">{{ __('save') }} ${{ ($usdMonthly - $usdAnnual) * 12 }}</span>
-                                    </p>
+                                <div class="flex items-end gap-2">
+                                    <span class="text-5xl font-semibold tracking-[-0.05em]">{{ number_format($plan['djf']) }}</span>
+                                    <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">DJF/mo</span>
                                 </div>
                             </div>
 
@@ -627,26 +535,13 @@
                                 {{ __($plan['cta']) }}
                             </a>
 
-                            {{-- Payment methods accepted --}}
+                            {{-- Kirada SaaS subscription payment --}}
                             <div class="mt-5 flex items-center justify-center gap-2 flex-wrap">
-                                <span class="text-xs {{ $plan['featured'] ? 'text-slate-400' : 'text-slate-400' }}">{{ __('Pay via') }}</span>
-                                {{-- Stripe / Card --}}
-                                <span title="{{ __('Credit / Debit card via Stripe') }}"
+                                <span class="text-xs text-slate-400">{{ __('Kirada plan billed by') }}</span>
+                                <span title="{{ __('Credit or debit card through secure Stripe Checkout') }}"
                                     class="inline-flex items-center gap-1 rounded-md border {{ $plan['featured'] ? 'border-white/15 bg-white/8 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-600' }} px-2.5 py-1 text-xs font-semibold">
                                     <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                                    {{ __('Card') }}
-                                </span>
-                                {{-- WaafiPay --}}
-                                <span title="{{ __('WaafiPay mobile money — Djibouti & Somalia') }}"
-                                    class="inline-flex items-center gap-1 rounded-md border {{ $plan['featured'] ? 'border-white/15 bg-white/8 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-600' }} px-2.5 py-1 text-xs font-semibold">
-                                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-linecap="round" stroke-width="3"/></svg>
-                                    WaafiPay
-                                </span>
-                                {{-- CAC Bank --}}
-                                <span title="{{ __('CAC Bank Djibouti bank transfer') }}"
-                                    class="inline-flex items-center gap-1 rounded-md border {{ $plan['featured'] ? 'border-white/15 bg-white/8 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-600' }} px-2.5 py-1 text-xs font-semibold">
-                                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 22V12M21 22V12M12 22V12M2 12h20M12 2L2 7h20L12 2z"/></svg>
-                                    CAC Bank
+                                    {{ __('Card via Stripe') }}
                                 </span>
                             </div>
 
@@ -665,47 +560,32 @@
                     @endforeach
                 </div>
 
-                {{-- Payment methods trust strip --}}
+                {{-- Honest billing and rent-payment explanation --}}
                 <div class="mt-14 rounded-2xl border border-slate-200 bg-white px-8 py-7 shadow-sm">
                     <p class="text-center text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400 mb-6">
-                        {{ __('Accepted payment methods') }}
+                        {{ __('How payments work in the first release') }}
                     </p>
-                    <div class="flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-10 lg:gap-16">
-
-                        {{-- Stripe / Cards --}}
-                        <div class="flex flex-col items-center gap-2 text-center">
-                            <div class="flex items-center gap-2">
-                                <span class="rounded-lg bg-[#635BFF] px-2.5 py-1.5 text-xs font-bold text-white tracking-wide">stripe</span>
-                                <span class="text-slate-300">·</span>
-                                <span class="text-sm font-semibold text-slate-500">Visa / Mastercard</span>
+                    <div class="grid gap-6 lg:grid-cols-2">
+                        <div class="rounded-2xl border border-violet-200 bg-violet-50/60 p-6">
+                            <div class="flex items-center gap-3">
+                                <span class="rounded-lg bg-[#635BFF] px-2.5 py-1.5 text-xs font-bold tracking-wide text-white">stripe</span>
+                                <h3 class="font-semibold text-kirada-navy">{{ __('Landlord subscription to Kirada') }}</h3>
                             </div>
-                            <p class="text-xs text-slate-400 max-w-[160px]">{{ __('International credit & debit cards. Secure Stripe Checkout.') }}</p>
+                            <p class="mt-3 text-sm leading-6 text-slate-600">{{ __('The landlord pays the Kirada software plan by credit or debit card through Stripe Checkout. Stripe manages card security, recurring invoices, payment-method updates, and cancellation.') }}</p>
                         </div>
 
-                        <div class="hidden sm:block h-12 w-px bg-slate-200"></div>
-
-                        {{-- WaafiPay --}}
-                        <div class="flex flex-col items-center gap-2 text-center">
-                            <div class="flex items-center gap-2">
-                                <span class="rounded-lg bg-[#00A86B] px-2.5 py-1.5 text-xs font-bold text-white tracking-wide">WaafiPay</span>
-                                <span class="text-sm font-semibold text-slate-500">{{ __('Mobile Money') }}</span>
+                        <div class="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-6">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h3 class="mr-2 font-semibold text-kirada-navy">{{ __('Tenant rent payment') }}</h3>
+                                @foreach (['Waafi', 'D-Money', 'CAC Bank', __('Cash'), __('Other')] as $method)
+                                    <span class="rounded-md border border-emerald-200 bg-white px-2 py-1 text-[.7rem] font-semibold text-emerald-800">{{ $method }}</span>
+                                @endforeach
                             </div>
-                            <p class="text-xs text-slate-400 max-w-[160px]">{{ __('Hormuud & Telesom wallets. Djibouti & Somalia.') }}</p>
-                        </div>
-
-                        <div class="hidden sm:block h-12 w-px bg-slate-200"></div>
-
-                        {{-- CAC Bank --}}
-                        <div class="flex flex-col items-center gap-2 text-center">
-                            <div class="flex items-center gap-2">
-                                <span class="rounded-lg border border-slate-300 bg-slate-100 px-2.5 py-1.5 text-xs font-bold text-slate-700 tracking-wide">CAC Bank</span>
-                                <span class="text-sm font-semibold text-slate-500">{{ __('Bank Transfer') }}</span>
-                            </div>
-                            <p class="text-xs text-slate-400 max-w-[160px]">{{ __('Direct DJF transfer via CAC Bank Djibouti. Activates in 1 business day.') }}</p>
+                            <p class="mt-3 text-sm leading-6 text-slate-600">{{ __('Kirada does not move or hold rent money in the first release. The tenant pays the landlord directly using an account published by the landlord, includes the invoice reference, and uploads proof. The landlord reviews the proof before confirming the payment.') }}</p>
                         </div>
                     </div>
                     <p class="mt-6 text-center text-xs text-slate-400">
-                        🔒 {{ __('All payments are secured and encrypted. Start with a 30-day free trial — no payment needed to sign up.') }}
+                        {{ __('Automatic rent payment integrations are planned for a future release and will be clearly marked when available.') }}
                     </p>
                 </div>
 
@@ -734,7 +614,6 @@
             <nav class="flex flex-wrap gap-5 text-sm font-semibold text-slate-600">
                 <a href="#features" class="transition hover:text-kirada-ocean">{{ __('Features') }}</a>
                 <a href="#pricing" class="transition hover:text-kirada-ocean">{{ __('Pricing') }}</a>
-                <a href="#regions" class="transition hover:text-kirada-ocean">{{ __('Regions') }}</a>
                 <a href="{{ route('how-it-works') }}" wire:navigate class="transition hover:text-kirada-ocean">{{ __('How It Works') }}</a>
                 <a href="{{ route('terms-of-service') }}" wire:navigate class="transition hover:text-kirada-ocean">{{ __('Terms') }}</a>
                 <a href="{{ route('privacy-policy') }}" wire:navigate class="transition hover:text-kirada-ocean">{{ __('Privacy') }}</a>

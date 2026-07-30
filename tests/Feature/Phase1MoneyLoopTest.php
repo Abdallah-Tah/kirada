@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Livewire\RentPayments\Submit;
 use App\Models\Currency;
+use App\Models\LandlordPayoutAccount;
 use App\Models\Lease;
 use App\Models\Property;
 use App\Models\RentInvoice;
@@ -15,7 +16,9 @@ use App\Notifications\TenantPaymentSubmitted;
 use App\Services\RentInvoiceService;
 use App\Support\Money;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -132,12 +135,22 @@ class Phase1MoneyLoopTest extends TestCase
     public function test_tenant_can_submit_a_payment_and_landlord_is_notified(): void
     {
         Notification::fake();
+        Storage::fake('private');
+        $payoutAccount = LandlordPayoutAccount::create([
+            'landlord_id' => $this->landlord->id,
+            'label' => 'Main Waafi',
+            'method' => 'waafi',
+            'account_number' => '77000001',
+            'is_primary' => true,
+            'is_active' => true,
+        ]);
 
         Livewire::actingAs($this->tenantUserA)
             ->test(Submit::class, ['rentInvoice' => $this->invoiceA])
             ->set('amount', '50000')
-            ->set('method', 'mobile_money')
+            ->set('landlord_payout_account_id', $payoutAccount->id)
             ->set('reference_number', 'WAAFI-123456')
+            ->set('proof', UploadedFile::fake()->image('waafi-proof.jpg'))
             ->call('save')
             ->assertHasNoErrors()
             ->assertRedirect(route('rent-invoices.index'));
@@ -147,6 +160,7 @@ class Phase1MoneyLoopTest extends TestCase
         $this->assertSame('pending', $payment->status);
         $this->assertSame('mobile_money', $payment->method);
         $this->assertSame('WAAFI-123456', $payment->reference_number);
+        $this->assertSame($payoutAccount->id, $payment->landlord_payout_account_id);
         $this->assertSame($this->landlord->id, $payment->landlord_id);
         $this->assertSame($this->property->currency_id, $payment->currency_id);
 

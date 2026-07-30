@@ -5,6 +5,7 @@ namespace App\Livewire\Properties;
 use App\Models\Property;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,6 +13,7 @@ class Index extends Component
 {
     use WithPagination;
 
+    #[Url]
     public string $search = '';
 
     public string $filterType = '';

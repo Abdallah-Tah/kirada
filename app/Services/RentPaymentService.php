@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\LandlordPayoutAccount;
 use App\Models\RentInvoice;
 use App\Models\RentPayment;
 use Illuminate\Http\UploadedFile;
@@ -81,6 +82,14 @@ class RentPaymentService
 
             $remaining = $this->getRemainingAmount($invoice, includePending: true);
 
+            if (! empty($data['landlord_payout_account_id']) && ! LandlordPayoutAccount::query()
+                ->whereKey($data['landlord_payout_account_id'])
+                ->where('landlord_id', $invoice->landlord_id)
+                ->active()
+                ->exists()) {
+                throw new \DomainException('The selected landlord payment account is not available.');
+            }
+
             if ((float) $data['amount'] > $remaining) {
                 throw new \DomainException(
                     "Payment amount ({$data['amount']}) exceeds remaining invoice balance ({$remaining})."
@@ -120,6 +129,14 @@ class RentPaymentService
     public function updatePayment(RentPayment $payment, array $data, ?UploadedFile $proof = null): RentPayment
     {
         $oldStatus = $payment->status;
+
+        if (! empty($data['landlord_payout_account_id']) && ! LandlordPayoutAccount::query()
+            ->whereKey($data['landlord_payout_account_id'])
+            ->where('landlord_id', $payment->landlord_id)
+            ->active()
+            ->exists()) {
+            throw new \DomainException('The selected landlord payment account is not available.');
+        }
 
         if ($proof) {
             $data['proof_path'] = $this->storeProof($proof);

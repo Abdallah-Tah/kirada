@@ -6,6 +6,7 @@ use App\Models\Property;
 use App\Models\Unit;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,6 +16,7 @@ class Index extends Component
 
     public ?int $propertyId = null;
 
+    #[Url]
     public string $search = '';
 
     public string $filterStatus = '';
@@ -60,8 +62,10 @@ class Index extends Component
             ->with('property:id,name', 'building:id,name')
             ->when($this->propertyId, fn ($q) => $q->forProperty($this->propertyId))
             ->when($this->search, function ($q) {
-                $q->where('unit_number', 'like', "%{$this->search}%")
-                    ->orWhere('floor', 'like', "%{$this->search}%");
+                $q->where(function ($q) {
+                    $q->where('unit_number', 'like', "%{$this->search}%")
+                        ->orWhere('floor', 'like', "%{$this->search}%");
+                });
             })
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->when($this->filterType, fn ($q) => $q->where('type', $this->filterType))

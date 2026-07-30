@@ -7,6 +7,7 @@ use App\Models\Tenant;
 use App\Services\RentInvoiceService;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,6 +15,7 @@ class Index extends Component
 {
     use WithPagination;
 
+    #[Url]
     public string $search = '';
 
     public string $filterStatus = '';
@@ -34,14 +36,16 @@ class Index extends Component
         $query = RentInvoice::query()
             ->with(['property:id,name,currency_id', 'property.currency', 'currency', 'unit:id,unit_number', 'tenant:id,first_name,last_name', 'lease:id,start_date,end_date'])
             ->when($this->search, function ($q) {
-                $q->where('invoice_number', 'like', "%{$this->search}%")
-                    ->orWhereHas('tenant', function ($q) {
-                        $q->where('first_name', 'like', "%{$this->search}%")
-                            ->orWhere('last_name', 'like', "%{$this->search}%");
-                    })
-                    ->orWhereHas('property', function ($q) {
-                        $q->where('name', 'like', "%{$this->search}%");
-                    });
+                $q->where(function ($q) {
+                    $q->where('invoice_number', 'like', "%{$this->search}%")
+                        ->orWhereHas('tenant', function ($q) {
+                            $q->where('first_name', 'like', "%{$this->search}%")
+                                ->orWhere('last_name', 'like', "%{$this->search}%");
+                        })
+                        ->orWhereHas('property', function ($q) {
+                            $q->where('name', 'like', "%{$this->search}%");
+                        });
+                });
             })
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->latest();

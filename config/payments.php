@@ -14,9 +14,9 @@ return [
     | payments are matched to invoices by their KIR- payment reference and
     | created as *pending*, feeding the landlord confirm/reject flow.
     |
-    | Waafi / D-Money / CAC Pay slots are disabled until operator
-    | credentials and payload specifications are available; the manual
-    | gateway covers reference-based reconciliation in the meantime.
+    | All operator webhooks are disabled in the first release. Tenants pay
+    | landlords directly and upload proof. This integration seam remains
+    | available for a later, documented automatic-payment release.
     |
     */
 
@@ -25,7 +25,7 @@ return [
     'gateways' => [
 
         'manual' => [
-            'enabled' => true,
+            'enabled' => env('PAYMENTS_WEBHOOK_ENABLED', false),
             'driver' => ManualReferenceGateway::class,
             'secret' => env('PAYMENTS_WEBHOOK_SECRET'),
         ],

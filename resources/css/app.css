@@ -1937,6 +1937,336 @@ select:focus[data-flux-control] {
     }
 }
 
+/* ── Kirada workspace motion and dashboard hero ─────────────────────────── */
+@layer components {
+    .kirada-app-header {
+        position: sticky !important;
+        top: 0;
+        z-index: 30;
+        box-shadow: 0 1px 0 rgba(3, 26, 70, 0.02), 0 10px 30px rgba(3, 26, 70, 0.035);
+        transition: background-color 220ms var(--ease-kirada), border-color 220ms var(--ease-kirada), box-shadow 220ms var(--ease-kirada);
+    }
+
+    .dark .kirada-app-header {
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.025), 0 14px 34px rgba(0, 4, 14, 0.22);
+    }
+
+    .kirada-sidebar {
+        transition: transform 280ms var(--ease-kirada), width 280ms var(--ease-kirada), background-color 220ms var(--ease-kirada);
+    }
+
+    .kirada-sidebar-brand,
+    .kirada-sidebar [data-flux-sidebar-item] {
+        transition: color 180ms var(--ease-kirada), background-color 180ms var(--ease-kirada), transform 180ms var(--ease-kirada), border-color 180ms var(--ease-kirada) !important;
+    }
+
+    .kirada-sidebar [data-flux-sidebar-item]:hover {
+        transform: translateX(2px);
+    }
+
+    [dir="rtl"] .kirada-sidebar [data-flux-sidebar-item]:hover {
+        transform: translateX(-2px);
+    }
+
+    .kirada-sidebar-logo {
+        border-color: color-mix(in srgb, var(--color-kirada-teal) 24%, var(--kirada-border));
+        background:
+            radial-gradient(circle at 30% 20%, rgba(22, 182, 207, 0.12), transparent 65%),
+            #FFFFFF;
+        box-shadow: 0 6px 18px rgba(11, 132, 243, 0.14);
+    }
+
+    .kirada-header-search {
+        max-width: 34rem;
+    }
+
+    .kirada-header-search-field {
+        height: 2.75rem;
+        border-radius: 0.875rem;
+    }
+
+    .kirada-header-search-field:focus-within {
+        transform: translateY(-1px);
+        box-shadow: 0 0 0 3px rgba(11, 132, 243, 0.12), 0 10px 28px rgba(3, 26, 70, 0.10);
+    }
+
+    .kirada-dashboard-hero {
+        position: relative;
+        isolation: isolate;
+        display: grid;
+        gap: 2rem;
+        overflow: hidden;
+        border: 1px solid rgba(85, 184, 255, 0.22);
+        border-radius: 1.75rem;
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        color: #FFFFFF;
+        background:
+            radial-gradient(circle at 88% 18%, rgba(18, 199, 155, 0.26), transparent 23rem),
+            radial-gradient(circle at 52% 120%, rgba(22, 182, 207, 0.22), transparent 27rem),
+            linear-gradient(132deg, #031A46 0%, #0756A0 52%, #0B84F3 100%);
+        box-shadow: 0 24px 64px rgba(3, 26, 70, 0.20);
+    }
+
+    .kirada-dashboard-hero::before,
+    .kirada-dashboard-hero::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        border-radius: 9999px;
+        pointer-events: none;
+    }
+
+    .kirada-dashboard-hero::before {
+        width: 20rem;
+        height: 20rem;
+        inset-block-start: -12rem;
+        inset-inline-end: -5rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 0 0 3rem rgba(255, 255, 255, 0.025), 0 0 0 7rem rgba(255, 255, 255, 0.018);
+    }
+
+    .kirada-dashboard-hero::after {
+        width: 7rem;
+        height: 7rem;
+        inset-block-end: -4.5rem;
+        inset-inline-start: 42%;
+        background: rgba(18, 199, 155, 0.16);
+        filter: blur(2px);
+    }
+
+    .kirada-dashboard-hero-content {
+        min-width: 0;
+        align-self: center;
+    }
+
+    .kirada-dashboard-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(219, 241, 255, 0.78);
+    }
+
+    .kirada-dashboard-eyebrow::before {
+        content: "";
+        width: 1.25rem;
+        height: 2px;
+        border-radius: 9999px;
+        background: var(--color-kirada-brand-green);
+    }
+
+    .kirada-dashboard-hero h1 {
+        margin-top: 0.65rem;
+        max-width: 44rem;
+        font-size: clamp(1.875rem, 4vw, 2.75rem);
+        font-weight: 700;
+        line-height: 1.08;
+        letter-spacing: -0.045em;
+        text-wrap: balance;
+    }
+
+    .kirada-dashboard-hero p {
+        margin-top: 0.75rem;
+        max-width: 43rem;
+        font-size: 0.9375rem;
+        line-height: 1.7;
+        color: rgba(235, 246, 255, 0.76);
+    }
+
+    .kirada-dashboard-hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.35rem;
+    }
+
+    .kirada-hero-action-primary,
+    .kirada-hero-action-secondary {
+        display: inline-flex;
+        min-height: 2.625rem;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border-radius: 0.75rem;
+        padding: 0.625rem 1rem;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        transition: transform 180ms var(--ease-kirada), background-color 180ms var(--ease-kirada), box-shadow 180ms var(--ease-kirada);
+    }
+
+    .kirada-hero-action-primary {
+        background: #FFFFFF;
+        color: #031A46;
+        box-shadow: 0 10px 26px rgba(0, 9, 32, 0.20);
+    }
+
+    .kirada-hero-action-secondary {
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.09);
+        color: #FFFFFF;
+        backdrop-filter: blur(10px);
+    }
+
+    .kirada-hero-action-primary:hover,
+    .kirada-hero-action-secondary:hover {
+        transform: translateY(-2px);
+    }
+
+    .kirada-hero-action-secondary:hover {
+        background: rgba(255, 255, 255, 0.16);
+    }
+
+    .kirada-dashboard-health {
+        display: grid;
+        align-self: stretch;
+        gap: 0.75rem;
+    }
+
+    .kirada-dashboard-health-item {
+        min-width: 0;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 1rem;
+        padding: 1rem;
+        background: rgba(2, 11, 29, 0.22);
+        backdrop-filter: blur(14px);
+    }
+
+    .kirada-dashboard-health-item > div:first-child {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .kirada-dashboard-health-item span,
+    .kirada-dashboard-health-item small {
+        font-size: 0.6875rem;
+        color: rgba(235, 246, 255, 0.68);
+    }
+
+    .kirada-dashboard-health-item strong {
+        font-size: 1.125rem;
+        color: #FFFFFF;
+    }
+
+    .kirada-dashboard-progress {
+        height: 0.375rem;
+        overflow: hidden;
+        margin: 0.65rem 0 0.45rem;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.14);
+    }
+
+    .kirada-dashboard-progress i {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #55B8FF, #16B6CF);
+    }
+
+    .kirada-dashboard-progress.is-green i {
+        background: linear-gradient(90deg, #16B6CF, #12C79B);
+    }
+
+    .kirada-global-search-form {
+        display: flex;
+        width: min(100%, 44rem);
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 1rem;
+        padding: 0.4rem 0.4rem 0.4rem 1rem;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(16px);
+    }
+
+    .kirada-global-search-form input {
+        min-width: 0;
+        flex: 1;
+        border: 0;
+        background: transparent;
+        color: #FFFFFF;
+        outline: 0;
+    }
+
+    .kirada-global-search-form input::placeholder {
+        color: rgba(235, 246, 255, 0.64);
+    }
+
+    .kirada-global-search-form button {
+        min-height: 2.5rem;
+        border-radius: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: #FFFFFF;
+        color: #031A46;
+        font-size: 0.8125rem;
+        font-weight: 700;
+    }
+
+    .kirada-search-result {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem 1.25rem;
+        transition: background-color 160ms var(--ease-kirada), transform 160ms var(--ease-kirada);
+    }
+
+    .kirada-search-result:hover {
+        background: color-mix(in srgb, var(--color-kirada-teal) 6%, var(--kirada-surface));
+    }
+
+    .kirada-search-result-icon {
+        display: flex;
+        width: 2rem;
+        height: 2rem;
+        flex: 0 0 2rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.625rem;
+        background: var(--color-kirada-teal-soft);
+        color: var(--color-kirada-teal);
+    }
+
+    .dark .kirada-search-result-icon {
+        background: rgba(11, 132, 243, 0.16);
+        color: #83C9FF;
+    }
+
+    @media (min-width: 900px) {
+        .kirada-dashboard-hero {
+            grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.42fr);
+            align-items: center;
+        }
+
+        .kirada-dashboard-hero-compact {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    @media (max-width: 639px) {
+        .kirada-dashboard-hero {
+            border-radius: 1.25rem;
+        }
+
+        .kirada-dashboard-hero-actions > * {
+            width: 100%;
+        }
+
+        .kirada-global-search-form {
+            flex-wrap: wrap;
+            padding: 0.75rem;
+        }
+
+        .kirada-global-search-form button {
+            width: 100%;
+        }
+    }
+}
+
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */

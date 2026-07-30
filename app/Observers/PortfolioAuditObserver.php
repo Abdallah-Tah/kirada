@@ -20,6 +20,7 @@ class PortfolioAuditObserver
         'notes',
         'id_document_path',
         'proof_path',
+        'landlord_payout_account_id',
         'file_path',
     ];
 

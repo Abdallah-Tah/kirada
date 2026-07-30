@@ -43,17 +43,17 @@ class SubscriptionTest extends TestCase
             ->test(Status::class)
             ->call('selectPlan', 'growth');
 
-        $subscription = $landlord->fresh()->subscription;
+        $subscription = $landlord->fresh()->kiradaSubscription;
 
         $this->assertSame('trialing', $subscription->status);
         $this->assertTrue($subscription->plan->is($growth));
     }
 
-    public function test_landlord_can_activate_a_plan_after_trial_expiration(): void
+    public function test_expired_trial_opens_secure_card_checkout_for_the_selected_plan(): void
     {
         $landlord = User::factory()->create();
         $landlord->assignRole('landlord');
-        $landlord->subscription()->create([
+        $landlord->kiradaSubscription()->create([
             'status' => 'trialing',
             'trial_ends_at' => now()->subDay(),
         ]);
@@ -62,14 +62,11 @@ class SubscriptionTest extends TestCase
 
         Livewire::actingAs($landlord)
             ->test(Status::class)
-            ->call('selectPlan', 'business');
+            ->call('selectPlan', 'business')
+            ->assertSet('selectedPlanSlug', 'business');
 
-        $subscription = $landlord->fresh()->subscription;
-
-        $this->assertSame('active', $subscription->status);
-        $this->assertSame('manual', $subscription->payment_method);
-        $this->assertTrue($subscription->plan->is($business));
-        $this->assertNotNull($subscription->starts_at);
-        $this->assertNotNull($subscription->ends_at);
+        $subscription = $landlord->fresh()->kiradaSubscription;
+        $this->assertSame('trialing', $subscription->status);
+        $this->assertFalse($subscription->plan?->is($business) ?? false);
     }
 }

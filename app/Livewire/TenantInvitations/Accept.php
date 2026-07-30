@@ -5,6 +5,7 @@ namespace App\Livewire\TenantInvitations;
 use App\Models\TenantInvitation;
 use App\Services\TenantInvitationService;
 use Flux\Flux;
+use Illuminate\Validation\Rules\Password;
 use Livewire\Component;
 
 class Accept extends Component
@@ -52,7 +53,7 @@ class Accept extends Component
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'string', Password::defaults(), 'confirmed'],
         ];
     }
 

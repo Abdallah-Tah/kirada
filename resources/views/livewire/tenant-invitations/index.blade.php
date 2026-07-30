@@ -7,6 +7,10 @@
     {{-- Create Invitation --}}
     <div class="kirada-form-card mt-6 grid gap-4">
         <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('New Invitation') }}</h3>
+        <div class="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm text-slate-700 dark:border-sky-900/70 dark:bg-sky-950/30 dark:text-slate-200">
+            <p class="font-semibold">{{ __('How tenant invitations work') }}</p>
+            <p class="mt-1 text-slate-600 dark:text-slate-400">{{ __('Select a tenant record and send a private seven-day link. The tenant creates a new account or securely links an existing account, then receives access only to their own lease, invoices, payment proofs, maintenance requests, messages, and documents.') }}</p>
+        </div>
 
         <div class="grid gap-4 sm:grid-cols-3">
             <div>

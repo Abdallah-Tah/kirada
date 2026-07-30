@@ -7,8 +7,8 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MaintenanceAttachmentController;
 use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\ReceiptController;
-use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\SubscriptionCheckoutController;
+use App\Http\Controllers\SubscriptionPortalController;
 use App\Livewire\Audit\Index as AuditIndex;
 use App\Livewire\Contracts\Create as ContractCreate;
 use App\Livewire\Contracts\Index as ContractIndex;
@@ -43,6 +43,7 @@ use App\Livewire\RentPayments\Edit as RentPaymentEdit;
 use App\Livewire\RentPayments\Index as RentPaymentIndex;
 use App\Livewire\RentPayments\Submit as RentPaymentSubmit;
 use App\Livewire\Reports\Index as ReportsIndex;
+use App\Livewire\Search\Index as GlobalSearchIndex;
 use App\Livewire\Subscriptions\Status as SubscriptionStatus;
 use App\Livewire\TenantInvitations\Accept as TenantInvitationAccept;
 use App\Livewire\TenantInvitations\Index as TenantInvitationIndex;
@@ -74,6 +75,8 @@ Route::middleware(['kirada-auth'])
 
 // Role-specific dashboards
 Route::middleware(['kirada-auth'])->group(function () {
+    Route::get('/search', GlobalSearchIndex::class)->name('search.index');
+
     Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
         ->middleware('role:admin')
         ->name('admin.dashboard');
@@ -135,13 +138,12 @@ Route::get('/sign/{token}', ContractSign::class)->middleware('throttle:kirada-pu
 // Payment operator webhooks (shared-secret verified per gateway, CSRF-exempt)
 Route::post('/webhooks/payments/{gateway}', PaymentWebhookController::class)->middleware('throttle:kirada-webhooks')->name('webhooks.payments');
 
-// Stripe subscription webhook (signature-verified, CSRF-exempt)
-Route::post('/webhooks/stripe', StripeWebhookController::class)->middleware('throttle:kirada-webhooks')->name('webhooks.stripe');
-
 // Subscription checkout initiation — authenticated landlords only
 Route::middleware(['kirada-auth', 'role:landlord'])->group(function () {
-    Route::post('/subscription/checkout/{planSlug}/{gateway}', [SubscriptionCheckoutController::class, 'initiate'])
+    Route::post('/subscription/checkout/{planSlug}', [SubscriptionCheckoutController::class, 'initiate'])
         ->name('subscription.checkout');
+    Route::get('/subscription/billing-portal', SubscriptionPortalController::class)
+        ->name('subscription.portal');
 });
 
 // Rent Invoices — list is shared with tenants ("My Rent", scoped in the

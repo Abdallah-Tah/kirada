@@ -43,7 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Webhooks authenticate with signatures, not sessions.
         $middleware->validateCsrfTokens(except: [
             'webhooks/payments/*',
-            'webhooks/stripe',
+            'stripe/*',
         ]);
 
         // The shell every authenticated feature route sits behind. Centralised so

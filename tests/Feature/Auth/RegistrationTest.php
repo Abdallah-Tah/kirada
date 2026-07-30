@@ -48,7 +48,7 @@ class RegistrationTest extends TestCase
             ->assertRedirect(route('dashboard', absolute: false));
 
         $this->assertAuthenticated();
-        $this->assertTrue(auth()->user()->onTrial());
+        $this->assertTrue(auth()->user()->hasActiveKiradaTrial());
     }
 
     public function test_new_users_can_register_with_a_selected_plan(): void
@@ -69,8 +69,8 @@ class RegistrationTest extends TestCase
             ->assertRedirect(route('dashboard', absolute: false));
 
         $this->assertAuthenticated();
-        $this->assertTrue(auth()->user()->onTrial());
-        $this->assertTrue(auth()->user()->subscription->plan->is($plan));
+        $this->assertTrue(auth()->user()->hasActiveKiradaTrial());
+        $this->assertTrue(auth()->user()->kiradaSubscription->plan->is($plan));
     }
 
     public function test_registration_requires_terms_acceptance(): void

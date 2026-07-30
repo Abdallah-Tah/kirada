@@ -1,8 +1,21 @@
 <x-layouts::app :title="__('Admin Dashboard')">
     <div class="kirada-shell">
-        <div class="kirada-page-header kirada-reveal">
-            <flux:heading size="xl" class="text-kirada-navy">{{ __('Admin Dashboard') }}</flux:heading>
-            <flux:subheading class="mt-1 text-slate-500">{{ __('System overview, portfolio health, and recent platform activity.') }}</flux:subheading>
+        <div class="kirada-dashboard-hero kirada-dashboard-hero-compact kirada-reveal">
+            <div class="kirada-dashboard-hero-content">
+                <span class="kirada-dashboard-eyebrow">{{ __('Platform Administration') }}</span>
+                <h1>{{ __('Kirada operations overview') }}</h1>
+                <p>{{ __('System adoption, portfolio health, subscriptions, and recent platform activity.') }}</p>
+                <div class="kirada-dashboard-hero-actions">
+                    <a href="{{ route('search.index') }}" wire:navigate class="kirada-hero-action-primary">
+                        <flux:icon.magnifying-glass class="size-4" />
+                        {{ __('Search platform') }}
+                    </a>
+                    <a href="{{ route('audit.index') }}" wire:navigate class="kirada-hero-action-secondary">
+                        <flux:icon.shield-check class="size-4" />
+                        {{ __('Open Audit Center') }}
+                    </a>
+                </div>
+            </div>
         </div>
 
         <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 kirada-reveal kirada-reveal-delay-1">

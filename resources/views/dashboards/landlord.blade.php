@@ -1,25 +1,48 @@
 <x-layouts::app :title="__('Landlord Dashboard')">
     <div class="kirada-shell">
 
-        {{-- ─── Premium banner header ────────────────────────────────────────── --}}
-        <div class="kirada-reveal overflow-hidden rounded-[1.75rem] bg-[linear-gradient(135deg,rgba(15,23,42,1)_0%,rgba(14,165,233,0.88)_58%,rgba(16,185,129,0.80)_100%)] px-7 py-8 text-white shadow-[0_28px_80px_rgba(15,23,42,0.18)] sm:px-9">
-            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                    <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-sky-200/80">{{ __('Landlord Dashboard') }}</p>
-                    <h1 class="mt-2 text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl">
-                        {{ __('Manage. Communicate. Grow.') }}
-                    </h1>
-                    <p class="mt-2 max-w-xl text-base leading-7 text-white/70">
-                        {{ __('Properties, rent, maintenance, and tenant communication — all from one workspace.') }}
-                    </p>
+        <div class="kirada-dashboard-hero kirada-reveal">
+            <div class="kirada-dashboard-hero-content">
+                <span class="kirada-dashboard-eyebrow">{{ __('Landlord Dashboard') }} · {{ now()->translatedFormat('M j, Y') }}</span>
+                <h1>{{ __('Welcome back, :name', ['name' => str(auth()->user()->name)->before(' ')]) }}</h1>
+                <p>{{ __('Your portfolio, collection health, maintenance, and team activity in one focused workspace.') }}</p>
+
+                <div class="kirada-dashboard-hero-actions">
+                    @can('create', App\Models\Property::class)
+                        <a href="{{ route('properties.create') }}" wire:navigate class="kirada-hero-action-primary">
+                            <flux:icon.plus class="size-4" />
+                            {{ __('Add Property') }}
+                        </a>
+                    @else
+                        <a href="{{ route('properties.index') }}" wire:navigate class="kirada-hero-action-primary">
+                            <flux:icon.building-office class="size-4" />
+                            {{ __('View Portfolio') }}
+                        </a>
+                    @endcan
+                    <a href="{{ route('search.index') }}" wire:navigate class="kirada-hero-action-secondary">
+                        <flux:icon.magnifying-glass class="size-4" />
+                        {{ __('Search workspace') }}
+                    </a>
                 </div>
-                <a href="{{ route('properties.create') }}" wire:navigate
-                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 text-sm font-semibold text-kirada-navy shadow-[0_14px_40px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(0,0,0,0.26)] sm:self-start lg:self-center">
-                    <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    {{ __('Add Property') }}
-                </a>
+            </div>
+
+            <div class="kirada-dashboard-health">
+                <div class="kirada-dashboard-health-item">
+                    <div>
+                        <span>{{ __('Occupancy') }}</span>
+                        <strong>{{ $occupancy_rate }}%</strong>
+                    </div>
+                    <div class="kirada-dashboard-progress"><i style="width: {{ $occupancy_rate }}%"></i></div>
+                    <small>{{ $occupied_units }} {{ __('of') }} {{ $my_units }} {{ __('units occupied') }}</small>
+                </div>
+                <div class="kirada-dashboard-health-item">
+                    <div>
+                        <span>{{ __('Collection this month') }}</span>
+                        <strong>{{ $collection_rate }}%</strong>
+                    </div>
+                    <div class="kirada-dashboard-progress is-green"><i style="width: {{ $collection_rate }}%"></i></div>
+                    <small>{{ number_format($collected_this_month, 0) }} {{ $dashboard_currency?->code ?? 'DJF' }} {{ __('confirmed') }}</small>
+                </div>
             </div>
         </div>
 
@@ -136,6 +159,7 @@
         <div class="kirada-reveal kirada-reveal-delay-3">
             <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('Quick Actions') }}</p>
             <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                @can('create', App\Models\Property::class)
                 <a href="{{ route('properties.create') }}" wire:navigate
                     class="group flex items-center gap-4 rounded-2xl border border-white/75 bg-white/92 px-5 py-4 shadow-[0_12px_34px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/3 backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]">
                     <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-kirada-ocean/10 text-kirada-ocean transition group-hover:scale-105">
@@ -145,7 +169,9 @@
                     </div>
                     <span class="text-sm font-semibold text-kirada-navy">{{ __('Add Property') }}</span>
                 </a>
+                @endcan
 
+                @can('create', App\Models\Lease::class)
                 <a href="{{ route('leases.create') }}" wire:navigate
                     class="group flex items-center gap-4 rounded-2xl border border-white/75 bg-white/92 px-5 py-4 shadow-[0_12px_34px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/3 backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]">
                     <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-kirada-green/10 text-kirada-green transition group-hover:scale-105">
@@ -155,7 +181,9 @@
                     </div>
                     <span class="text-sm font-semibold text-kirada-navy">{{ __('New Lease') }}</span>
                 </a>
+                @endcan
 
+                @can('create', App\Models\RentInvoice::class)
                 <a href="{{ route('rent-invoices.create') }}" wire:navigate
                     class="group flex items-center gap-4 rounded-2xl border border-white/75 bg-white/92 px-5 py-4 shadow-[0_12px_34px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/3 backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]">
                     <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 transition group-hover:scale-105">
@@ -165,7 +193,9 @@
                     </div>
                     <span class="text-sm font-semibold text-kirada-navy">{{ __('New Invoice') }}</span>
                 </a>
+                @endcan
 
+                @can('create', App\Models\TenantInvitation::class)
                 <a href="{{ route('tenant-invitations.index') }}" wire:navigate
                     class="group flex items-center gap-4 rounded-2xl border border-white/75 bg-white/92 px-5 py-4 shadow-[0_12px_34px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/3 backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)]">
                     <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 text-violet-600 transition group-hover:scale-105">
@@ -175,6 +205,7 @@
                     </div>
                     <span class="text-sm font-semibold text-kirada-navy">{{ __('Invite Tenant') }}</span>
                 </a>
+                @endcan
             </div>
         </div>
 

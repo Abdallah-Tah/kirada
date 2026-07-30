@@ -28,7 +28,7 @@ class SubscriptionMiddleware
 
         $landlord = $user->landlordAccount();
 
-        if ($landlord && ($landlord->onTrial() || $landlord->hasActiveSubscription())) {
+        if ($landlord && ($landlord->hasActiveKiradaTrial() || $landlord->hasActiveSubscription())) {
             return $next($request);
         }
 

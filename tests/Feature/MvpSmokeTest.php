@@ -458,10 +458,10 @@ class MvpSmokeTest extends TestCase
 
     public function test_subscription_trial_exists_for_landlord()
     {
-        $sub = $this->landlord->subscription;
+        $sub = $this->landlord->kiradaSubscription;
         $this->assertNotNull($sub);
         $this->assertEquals('trialing', $sub->status);
-        $this->assertTrue($this->landlord->onTrial());
+        $this->assertTrue($this->landlord->hasActiveKiradaTrial());
         $this->assertFalse($this->admin->needsSubscription());
         $this->assertFalse($this->maintenanceUser->needsSubscription());
     }

@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Laravel\Cashier\Billable;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -37,12 +38,12 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $terms_accepted_at
  * @property Carbon|null $privacy_accepted_at
  */
-#[Fillable(['name', 'email', 'password', 'country_id', 'preferred_language', 'phone_country_code', 'address', 'city', 'postal_code', 'terms_accepted_at', 'privacy_accepted_at', 'stripe_customer_id'])]
+#[Fillable(['name', 'email', 'password', 'country_id', 'preferred_language', 'phone_country_code', 'address', 'city', 'postal_code', 'terms_accepted_at', 'privacy_accepted_at', 'stripe_customer_id', 'stripe_id', 'pm_type', 'pm_last_four', 'trial_ends_at'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
+    use Billable, HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -56,6 +57,7 @@ class User extends Authenticatable implements PasskeyUser
             'password' => 'hashed',
             'terms_accepted_at' => 'datetime',
             'privacy_accepted_at' => 'datetime',
+            'trial_ends_at' => 'datetime',
         ];
     }
 
@@ -166,28 +168,28 @@ class User extends Authenticatable implements PasskeyUser
     /**
      * @return HasOne<Subscription, $this>
      */
-    public function subscription(): HasOne
+    public function kiradaSubscription(): HasOne
     {
         return $this->hasOne(Subscription::class)->latestOfMany();
     }
 
-    public function onTrial(): bool
+    public function hasActiveKiradaTrial(): bool
     {
-        $sub = $this->subscription;
+        $sub = $this->kiradaSubscription;
 
         return $sub && $sub->trialIsActive();
     }
 
     public function hasActiveSubscription(): bool
     {
-        $sub = $this->subscription;
+        $sub = $this->kiradaSubscription;
 
         return $sub && $sub->isActive();
     }
 
     public function trialExpired(): bool
     {
-        $sub = $this->subscription;
+        $sub = $this->kiradaSubscription;
 
         return $sub && $sub->trialHasExpired();
     }
@@ -197,7 +199,7 @@ class User extends Authenticatable implements PasskeyUser
         $account = $this->landlordAccount();
 
         return $account !== null
-            && ! $account->onTrial()
+            && ! $account->hasActiveKiradaTrial()
             && ! $account->hasActiveSubscription();
     }
 

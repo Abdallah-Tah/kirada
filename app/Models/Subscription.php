@@ -27,12 +27,18 @@ class Subscription extends Model
         'gateway_subscription_id',
         'gateway_status',
         'notes',
+        'type',
+        'stripe_id',
+        'stripe_status',
+        'stripe_price',
+        'quantity',
     ];
 
     protected $casts = [
         'trial_ends_at' => 'datetime',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
+        'quantity' => 'integer',
     ];
 
     public function user(): BelongsTo

@@ -1,326 +1,185 @@
 <div>
     <div class="kirada-page-header kirada-reveal">
-        <flux:heading size="xl">{{ __('messages.Subscription') }}</flux:heading>
-        <flux:subheading>{{ __('Manage your Kirada subscription') }}</flux:subheading>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <flux:heading size="xl">{{ __('Kirada subscription') }}</flux:heading>
+                <flux:subheading>{{ __('Manage the card subscription for your landlord workspace. Rent payments are handled separately.') }}</flux:subheading>
+            </div>
+            @if(auth()->user()->hasStripeId())
+                <flux:button :href="route('subscription.portal')" icon="credit-card">
+                    {{ __('Manage billing') }}
+                </flux:button>
+            @endif
+        </div>
     </div>
 
     @php $summary = $this->summary; @endphp
 
-    {{-- Flash messages --}}
     @if (session('status'))
-        <div class="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-700 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-300">
+        <div class="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-800 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-200">
             {{ session('status') }}
         </div>
     @endif
     @if (session('error'))
-        <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300">
+        <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
             {{ session('error') }}
         </div>
     @endif
 
-    {{-- Stripe return feedback --}}
     @if(request('checkout') === 'success')
-        <div class="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm font-medium text-green-700">
-            {{ __('Payment completed! Your subscription will be activated shortly via webhook.') }}
+        <div class="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-200">
+            <p class="font-semibold">{{ __('Card checkout completed') }}</p>
+            <p class="mt-1">{{ __('Stripe is confirming the subscription. This page updates after the signed webhook is received.') }}</p>
         </div>
     @elseif(request('checkout') === 'cancel')
-        <div class="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-700">
-            {{ __('Checkout was cancelled. Your subscription was not changed.') }}
+        <div class="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
+            {{ __('Checkout was cancelled. No subscription change was made.') }}
         </div>
     @endif
 
-    {{-- ── Status Card ─────────────────────────────────────────────────── --}}
-    <div class="kirada-form-card mt-6">
-        @if($summary['state'] === 'none')
-            <div class="flex items-center gap-3">
-                <flux:icon.exclamation-triangle class="text-zinc-400" />
-                <div>
-                    <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('No Subscription') }}</h3>
-                    <p class="text-sm text-zinc-500 mt-1">{{ __("You don't have a subscription yet. Start your 30-day free trial below.") }}</p>
-                </div>
-            </div>
-        @elseif($summary['state'] === 'trialing')
-            <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                    <flux:icon.clock class="text-green-500 shrink-0" />
+    <div class="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,.7fr)]">
+        <section class="kirada-form-card">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-start gap-3">
+                    @if($summary['state'] === 'active')
+                        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-green-100 text-green-700 dark:bg-green-950/50 dark:text-green-300">
+                            <flux:icon.check-circle class="size-6" />
+                        </span>
+                    @elseif($summary['state'] === 'trialing')
+                        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-sky-100 text-kirada-ocean dark:bg-sky-950/50">
+                            <flux:icon.clock class="size-6" />
+                        </span>
+                    @else
+                        <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300">
+                            <flux:icon.exclamation-triangle class="size-6" />
+                        </span>
+                    @endif
                     <div>
-                        <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Trial Active') }}</h3>
-                        <p class="text-sm text-zinc-500 mt-1">
-                            {{ __('Your free trial ends on') }} <strong>{{ $summary['trial_ends_at']?->format('M j, Y') }}</strong>
-                            — {{ $summary['days_left'] }} {{ __('days remaining') }}.
+                        <h2 class="text-lg font-semibold text-slate-950 dark:text-white">
+                            @switch($summary['state'])
+                                @case('active') {{ __('Active subscription') }} @break
+                                @case('trialing') {{ __('Free trial active') }} @break
+                                @case('trial_expired') {{ __('Trial expired') }} @break
+                                @case('past_due') {{ __('Card payment needs attention') }} @break
+                                @default {{ __('Choose your Kirada plan') }}
+                            @endswitch
+                        </h2>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                            @if($summary['state'] === 'trialing')
+                                {{ __('Your trial ends :date with :days days remaining.', ['date' => $summary['trial_ends_at']?->format('M j, Y'), 'days' => $summary['days_left']]) }}
+                            @elseif($summary['state'] === 'active')
+                                {{ __('Your :plan workspace is billed securely by Stripe.', ['plan' => $summary['plan']?->name ?? __('Kirada')]) }}
+                            @elseif($summary['state'] === 'past_due')
+                                {{ __('Open the billing portal to update the card or resolve the failed invoice.') }}
+                            @else
+                                {{ __('Select a plan and complete secure card checkout to activate the landlord workspace.') }}
+                            @endif
                         </p>
                     </div>
                 </div>
                 @if($summary['plan'])
-                    <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">{{ $summary['plan']->name }}</span>
+                    <flux:badge color="{{ $summary['state'] === 'active' ? 'green' : 'blue' }}">{{ $summary['plan']->name }}</flux:badge>
                 @endif
             </div>
-        @elseif($summary['state'] === 'trial_expired')
-            <div class="flex items-center gap-3">
-                <flux:icon.x-circle class="text-red-500 shrink-0" />
+
+            @if(in_array($summary['state'], ['active', 'past_due'], true) && auth()->user()->hasStripeId())
+                <div class="mt-5 flex flex-wrap gap-3 border-t border-slate-200 pt-5 dark:border-slate-700">
+                    <flux:button :href="route('subscription.portal')" variant="primary" icon="arrow-top-right-on-square">
+                        {{ __('Open Stripe billing portal') }}
+                    </flux:button>
+                    <p class="self-center text-xs text-slate-500">{{ __('Update your card, view invoices, change plan, or cancel renewal securely in Stripe.') }}</p>
+                </div>
+            @endif
+        </section>
+
+        <aside class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-900/60">
+            <div class="flex items-center gap-2">
+                <flux:icon.shield-check class="size-5 text-kirada-green" />
+                <h2 class="font-semibold">{{ __('Two separate payment flows') }}</h2>
+            </div>
+            <dl class="mt-4 space-y-4 text-sm">
                 <div>
-                    <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Trial Expired') }}</h3>
-                    <p class="text-sm text-zinc-500 mt-1">
-                        {{ __('Your trial ended on') }} {{ $summary['trial_ends_at']?->format('M j, Y') }}.
-                        {{ __('Choose a plan and payment method below to continue.') }}
-                    </p>
+                    <dt class="font-semibold text-slate-900 dark:text-white">{{ __('Kirada subscription') }}</dt>
+                    <dd class="mt-1 text-slate-500">{{ __('The landlord pays Kirada by card through Stripe Cashier.') }}</dd>
                 </div>
-            </div>
-        @elseif($summary['state'] === 'active')
-            <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                    <flux:icon.check-circle class="text-green-500 shrink-0" />
-                    <div>
-                        <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Active Subscription') }}</h3>
-                        <p class="text-sm text-zinc-500 mt-1">
-                            {{ __('Plan:') }} <strong>{{ $summary['plan']?->name ?? '—' }}</strong>
-                            @if($summary['subscription']?->ends_at)
-                                &middot; {{ __('Renews on') }} {{ $summary['subscription']->ends_at->format('M j, Y') }}
-                            @endif
-                            @if($summary['subscription']?->gateway)
-                                &middot; {{ __('via') }} {{ ucfirst($summary['subscription']->gateway) }}
-                            @endif
-                        </p>
-                    </div>
-                </div>
-                <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">{{ __('Active') }}</span>
-            </div>
-        @elseif($summary['state'] === 'past_due')
-            <div class="flex items-center gap-3">
-                <flux:icon.exclamation-triangle class="text-amber-500 shrink-0" />
                 <div>
-                    <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __('Payment Overdue') }}</h3>
-                    <p class="text-sm text-zinc-500 mt-1">{{ __('Your last payment failed. Please update your payment method to restore access.') }}</p>
+                    <dt class="font-semibold text-slate-900 dark:text-white">{{ __('Tenant rent') }}</dt>
+                    <dd class="mt-1 text-slate-500">{{ __('The tenant pays the landlord directly using the landlord’s Waafi, D-Money, CAC Bank, cash, or other account, then uploads proof.') }}</dd>
                 </div>
-            </div>
-        @else
-            <div class="flex items-center gap-3">
-                <flux:icon.exclamation-triangle class="text-zinc-400" />
-                <div>
-                    <h3 class="font-semibold text-zinc-900 dark:text-white">{{ __(ucfirst($summary['state'])) }}</h3>
-                    <p class="text-sm text-zinc-500 mt-1">{{ __('Contact support for assistance.') }}</p>
-                </div>
-            </div>
-        @endif
+            </dl>
+        </aside>
     </div>
 
-    {{-- ── Plan Grid ────────────────────────────────────────────────────── --}}
-    @if(in_array($summary['state'], ['trialing', 'trial_expired', 'none', 'past_due', 'cancelled', 'expired']))
-        <div class="mt-8">
-            <h3 class="font-semibold text-zinc-900 dark:text-white mb-4">{{ __('Available Plans') }}</h3>
-            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    @if(in_array($summary['state'], ['trialing', 'trial_expired', 'none', 'past_due', 'cancelled', 'expired'], true))
+        <section class="mt-8">
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold text-slate-950 dark:text-white">{{ __('Plans for every portfolio') }}</h2>
+                <p class="mt-1 text-sm text-slate-500">{{ __('Start with a 30-day trial. A card is required only when you subscribe after the trial.') }}</p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 @foreach ($this->plans as $plan)
                     @php $isCurrentPlan = $summary['plan']?->id === $plan->id; @endphp
-                    <div class="kirada-stat-card grid gap-3 overflow-hidden {{ $isCurrentPlan ? 'ring-2 ring-kirada-ocean' : '' }}">
-                        <div class="flex items-start justify-between">
-                            <h4 class="font-semibold text-lg text-zinc-900 dark:text-white">{{ $plan->name }}</h4>
+                    <article class="kirada-stat-card flex flex-col gap-4 {{ $isCurrentPlan ? 'ring-2 ring-kirada-ocean' : '' }}">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-950 dark:text-white">{{ $plan->name }}</h3>
+                                <p class="mt-1 text-sm text-slate-500">{{ $plan->description }}</p>
+                            </div>
                             @if($isCurrentPlan)
-                                <span class="rounded-full bg-kirada-ocean/10 px-2 py-0.5 text-xs font-semibold text-kirada-ocean">{{ __('Current') }}</span>
+                                <flux:badge color="blue">{{ __('Current') }}</flux:badge>
                             @endif
                         </div>
-                        @if($plan->monthly_price > 0)
-                            <p class="text-2xl font-bold text-zinc-900 dark:text-white">{{ $plan->formattedPrice }}</p>
-                            <p class="text-xs text-zinc-400 -mt-2">{{ __('per month') }}</p>
-                        @else
-                            <p class="text-lg font-semibold text-zinc-500">{{ __('Custom pricing') }}</p>
-                        @endif
-                        <p class="text-sm text-zinc-500">{{ $plan->limitsLabel }}</p>
-                        @if($plan->description)
-                            <p class="text-xs text-zinc-400">{{ $plan->description }}</p>
-                        @endif
-
-                        @if(in_array($summary['state'], ['none', 'trialing']))
-                            {{-- Trial: just select the plan, no payment yet --}}
-                            <flux:button
-                                wire:click="selectPlan('{{ $plan->slug }}')"
-                                variant="{{ $isCurrentPlan ? 'ghost' : 'primary' }}"
-                                :disabled="$isCurrentPlan"
-                                class="w-full mt-auto"
-                            >
-                                {{ $isCurrentPlan ? __('Current Plan') : ($summary['state'] === 'none' ? __('Start 30-day trial') : __('Select Plan')) }}
-                            </flux:button>
-                        @elseif($plan->monthly_price <= 0)
-                            <a href="mailto:hello@kirada.app?subject=Enterprise+Plan" class="kirada-btn-secondary text-center w-full mt-auto block">
-                                {{ __('Contact Us') }}
-                            </a>
-                        @else
-                            {{-- Paid state: open payment panel --}}
-                            <flux:button
-                                wire:click="openPayment('{{ $plan->slug }}')"
-                                variant="{{ $isCurrentPlan ? 'ghost' : 'primary' }}"
-                                class="w-full mt-auto"
-                            >
-                                {{ $isCurrentPlan ? __('Renew Plan') : __('Subscribe') }}
-                            </flux:button>
-                        @endif
-                    </div>
+                        <div>
+                            <p class="text-3xl font-bold tracking-tight text-slate-950 dark:text-white">{{ $plan->formattedPrice }}</p>
+                            <p class="text-xs text-slate-500">{{ __('per month') }} · {{ $plan->limitsLabel }}</p>
+                        </div>
+                        <div class="mt-auto">
+                            @if(in_array($summary['state'], ['none', 'trialing'], true))
+                                <flux:button wire:click="selectPlan('{{ $plan->slug }}')" variant="{{ $isCurrentPlan ? 'filled' : 'primary' }}" class="w-full">
+                                    {{ $isCurrentPlan ? __('Selected for trial') : __('Use during free trial') }}
+                                </flux:button>
+                            @else
+                                <flux:button wire:click="openPayment('{{ $plan->slug }}')" variant="primary" class="w-full" icon="credit-card">
+                                    {{ __('Subscribe by card') }}
+                                </flux:button>
+                            @endif
+                        </div>
+                    </article>
                 @endforeach
             </div>
-        </div>
+        </section>
     @endif
 
-    {{-- ── Payment Panel (modal-style slide-in) ────────────────────────── --}}
     @if($selectedPlanSlug)
         @php $selectedPlan = $this->plans->firstWhere('slug', $selectedPlanSlug); @endphp
-
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" wire:click.self="closePayment">
-            <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl dark:bg-zinc-900" @click.stop>
-
-                {{-- Header --}}
-                <div class="flex items-center justify-between border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
-                    <div>
-                        <h3 class="font-semibold text-zinc-900 dark:text-white">
-                            {{ __('Subscribe to :plan', ['plan' => $selectedPlan?->name]) }}
-                        </h3>
-                        <p class="text-sm text-zinc-500 mt-0.5">{{ $selectedPlan?->formattedPrice }} / {{ __('month') }}</p>
-                    </div>
-                    <button wire:click="closePayment" class="rounded-lg p-1 text-zinc-400 hover:text-zinc-600 transition">
-                        <flux:icon.x-mark class="size-5" />
-                    </button>
-                </div>
-
-                <div class="p-6 space-y-5">
-
-                    @error('payment')
-                        <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{{ $message }}</div>
-                    @enderror
-
-                    @if($inlineResult)
-                        {{-- CAC Bank transfer instructions --}}
-                        @if(($inlineResult['method'] ?? null) === 'bank_transfer')
-                            <div class="rounded-xl border border-kirada-ocean/20 bg-kirada-ocean/5 p-4 space-y-3">
-                                <div class="flex items-center gap-2 font-semibold text-kirada-navy dark:text-white">
-                                    <flux:icon.building-library class="size-5 text-kirada-ocean" />
-                                    {{ __('Bank Transfer Instructions') }}
-                                </div>
-                                <dl class="space-y-2 text-sm">
-                                    <div class="flex justify-between">
-                                        <dt class="text-zinc-500">{{ __('Amount') }}</dt>
-                                        <dd class="font-semibold">{{ number_format($inlineResult['amount'], 0) }} {{ $inlineResult['currency'] }}</dd>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <dt class="text-zinc-500">{{ __('Account Name') }}</dt>
-                                        <dd class="font-mono text-xs">{{ $inlineResult['account_name'] }}</dd>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <dt class="text-zinc-500">{{ __('Account No.') }}</dt>
-                                        <dd class="font-mono text-xs">{{ $inlineResult['account_number'] }}</dd>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <dt class="text-zinc-500">IBAN</dt>
-                                        <dd class="font-mono text-xs">{{ $inlineResult['iban'] }}</dd>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <dt class="text-zinc-500">SWIFT</dt>
-                                        <dd class="font-mono text-xs">{{ $inlineResult['swift'] }}</dd>
-                                    </div>
-                                    <div class="rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 mt-2">
-                                        <dt class="text-xs text-amber-700 font-semibold">{{ __('Payment Reference') }}</dt>
-                                        <dd class="font-mono font-bold text-amber-900 text-sm mt-0.5">{{ $inlineResult['reference'] }}</dd>
-                                        <p class="text-xs text-amber-700 mt-1">{{ __('Include this reference in your transfer.') }}</p>
-                                    </div>
-                                </dl>
-                                <p class="text-xs text-zinc-500">{{ $inlineResult['instructions'] }}</p>
-                            </div>
-                            <flux:button wire:click="closePayment" variant="ghost" class="w-full">
-                                {{ __('Close — I\'ll transfer now') }}
-                            </flux:button>
-                        @endif
-                    @else
-                        {{-- Gateway selection --}}
+        <div class="fixed inset-0 z-50 grid place-items-center bg-slate-950/55 p-4 backdrop-blur-sm" wire:click.self="closePayment">
+            <section class="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+                <div class="border-b border-slate-200 p-6 dark:border-slate-700">
+                    <div class="flex items-start justify-between gap-4">
                         <div>
-                            <p class="text-xs font-semibold uppercase tracking-wide text-zinc-400 mb-2">{{ __('Payment method') }}</p>
-                            <div class="grid grid-cols-3 gap-2">
-                                @foreach($this->enabledGateways as $gw)
-                                    <button
-                                        wire:click="$set('selectedGateway', '{{ $gw }}')"
-                                        class="rounded-xl border-2 px-3 py-2.5 text-sm font-medium transition
-                                            {{ $selectedGateway === $gw
-                                                ? 'border-kirada-ocean bg-kirada-ocean/5 text-kirada-ocean'
-                                                : 'border-zinc-200 text-zinc-600 hover:border-zinc-300 dark:border-zinc-700 dark:text-zinc-400' }}"
-                                    >
-                                        @if($gw === 'stripe')
-                                            <span class="block text-center">💳</span>
-                                            <span>{{ __('Card') }}</span>
-                                        @elseif($gw === 'waafi')
-                                            <span class="block text-center">📱</span>
-                                            <span>WaafiPay</span>
-                                        @elseif($gw === 'cacbank')
-                                            <span class="block text-center">🏦</span>
-                                            <span>CAC Bank</span>
-                                        @endif
-                                    </button>
-                                @endforeach
-                            </div>
+                            <p class="text-xs font-semibold uppercase tracking-widest text-kirada-ocean">{{ __('Secure card subscription') }}</p>
+                            <h2 class="mt-2 text-xl font-semibold">{{ $selectedPlan?->name }}</h2>
+                            <p class="mt-1 text-sm text-slate-500">{{ $selectedPlan?->formattedPrice }} / {{ __('month') }}</p>
                         </div>
-
-                        {{-- Stripe: standard form POST to avoid XHR redirect issues --}}
-                        @if($selectedGateway === 'stripe')
-                            <div class="rounded-xl border border-zinc-100 bg-zinc-50 p-4 text-sm text-zinc-600 dark:border-zinc-800 dark:bg-zinc-800/50 dark:text-zinc-400">
-                                <div class="flex items-start gap-2">
-                                    <flux:icon.lock-closed class="size-4 shrink-0 mt-0.5 text-zinc-400" />
-                                    <p>{{ __('You\'ll be redirected to Stripe\'s secure checkout. Visa, Mastercard, and more accepted.') }}</p>
-                                </div>
-                            </div>
-                            <form method="POST" action="{{ route('subscription.checkout', [$selectedPlanSlug, 'stripe']) }}">
-                                @csrf
-                                <flux:button type="submit" variant="primary" class="w-full">
-                                    {{ __('Pay with Card → Stripe Checkout') }}
-                                </flux:button>
-                            </form>
-                        @endif
-
-                        {{-- Waafi: phone number form --}}
-                        @if($selectedGateway === 'waafi')
-                            <div class="space-y-3">
-                                <div class="rounded-xl border border-zinc-100 bg-zinc-50 p-4 text-sm text-zinc-600 dark:border-zinc-800 dark:bg-zinc-800/50 dark:text-zinc-400">
-                                    <div class="flex items-start gap-2">
-                                        <flux:icon.device-phone-mobile class="size-4 shrink-0 mt-0.5 text-zinc-400" />
-                                        <p>{{ __('Enter your WaafiPay phone number. You\'ll receive a payment prompt on your device.') }}</p>
-                                    </div>
-                                </div>
-                                <flux:input
-                                    wire:model="waafiPhone"
-                                    label="{{ __('Waafi Phone Number') }}"
-                                    placeholder="252612345678"
-                                    type="tel"
-                                />
-                                @error('waafiPhone')
-                                    <p class="text-xs text-red-600">{{ $message }}</p>
-                                @enderror
-                                <flux:button
-                                    wire:click="initiateInlinePayment"
-                                    wire:loading.attr="disabled"
-                                    variant="primary"
-                                    class="w-full"
-                                >
-                                    <span wire:loading.remove>{{ __('Pay :amount via WaafiPay', ['amount' => $selectedPlan?->formattedPrice]) }}</span>
-                                    <span wire:loading>{{ __('Processing…') }}</span>
-                                </flux:button>
-                            </div>
-                        @endif
-
-                        {{-- CAC Bank: show instructions immediately --}}
-                        @if($selectedGateway === 'cacbank')
-                            <div class="rounded-xl border border-zinc-100 bg-zinc-50 p-4 text-sm text-zinc-600 dark:border-zinc-800 dark:bg-zinc-800/50 dark:text-zinc-400">
-                                <div class="flex items-start gap-2">
-                                    <flux:icon.building-library class="size-4 shrink-0 mt-0.5 text-zinc-400" />
-                                    <p>{{ __('A unique bank reference will be generated. Transfer the amount to CAC Bank and your subscription activates within 1 business day.') }}</p>
-                                </div>
-                            </div>
-                            <flux:button
-                                wire:click="initiateInlinePayment"
-                                wire:loading.attr="disabled"
-                                variant="primary"
-                                class="w-full"
-                            >
-                                <span wire:loading.remove>{{ __('Get Bank Transfer Details') }}</span>
-                                <span wire:loading>{{ __('Generating…') }}</span>
-                            </flux:button>
-                        @endif
-                    @endif
+                        <flux:button wire:click="closePayment" variant="ghost" icon="x-mark" square />
+                    </div>
                 </div>
-            </div>
+                <div class="space-y-5 p-6">
+                    <div class="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm text-slate-700 dark:border-sky-900/60 dark:bg-sky-950/30 dark:text-slate-300">
+                        <div class="flex gap-3">
+                            <flux:icon.lock-closed class="size-5 shrink-0 text-kirada-ocean" />
+                            <p>{{ __('You will continue to Stripe Checkout. Kirada never stores your full card number. Stripe handles card validation, invoices, renewals, and payment authentication.') }}</p>
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('subscription.checkout', $selectedPlanSlug) }}">
+                        @csrf
+                        <flux:button type="submit" variant="primary" class="w-full" icon="arrow-top-right-on-square">
+                            {{ __('Continue to secure Stripe checkout') }}
+                        </flux:button>
+                    </form>
+                    <flux:button wire:click="closePayment" variant="ghost" class="w-full">{{ __('Not now') }}</flux:button>
+                </div>
+            </section>
         </div>
     @endif
 </div>

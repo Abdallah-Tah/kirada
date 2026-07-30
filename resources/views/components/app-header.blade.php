@@ -10,10 +10,11 @@
     $openRequests = 0;
     $overdueInvoices = 0;
 
-    if ($user?->hasRole('landlord')) {
-        $pendingConnections = $user->maintenanceConnections()->wherePivot('status', 'pending')->count();
-        $openRequests = MaintenanceRequest::forLandlord($user->id)->open()->count();
-        $overdueInvoices = RentInvoice::forLandlord($user->id)->overdue()->count();
+    if ($user?->canAccessLandlordPortal()) {
+        $landlord = $user->landlordAccount();
+        $pendingConnections = $landlord?->maintenanceConnections()->wherePivot('status', 'pending')->count() ?? 0;
+        $openRequests = MaintenanceRequest::forLandlord($user->landlordAccountId())->open()->count();
+        $overdueInvoices = RentInvoice::forLandlord($user->landlordAccountId())->overdue()->count();
     } elseif ($user?->hasRole('maintenance')) {
         $pendingConnections = $user->landlordConnections()->wherePivot('status', 'pending')->count();
         $openRequests = MaintenanceRequest::assignedTo($user->id)->open()->count();
@@ -34,36 +35,37 @@
 <flux:header class="kirada-app-header">
     <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
-    {{-- Global search — seeds the tenants index via ?search= --}}
-    @can('viewAny', App\Models\Tenant::class)
-        <form
-            method="GET"
-            action="{{ route('tenants.index') }}"
-            class="kirada-header-search"
-            x-data
-            x-on:keydown.window="if (($event.metaKey || $event.ctrlKey) && $event.key.toLowerCase() === 'k') { $event.preventDefault(); $refs.headerSearch.focus(); }"
-        >
-            <div dir="ltr" class="kirada-header-search-field">
-                <flux:icon.magnifying-glass class="kirada-header-search-icon" aria-hidden="true" />
+    <form
+        method="GET"
+        action="{{ route('search.index') }}"
+        class="kirada-header-search"
+        x-data
+        x-on:keydown.window="if (($event.metaKey || $event.ctrlKey) && $event.key.toLowerCase() === 'k') { $event.preventDefault(); $refs.headerSearch.focus(); }"
+    >
+        <div dir="ltr" class="kirada-header-search-field">
+            <flux:icon.magnifying-glass class="kirada-header-search-icon" aria-hidden="true" />
 
-                <input
-                    type="text"
-                    name="search"
-                    value="{{ request('search') }}"
-                    placeholder="{{ __('Search tenants...') }}"
-                    x-ref="headerSearch"
-                    aria-label="{{ __('Search tenants') }}"
-                    data-test="global-search"
-                />
+            <input
+                type="text"
+                name="q"
+                value="{{ request()->routeIs('search.index') ? request('q') : '' }}"
+                placeholder="{{ __('Search Kirada...') }}"
+                x-ref="headerSearch"
+                aria-label="{{ __('Global Search') }}"
+                autocomplete="off"
+                data-test="global-search"
+            />
 
-                <kbd class="kirada-header-search-kbd" aria-hidden="true">⌘ K</kbd>
-            </div>
-        </form>
-    @endcan
+            <kbd class="kirada-header-search-kbd" aria-hidden="true">⌘ K</kbd>
+        </div>
+    </form>
 
     <flux:spacer />
 
     <div class="kirada-header-actions">
+        <a href="{{ route('search.index') }}" wire:navigate class="kirada-header-btn sm:hidden" aria-label="{{ __('Global Search') }}">
+            <flux:icon.magnifying-glass class="size-5" />
+        </a>
         {{-- Language switcher --}}
         <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">
             <button

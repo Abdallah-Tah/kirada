@@ -56,11 +56,13 @@ class Index extends Component
                 'acceptedUser:id,name,email',
             ])
             ->when($this->search, function ($q) {
-                $q->whereHas('tenant', function ($q) {
-                    $q->where('first_name', 'like', "%{$this->search}%")
-                        ->orWhere('last_name', 'like', "%{$this->search}%");
-                })->orWhere('email', 'like', "%{$this->search}%")
-                    ->orWhere('phone', 'like', "%{$this->search}%");
+                $q->where(function ($q) {
+                    $q->whereHas('tenant', function ($q) {
+                        $q->where('first_name', 'like', "%{$this->search}%")
+                            ->orWhere('last_name', 'like', "%{$this->search}%");
+                    })->orWhere('email', 'like', "%{$this->search}%")
+                        ->orWhere('phone', 'like', "%{$this->search}%");
+                });
             })
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->latest();

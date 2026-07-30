@@ -15,6 +15,7 @@ class RentPayment extends Model
 
     protected $fillable = [
         'landlord_id',
+        'landlord_payout_account_id',
         'rent_invoice_id',
         'lease_id',
         'property_id',
@@ -45,6 +46,11 @@ class RentPayment extends Model
     public function landlord(): BelongsTo
     {
         return $this->belongsTo(User::class, 'landlord_id');
+    }
+
+    public function payoutAccount(): BelongsTo
+    {
+        return $this->belongsTo(LandlordPayoutAccount::class, 'landlord_payout_account_id');
     }
 
     public function rentInvoice(): BelongsTo

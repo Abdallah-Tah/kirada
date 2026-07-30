@@ -42,15 +42,18 @@
 
                     <div class="grid gap-3 sm:grid-cols-2">
                         @foreach ($this->payoutAccounts as $account)
-                            <div @class([
-                                'rounded-xl border p-4',
-                                'border-sky-300 bg-sky-50/70 dark:border-sky-700 dark:bg-sky-950/30' => $account->is_primary,
-                                'border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900' => ! $account->is_primary,
+                            <label @class([
+                                'cursor-pointer rounded-xl border p-4 transition',
+                                'border-kirada-ocean bg-sky-50/70 ring-2 ring-kirada-ocean/15 dark:border-sky-700 dark:bg-sky-950/30' => (int) $landlord_payout_account_id === $account->id,
+                                'border-zinc-200 bg-white hover:border-sky-300 dark:border-zinc-700 dark:bg-zinc-900' => (int) $landlord_payout_account_id !== $account->id,
                             ])>
                                 <div class="flex items-start justify-between gap-3">
-                                    <div>
+                                    <div class="flex items-start gap-3">
+                                        <input type="radio" wire:model.live="landlord_payout_account_id" value="{{ $account->id }}" class="mt-1 accent-sky-600">
+                                        <div>
                                         <p class="font-semibold text-zinc-900 dark:text-white">{{ $account->label }}</p>
                                         <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ __($account->method_label) }}</p>
+                                        </div>
                                     </div>
                                     @if ($account->is_primary)
                                         <flux:badge color="sky" size="sm">{{ __('Primary') }}</flux:badge>
@@ -66,9 +69,15 @@
                                 @if ($account->instructions)
                                     <p class="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{{ $account->instructions }}</p>
                                 @endif
-                            </div>
+                            </label>
                         @endforeach
                     </div>
+                    <flux:error name="landlord_payout_account_id" />
+                </div>
+            @else
+                <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+                    <p class="font-semibold">{{ __('No landlord payment account is published yet') }}</p>
+                    <p class="mt-1">{{ __('Contact your landlord for the correct Waafi, D-Money, CAC Bank, cash, or other payment instructions before sending money.') }}</p>
                 </div>
             @endif
 
@@ -105,7 +114,7 @@
                         class="block w-full text-sm text-zinc-500 file:mr-4 file:rounded-md file:border-0 file:bg-zinc-100 file:px-4 file:py-2 file:text-sm file:font-medium hover:file:bg-zinc-200 dark:file:bg-zinc-700 dark:file:text-white" />
                 </div>
                 <flux:error name="proof" />
-                <p class="mt-1 text-xs text-zinc-400">{{ __('Upload receipt or proof of payment (max 5MB).') }}</p>
+                <p class="mt-1 text-xs text-zinc-400">{{ __('Required: upload a receipt or payment proof (PDF, JPG, PNG, or WebP; max 5MB). Your landlord reviews it before the invoice is marked paid.') }}</p>
             </div>
 
             <div>

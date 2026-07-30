@@ -6,6 +6,8 @@ use App\Mail\TenantInvitationMail;
 use App\Models\Tenant;
 use App\Models\TenantInvitation;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -28,11 +30,14 @@ class TenantInvitationService
     {
         $tenant = Tenant::findOrFail($tenantId);
 
-        abort_if($tenant->landlord_id !== $landlordId && ! auth()->user()->hasRole('admin'), 403);
+        abort_if($tenant->landlord_id !== $landlordId, 403);
 
         if (empty($email) && empty($phone)) {
             throw new \DomainException('Either email or phone is required for an invitation.');
         }
+
+        $email = $email ? Str::lower(trim($email)) : null;
+        $phone = $phone ? trim($phone) : null;
 
         // Check for existing pending invitation
         $existing = TenantInvitation::where('tenant_id', $tenantId)
@@ -148,60 +153,71 @@ class TenantInvitationService
      */
     public function acceptInvitation(TenantInvitation $invitation, string $name, string $email, string $password): User
     {
-        if (! $invitation->isPending()) {
-            throw new \DomainException('This invitation is no longer pending.');
-        }
+        return DB::transaction(function () use ($invitation, $name, $email, $password): User {
+            $invitation = TenantInvitation::query()
+                ->with(['landlord', 'tenant'])
+                ->lockForUpdate()
+                ->findOrFail($invitation->id);
 
-        if ($invitation->expires_at->isPast()) {
-            $invitation->update(['status' => 'expired']);
-            throw new \DomainException('This invitation has expired.');
-        }
-
-        // Check if a user with this email already exists
-        $user = User::where('email', $email)->first();
-
-        if ($user) {
-            // Link existing user — verify password
-            if (! password_verify($password, $user->password)) {
-                throw new \DomainException('An account with this email already exists. Please provide the correct password to link it.');
+            if (! $invitation->isPending()) {
+                throw new \DomainException('This invitation is no longer pending.');
             }
-        } else {
-            // Validate that invitation email matches if set
-            if ($invitation->email && $invitation->email !== $email) {
+
+            if ($invitation->expires_at->isPast()) {
+                $invitation->update(['status' => 'expired']);
+                throw new \DomainException('This invitation has expired.');
+            }
+
+            $email = Str::lower(trim($email));
+            $invitedEmail = $invitation->email ? Str::lower(trim($invitation->email)) : null;
+
+            if ($invitedEmail && ! hash_equals($invitedEmail, $email)) {
                 throw new \DomainException('The email address does not match the invitation.');
             }
 
-            // Create new user
-            $user = User::create([
-                'name' => $name,
-                'email' => $email,
-                'password' => $password,
-                'email_verified_at' => now(),
-                'country_id' => $invitation->landlord->country_id,
-                'preferred_language' => $invitation->landlord->preferred_language ?? 'en',
-                'phone_country_code' => $invitation->landlord->phone_country_code,
+            $tenant = $invitation->tenant;
+            if (! $tenant || $tenant->landlord_id !== $invitation->landlord_id) {
+                throw new \DomainException('This invitation is not linked to a valid tenant record.');
+            }
+
+            if ($tenant->user_id) {
+                throw new \DomainException('This tenant already has a Kirada account.');
+            }
+
+            $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
+
+            if ($user) {
+                if (! Hash::check($password, $user->password)) {
+                    throw new \DomainException('An account with this email already exists. Enter its current password to link it.');
+                }
+            } else {
+                $user = User::create([
+                    'name' => trim($name),
+                    'email' => $email,
+                    'password' => $password,
+                    'email_verified_at' => now(),
+                    'country_id' => $invitation->landlord->country_id,
+                    'preferred_language' => $invitation->landlord->preferred_language ?? 'en',
+                    'phone_country_code' => $invitation->landlord->phone_country_code,
+                ]);
+            }
+
+            if (! $user->hasRole('tenant')) {
+                $user->assignRole('tenant');
+            }
+
+            $tenant->update([
+                'user_id' => $user->id,
+                'email' => $tenant->email ?: $email,
             ]);
-        }
 
-        // Assign tenant role if not already
-        if (! $user->hasRole('tenant')) {
-            $user->assignRole('tenant');
-        }
+            $invitation->update([
+                'status' => 'accepted',
+                'accepted_at' => now(),
+                'accepted_user_id' => $user->id,
+            ]);
 
-        // Link tenant to user
-        $tenant = $invitation->tenant;
-        $tenant->update([
-            'user_id' => $user->id,
-            'email' => $tenant->email ?? $email,
-        ]);
-
-        // Mark invitation as accepted
-        $invitation->update([
-            'status' => 'accepted',
-            'accepted_at' => now(),
-            'accepted_user_id' => $user->id,
-        ]);
-
-        return $user;
+            return $user;
+        });
     }
 }

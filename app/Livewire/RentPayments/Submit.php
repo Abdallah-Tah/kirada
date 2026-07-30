@@ -28,6 +28,8 @@ class Submit extends Component
 
     public string $method = 'mobile_money';
 
+    public ?int $landlord_payout_account_id = null;
+
     public ?string $reference_number = null;
 
     public $proof = null;
@@ -52,15 +54,36 @@ class Submit extends Component
         $this->remaining = app(RentPaymentService::class)->getRemainingAmount($rentInvoice);
         $this->amount = (string) $this->remaining;
         $this->paymentReference = app(RentInvoiceService::class)->ensurePaymentReference($rentInvoice);
+        $this->landlord_payout_account_id = LandlordPayoutAccount::query()
+            ->where('landlord_id', $rentInvoice->landlord_id)
+            ->active()
+            ->orderByDesc('is_primary')
+            ->value('id');
     }
 
     protected function rules(): array
     {
+        $accountRule = $this->payoutAccounts->isNotEmpty() ? 'required' : 'nullable';
+
         return [
             'amount' => "required|numeric|min:1|max:{$this->remaining}",
             'method' => 'required|in:cash,bank_transfer,mobile_money,check,other',
-            'reference_number' => 'nullable|string|max:255',
-            'proof' => 'nullable|file|mimetypes:application/pdf,image/jpeg,image/png,image/webp|max:5120',
+            'landlord_payout_account_id' => [
+                $accountRule,
+                'integer',
+                'exists:landlord_payout_accounts,id',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if ($value && ! LandlordPayoutAccount::query()
+                        ->whereKey($value)
+                        ->where('landlord_id', $this->rentInvoice->landlord_id)
+                        ->active()
+                        ->exists()) {
+                        $fail(__('The selected landlord payment account is not available.'));
+                    }
+                },
+            ],
+            'reference_number' => 'required_unless:method,cash|string|max:255',
+            'proof' => 'required|file|mimetypes:application/pdf,image/jpeg,image/png,image/webp|max:5120',
             'notes' => 'nullable|string|max:2000',
         ];
     }
@@ -69,12 +92,23 @@ class Submit extends Component
     {
         $validated = $this->validate();
 
+        if ($validated['landlord_payout_account_id']) {
+            $account = LandlordPayoutAccount::findOrFail($validated['landlord_payout_account_id']);
+            $validated['method'] = match ($account->method) {
+                'd_money', 'waafi' => 'mobile_money',
+                'cac_bank', 'bank_transfer' => 'bank_transfer',
+                'cash' => 'cash',
+                default => 'other',
+            };
+        }
+
         $service = app(RentPaymentService::class);
 
         $data = $service->dataFromInvoice($this->rentInvoice);
         $data['landlord_id'] = $this->rentInvoice->landlord_id;
         $data['amount'] = $validated['amount'];
         $data['method'] = $validated['method'];
+        $data['landlord_payout_account_id'] = $validated['landlord_payout_account_id'];
         $data['reference_number'] = $validated['reference_number'];
         $data['notes'] = $validated['notes'];
         $data['payment_date'] = now()->format('Y-m-d');
@@ -93,6 +127,20 @@ class Submit extends Component
         Flux::toast(__('Payment reported. Your landlord will confirm it shortly.'), 'success');
 
         $this->redirect(route('rent-invoices.index'), navigate: true);
+    }
+
+    public function updatedLandlordPayoutAccountId(?int $accountId): void
+    {
+        $account = $accountId ? $this->payoutAccounts->firstWhere('id', $accountId) : null;
+
+        if ($account) {
+            $this->method = match ($account->method) {
+                'd_money', 'waafi' => 'mobile_money',
+                'cac_bank', 'bank_transfer' => 'bank_transfer',
+                'cash' => 'cash',
+                default => 'other',
+            };
+        }
     }
 
     /**

@@ -1,8 +1,21 @@
 <x-layouts::app :title="__('Maintenance Dashboard')">
     <div class="kirada-shell">
-        <div class="kirada-page-header kirada-reveal">
-            <flux:heading size="xl" class="text-kirada-navy">{{ __('Maintenance Dashboard') }}</flux:heading>
-            <flux:subheading class="mt-1 text-slate-500">{{ __('Assigned work orders, active jobs, and recent resolutions.') }}</flux:subheading>
+        <div class="kirada-dashboard-hero kirada-dashboard-hero-compact kirada-reveal">
+            <div class="kirada-dashboard-hero-content">
+                <span class="kirada-dashboard-eyebrow">{{ __('Maintenance Workspace') }}</span>
+                <h1>{{ __('Welcome back, :name', ['name' => str(auth()->user()->name)->before(' ')]) }}</h1>
+                <p>{{ __('Assigned work orders, active jobs, invitations, and provider reputation in one workspace.') }}</p>
+                <div class="kirada-dashboard-hero-actions">
+                    <a href="{{ route('maintenance-requests.index') }}" wire:navigate class="kirada-hero-action-primary">
+                        <flux:icon.wrench-screwdriver class="size-4" />
+                        {{ __('View Work Orders') }}
+                    </a>
+                    <a href="{{ route('maintenance-profile.edit') }}" wire:navigate class="kirada-hero-action-secondary">
+                        <flux:icon.identification class="size-4" />
+                        {{ __('Manage Profile') }}
+                    </a>
+                </div>
+            </div>
         </div>
 
         {{-- ── Directory standing: the thing that decides whether work arrives ── --}}

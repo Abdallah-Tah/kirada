@@ -1,8 +1,21 @@
 <x-layouts::app :title="__('Tenant Dashboard')">
     <div class="kirada-shell">
-        <div class="kirada-page-header kirada-reveal">
-            <flux:heading size="xl" class="text-kirada-navy">{{ __('Tenant Dashboard') }}</flux:heading>
-            <flux:subheading class="mt-1 text-slate-500">{{ __('Your rent, lease, maintenance, and documents at a glance.') }}</flux:subheading>
+        <div class="kirada-dashboard-hero kirada-dashboard-hero-compact kirada-reveal">
+            <div class="kirada-dashboard-hero-content">
+                <span class="kirada-dashboard-eyebrow">{{ __('Tenant Dashboard') }}</span>
+                <h1>{{ __('Welcome back, :name', ['name' => str(auth()->user()->name)->before(' ')]) }}</h1>
+                <p>{{ __('Your rent, lease, maintenance, messages, and documents at a glance.') }}</p>
+                <div class="kirada-dashboard-hero-actions">
+                    <a href="{{ route('rent-invoices.index') }}" wire:navigate class="kirada-hero-action-primary">
+                        <flux:icon.banknotes class="size-4" />
+                        {{ __('View My Rent') }}
+                    </a>
+                    <a href="{{ route('maintenance-requests.create') }}" wire:navigate class="kirada-hero-action-secondary">
+                        <flux:icon.wrench-screwdriver class="size-4" />
+                        {{ __('Request Maintenance') }}
+                    </a>
+                </div>
+            </div>
         </div>
 
         @if($active_lease)

@@ -2,9 +2,25 @@
     @if ($invitation && $invitation->isPending())
         <div class="mx-auto w-full max-w-md">
             <flux:heading size="xl">{{ __('Accept Your Invitation') }}</flux:heading>
-            <flux:subheading>
-                {{ __('You\'ve been invited to join Kirada as a tenant.') }}
-            </flux:subheading>
+            <flux:subheading>{{ __('Your landlord invited you to a secure Kirada tenant workspace.') }}</flux:subheading>
+
+            <div class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="rounded-xl border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-900">
+                    <flux:icon.document-text class="mb-2 size-5 text-kirada-ocean" />
+                    <p class="font-semibold">{{ __('Rent & documents') }}</p>
+                    <p class="mt-1 text-xs text-slate-500">{{ __('View invoices, leases, and receipts.') }}</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-900">
+                    <flux:icon.wrench-screwdriver class="mb-2 size-5 text-kirada-green" />
+                    <p class="font-semibold">{{ __('Maintenance') }}</p>
+                    <p class="mt-1 text-xs text-slate-500">{{ __('Report and follow repair requests.') }}</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-900">
+                    <flux:icon.shield-check class="mb-2 size-5 text-violet-500" />
+                    <p class="font-semibold">{{ __('Private access') }}</p>
+                    <p class="mt-1 text-xs text-slate-500">{{ __('Only your linked tenancy is visible.') }}</p>
+                </div>
+            </div>
 
             <div class="kirada-form-card mt-6 grid gap-2 text-sm">
                 <div class="flex justify-between">
@@ -38,10 +54,10 @@
 
                 <div>
                     <flux:label>{{ __('Email') }}</flux:label>
-                    <flux:input wire:model="email" type="email" required class="mt-1" />
+                    <flux:input wire:model="email" type="email" required class="mt-1" :readonly="filled($invitation->email)" />
                     <flux:error name="email" />
                     <p class="mt-1 text-xs text-zinc-400">
-                        {{ __('If an account with this email exists, enter its password to link it.') }}
+                        {{ __('New here? Choose a strong password. Already registered? Enter your current password to securely link this tenancy.') }}
                     </p>
                 </div>
 
@@ -59,7 +75,7 @@
 
                 <div>
                     <flux:button type="submit" variant="primary" class="w-full" icon="check">
-                        {{ __('Create Account & Accept') }}
+                        {{ __('Create or Link Account & Accept') }}
                     </flux:button>
                 </div>
             </form>

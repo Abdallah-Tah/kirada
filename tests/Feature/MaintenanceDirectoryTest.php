@@ -54,7 +54,7 @@ class MaintenanceDirectoryTest extends TestCase
 
         // Providers are paid by landlords, not by a Kirada plan — a trial would
         // put them behind a paywall they can never clear.
-        $this->assertNull($user->subscription);
+        $this->assertNull($user->kiradaSubscription);
     }
 
     public function test_registration_rejects_a_role_that_is_not_self_service(): void
