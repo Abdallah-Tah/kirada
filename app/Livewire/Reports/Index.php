@@ -27,8 +27,7 @@ class Index extends Component
     #[Computed]
     public function summary(): array
     {
-        $user = auth()->user();
-        $landlordId = $user->id;
+        $landlordId = $this->reportLandlordId();
 
         $propertyCount = Property::forLandlord($landlordId)->count();
         $unitCount = Unit::whereHas('property', fn ($q) => $q->forLandlord($landlordId))->count();
@@ -71,7 +70,7 @@ class Index extends Component
     #[Computed]
     public function rentChart(): array
     {
-        $landlordId = auth()->user()->landlordAccountId();
+        $landlordId = $this->reportLandlordId();
 
         $months = collect(range(5, 0))->map(function ($i) {
             return now()->subMonths($i);
@@ -102,7 +101,7 @@ class Index extends Component
     #[Computed]
     public function maintenanceBreakdown(): array
     {
-        $landlordId = auth()->user()->landlordAccountId();
+        $landlordId = $this->reportLandlordId();
 
         return MaintenanceRequest::forLandlord($landlordId)
             ->select('status', DB::raw('count(*) as count'))
@@ -114,7 +113,7 @@ class Index extends Component
     #[Computed]
     public function topPropertiesByOutstanding(): array
     {
-        $landlordId = auth()->user()->landlordAccountId();
+        $landlordId = $this->reportLandlordId();
 
         return Property::forLandlord($landlordId)
             ->withSum(['rentInvoices' => fn ($q) => $q->unpaid()], 'amount')
@@ -126,5 +125,12 @@ class Index extends Component
                 'outstanding' => $p->rent_invoices_sum_amount ?? 0,
             ])
             ->toArray();
+    }
+
+    private function reportLandlordId(): int
+    {
+        $user = auth()->user();
+
+        return $user->landlordAccountId() ?? $user->id;
     }
 }

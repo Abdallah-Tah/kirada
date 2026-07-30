@@ -2,12 +2,39 @@
 
 namespace Tests\Feature\Settings;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ProfileUpdateTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_profile_displays_security_management_options(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('profile.edit'));
+
+        $response
+            ->assertOk()
+            ->assertSee('Two-factor authentication')
+            ->assertSee('Passkeys')
+            ->assertSee('Enable 2FA')
+            ->assertSee('Add passkey');
+    }
+
+    public function test_profile_displays_enabled_two_factor_status(): void
+    {
+        $user = User::factory()->withTwoFactor()->create();
+
+        $response = $this->actingAs($user)->get(route('profile.edit'));
+
+        $response
+            ->assertOk()
+            ->assertSee('Active')
+            ->assertSee('Manage');
+    }
 
     /**
      * @group volt-settings

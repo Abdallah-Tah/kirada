@@ -94,7 +94,7 @@ class RolePermissionSeeder extends Seeder
             'maintenance.view', 'maintenance.respond',
             'messages.send', 'messages.view',
             'documents.view', 'documents.manage',
-            'reports.view', 'team.view', 'team.invite', 'team.manage',
+            'reports.view', 'audit.view', 'team.view', 'team.invite', 'team.manage',
         ]);
 
         $landlordAdmin = Role::firstOrCreate(['name' => 'landlord-admin']);
@@ -108,7 +108,7 @@ class RolePermissionSeeder extends Seeder
             'maintenance.view', 'maintenance.respond',
             'messages.send', 'messages.view',
             'documents.view', 'documents.manage',
-            'reports.view', 'team.view', 'team.invite', 'team.manage',
+            'reports.view', 'audit.view', 'team.view', 'team.invite', 'team.manage',
         ]);
 
         $propertyManager = Role::firstOrCreate(['name' => 'property-manager']);
@@ -117,6 +117,7 @@ class RolePermissionSeeder extends Seeder
             'units.view', 'units.create', 'units.edit',
             'tenants.view', 'tenants.create', 'tenants.edit',
             'leases.view', 'leases.create', 'leases.edit',
+            'invoices.view',
             'maintenance.view', 'maintenance.respond',
             'messages.send', 'messages.view',
             'documents.view', 'documents.manage',

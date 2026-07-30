@@ -2,6 +2,18 @@
 
 namespace App\Providers;
 
+use App\Models\Building;
+use App\Models\Contract;
+use App\Models\Document;
+use App\Models\LandlordTeamMembership;
+use App\Models\Lease;
+use App\Models\MaintenanceRequest;
+use App\Models\Property;
+use App\Models\RentInvoice;
+use App\Models\RentPayment;
+use App\Models\Tenant;
+use App\Models\Unit;
+use App\Observers\PortfolioAuditObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -27,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureRateLimits();
         $this->configureViewNamespaces();
         $this->configureVolt();
+        $this->configurePortfolioAuditing();
     }
 
     protected function configureDefaults(): void
@@ -84,5 +97,24 @@ class AppServiceProvider extends ServiceProvider
     protected function configureVolt(): void
     {
         Volt::mount(resource_path('views'));
+    }
+
+    protected function configurePortfolioAuditing(): void
+    {
+        foreach ([
+            Property::class,
+            Building::class,
+            Unit::class,
+            Tenant::class,
+            Lease::class,
+            Contract::class,
+            RentInvoice::class,
+            RentPayment::class,
+            MaintenanceRequest::class,
+            Document::class,
+            LandlordTeamMembership::class,
+        ] as $model) {
+            $model::observe(PortfolioAuditObserver::class);
+        }
     }
 }

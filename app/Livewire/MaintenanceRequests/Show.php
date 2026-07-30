@@ -447,7 +447,7 @@ class Show extends Component
     {
         $this->authorize('update', $this->maintenanceRequest);
 
-        $quote = MaintenanceQuote::findOrFail($quoteId);
+        $quote = $this->maintenanceRequest->quotes()->findOrFail($quoteId);
 
         try {
             app(MaintenanceQuoteService::class)->approve($quote);
@@ -462,7 +462,7 @@ class Show extends Component
     {
         $this->authorize('update', $this->maintenanceRequest);
 
-        $quote = MaintenanceQuote::findOrFail($quoteId);
+        $quote = $this->maintenanceRequest->quotes()->findOrFail($quoteId);
 
         try {
             app(MaintenanceQuoteService::class)->decline($quote);
@@ -477,7 +477,7 @@ class Show extends Component
     {
         $this->authorize('update', $this->maintenanceRequest);
 
-        $quote = MaintenanceQuote::findOrFail($quoteId);
+        $quote = $this->maintenanceRequest->quotes()->findOrFail($quoteId);
 
         try {
             app(MaintenanceQuoteService::class)->markInvoiced($quote);
@@ -492,7 +492,7 @@ class Show extends Component
     {
         $this->authorize('update', $this->maintenanceRequest);
 
-        $quote = MaintenanceQuote::findOrFail($quoteId);
+        $quote = $this->maintenanceRequest->quotes()->findOrFail($quoteId);
 
         try {
             app(MaintenanceQuoteService::class)->markPaid($quote);
