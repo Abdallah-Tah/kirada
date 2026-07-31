@@ -66,7 +66,15 @@ class LandlordTeamTest extends TestCase
             ->assertSee('Send invitation')
             ->assertSee('data-confirm-title="Invite team member"', false)
             ->assertSee('data-confirm-variant="primary"', false)
-            ->assertSee('kirada-confirmation-modal', false);
+            ->assertSee('kirada-confirmation-modal', false)
+            ->assertSeeInOrder([
+                'kirada-app-shell',
+                'kirada-app-header',
+                'kirada-app-body-region',
+                'kirada-sidebar',
+                'kirada-app-main',
+                'kirada-footer',
+            ], false);
     }
 
     public function test_owner_team_navigation_survives_stale_team_permissions(): void

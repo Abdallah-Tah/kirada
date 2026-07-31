@@ -320,7 +320,16 @@
                         @endif
 
                         {{-- Actions --}}
-                        <div class="mt-3 flex gap-2">
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <flux:button
+                                :href="route('maintenance-quotes.pdf', $quote)"
+                                variant="ghost"
+                                size="sm"
+                                icon="arrow-down-tray"
+                            >
+                                {{ $quote->isInvoiced() ? __('Download invoice PDF') : __('Download quote PDF') }}
+                            </flux:button>
+
                             @if ($quote->isPending() && $this->canManage)
                                 <flux:button
                                     wire:click="approveQuote({{ $quote->id }})"

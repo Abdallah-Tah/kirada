@@ -73,6 +73,16 @@
                     <flux:error name="password_confirmation" />
                 </div>
 
+                @if ($invitation->phone)
+                    <div class="rounded-xl border border-cyan-200 bg-cyan-50 p-4 dark:border-cyan-900 dark:bg-cyan-950/40">
+                        <flux:checkbox
+                            wire:model="whatsAppOptIn"
+                            :label="__('Receive invoices and rent reminders on WhatsApp')"
+                            :description="__('Kirada may send transactional messages to :phone. You can withdraw this permission in Settings.', ['phone' => $invitation->phone])"
+                        />
+                    </div>
+                @endif
+
                 <div>
                     <flux:button type="submit" variant="primary" class="w-full" icon="check">
                         {{ __('Create or Link Account & Accept') }}

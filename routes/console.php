@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\BwaWebhookRequest;
 use App\Services\RentInvoiceService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -24,3 +25,9 @@ Schedule::command('kirada:send-rent-reminders')->dailyAt('08:00');
 
 // Add late fee line items after grace period expires.
 Schedule::command('kirada:apply-late-fees')->dailyAt('09:00');
+
+// Replay IDs only need to outlive the signature acceptance window. Retain one
+// additional day for operational diagnosis without allowing the table to grow.
+Schedule::call(function () {
+    BwaWebhookRequest::where('expires_at', '<', now()->subDay())->delete();
+})->dailyAt('02:30')->name('prune-bwa-webhook-request-ids');

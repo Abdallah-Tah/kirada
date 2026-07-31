@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use App\Models\RentInvoice;
-use App\Notifications\Concerns\NotifiesTenantPhone;
 use App\Support\Money;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,12 +10,18 @@ use Illuminate\Notifications\Notification;
 
 class RentReminderDue extends Notification
 {
-    use NotifiesTenantPhone, Queueable;
+    use Queueable;
 
     public function __construct(
         public RentInvoice $invoice,
         public string $reminderKey,
+        public ?string $pdf = null,
     ) {}
+
+    public function via(object $notifiable): array
+    {
+        return ['mail'];
+    }
 
     public function toMail(object $notifiable): MailMessage
     {
@@ -25,7 +30,7 @@ class RentReminderDue extends Notification
         $due = $invoice->due_date->format('d/m/Y');
         $subject = $this->buildSubject($amount, $due);
 
-        return (new MailMessage)
+        $message = (new MailMessage)
             ->subject($subject)
             ->markdown('emails.rent.reminder', [
                 'invoice' => $invoice,
@@ -34,6 +39,16 @@ class RentReminderDue extends Notification
                 'due' => $due,
                 'subject' => $subject,
             ]);
+
+        if ($this->pdf !== null) {
+            $message->attachData(
+                $this->pdf,
+                $invoice->invoice_number.'.pdf',
+                ['mime' => 'application/pdf'],
+            );
+        }
+
+        return $message;
     }
 
     private function buildSubject(string $amount, string $due): string
@@ -43,22 +58,5 @@ class RentReminderDue extends Notification
             str_starts_with($this->reminderKey, 'overdue') => "Overdue notice: rent of {$amount} was due on {$due}",
             default => "Rent reminder — {$amount} due {$due}",
         };
-    }
-
-    protected function tenantPhone(): ?string
-    {
-        return $this->invoice->tenant?->phone;
-    }
-
-    protected function phoneMessage(): string
-    {
-        $invoice = $this->invoice;
-        $amount = Money::format($invoice->totalDue(), $invoice->displayCurrency());
-
-        return __('Kirada: rent of :amount due :due. Payment reference: :reference', [
-            'amount' => $amount,
-            'due' => $invoice->due_date->format('d/m/Y'),
-            'reference' => $invoice->payment_reference ?? $invoice->invoice_number,
-        ]);
     }
 }

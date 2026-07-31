@@ -34,6 +34,9 @@ class Lease extends Model
         'late_fee_amount',
         'late_fee_frequency',
         'reminder_schedule',
+        'invoice_delivery_channels',
+        'reminder_delivery_channels',
+        'auto_send_invoice_override',
     ];
 
     protected $casts = [
@@ -47,6 +50,9 @@ class Lease extends Model
         'grace_period_days' => 'integer',
         'late_fee_amount' => 'float',
         'reminder_schedule' => 'array',
+        'invoice_delivery_channels' => 'array',
+        'reminder_delivery_channels' => 'array',
+        'auto_send_invoice_override' => 'boolean',
     ];
 
     protected $attributes = [

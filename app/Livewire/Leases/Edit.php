@@ -6,6 +6,7 @@ use App\Models\Lease;
 use App\Models\Property;
 use App\Models\Tenant;
 use App\Models\Unit;
+use App\Services\Bwa\BwaMessagingApi;
 use App\Services\LeaseService;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
@@ -50,6 +51,14 @@ class Edit extends Component
 
     public array $reminder_keys = ['before_due_7', 'before_due_3', 'before_due_1', 'overdue_1'];
 
+    public bool $inherit_notification_settings = true;
+
+    public array $invoice_delivery_channels = ['email'];
+
+    public array $reminder_delivery_channels = ['email'];
+
+    public bool $auto_send_invoice_override = true;
+
     public function mount(Lease $lease): void
     {
         $this->authorize('update', $lease);
@@ -71,6 +80,12 @@ class Edit extends Component
         $this->late_fee_amount = $lease->late_fee_amount ? (string) $lease->late_fee_amount : null;
         $this->reminder_keys = $lease->reminder_schedule
             ?? ['before_due_7', 'before_due_3', 'before_due_1', 'overdue_1'];
+        $this->inherit_notification_settings = $lease->invoice_delivery_channels === null
+            && $lease->reminder_delivery_channels === null
+            && $lease->auto_send_invoice_override === null;
+        $this->invoice_delivery_channels = $lease->invoice_delivery_channels ?? ['email'];
+        $this->reminder_delivery_channels = $lease->reminder_delivery_channels ?? ['email'];
+        $this->auto_send_invoice_override = $lease->auto_send_invoice_override ?? true;
     }
 
     protected function rules(): array
@@ -94,6 +109,12 @@ class Edit extends Component
             'late_fee_frequency' => 'required|in:once,weekly,monthly',
             'reminder_keys' => 'array',
             'reminder_keys.*' => 'string',
+            'inherit_notification_settings' => 'boolean',
+            'invoice_delivery_channels' => 'array|min:1',
+            'invoice_delivery_channels.*' => 'in:email,whatsapp',
+            'reminder_delivery_channels' => 'array|min:1',
+            'reminder_delivery_channels.*' => 'in:email,whatsapp',
+            'auto_send_invoice_override' => 'boolean',
         ];
     }
 
@@ -158,6 +179,15 @@ class Edit extends Component
 
         $validated = $this->validate();
 
+        if (! $this->inherit_notification_settings
+            && (in_array('whatsapp', $this->invoice_delivery_channels, true)
+                || in_array('whatsapp', $this->reminder_delivery_channels, true))
+            && ! app(BwaMessagingApi::class)->isConfigured()) {
+            $this->addError('invoice_delivery_channels', __('Configure the Meta WhatsApp credentials before enabling WhatsApp.'));
+
+            return;
+        }
+
         // Ensure landlord ownership
         if (auth()->user()->canAccessLandlordPortal()) {
             $property = Property::find($validated['property_id']);
@@ -173,6 +203,15 @@ class Edit extends Component
         app(LeaseService::class)->updateLease($this->lease, [
             ...$validated,
             'reminder_schedule' => $this->reminder_keys ?: null,
+            'invoice_delivery_channels' => $this->inherit_notification_settings
+                ? null
+                : array_values(array_unique($this->invoice_delivery_channels)),
+            'reminder_delivery_channels' => $this->inherit_notification_settings
+                ? null
+                : array_values(array_unique($this->reminder_delivery_channels)),
+            'auto_send_invoice_override' => $this->inherit_notification_settings
+                ? null
+                : $this->auto_send_invoice_override,
         ]);
 
         Flux::toast('Lease updated successfully.', 'success');

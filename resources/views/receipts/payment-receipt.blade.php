@@ -1,68 +1,105 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>{{ __('Payment Receipt') }} — {{ $payment->payment_number }}</title>
-    <style>
-        /* dompdf-friendly: table layouts, no grid/flex. DejaVu Sans handles UTF-8. */
-        * { font-family: DejaVu Sans, sans-serif; }
-        body { color: #0f172a; font-size: 11px; line-height: 1.5; margin: 0; }
-        .brand-table { width: 100%; border-bottom: 2px solid #0EA5E9; padding-bottom: 8px; margin-bottom: 18px; }
-        .brand-table td { vertical-align: bottom; }
-        .wordmark { font-size: 18px; font-weight: bold; color: #0f172a; }
-        .wordmark span { color: #0EA5E9; }
-        .ref { text-align: right; font-size: 10px; color: #64748b; }
-        h1 { font-size: 16px; text-align: center; margin: 0 0 2px; }
-        .subtitle { text-align: center; color: #64748b; font-size: 10px; margin: 0 0 16px; }
-        .banner { padding: 7px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-bottom: 16px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
-        table.details { width: 100%; border-collapse: collapse; margin-top: 8px; }
-        table.details th, table.details td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
-        table.details th { color: #64748b; font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; width: 35%; }
-        .amount-box { margin-top: 18px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; }
-        .amount-box .label { font-size: 9px; text-transform: uppercase; color: #64748b; letter-spacing: 0.04em; }
-        .amount-box .value { font-size: 20px; font-weight: bold; margin-top: 2px; }
-        .foot { margin-top: 28px; font-size: 9px; color: #64748b; text-align: center; }
-    </style>
+    <title>{{ __('pdf.receipt.title') }} — {{ $payment->payment_number }}</title>
+    @include('pdf.partials.styles')
 </head>
 <body>
-    <table class="brand-table">
-        <tr>
-            <td class="wordmark">Kir<span>ada</span></td>
-            <td class="ref">{{ $payment->payment_number }}<br>{{ $payment->payment_date?->format('d/m/Y') }}</td>
-        </tr>
-    </table>
+    @php
+        $currency = $payment->displayCurrency();
+        $period = $payment->rentInvoice?->invoice_month?->locale('fr')->translatedFormat('F Y');
+    @endphp
 
-    <h1>{{ __('Payment Receipt') }}</h1>
-    <p class="subtitle">{{ __('Invoice') }} {{ $payment->rentInvoice?->invoice_number }} — {{ $payment->rentInvoice?->invoice_month?->format('F Y') }}</p>
+    @include('pdf.partials.header', [
+        'pdfReference' => $payment->payment_number,
+    ])
 
-    <div class="banner">
-        {{ __('Payment confirmed') }}@if($payment->confirmed_at) — {{ $payment->confirmed_at->format('d/m/Y H:i') }}@endif
+    <h1 class="pdf-title">{{ __('pdf.receipt.title') }}</h1>
+    <p class="pdf-subtitle">
+        @if ($payment->rentInvoice?->invoice_number)
+            {{ __('pdf.labels.invoice') }} {{ $payment->rentInvoice->invoice_number }}
+        @endif
+        @if ($period)
+            — {{ $period }}
+        @endif
+    </p>
+
+    <div class="pdf-highlight pdf-highlight-success">
+        {{ __('pdf.receipt.confirmed') }}
+        @if ($payment->confirmed_at)
+            — {{ $payment->confirmed_at->format('d/m/Y H:i') }}
+        @endif
     </div>
 
-    <div class="amount-box">
-        <div class="label">{{ __('Amount Paid') }}</div>
-        <div class="value">{{ $payment->formatted_amount }}</div>
+    <div class="pdf-payment-reference" style="text-align:center;">
+        <div class="pdf-payment-reference-label">{{ __('pdf.receipt.amount_paid') }}</div>
+        <div class="pdf-payment-reference-value">
+            {{ \App\Support\PdfMoney::format($payment->amount, $currency) }}
+        </div>
     </div>
 
-    <table class="details">
-        <tr><th>{{ __('Tenant') }}</th><td>{{ $payment->tenant?->full_name }}</td></tr>
-        <tr><th>{{ __('Property') }}</th><td>{{ $payment->property?->name }}@if($payment->unit) — {{ __('Unit') }} {{ $payment->unit->unit_number }}@endif</td></tr>
-        <tr><th>{{ __('Landlord') }}</th><td>{{ $payment->landlord?->name }}</td></tr>
-        <tr><th>{{ __('Payment Date') }}</th><td>{{ $payment->payment_date?->format('d/m/Y') }}</td></tr>
-        <tr><th>{{ __('Method') }}</th><td>{{ __(str_replace('_', ' ', ucfirst($payment->method))) }}</td></tr>
-        @if($payment->reference_number)
-            <tr><th>{{ __('Transaction Reference') }}</th><td>{{ $payment->reference_number }}</td></tr>
-        @endif
-        @if($payment->rentInvoice?->payment_reference)
-            <tr><th>{{ __('Payment Reference') }}</th><td>{{ $payment->rentInvoice->payment_reference }}</td></tr>
-        @endif
-        @if($payment->confirmer)
-            <tr><th>{{ __('Confirmed By') }}</th><td>{{ $payment->confirmer->name }}</td></tr>
-        @endif
-    </table>
-
-    <div class="foot">
-        {{ __('Generated by Kirada on :date', ['date' => now()->format('d/m/Y H:i')]) }}
+    <div class="pdf-card">
+        <table class="pdf-details">
+            <tr>
+                <th>{{ __('pdf.labels.tenant') }}</th>
+                <td>{{ $payment->tenant?->full_name ?: '—' }}</td>
+            </tr>
+            <tr>
+                <th>{{ __('pdf.labels.property') }}</th>
+                <td>
+                    {{ $payment->property?->name ?: '—' }}
+                    @if ($payment->unit?->unit_number)
+                        — {{ __('Unit') }} {{ $payment->unit->unit_number }}
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <th>{{ __('pdf.labels.landlord') }}</th>
+                <td>{{ $payment->landlord?->name ?: '—' }}</td>
+            </tr>
+            <tr>
+                <th>{{ __('pdf.labels.payment_date') }}</th>
+                <td>{{ $payment->payment_date?->format('d/m/Y') ?: '—' }}</td>
+            </tr>
+            <tr>
+                <th>{{ __('pdf.labels.method') }}</th>
+                <td>
+                    {{ \Illuminate\Support\Facades\Lang::has("pdf.payment_methods.{$payment->method}")
+                        ? __("pdf.payment_methods.{$payment->method}")
+                        : ucfirst(str_replace('_', ' ', $payment->method)) }}
+                </td>
+            </tr>
+            @if ($payment->reference_number)
+                <tr>
+                    <th>{{ __('pdf.labels.transaction_reference') }}</th>
+                    <td>{{ $payment->reference_number }}</td>
+                </tr>
+            @endif
+            @if ($payment->rentInvoice?->payment_reference)
+                <tr>
+                    <th>{{ __('pdf.payment_reference.label') }}</th>
+                    <td>{{ $payment->rentInvoice->payment_reference }}</td>
+                </tr>
+            @endif
+            @if ($payment->confirmer)
+                <tr>
+                    <th>{{ __('pdf.labels.confirmed_by') }}</th>
+                    <td>{{ $payment->confirmer->name }}</td>
+                </tr>
+            @endif
+        </table>
     </div>
+
+    @if ($payment->notes)
+        <div class="pdf-note">
+            <span class="pdf-small-label">{{ __('pdf.labels.notes') }}</span><br>
+            {{ $payment->notes }}
+        </div>
+    @endif
+
+    @if ($pdfSupportEmail)
+        <div class="pdf-last-page-footer">{{ $pdfSupportEmail }}</div>
+    @endif
 </body>
 </html>

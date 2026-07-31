@@ -35,16 +35,16 @@ return [
         ],
     ],
 
-    // Meta WhatsApp Cloud API (tenant notifications).
-    'meta' => [
-        'graph_version' => env('META_GRAPH_VERSION', 'v23.0'),
-        'whatsapp' => [
-            'access_token' => env('META_WHATSAPP_ACCESS_TOKEN', env('WHATSAPP_TOKEN')),
-            'phone_number_id' => env('META_WHATSAPP_PHONE_NUMBER_ID', env('WHATSAPP_PHONE_NUMBER_ID')),
-            'business_account_id' => env('META_WHATSAPP_BUSINESS_ACCOUNT_ID'),
-            'verify_token' => env('META_WHATSAPP_VERIFY_TOKEN'),
-            'app_secret' => env('META_APP_SECRET'),
-        ],
+    // BWA owns Meta credentials. Kirada authenticates with HMAC signatures only.
+    'bwa' => [
+        'api_url' => env('BWA_MESSAGING_API_URL'),
+        'app' => env('BWA_APP_ID', 'kirada'),
+        'request_signing_secret' => env('BWA_REQUEST_SIGNING_SECRET'),
+        'event_signing_secret' => env('BWA_EVENT_SIGNING_SECRET'),
+        'signature_max_age_seconds' => (int) env('BWA_SIGNATURE_MAX_AGE_SECONDS', 300),
+        'invoice_template' => env('BWA_WHATSAPP_INVOICE_TEMPLATE', 'kirada_rent_invoice'),
+        'reminder_template' => env('BWA_WHATSAPP_REMINDER_TEMPLATE', 'kirada_rent_reminder'),
+        'template_language' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE', 'fr'),
     ],
 
     // Twilio SMS (tenant notifications). Channels no-op when empty.

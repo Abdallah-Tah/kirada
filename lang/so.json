@@ -744,5 +744,17 @@
     "per year": "sannadlee",
     "signed": "la saxeexay",
     "unread message(s)": "farriin(aha) aan la akhrin",
-    "unread message(s) waiting for you.": "farriin(aha) aan la akhrin oo ku sugaya."
+    "unread message(s) waiting for you.": "farriin(aha) aan la akhrin oo ku sugaya.",
+    "Download quote PDF": "Soo dejiso qiimeynta PDF",
+    "Download invoice PDF": "Soo dejiso qaansheegta PDF",
+    "Signature": "Saxeex",
+    "Configure the BWA Messaging API before enabling WhatsApp.": "Habee BWA Messaging API ka hor intaadan WhatsApp hawlgelin.",
+    "The invoice tenant must opt in to WhatsApp before testing.": "Kiraystaha qaansheegta waa inuu oggolaadaa WhatsApp ka hor tijaabada.",
+    "BWA did not accept the test invoice. Check the application registration, template, recipient, and logs.": "BWA ma aqbalin qaansheegta tijaabada. Hubi diiwaangelinta abka, qaabka, qaataha iyo diiwaannada.",
+    "The WhatsApp test invoice was accepted by BWA.": "Qaansheegta tijaabada WhatsApp waxaa aqbalay BWA.",
+    "Secure WhatsApp delivery through BWA": "Dirista WhatsApp ee ammaan ah iyadoo loo marayo BWA",
+    "Kirada signs each request to BWA and never stores or receives Meta credentials.": "Kirada waxay saxiixdaa codsi kasta oo loo diro BWA mana kaydiso mana hesho aqoonsiyada Meta.",
+    "Submit the latest invoice as a BWA WhatsApp test request?": "Ma u dirtaa qaansheegtii ugu dambeysay codsi tijaabo WhatsApp BWA ah?",
+    "WhatsApp is connected through BWA.": "WhatsApp wuxuu ku xiran yahay BWA.",
+    "WhatsApp is unavailable until the BWA Messaging API is configured.": "WhatsApp lama heli karo ilaa BWA Messaging API la habeeyo."
 }

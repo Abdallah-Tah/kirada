@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contract;
 use App\Services\ContractService;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -21,11 +22,17 @@ class ContractController extends Controller
         $this->authorize('view', $contract);
 
         $contract->load(['signatures', 'landlord', 'tenant']);
+        $previousLocale = App::currentLocale();
+        App::setLocale($contract->locale ?: 'fr');
 
-        return response()->view('contracts.document', [
-            'contract' => $contract,
-            'finalized' => $contract->isCompleted(),
-        ]);
+        try {
+            return response(view('contracts.document', [
+                'contract' => $contract,
+                'finalized' => $contract->isCompleted(),
+            ])->render());
+        } finally {
+            App::setLocale($previousLocale);
+        }
     }
 
     /**

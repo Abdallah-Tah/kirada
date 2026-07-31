@@ -84,6 +84,11 @@ class RentInvoice extends Model
         return $this->hasMany(RentPayment::class);
     }
 
+    public function deliveries(): HasMany
+    {
+        return $this->hasMany(NotificationDelivery::class);
+    }
+
     // ── Scopes ──────────────────────────────────────────
 
     public function scopeForLandlord(Builder $query, int $landlordId): Builder

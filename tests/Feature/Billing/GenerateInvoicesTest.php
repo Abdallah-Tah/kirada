@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Billing;
 
+use App\Models\LandlordNotificationSetting;
 use App\Models\Lease;
+use App\Models\NotificationDelivery;
 use App\Models\Property;
 use App\Models\RentInvoice;
 use App\Models\Tenant;
@@ -100,6 +102,28 @@ class GenerateInvoicesTest extends TestCase
         $this->assertEquals('2026-07-01', $invoice->invoice_month->format('Y-m-d'));
         $this->assertEquals('2026-07-05', $invoice->due_date->format('Y-m-d'));
         $this->assertTrue($invoice->is_auto_generated);
+
+        Carbon::setTestNow();
+    }
+
+    public function test_auto_generation_does_not_dispatch_when_landlord_disables_auto_send(): void
+    {
+        Carbon::setTestNow('2026-07-01');
+        LandlordNotificationSetting::create([
+            'landlord_id' => $this->landlord->id,
+            'invoice_channels' => ['email'],
+            'reminder_channels' => ['email'],
+            'auto_send_invoices' => false,
+            'attach_pdf_to_email' => true,
+        ]);
+
+        $invoice = app(RentInvoiceService::class)->generateForLease(
+            $this->makeLease(['payment_due_day' => 5]),
+        );
+
+        $this->assertNotNull($invoice);
+        $this->assertSame(0, NotificationDelivery::count());
+        $this->assertNull($invoice->sent_at);
 
         Carbon::setTestNow();
     }

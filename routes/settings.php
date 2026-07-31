@@ -16,6 +16,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('role:landlord')
         ->name('payout-accounts.edit');
 
+    Volt::route('settings/notifications', 'pages.settings.notifications')
+        ->middleware('permission:notifications.manage')
+        ->name('notifications.edit');
+
+    Volt::route('settings/tenant-notifications', 'pages.settings.tenant-notifications')
+        ->middleware('role:tenant')
+        ->name('tenant-notifications.edit');
+
     Volt::route('settings/security', 'pages.settings.security')
         ->middleware([
             'password.confirm',

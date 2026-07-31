@@ -3,8 +3,14 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="kirada-app-body bg-white text-slate-900 antialiased lg:min-h-screen dark:bg-slate-900 dark:text-slate-100">
-        <flux:sidebar sticky collapsible="mobile" class="kirada-sidebar">
+    <body class="kirada-app-body bg-white text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-100">
+        <div class="kirada-app-shell">
+            {{-- ── Fixed-height application header ─────────────────────── --}}
+            <x-app-header />
+
+            {{-- ── Independent sidebar + main scrolling region ────────── --}}
+            <div class="kirada-app-body-region">
+                <flux:sidebar collapsible="mobile" class="kirada-sidebar">
             <flux:sidebar.header class="kirada-sidebar-header">
                 <a href="{{ route('dashboard') }}" wire:navigate class="kirada-sidebar-brand">
                     <span class="kirada-sidebar-logo">
@@ -211,12 +217,11 @@
             <div class="kirada-sidebar-user-section">
                 <x-desktop-user-menu :name="auth()?->user()?->name" />
             </div>
-        </flux:sidebar>
+                </flux:sidebar>
 
-        {{-- ── Top bar (all breakpoints) ── --}}
-        <x-app-header />
-
-        {{ $slot }}
+                {{ $slot }}
+            </div>
+        </div>
 
         <x-confirmation-modal />
 

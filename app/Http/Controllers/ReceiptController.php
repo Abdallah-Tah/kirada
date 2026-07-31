@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\RentInvoice;
 use App\Models\RentPayment;
+use App\Services\BrandedPdfService;
+use App\Services\InvoicePdfFactory;
 use App\Services\RentInvoiceService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
 
 class ReceiptController extends Controller
 {
+    public function __construct(
+        private BrandedPdfService $pdf,
+        private InvoicePdfFactory $invoicePdf,
+    ) {}
+
     /**
      * Download a PDF receipt for a confirmed payment.
      */
@@ -21,9 +27,12 @@ class ReceiptController extends Controller
 
         $rentPayment->load(['rentInvoice', 'tenant', 'property', 'unit', 'landlord', 'currency', 'confirmer']);
 
-        $pdf = Pdf::loadView('receipts.payment-receipt', ['payment' => $rentPayment])
-            ->setPaper('a4')
-            ->output();
+        $pdf = $this->pdf->render(
+            'receipts.payment-receipt',
+            ['payment' => $rentPayment],
+            $rentPayment->payment_number,
+            $rentPayment->payment_date,
+        );
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
@@ -40,11 +49,7 @@ class ReceiptController extends Controller
 
         app(RentInvoiceService::class)->ensurePaymentReference($rentInvoice);
 
-        $rentInvoice->load(['tenant', 'property', 'unit', 'landlord', 'currency', 'lineItems']);
-
-        $pdf = Pdf::loadView('receipts.invoice', ['invoice' => $rentInvoice])
-            ->setPaper('a4')
-            ->output();
+        $pdf = $this->invoicePdf->make($rentInvoice);
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',

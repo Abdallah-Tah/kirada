@@ -2,7 +2,7 @@
 
 namespace App\Notifications\Channels;
 
-use App\Services\Meta\WhatsAppCloudApi;
+use App\Services\Bwa\BwaMessagingApi;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -15,16 +15,16 @@ use Throwable;
  */
 class WhatsAppChannel
 {
-    private WhatsAppCloudApi $client;
+    private BwaMessagingApi $client;
 
-    public function __construct(?WhatsAppCloudApi $client = null)
+    public function __construct(?BwaMessagingApi $client = null)
     {
-        $this->client = $client ?? app(WhatsAppCloudApi::class);
+        $this->client = $client ?? app(BwaMessagingApi::class);
     }
 
     public static function isConfigured(): bool
     {
-        return app(WhatsAppCloudApi::class)->isConfigured();
+        return app(BwaMessagingApi::class)->isConfigured();
     }
 
     public function send(object $notifiable, Notification $notification): void
@@ -46,11 +46,20 @@ class WhatsAppChannel
         }
 
         try {
-            $this->client->sendText($payload['to'], $payload['message']);
+            $this->client->sendText(
+                $payload['to'],
+                $payload['message'],
+                hash('sha256', implode('|', [
+                    $notification::class,
+                    (string) ($notifiable->getKey() ?? ''),
+                    $payload['to'],
+                    $payload['message'],
+                ])),
+            );
         } catch (Throwable $exception) {
             report($exception);
 
-            Log::warning('Meta WhatsApp message failed.', [
+            Log::warning('BWA WhatsApp message failed.', [
                 'to' => $payload['to'],
                 'exception' => $exception::class,
             ]);

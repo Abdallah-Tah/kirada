@@ -6,6 +6,7 @@ use App\Models\Lease;
 use App\Models\Property;
 use App\Models\Tenant;
 use App\Models\Unit;
+use App\Services\Bwa\BwaMessagingApi;
 use App\Services\LeaseService;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
@@ -48,6 +49,14 @@ class Create extends Component
 
     public array $reminder_keys = ['before_due_7', 'before_due_3', 'before_due_1', 'overdue_1'];
 
+    public bool $inherit_notification_settings = true;
+
+    public array $invoice_delivery_channels = ['email'];
+
+    public array $reminder_delivery_channels = ['email'];
+
+    public bool $auto_send_invoice_override = true;
+
     protected function rules(): array
     {
         return [
@@ -69,6 +78,12 @@ class Create extends Component
             'late_fee_frequency' => 'required|in:once,weekly,monthly',
             'reminder_keys' => 'array',
             'reminder_keys.*' => 'string',
+            'inherit_notification_settings' => 'boolean',
+            'invoice_delivery_channels' => 'array|min:1',
+            'invoice_delivery_channels.*' => 'in:email,whatsapp',
+            'reminder_delivery_channels' => 'array|min:1',
+            'reminder_delivery_channels.*' => 'in:email,whatsapp',
+            'auto_send_invoice_override' => 'boolean',
         ];
     }
 
@@ -142,6 +157,15 @@ class Create extends Component
 
         $validated = $this->validate();
 
+        if (! $this->inherit_notification_settings
+            && (in_array('whatsapp', $this->invoice_delivery_channels, true)
+                || in_array('whatsapp', $this->reminder_delivery_channels, true))
+            && ! app(BwaMessagingApi::class)->isConfigured()) {
+            $this->addError('invoice_delivery_channels', __('Configure the Meta WhatsApp credentials before enabling WhatsApp.'));
+
+            return;
+        }
+
         // Ensure landlord owns the property and unit
         if (auth()->user()->canAccessLandlordPortal()) {
             $property = Property::find($validated['property_id']);
@@ -158,6 +182,15 @@ class Create extends Component
             app(LeaseService::class)->createLease([
                 ...$validated,
                 'reminder_schedule' => $this->reminder_keys ?: null,
+                'invoice_delivery_channels' => $this->inherit_notification_settings
+                    ? null
+                    : array_values(array_unique($this->invoice_delivery_channels)),
+                'reminder_delivery_channels' => $this->inherit_notification_settings
+                    ? null
+                    : array_values(array_unique($this->reminder_delivery_channels)),
+                'auto_send_invoice_override' => $this->inherit_notification_settings
+                    ? null
+                    : $this->auto_send_invoice_override,
             ]);
         } catch (\DomainException $e) {
             $this->addError('unit_id', $e->getMessage());

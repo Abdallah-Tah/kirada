@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\RentInvoice;
-use App\Notifications\RentReminderDue;
+use App\Services\InvoiceDeliveryService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
@@ -22,7 +22,7 @@ class SendRentReminders extends Command
         'overdue_7' => 7,
     ];
 
-    public function handle(): int
+    public function handle(InvoiceDeliveryService $delivery): int
     {
         $sent = 0;
         $skipped = 0;
@@ -30,7 +30,7 @@ class SendRentReminders extends Command
         RentInvoice::with(['lease', 'tenant.user'])
             ->actionable()
             ->whereHas('lease', fn ($q) => $q->where('status', 'active'))
-            ->each(function (RentInvoice $invoice) use (&$sent, &$skipped) {
+            ->each(function (RentInvoice $invoice) use (&$sent, &$skipped, $delivery) {
                 $schedule = $invoice->lease?->reminder_schedule
                     ?? ['before_due_7', 'before_due_3', 'before_due_1', 'overdue_1'];
 
@@ -54,7 +54,7 @@ class SendRentReminders extends Command
                         continue;
                     }
 
-                    $tenantUser->notify(new RentReminderDue($invoice, $key));
+                    $delivery->dispatch($invoice, $key);
                     $invoice->markReminderSent($key);
                     $sent++;
 

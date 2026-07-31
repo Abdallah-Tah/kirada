@@ -45,6 +45,7 @@ class RolePermissionSeeder extends Seeder
 
             // Landlord — rent invoices
             'invoices.view', 'invoices.create', 'invoices.edit',
+            'notifications.manage',
 
             // Landlord — payments
             'payments.view', 'payments.confirm',
@@ -90,6 +91,7 @@ class RolePermissionSeeder extends Seeder
             'tenants.view', 'tenants.create', 'tenants.edit', 'tenants.delete',
             'leases.view', 'leases.create', 'leases.edit', 'leases.delete',
             'invoices.view', 'invoices.create', 'invoices.edit',
+            'notifications.manage',
             'payments.view', 'payments.confirm',
             'maintenance.view', 'maintenance.respond',
             'messages.send', 'messages.view',
@@ -104,6 +106,7 @@ class RolePermissionSeeder extends Seeder
             'tenants.view', 'tenants.create', 'tenants.edit',
             'leases.view', 'leases.create', 'leases.edit',
             'invoices.view', 'invoices.create', 'invoices.edit',
+            'notifications.manage',
             'payments.view', 'payments.confirm',
             'maintenance.view', 'maintenance.respond',
             'messages.send', 'messages.view',

@@ -11,6 +11,12 @@
             @role('landlord')
                 <flux:navlist.item :href="route('payout-accounts.edit')" wire:navigate>{{ __('Payment accounts') }}</flux:navlist.item>
             @endrole
+            @can('notifications.manage')
+                <flux:navlist.item :href="route('notifications.edit')" wire:navigate>{{ __('Notifications') }}</flux:navlist.item>
+            @endcan
+            @role('tenant')
+                <flux:navlist.item :href="route('tenant-notifications.edit')" wire:navigate>{{ __('Notifications') }}</flux:navlist.item>
+            @endrole
             <flux:navlist.item :href="route('security.edit')" wire:navigate>{{ __('Security') }}</flux:navlist.item>
             <flux:navlist.item :href="route('appearance.edit')" wire:navigate>{{ __('Appearance') }}</flux:navlist.item>
         </flux:navlist>

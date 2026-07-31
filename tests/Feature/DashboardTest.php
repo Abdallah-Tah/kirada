@@ -51,7 +51,15 @@ class DashboardTest extends TestCase
             ->assertSee('Smart Rent Management')
             ->assertSee('data-test="global-search"', false)
             ->assertSee('Property Team')
-            ->assertSee('All rights reserved.');
+            ->assertSee('All rights reserved.')
+            ->assertSeeInOrder([
+                'kirada-app-shell',
+                'kirada-app-header',
+                'kirada-app-body-region',
+                'kirada-sidebar',
+                'kirada-app-main',
+                'kirada-footer',
+            ], false);
     }
 
     public function test_tenant_user_is_redirected_to_tenant_dashboard(): void

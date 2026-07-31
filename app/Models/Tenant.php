@@ -18,6 +18,9 @@ class Tenant extends Model
         'first_name',
         'last_name',
         'phone',
+        'whatsapp_consented_at',
+        'whatsapp_consent_revoked_at',
+        'whatsapp_consent_source',
         'email',
         'national_id',
         'id_type',
@@ -33,6 +36,8 @@ class Tenant extends Model
     protected $casts = [
         'user_id' => 'integer',
         'landlord_id' => 'integer',
+        'whatsapp_consented_at' => 'datetime',
+        'whatsapp_consent_revoked_at' => 'datetime',
     ];
 
     // ── Relationships ──────────────────────────────────
@@ -64,6 +69,12 @@ class Tenant extends Model
     public function getFullNameAttribute(): string
     {
         return trim($this->first_name.' '.$this->last_name);
+    }
+
+    public function hasWhatsAppConsent(): bool
+    {
+        return $this->whatsapp_consented_at !== null
+            && $this->whatsapp_consent_revoked_at === null;
     }
 
     /**

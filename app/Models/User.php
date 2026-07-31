@@ -90,6 +90,11 @@ class User extends Authenticatable implements PasskeyUser
             ->orderBy('id');
     }
 
+    public function notificationSetting(): HasOne
+    {
+        return $this->hasOne(LandlordNotificationSetting::class, 'landlord_id');
+    }
+
     /**
      * @return HasOne<LandlordPayoutAccount, $this>
      */

@@ -17,6 +17,7 @@ use App\Services\RentInvoiceService;
 use App\Support\Money;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
@@ -213,7 +214,94 @@ class Phase1MoneyLoopTest extends TestCase
 
         $response->assertOk();
         $response->assertHeader('Content-Type', 'application/pdf');
+        $response->assertHeader(
+            'Content-Disposition',
+            'attachment; filename="'.$this->invoiceA->invoice_number.'.pdf"',
+        );
         $this->assertStringStartsWith('%PDF-', $response->getContent());
+    }
+
+    public function test_invoice_pdf_renders_french_content_dynamic_values_and_optional_fields(): void
+    {
+        $this->invoiceA->update([
+            'payment_reference' => 'KIR-PHVVG3HG',
+            'notes' => null,
+        ]);
+
+        $this->invoiceA->lineItems()->createMany([
+            ['type' => 'late_fee', 'description' => 'Frais de retard', 'amount' => 2500],
+            ['type' => 'other', 'description' => 'Ajustement contractuel', 'amount' => 1000],
+        ]);
+
+        $invoice = $this->invoiceA->fresh()->load([
+            'tenant',
+            'property',
+            'unit',
+            'landlord.payoutAccounts',
+            'currency',
+            'lineItems',
+        ]);
+
+        $previousLocale = App::currentLocale();
+        App::setLocale('fr');
+
+        try {
+            $html = view('receipts.invoice', [
+                'invoice' => $invoice,
+                'pdfLogoPath' => public_path('brand/kirada-logo-transparent.png'),
+                'pdfSupportEmail' => 'support@kirada.test',
+                'pdfDocumentDate' => now()->format('d/m/Y'),
+            ])->render();
+        } finally {
+            App::setLocale($previousLocale);
+        }
+
+        $this->assertStringContainsString('Facture de loyer', $html);
+        $this->assertStringContainsString($invoice->invoice_number, $html);
+        $this->assertStringContainsString($invoice->tenant->full_name, $html);
+        $this->assertStringContainsString('52 500 Fdj', $html);
+        $this->assertStringContainsString('KIR-PHVVG3HG', $html);
+        $this->assertStringContainsString('Impayé', $html);
+        $this->assertStringContainsString('Indiquez cette référence exacte', $html);
+        $this->assertStringContainsString('Besoin d’aide concernant cette facture', $html);
+        $this->assertStringContainsString('invoice-hero', $html);
+
+        $response = $this->actingAs($this->tenantUserA)
+            ->get(route('rent-invoices.pdf', $invoice));
+
+        $response->assertOk();
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+    }
+
+    public function test_invoice_pdf_handles_long_names_descriptions_many_items_and_large_amounts(): void
+    {
+        $this->tenantA->update([
+            'first_name' => str_repeat('Locataire International ', 4),
+            'last_name' => 'À Nom Très Long',
+        ]);
+        $this->property->update([
+            'name' => str_repeat('Résidence Premium du Port ', 4),
+        ]);
+        $this->invoiceA->update([
+            'amount' => 987654321,
+            'notes' => str_repeat('Information complémentaire sécurisée. ', 12),
+        ]);
+
+        foreach (range(1, 34) as $index) {
+            $this->invoiceA->lineItems()->create([
+                'type' => 'other',
+                'description' => "Ligne {$index} — ".str_repeat('description détaillée ', 8),
+                'amount' => 1000 + $index,
+            ]);
+        }
+
+        $response = $this->actingAs($this->tenantUserA)
+            ->get(route('rent-invoices.pdf', $this->invoiceA));
+
+        $response->assertOk();
+        $response->assertHeader('Content-Type', 'application/pdf');
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+        $this->assertGreaterThan(5000, strlen($response->getContent()));
     }
 
     public function test_stranger_tenant_cannot_download_someone_elses_invoice_pdf(): void

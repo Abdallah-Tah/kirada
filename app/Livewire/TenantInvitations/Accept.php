@@ -25,6 +25,8 @@ class Accept extends Component
 
     public bool $showAcceptForm = false;
 
+    public bool $whatsAppOptIn = false;
+
     public function mount(string $token): void
     {
         $this->token = $token;
@@ -54,6 +56,7 @@ class Accept extends Component
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'password' => ['required', 'string', Password::defaults(), 'confirmed'],
+            'whatsAppOptIn' => ['boolean'],
         ];
     }
 
@@ -74,6 +77,14 @@ class Accept extends Component
                 $validated['email'],
                 $validated['password'],
             );
+
+            if ($this->whatsAppOptIn && $this->invitation->tenant?->phone) {
+                $this->invitation->tenant->update([
+                    'whatsapp_consented_at' => now(),
+                    'whatsapp_consent_revoked_at' => null,
+                    'whatsapp_consent_source' => 'tenant_invitation',
+                ]);
+            }
 
             // Log the user in
             auth()->login($user);

@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use App\Models\RentInvoice;
-use App\Notifications\Concerns\NotifiesTenantPhone;
 use App\Support\Money;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,9 +10,14 @@ use Illuminate\Notifications\Notification;
 
 class RentInvoiceGenerated extends Notification
 {
-    use NotifiesTenantPhone, Queueable;
+    use Queueable;
 
-    public function __construct(public RentInvoice $invoice) {}
+    public function __construct(public RentInvoice $invoice, public ?string $pdf = null) {}
+
+    public function via(object $notifiable): array
+    {
+        return ['mail'];
+    }
 
     public function toMail(object $notifiable): MailMessage
     {
@@ -22,7 +26,7 @@ class RentInvoiceGenerated extends Notification
         $due = $invoice->due_date->format('d/m/Y');
         $month = $invoice->invoice_month->format('F Y');
 
-        return (new MailMessage)
+        $message = (new MailMessage)
             ->subject("Rent invoice for {$month} — {$amount}")
             ->markdown('emails.rent.invoice-generated', [
                 'invoice' => $invoice,
@@ -30,23 +34,15 @@ class RentInvoiceGenerated extends Notification
                 'due' => $due,
                 'month' => $month,
             ]);
-    }
 
-    protected function tenantPhone(): ?string
-    {
-        return $this->invoice->tenant?->phone;
-    }
+        if ($this->pdf !== null) {
+            $message->attachData(
+                $this->pdf,
+                $invoice->invoice_number.'.pdf',
+                ['mime' => 'application/pdf'],
+            );
+        }
 
-    protected function phoneMessage(): string
-    {
-        $invoice = $this->invoice;
-        $amount = Money::format($invoice->amount, $invoice->displayCurrency());
-
-        return __('Kirada: rent invoice :number — :amount due :due. Payment reference: :reference', [
-            'number' => $invoice->invoice_number,
-            'amount' => $amount,
-            'due' => $invoice->due_date->format('d/m/Y'),
-            'reference' => $invoice->payment_reference ?? $invoice->invoice_number,
-        ]);
+        return $message;
     }
 }

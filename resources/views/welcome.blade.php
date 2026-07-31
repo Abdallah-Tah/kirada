@@ -88,6 +88,7 @@
                 'slug'     => 'starter',
                 'audience' => 'For independent landlords.',
                 'djf'      => 5000,
+                'usd'      => 9,
                 'cta'      => 'Start free trial',
                 'featured' => false,
                 'features' => [
@@ -103,6 +104,7 @@
                 'slug'     => 'growth',
                 'audience' => 'For growing portfolios.',
                 'djf'      => 15000,
+                'usd'      => 29,
                 'cta'      => 'Start free trial',
                 'featured' => true,
                 'badge'    => 'Most popular',
@@ -121,6 +123,7 @@
                 'slug'     => 'business',
                 'audience' => 'For agencies & teams.',
                 'djf'      => 40000,
+                'usd'      => 79,
                 'cta'      => 'Start free trial',
                 'featured' => false,
                 'features' => [
@@ -487,7 +490,8 @@
         </section>
 
         <section id="pricing"
-            class="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-20 sm:px-8 lg:px-10">
+            class="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-20 sm:px-8 lg:px-10"
+            x-data="{ billing: 'monthly' }">
             <div class="mx-auto max-w-[1320px]">
 
                 {{-- Header --}}
@@ -501,13 +505,46 @@
                         {{ __('Start with a 30-day free trial. No credit card required.') }}
                     </p>
 
-                    <div class="mt-8 inline-flex items-center rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 shadow-sm">
-                        {{ __('Monthly billing in DJF') }}
+                    <div
+                        class="mt-8 inline-flex items-center rounded-full border border-slate-200 bg-white p-1 shadow-sm"
+                        role="group"
+                        aria-label="{{ __('Monthly') }} / {{ __('Annual') }}"
+                    >
+                        <button
+                            type="button"
+                            class="cursor-pointer rounded-full px-6 py-3 text-sm font-semibold transition sm:text-base"
+                            :class="billing === 'monthly'
+                                ? 'bg-kirada-navy text-white shadow-sm'
+                                : 'text-slate-500 hover:text-kirada-navy'"
+                            :aria-pressed="billing === 'monthly'"
+                            @click="billing = 'monthly'"
+                        >
+                            {{ __('Monthly') }}
+                        </button>
+                        <button
+                            type="button"
+                            class="cursor-pointer rounded-full px-6 py-3 text-sm font-semibold transition sm:text-base"
+                            :class="billing === 'annual'
+                                ? 'bg-kirada-navy text-white shadow-sm'
+                                : 'text-slate-500 hover:text-kirada-navy'"
+                            :aria-pressed="billing === 'annual'"
+                            @click="billing = 'annual'"
+                        >
+                            {{ __('Annual') }}
+                            <span class="ms-1 text-kirada-green">-20%</span>
+                        </button>
                     </div>
                 </div>
 
                 <div class="mt-14 grid gap-6 xl:grid-cols-3">
                     @foreach ($pricingPlans as $plan)
+                        @php
+                            $monthlyPrice = $plan['djf'];
+                            $annualMonthlyPrice = (int) round($monthlyPrice * 0.8);
+                            $annualPrice = $annualMonthlyPrice * 12;
+                            $monthlyUsdPrice = $plan['usd'];
+                            $annualUsdPrice = $monthlyUsdPrice * 12 * 0.8;
+                        @endphp
                         <article
                             class="relative flex flex-col rounded-[2rem] border {{ $plan['featured'] ? 'border-slate-900 bg-slate-900 text-white shadow-[0_28px_80px_rgba(15,23,42,0.24)]' : 'border-slate-200 bg-white text-kirada-navy shadow-[0_20px_60px_rgba(15,23,42,0.08)]' }} p-8">
 
@@ -523,9 +560,50 @@
 
                             {{-- Price display --}}
                             <div class="mt-8">
-                                <div class="flex items-end gap-2">
-                                    <span class="text-5xl font-semibold tracking-[-0.05em]">{{ number_format($plan['djf']) }}</span>
-                                    <span class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}">DJF/mo</span>
+                                <div class="flex flex-wrap items-end gap-2">
+                                    <span
+                                        x-show="billing === 'monthly'"
+                                        class="text-5xl font-semibold tracking-[-0.05em]"
+                                    >
+                                        {{ number_format($monthlyPrice) }}
+                                    </span>
+                                    <span
+                                        x-show="billing === 'annual'"
+                                        x-cloak
+                                        class="text-5xl font-semibold tracking-[-0.05em]"
+                                    >
+                                        {{ number_format($annualPrice) }}
+                                    </span>
+                                    <span
+                                        x-show="billing === 'monthly'"
+                                        class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}"
+                                    >
+                                        DJF / {{ __('per month') }}
+                                    </span>
+                                    <span
+                                        x-show="billing === 'annual'"
+                                        x-cloak
+                                        class="pb-1.5 text-xl font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-400' }}"
+                                    >
+                                        DJF / {{ __('per year') }}
+                                    </span>
+                                </div>
+                                <p
+                                    x-show="billing === 'annual'"
+                                    x-cloak
+                                    class="mt-3 text-sm font-medium {{ $plan['featured'] ? 'text-slate-300' : 'text-slate-500' }}"
+                                >
+                                    {{ number_format($annualMonthlyPrice) }} DJF / {{ __('per month') }} · -20%
+                                </p>
+                                <div
+                                    class="mt-4 inline-flex items-center rounded-full border px-3 py-1.5 text-sm font-semibold {{ $plan['featured'] ? 'border-white/15 bg-white/8 text-slate-200' : 'border-slate-200 bg-slate-50 text-slate-600' }}"
+                                >
+                                    <span x-show="billing === 'monthly'">
+                                        ${{ number_format($monthlyUsdPrice) }} USD / {{ __('per month') }}
+                                    </span>
+                                    <span x-show="billing === 'annual'" x-cloak>
+                                        ${{ number_format($annualUsdPrice, 2) }} USD / {{ __('per year') }}
+                                    </span>
                                 </div>
                             </div>
 

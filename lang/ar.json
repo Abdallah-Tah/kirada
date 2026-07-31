@@ -744,5 +744,17 @@
     "per year": "سنوياً",
     "signed": "موقّع",
     "unread message(s)": "رسالة/رسائل غير مقروءة",
-    "unread message(s) waiting for you.": "رسالة/رسائل غير مقروءة بانتظارك."
+    "unread message(s) waiting for you.": "رسالة/رسائل غير مقروءة بانتظارك.",
+    "Download quote PDF": "تنزيل عرض السعر PDF",
+    "Download invoice PDF": "تنزيل الفاتورة PDF",
+    "Signature": "التوقيع",
+    "Configure the BWA Messaging API before enabling WhatsApp.": "قم بإعداد واجهة مراسلة BWA قبل تفعيل واتساب.",
+    "The invoice tenant must opt in to WhatsApp before testing.": "يجب أن يوافق مستأجر الفاتورة على رسائل واتساب قبل الاختبار.",
+    "BWA did not accept the test invoice. Check the application registration, template, recipient, and logs.": "لم تقبل BWA فاتورة الاختبار. تحقق من تسجيل التطبيق والقالب والمستلم والسجلات.",
+    "The WhatsApp test invoice was accepted by BWA.": "تم قبول فاتورة اختبار واتساب من قبل BWA.",
+    "Secure WhatsApp delivery through BWA": "إرسال واتساب آمن عبر BWA",
+    "Kirada signs each request to BWA and never stores or receives Meta credentials.": "توقّع Kirada كل طلب إلى BWA ولا تخزن أو تستقبل بيانات اعتماد Meta.",
+    "Submit the latest invoice as a BWA WhatsApp test request?": "هل تريد إرسال أحدث فاتورة كطلب اختبار واتساب إلى BWA؟",
+    "WhatsApp is connected through BWA.": "واتساب متصل عبر BWA.",
+    "WhatsApp is unavailable until the BWA Messaging API is configured.": "واتساب غير متاح حتى يتم إعداد واجهة مراسلة BWA."
 }

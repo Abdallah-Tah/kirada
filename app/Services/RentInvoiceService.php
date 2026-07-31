@@ -7,7 +7,6 @@ use App\Models\Property;
 use App\Models\RentInvoice;
 use App\Models\RentInvoiceLineItem;
 use App\Notifications\LateFeeApplied;
-use App\Notifications\RentInvoiceGenerated;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -215,13 +214,11 @@ class RentInvoiceService
             'currency_id' => $lease->property?->currency_id,
             'status' => 'unpaid',
             'is_auto_generated' => true,
-            'sent_at' => now(),
+            'sent_at' => null,
         ]);
 
-        // Notify tenant if they have a linked user account
-        $tenantUser = $lease->tenant?->user;
-        if ($tenantUser) {
-            $tenantUser->notify(new RentInvoiceGenerated($invoice));
+        if (app(NotificationChannelResolver::class)->autoSendEnabled($invoice)) {
+            app(InvoiceDeliveryService::class)->dispatch($invoice, 'invoice_created');
         }
 
         return $invoice;

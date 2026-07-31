@@ -47,6 +47,7 @@
                     <flux:label>{{ __('Status') }}</flux:label>
                     <flux:select wire:model="status" class="mt-1">
                         <option value="draft">{{ __('Draft') }}</option>
+                        <option value="sent">{{ __('Sent') }}</option>
                         <option value="unpaid">{{ __('Unpaid') }}</option>
                         <option value="partially_paid">{{ __('Partially Paid') }}</option>
                         <option value="paid">{{ __('Paid') }}</option>

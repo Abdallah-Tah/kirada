@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MaintenanceAttachmentController;
+use App\Http\Controllers\MaintenancePdfController;
 use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SubscriptionCheckoutController;
@@ -36,6 +37,7 @@ use App\Livewire\Properties\Create as PropertyCreate;
 use App\Livewire\Properties\Edit as PropertyEdit;
 use App\Livewire\Properties\Index as PropertyIndex;
 use App\Livewire\RentInvoices\Create as RentInvoiceCreate;
+use App\Livewire\RentInvoices\DeliveryHistory as RentInvoiceDeliveryHistory;
 use App\Livewire\RentInvoices\Edit as RentInvoiceEdit;
 use App\Livewire\RentInvoices\Index as RentInvoiceIndex;
 use App\Livewire\RentPayments\Create as RentPaymentCreate;
@@ -150,6 +152,8 @@ Route::middleware(['kirada-auth', 'role:landlord'])->group(function () {
 // component); create/edit stay admin + landlord only.
 Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant|viewer|tenant'])->group(function () {
     Route::get('/rent-invoices', RentInvoiceIndex::class)->name('rent-invoices.index');
+    Route::get('/rent-invoices/{rentInvoice}/delivery', RentInvoiceDeliveryHistory::class)
+        ->name('rent-invoices.delivery');
     Route::get('/rent-invoices/{rentInvoice}/pdf', [ReceiptController::class, 'invoicePdf'])->name('rent-invoices.pdf');
     Route::get('/rent-payments/{rentPayment}/receipt', [ReceiptController::class, 'paymentReceipt'])->name('rent-payments.receipt');
 });
@@ -184,6 +188,8 @@ Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-m
     Route::get('/maintenance-requests', MaintenanceRequestIndex::class)->name('maintenance-requests.index');
     Route::get('/maintenance-requests/create', MaintenanceRequestCreate::class)->name('maintenance-requests.create');
     Route::get('/maintenance-requests/{maintenanceRequest}', MaintenanceRequestShow::class)->name('maintenance-requests.show');
+    Route::get('/maintenance-quotes/{maintenanceQuote}/pdf', MaintenancePdfController::class)
+        ->name('maintenance-quotes.pdf');
     Route::get('/maintenance-attachments/{attachment}', [MaintenanceAttachmentController::class, 'show'])
         ->name('maintenance-attachments.show');
 });

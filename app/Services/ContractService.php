@@ -10,6 +10,7 @@ use App\Models\Lease;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -268,26 +269,47 @@ class ContractService
     public function renderPdf(Contract $contract): string
     {
         $contract->loadMissing(['signatures', 'landlord', 'tenant']);
+        $previousLocale = App::currentLocale();
+        $generatedAt = now();
+        App::setLocale('fr');
 
-        $pdf = Pdf::loadView('contracts.document-pdf', ['contract' => $contract])
-            ->setPaper('a4');
+        try {
+            $pdf = Pdf::loadView('contracts.document-pdf', [
+                'contract' => $contract,
+                'pdfGeneratedAt' => $generatedAt,
+                'pdfLogoPath' => public_path('brand/kirada-logo-transparent.png'),
+                'pdfSupportEmail' => config('mail.from.address'),
+                'pdfDocumentDate' => $contract->created_at?->format('d/m/Y'),
+            ])->setPaper('a4', 'portrait');
 
-        // Render first so the canvas knows total page count.
-        $pdf->render();
+            // Render first so the canvas knows total page count.
+            $pdf->render();
 
-        $dompdf = $pdf->getDomPDF();
-        $canvas = $dompdf->getCanvas();
-        $font = $dompdf->getFontMetrics()->getFont('DejaVu Sans');
-        $ref = $contract->reference;
-        $date = Carbon::parse($contract->created_at)->format('d/m/Y');
+            $dompdf = $pdf->getDomPDF();
+            $canvas = $dompdf->getCanvas();
+            $font = $dompdf->getFontMetrics()->getFont('DejaVu Sans');
+            $ref = $contract->reference;
+            $date = Carbon::parse($contract->created_at)->format('d/m/Y');
+            $footer = __('pdf.footer.generated', [
+                'date' => $generatedAt->format('d/m/Y'),
+                'time' => $generatedAt->format('H:i'),
+            ]);
+            $page = __('pdf.footer.page', [
+                'current' => '{PAGE_NUM}',
+                'total' => '{PAGE_COUNT}',
+            ]);
 
-        // Footer: page numbers (anti-substitution)
-        $canvas->page_text(200, 820, "{$ref} — Page {PAGE_NUM} / {PAGE_COUNT} — Kirada · Document à valeur probante", $font, 8, [0.56, 0.56, 0.56]);
+            // Footer: generation stamp, reference and page numbers.
+            $canvas->page_text(40, 818, "{$footer} — {$ref}", $font, 7.5, [0.39, 0.46, 0.56]);
+            $canvas->page_text(482, 818, $page, $font, 7.5, [0.39, 0.46, 0.56]);
 
-        // Header: reference on every page (anti-substitution)
-        $canvas->page_text(400, 16, "Kirada — {$ref} — {$date}", $font, 8, [0.56, 0.56, 0.56]);
+            // Header: reference on every page (anti-substitution).
+            $canvas->page_text(400, 16, "Kirada — {$ref} — {$date}", $font, 7.5, [0.39, 0.46, 0.56]);
 
-        return $pdf->output();
+            return $pdf->output();
+        } finally {
+            App::setLocale($previousLocale);
+        }
     }
 
     // ── Internals ──────────────────────────────────────

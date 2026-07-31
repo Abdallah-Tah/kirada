@@ -171,6 +171,46 @@
                     @endforeach
                 </div>
             </div>
+
+            <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+                <flux:checkbox
+                    wire:model.live="inherit_notification_settings"
+                    :label="__('Use landlord notification defaults')"
+                    :description="__('Disable this to choose delivery channels only for this lease.')"
+                />
+
+                @if (! $inherit_notification_settings)
+                    <div class="mt-4 grid gap-5 sm:grid-cols-2">
+                        <div class="space-y-2">
+                            <flux:label>{{ __('Invoice channels') }}</flux:label>
+                            <flux:checkbox wire:model="invoice_delivery_channels" value="email" :label="__('Email')" />
+                            <flux:checkbox
+                                wire:model="invoice_delivery_channels"
+                                value="whatsapp"
+                                :disabled="! app(\App\Services\Bwa\BwaMessagingApi::class)->isConfigured()"
+                                :label="__('WhatsApp')"
+                            />
+                            <flux:error name="invoice_delivery_channels" />
+                        </div>
+                        <div class="space-y-2">
+                            <flux:label>{{ __('Reminder channels') }}</flux:label>
+                            <flux:checkbox wire:model="reminder_delivery_channels" value="email" :label="__('Email')" />
+                            <flux:checkbox
+                                wire:model="reminder_delivery_channels"
+                                value="whatsapp"
+                                :disabled="! app(\App\Services\Bwa\BwaMessagingApi::class)->isConfigured()"
+                                :label="__('WhatsApp')"
+                            />
+                            <flux:error name="reminder_delivery_channels" />
+                        </div>
+                    </div>
+                    <flux:checkbox
+                        class="mt-4"
+                        wire:model="auto_send_invoice_override"
+                        :label="__('Automatically send generated invoices for this lease')"
+                    />
+                @endif
+            </div>
             @endif
         </div>
 

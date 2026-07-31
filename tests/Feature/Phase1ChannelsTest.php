@@ -14,7 +14,7 @@ use App\Notifications\Channels\SmsChannel;
 use App\Notifications\Channels\WhatsAppChannel;
 use App\Notifications\RentInvoiceGenerated;
 use App\Notifications\TenantPaymentSubmitted;
-use App\Services\Meta\WhatsAppCloudApi;
+use App\Services\Bwa\BwaMessagingApi;
 use App\Services\RentInvoiceService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -116,36 +116,32 @@ class Phase1ChannelsTest extends TestCase
 
     public function test_via_is_mail_only_when_channels_are_not_configured(): void
     {
-        config(['services.meta.whatsapp.access_token' => null, 'services.twilio.sid' => null]);
+        config(['services.bwa.request_signing_secret' => null, 'services.twilio.sid' => null]);
 
         $notification = new RentInvoiceGenerated($this->invoice);
 
         $this->assertSame(['mail'], $notification->via($this->tenantUser));
     }
 
-    public function test_via_adds_whatsapp_and_sms_when_configured_and_tenant_has_phone(): void
+    public function test_invoice_notification_stays_mail_only_because_channels_are_orchestrated_independently(): void
     {
         config([
-            'services.meta.whatsapp.access_token' => 'test-token',
-            'services.meta.whatsapp.phone_number_id' => '123',
+            'services.bwa.api_url' => 'https://bwa.test',
+            'services.bwa.request_signing_secret' => 'test-secret',
             'services.twilio.sid' => 'AC123',
             'services.twilio.token' => 'secret',
             'services.twilio.from' => '+15550001',
         ]);
 
         $notification = new RentInvoiceGenerated($this->invoice);
-        $channels = $notification->via($this->tenantUser);
-
-        $this->assertContains('mail', $channels);
-        $this->assertContains(WhatsAppChannel::class, $channels);
-        $this->assertContains(SmsChannel::class, $channels);
+        $this->assertSame(['mail'], $notification->via($this->tenantUser));
     }
 
     public function test_via_stays_mail_only_when_tenant_has_no_phone(): void
     {
         config([
-            'services.meta.whatsapp.access_token' => 'test-token',
-            'services.meta.whatsapp.phone_number_id' => '123',
+            'services.bwa.api_url' => 'https://bwa.test',
+            'services.bwa.request_signing_secret' => 'test-secret',
         ]);
 
         $this->tenant->update(['phone' => '']);
@@ -159,7 +155,7 @@ class Phase1ChannelsTest extends TestCase
     {
         Http::fake();
 
-        config(['services.meta.whatsapp.access_token' => null, 'services.twilio.sid' => null]);
+        config(['services.bwa.request_signing_secret' => null, 'services.twilio.sid' => null]);
 
         $notification = new RentInvoiceGenerated($this->invoice);
 
@@ -169,36 +165,41 @@ class Phase1ChannelsTest extends TestCase
         Http::assertNothingSent();
     }
 
-    public function test_whatsapp_channel_posts_to_the_cloud_api_when_configured(): void
+    public function test_whatsapp_client_posts_signed_text_to_bwa_when_configured(): void
     {
-        Http::fake(['graph.facebook.com/*' => Http::response(['messages' => []], 200)]);
+        Http::fake(['bwa.test/*' => Http::response(['data' => ['message_id' => 'bwa.1']], 202)]);
 
         config([
-            'services.meta.graph_version' => 'v23.0',
-            'services.meta.whatsapp.access_token' => 'test-token',
-            'services.meta.whatsapp.phone_number_id' => '123',
+            'services.bwa.api_url' => 'https://bwa.test',
+            'services.bwa.app' => 'kirada',
+            'services.bwa.request_signing_secret' => 'test-secret',
         ]);
 
-        (new WhatsAppChannel)->send($this->tenantUser, new RentInvoiceGenerated($this->invoice));
+        app(BwaMessagingApi::class)->sendText(
+            '+253 77 00 00 01',
+            'Invoice '.$this->invoice->payment_reference,
+            'invoice-'.$this->invoice->id,
+        );
 
         Http::assertSent(function ($request) {
-            return str_contains($request->url(), 'graph.facebook.com/v23.0/123/messages')
-                && $request['to'] === '25377000001'
-                && str_contains($request['text']['body'], $this->invoice->payment_reference);
+            return $request->url() === 'https://bwa.test/api/v1/whatsapp/messages'
+                && $request['recipient'] === '+25377000001'
+                && $request['product'] === 'kirada'
+                && str_contains($request['body'], $this->invoice->payment_reference);
         });
     }
 
-    public function test_meta_cloud_service_can_send_a_template_message(): void
+    public function test_bwa_service_can_send_a_template_message(): void
     {
-        Http::fake(['graph.facebook.com/*' => Http::response(['messages' => [['id' => 'wamid.1']]], 200)]);
+        Http::fake(['bwa.test/*' => Http::response(['data' => ['message_id' => 'bwa.1']], 202)]);
 
         config([
-            'services.meta.graph_version' => 'v23.0',
-            'services.meta.whatsapp.access_token' => 'test-token',
-            'services.meta.whatsapp.phone_number_id' => '123',
+            'services.bwa.api_url' => 'https://bwa.test',
+            'services.bwa.app' => 'kirada',
+            'services.bwa.request_signing_secret' => 'test-secret',
         ]);
 
-        app(WhatsAppCloudApi::class)->sendTemplate(
+        app(BwaMessagingApi::class)->sendTemplate(
             '+253 77 00 00 01',
             'rent_reminder',
             'en_US',
@@ -206,10 +207,13 @@ class Phase1ChannelsTest extends TestCase
                 'type' => 'body',
                 'parameters' => [['type' => 'text', 'text' => 'KIR-12345678']],
             ]],
+            'reminder-'.$this->invoice->id,
         );
 
         Http::assertSent(fn ($request) => $request['type'] === 'template'
-            && $request['to'] === '25377000001'
+            && $request['recipient'] === '+25377000001'
+            && $request['product'] === 'kirada'
+            && $request['template']['language'] === 'en_US'
             && $request['template']['name'] === 'rent_reminder');
     }
 

@@ -7,8 +7,10 @@ use App\Models\MaintenanceRequest;
 use App\Models\Property;
 use App\Models\User;
 use App\Services\MaintenanceQuoteService;
+use App\Services\SubscriptionService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\App;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -85,6 +87,113 @@ class MaintenanceQuoteTest extends TestCase
         }
 
         $this->assertSame('pending', $foreignQuote->fresh()->status);
+    }
+
+    public function test_authorized_stakeholders_can_download_maintenance_quote_and_invoice_pdfs(): void
+    {
+        [$landlord, $provider, $request] = $this->workOrder('Download');
+        $quote = app(MaintenanceQuoteService::class)->submitQuote($request, $provider, [
+            ['description' => 'Replacement pump', 'quantity' => 1, 'unit_price' => 125000],
+            ['description' => 'Installation labour', 'quantity' => 2, 'unit_price' => 15000],
+        ], 5, 'Payment after completed work.');
+
+        app(SubscriptionService::class)->startTrial($landlord);
+
+        $quoteResponse = $this->actingAs($provider)
+            ->get(route('maintenance-quotes.pdf', $quote));
+
+        $quoteResponse->assertOk();
+        $quoteResponse->assertHeader('Content-Type', 'application/pdf');
+        $quoteResponse->assertHeader(
+            'Content-Disposition',
+            'attachment; filename="maintenance-quote-'.$quote->reference.'.pdf"',
+        );
+        $this->assertStringStartsWith('%PDF-', $quoteResponse->getContent());
+
+        $quote = app(MaintenanceQuoteService::class)->approve($quote);
+        $quote = app(MaintenanceQuoteService::class)->markInvoiced($quote);
+
+        $invoiceResponse = $this->actingAs($landlord)
+            ->get(route('maintenance-quotes.pdf', $quote));
+
+        $invoiceResponse->assertOk();
+        $invoiceResponse->assertHeader(
+            'Content-Disposition',
+            'attachment; filename="maintenance-invoice-'.$quote->reference.'.pdf"',
+        );
+        $this->assertStringStartsWith('%PDF-', $invoiceResponse->getContent());
+    }
+
+    public function test_unrelated_maintenance_user_cannot_download_a_quote_pdf(): void
+    {
+        [, $provider, $request] = $this->workOrder('Private');
+        $quote = app(MaintenanceQuoteService::class)->submitQuote($request, $provider, [
+            ['description' => 'Private scope', 'quantity' => 1, 'unit_price' => 50],
+        ]);
+
+        $stranger = User::factory()->create(['email_verified_at' => now()]);
+        $stranger->assignRole('maintenance');
+
+        $this->actingAs($stranger)
+            ->get(route('maintenance-quotes.pdf', $quote))
+            ->assertForbidden();
+    }
+
+    public function test_maintenance_pdf_renders_french_status_and_handles_many_long_items(): void
+    {
+        [$landlord, $provider, $request] = $this->workOrder('Long');
+        $items = collect(range(1, 34))
+            ->map(fn (int $index) => [
+                'description' => "Intervention {$index} — ".str_repeat('description technique détaillée ', 6),
+                'quantity' => 1.5,
+                'unit_price' => 1000000 + $index,
+            ])
+            ->all();
+
+        $quote = app(MaintenanceQuoteService::class)->submitQuote(
+            $request,
+            $provider,
+            $items,
+            7.5,
+            null,
+        )->load([
+            'items',
+            'currency',
+            'maintenanceUser',
+            'maintenanceRequest.landlord',
+            'maintenanceRequest.tenant',
+            'maintenanceRequest.property.currency',
+            'maintenanceRequest.unit',
+        ]);
+
+        $previousLocale = App::currentLocale();
+        App::setLocale('fr');
+
+        try {
+            $html = view('maintenance.quote-pdf', [
+                'quote' => $quote,
+                'isInvoice' => false,
+                'pdfLogoPath' => public_path('brand/kirada-logo-transparent.png'),
+                'pdfSupportEmail' => null,
+                'pdfDocumentDate' => now()->format('d/m/Y'),
+            ])->render();
+        } finally {
+            App::setLocale($previousLocale);
+        }
+
+        $this->assertStringContainsString('Devis de maintenance', $html);
+        $this->assertStringContainsString($quote->reference, $html);
+        $this->assertStringContainsString($provider->name, $html);
+        $this->assertStringContainsString('En attente', $html);
+        $this->assertStringContainsString('Intervention 34', $html);
+
+        $response = $this->actingAs($provider)
+            ->get(route('maintenance-quotes.pdf', $quote));
+
+        $response->assertOk();
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+        $this->assertGreaterThan(5000, strlen($response->getContent()));
+        $this->assertSame($landlord->id, $request->landlord_id);
     }
 
     /**

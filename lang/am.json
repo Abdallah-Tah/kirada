@@ -744,5 +744,17 @@
     "per year": "በዓመት",
     "signed": "ተፈርሟል",
     "unread message(s)": "ያልተነበቡ መልእክት(ዎች)",
-    "unread message(s) waiting for you.": "ያልተነበቡ መልእክት(ዎች) እየቆዩዎት ነው።"
+    "unread message(s) waiting for you.": "ያልተነበቡ መልእክት(ዎች) እየቆዩዎት ነው።",
+    "Download quote PDF": "የዋጋ ጥቅስ PDF አውርድ",
+    "Download invoice PDF": "ደረሰኝ PDF አውርድ",
+    "Signature": "ፊርማ",
+    "Configure the BWA Messaging API before enabling WhatsApp.": "WhatsAppን ከማንቃትዎ በፊት BWA Messaging APIን ያዋቅሩ።",
+    "The invoice tenant must opt in to WhatsApp before testing.": "የደረሰኙ ተከራይ ከሙከራው በፊት ለWhatsApp ፈቃድ መስጠት አለበት።",
+    "BWA did not accept the test invoice. Check the application registration, template, recipient, and logs.": "BWA የሙከራ ደረሰኙን አልተቀበለም። የመተግበሪያ ምዝገባውን፣ አብነቱን፣ ተቀባዩን እና ምዝግቦቹን ያረጋግጡ።",
+    "The WhatsApp test invoice was accepted by BWA.": "የWhatsApp ሙከራ ደረሰኙ በBWA ተቀብሏል።",
+    "Secure WhatsApp delivery through BWA": "በBWA በኩል የተጠበቀ WhatsApp መላኪያ",
+    "Kirada signs each request to BWA and never stores or receives Meta credentials.": "Kirada ወደ BWA የሚላክ እያንዳንዱን ጥያቄ ይፈርማል እና የMeta ማረጋገጫዎችን አያከማችም ወይም አይቀበልም።",
+    "Submit the latest invoice as a BWA WhatsApp test request?": "የቅርብ ጊዜውን ደረሰኝ እንደ BWA WhatsApp የሙከራ ጥያቄ ይላክ?",
+    "WhatsApp is connected through BWA.": "WhatsApp በBWA በኩል ተገናኝቷል።",
+    "WhatsApp is unavailable until the BWA Messaging API is configured.": "BWA Messaging API እስኪዋቀር ድረስ WhatsApp አይገኝም።"
 }

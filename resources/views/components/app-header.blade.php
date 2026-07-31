@@ -33,6 +33,22 @@
 @endphp
 
 <flux:header class="kirada-app-header">
+    <a href="{{ route('dashboard') }}" wire:navigate class="kirada-header-brand">
+        <span class="kirada-sidebar-logo" aria-hidden="true">
+            <img
+                src="{{ asset('brand/kirada-icon.webp') }}?v=kirada-brand-20260730"
+                alt=""
+                decoding="async"
+            >
+        </span>
+        <span class="min-w-0">
+            <span class="block truncate text-[15px] font-bold leading-tight text-slate-950 dark:text-white">Kirada</span>
+            <span class="mt-0.5 block truncate text-[10px] font-medium text-slate-500 dark:text-slate-400">
+                {{ __('Smart Rent Management') }}
+            </span>
+        </span>
+    </a>
+
     <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
     <form

@@ -16,6 +16,7 @@
         <flux:select wire:model.live="filterStatus" :placeholder="__('All status')" class="w-44">
             <option value="">{{ __('All') }}</option>
             <option value="draft">{{ __('Draft') }}</option>
+            <option value="sent">{{ __('Sent') }}</option>
             <option value="unpaid">{{ __('Unpaid') }}</option>
             <option value="partially_paid">{{ __('Partially Paid') }}</option>
             <option value="paid">{{ __('Paid') }}</option>
@@ -26,14 +27,16 @@
         <flux:spacer />
 
         @hasanyrole('admin|landlord')
-        <flux:button wire:click="markOverdue" data-confirm="{{ __('Mark all overdue unpaid invoices as overdue?') }}" variant="ghost" icon="clock">
-            {{ __('Mark Overdue') }}
-        </flux:button>
-
-        <flux:button :href="route('rent-invoices.create')" wire:navigate variant="primary" icon="plus">
-            {{ __('New Invoice') }}
-        </flux:button>
+            <flux:button wire:click="markOverdue" data-confirm="{{ __('Mark all overdue unpaid invoices as overdue?') }}" variant="ghost" icon="clock">
+                {{ __('Mark Overdue') }}
+            </flux:button>
         @endhasanyrole
+
+        @can('create', \App\Models\RentInvoice::class)
+            <flux:button :href="route('rent-invoices.create')" wire:navigate variant="primary" icon="plus">
+                {{ __('New Invoice') }}
+            </flux:button>
+        @endcan
     </div>
 
     <div class="kirada-table-card mt-4">
@@ -72,6 +75,7 @@
                             @php
                                 $colors = [
                                     'draft' => 'zinc',
+                                    'sent' => 'sky',
                                     'unpaid' => 'orange',
                                     'partially_paid' => 'blue',
                                     'paid' => 'green',
@@ -94,7 +98,7 @@
                                 <flux:button :href="route('rent-invoices.pdf', $invoice)" variant="ghost" size="sm" icon="arrow-down-tray" :title="__('Download PDF')" />
                             </div>
                             @endhasrole
-                            @hasanyrole('admin|landlord')
+                            @can('update', $invoice)
                             <flux:dropdown align="end">
                                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />
                                 <flux:menu>
@@ -103,6 +107,9 @@
                                     </flux:menu.item>
                                     <flux:menu.item :href="route('rent-invoices.pdf', $invoice)" icon="arrow-down-tray">
                                         {{ __('Download PDF') }}
+                                    </flux:menu.item>
+                                    <flux:menu.item :href="route('rent-invoices.delivery', $invoice)" wire:navigate icon="paper-airplane">
+                                        {{ __('Delivery & history') }}
                                     </flux:menu.item>
                                     <flux:menu.separator />
                                     <flux:menu.item
@@ -115,7 +122,7 @@
                                     </flux:menu.item>
                                 </flux:menu>
                             </flux:dropdown>
-                            @endhasanyrole
+                            @endcan
                         </td>
                     </tr>
                 @empty

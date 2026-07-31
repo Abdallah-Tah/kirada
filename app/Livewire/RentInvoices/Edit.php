@@ -56,7 +56,7 @@ class Edit extends Component
             'invoice_month' => 'required|date',
             'due_date' => 'required|date',
             'amount' => 'required|numeric|min:0|max:99999999',
-            'status' => 'required|in:draft,unpaid,partially_paid,paid,overdue,cancelled',
+            'status' => 'required|in:draft,sent,unpaid,partially_paid,paid,overdue,cancelled',
             'notes' => 'nullable|string|max:2000',
         ];
     }
