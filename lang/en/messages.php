@@ -47,4 +47,22 @@ return [
     'Store lease agreements, payment proofs, and receipts securely.' => 'Store lease agreements, payment proofs, and receipts securely.',
     'Multi-Country Support' => 'Multi-Country Support',
     'Ready to get started?' => 'Ready to get started?',
+
+    // Lease renewal tracking
+    'Renewal watch' => 'Renewal watch',
+    'All lease dates' => 'All lease dates',
+    'Ending in 30 days' => 'Ending in 30 days',
+    'Ending in 90 days' => 'Ending in 90 days',
+    'Past end date' => 'Past end date',
+    'Renewal due soon' => 'Renewal due soon',
+    'Next 30 days' => 'Next 30 days',
+    'Renewal pipeline' => 'Renewal pipeline',
+    'Next 90 days' => 'Next 90 days',
+    'Action needed' => 'Action needed',
+    'Expired :count days ago' => 'Expired :count days ago',
+    'Due in :count days' => 'Due in :count days',
+    'Open ended' => 'Open ended',
+    'Renewals due in 30 days' => 'Renewals due in 30 days',
+    'Renewal pipeline (90 days)' => 'Renewal pipeline (90 days)',
+    'Expired active leases' => 'Expired active leases',
 ];

@@ -46,4 +46,22 @@ return [
     'Store lease agreements, payment proofs, and receipts securely.' => 'Stockez les contrats de bail, les preuves de paiement et les reçus en toute sécurité.',
     'Multi-Country Support' => 'Support Multi-Pays',
     'Ready to get started?' => 'Prêt à commencer ?',
+
+    // Suivi des renouvellements de bail
+    'Renewal watch' => 'Suivi des renouvellements',
+    'All lease dates' => 'Toutes les échéances',
+    'Ending in 30 days' => 'Se terminant dans 30 jours',
+    'Ending in 90 days' => 'Se terminant dans 90 jours',
+    'Past end date' => 'Date de fin dépassée',
+    'Renewal due soon' => 'Renouvellement à traiter',
+    'Next 30 days' => 'Dans les 30 prochains jours',
+    'Renewal pipeline' => 'Pipeline des renouvellements',
+    'Next 90 days' => 'Dans les 90 prochains jours',
+    'Action needed' => 'Action requise',
+    'Expired :count days ago' => 'Échu depuis :count jours',
+    'Due in :count days' => 'Échéance dans :count jours',
+    'Open ended' => 'Sans date de fin',
+    'Renewals due in 30 days' => 'Renouvellements dans 30 jours',
+    'Renewal pipeline (90 days)' => 'Renouvellements dans 90 jours',
+    'Expired active leases' => 'Baux actifs échus',
 ];

@@ -1733,5 +1733,21 @@
     "Kirada signs each request to BWA and never stores or receives Meta credentials.": "Kirada signe chaque requête envoyée à BWA et ne stocke ni ne reçoit jamais les identifiants Meta.",
     "Submit the latest invoice as a BWA WhatsApp test request?": "Envoyer la dernière facture comme requête de test WhatsApp à BWA ?",
     "WhatsApp is connected through BWA.": "WhatsApp est connecté via BWA.",
-    "WhatsApp is unavailable until the BWA Messaging API is configured.": "WhatsApp reste indisponible tant que l’API de messagerie BWA n’est pas configurée."
+    "WhatsApp is unavailable until the BWA Messaging API is configured.": "WhatsApp reste indisponible tant que l’API de messagerie BWA n’est pas configurée.",
+    "Action needed": "Action requise",
+    "All lease dates": "Toutes les échéances",
+    "Due in :count days": "Échéance dans :count jours",
+    "Ending in 30 days": "Se terminant dans 30 jours",
+    "Ending in 90 days": "Se terminant dans 90 jours",
+    "Expired :count days ago": "Échu depuis :count jours",
+    "Expired active leases": "Baux actifs échus",
+    "Next 30 days": "Dans les 30 prochains jours",
+    "Next 90 days": "Dans les 90 prochains jours",
+    "Open ended": "Sans date de fin",
+    "Past end date": "Date de fin dépassée",
+    "Renewal due soon": "Renouvellement à traiter",
+    "Renewal pipeline": "Pipeline des renouvellements",
+    "Renewal pipeline (90 days)": "Renouvellements dans 90 jours",
+    "Renewal watch": "Suivi des renouvellements",
+    "Renewals due in 30 days": "Renouvellements dans 30 jours"
 }

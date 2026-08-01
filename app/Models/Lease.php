@@ -117,6 +117,36 @@ class Lease extends Model
         return $query->where('landlord_id', $landlordId);
     }
 
+    /**
+     * Limit the query to active leases whose fixed term ends within the next
+     * number of days (including today). Open-ended leases are intentionally
+     * excluded because they do not need renewal follow-up.
+     */
+    public function scopeExpiringWithin(Builder $query, int $days = 30): Builder
+    {
+        $today = Carbon::today();
+
+        return $query
+            ->active()
+            ->whereNotNull('end_date')
+            ->whereBetween('end_date', [
+                $today->toDateString(),
+                $today->copy()->addDays(max(0, $days))->toDateString(),
+            ]);
+    }
+
+    /**
+     * Active leases whose fixed term has already ended but were not closed.
+     * This is a reporting signal; it never mutates the lease automatically.
+     */
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query
+            ->active()
+            ->whereNotNull('end_date')
+            ->whereDate('end_date', '<', Carbon::today());
+    }
+
     // ── Helpers ─────────────────────────────────────────
 
     public function getLeaseNumberAttribute(): string
@@ -142,6 +172,28 @@ class Lease extends Model
     public function isCancelled(): bool
     {
         return $this->status === 'cancelled';
+    }
+
+    public function getDaysUntilEndAttribute(): ?int
+    {
+        if (! $this->end_date) {
+            return null;
+        }
+
+        return Carbon::today()->diffInDays($this->end_date, false);
+    }
+
+    public function isExpiredTerm(): bool
+    {
+        return $this->isActive() && $this->days_until_end !== null && $this->days_until_end < 0;
+    }
+
+    public function isExpiringWithin(int $days = 30): bool
+    {
+        return $this->isActive()
+            && $this->days_until_end !== null
+            && $this->days_until_end >= 0
+            && $this->days_until_end <= max(0, $days);
     }
 
     public function getDurationInDaysAttribute(): int

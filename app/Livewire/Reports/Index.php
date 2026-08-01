@@ -35,6 +35,9 @@ class Index extends Component
             ->occupied()->count();
         $tenantCount = Tenant::forLandlord($landlordId)->count();
         $activeLeases = Lease::forLandlord($landlordId)->active()->count();
+        $leasesExpiring30 = Lease::forLandlord($landlordId)->expiringWithin(30)->count();
+        $leasesExpiring90 = Lease::forLandlord($landlordId)->expiringWithin(90)->count();
+        $leasesExpired = Lease::forLandlord($landlordId)->expired()->count();
 
         $invoices = RentInvoice::forLandlord($landlordId);
         $totalInvoiced = (clone $invoices)->sum('amount');
@@ -57,6 +60,9 @@ class Index extends Component
             'occupancy_rate' => $occupancyRate,
             'tenants' => $tenantCount,
             'active_leases' => $activeLeases,
+            'leases_expiring_30' => $leasesExpiring30,
+            'leases_expiring_90' => $leasesExpiring90,
+            'leases_expired' => $leasesExpired,
             'total_invoiced' => $totalInvoiced,
             'total_collected' => $totalCollected,
             'outstanding' => $outstanding,

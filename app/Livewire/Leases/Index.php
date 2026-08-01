@@ -6,6 +6,7 @@ use App\Models\Lease;
 use App\Services\LeaseService;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -17,12 +18,20 @@ class Index extends Component
 
     public string $filterStatus = '';
 
+    #[Url]
+    public string $filterExpiry = '';
+
     public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
     public function updatingFilterStatus(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterExpiry(): void
     {
         $this->resetPage();
     }
@@ -43,6 +52,9 @@ class Index extends Component
                 });
             })
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterExpiry === '30', fn ($q) => $q->expiringWithin(30))
+            ->when($this->filterExpiry === '90', fn ($q) => $q->expiringWithin(90))
+            ->when($this->filterExpiry === 'expired', fn ($q) => $q->expired())
             ->latest();
 
         if (auth()->user()->canAccessLandlordPortal()) {
@@ -50,6 +62,22 @@ class Index extends Component
         }
 
         return $query->paginate(10);
+    }
+
+    #[Computed]
+    public function renewalSummary(): array
+    {
+        $query = Lease::query();
+
+        if (auth()->user()->canAccessLandlordPortal()) {
+            $query->forLandlord(auth()->user()->landlordAccountId());
+        }
+
+        return [
+            'expiring_30' => (clone $query)->expiringWithin(30)->count(),
+            'expiring_90' => (clone $query)->expiringWithin(90)->count(),
+            'expired' => (clone $query)->expired()->count(),
+        ];
     }
 
     public function endLease(int $id): void

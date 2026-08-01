@@ -53,6 +53,13 @@ composer test
 `RefreshDatabase` trait at the real MySQL database instead of sqlite `:memory:`.
 `tests/TestCase.php` fails fast if that ever happens again.
 
+## Documentation
+
+- [User guide](docs/user-guide.md) — how landlords, teams, tenants, and maintenance professionals use Kirada
+- [Documentation index](docs/README.md)
+- [AppFolio parity roadmap](docs/appfolio-parity-roadmap.md)
+- [Deployment checklist](docs/deployment-checklist.md)
+
 ## Repository
 
 ```text

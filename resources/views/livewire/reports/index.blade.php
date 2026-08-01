@@ -93,6 +93,18 @@
                     <span class="font-semibold">{{ $this->summary['active_leases'] }}</span>
                 </div>
                 <div class="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
+                    <span class="text-sm text-zinc-500">{{ __('Renewals due in 30 days') }}</span>
+                    <a href="{{ route('leases.index', ['filterExpiry' => '30']) }}" wire:navigate class="font-semibold text-amber-600 hover:underline dark:text-amber-400">{{ $this->summary['leases_expiring_30'] }}</a>
+                </div>
+                <div class="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
+                    <span class="text-sm text-zinc-500">{{ __('Renewal pipeline (90 days)') }}</span>
+                    <a href="{{ route('leases.index', ['filterExpiry' => '90']) }}" wire:navigate class="font-semibold text-blue-600 hover:underline dark:text-blue-400">{{ $this->summary['leases_expiring_90'] }}</a>
+                </div>
+                <div class="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
+                    <span class="text-sm text-zinc-500">{{ __('Expired active leases') }}</span>
+                    <a href="{{ route('leases.index', ['filterExpiry' => 'expired']) }}" wire:navigate class="font-semibold text-red-600 hover:underline dark:text-red-400">{{ $this->summary['leases_expired'] }}</a>
+                </div>
+                <div class="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
                     <span class="text-sm text-zinc-500">{{ __('Total Tenants') }}</span>
                     <span class="font-semibold">{{ $this->summary['tenants'] }}</span>
                 </div>

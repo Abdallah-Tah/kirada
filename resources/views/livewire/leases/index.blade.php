@@ -20,11 +20,42 @@
             <option value="cancelled">{{ __('Cancelled') }}</option>
         </flux:select>
 
+        <flux:select wire:model.live="filterExpiry" :placeholder="__('Renewal watch')" class="w-48">
+            <option value="">{{ __('All lease dates') }}</option>
+            <option value="30">{{ __('Ending in 30 days') }}</option>
+            <option value="90">{{ __('Ending in 90 days') }}</option>
+            <option value="expired">{{ __('Past end date') }}</option>
+        </flux:select>
+
         <flux:spacer />
 
         <flux:button :href="route('leases.create')" wire:navigate variant="primary" icon="plus">
             {{ __('New Lease') }}
         </flux:button>
+    </div>
+
+    <div class="mt-5 grid gap-3 sm:grid-cols-3">
+        <a href="{{ route('leases.index', ['filterExpiry' => '30']) }}" wire:navigate class="kirada-card flex items-center justify-between border-amber-200/70 bg-amber-50/70 transition hover:border-amber-300 dark:border-amber-900/60 dark:bg-amber-950/20">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">{{ __('Renewal due soon') }}</p>
+                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('Next 30 days') }}</p>
+            </div>
+            <span class="text-2xl font-semibold text-amber-700 dark:text-amber-300">{{ $this->renewalSummary['expiring_30'] }}</span>
+        </a>
+        <a href="{{ route('leases.index', ['filterExpiry' => '90']) }}" wire:navigate class="kirada-card flex items-center justify-between border-blue-200/70 bg-blue-50/70 transition hover:border-blue-300 dark:border-blue-900/60 dark:bg-blue-950/20">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{{ __('Renewal pipeline') }}</p>
+                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('Next 90 days') }}</p>
+            </div>
+            <span class="text-2xl font-semibold text-blue-700 dark:text-blue-300">{{ $this->renewalSummary['expiring_90'] }}</span>
+        </a>
+        <a href="{{ route('leases.index', ['filterExpiry' => 'expired']) }}" wire:navigate class="kirada-card flex items-center justify-between border-red-200/70 bg-red-50/70 transition hover:border-red-300 dark:border-red-900/60 dark:bg-red-950/20">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-red-700 dark:text-red-300">{{ __('Action needed') }}</p>
+                <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('Past end date') }}</p>
+            </div>
+            <span class="text-2xl font-semibold text-red-700 dark:text-red-300">{{ $this->renewalSummary['expired'] }}</span>
+        </a>
     </div>
 
     <div class="kirada-table-card mt-4">
@@ -52,7 +83,19 @@
                         <td data-label="{{ __('Property') }}" class="px-4 py-3 text-zinc-500">{{ $lease->property?->name }}</td>
                         <td data-label="{{ __('Unit') }}" class="px-4 py-3 text-zinc-500">{{ $lease->unit?->unit_number }}</td>
                         <td data-label="{{ __('Start') }}" class="px-4 py-3 text-zinc-500">{{ $lease->start_date?->format('M j, Y') }}</td>
-                        <td data-label="{{ __('End') }}" class="px-4 py-3 text-zinc-500">{{ $lease->end_date?->format('M j, Y') ?? '—' }}</td>
+                        <td data-label="{{ __('End') }}" class="px-4 py-3 text-zinc-500">
+                            @if ($lease->end_date)
+                                <div>{{ $lease->end_date->format('M j, Y') }}</div>
+                                @if ($lease->isExpiredTerm())
+                                    <span class="text-xs font-medium text-red-600 dark:text-red-400">{{ __('Expired :count days ago', ['count' => abs($lease->days_until_end)]) }}</span>
+                                @elseif ($lease->isExpiringWithin(90))
+                                    <span class="text-xs font-medium text-amber-600 dark:text-amber-400">{{ __('Due in :count days', ['count' => $lease->days_until_end]) }}</span>
+                                @endif
+                            @else
+                                <span>—</span>
+                                <span class="block text-xs text-zinc-400">{{ __('Open ended') }}</span>
+                            @endif
+                        </td>
                         <td data-label="{{ __('Rent') }}" class="px-4 py-3 text-zinc-500">{{ $lease->formatted_rent }}</td>
                         <td data-label="{{ __('Status') }}" class="px-4 py-3">
                             @if ($lease->status === 'active')

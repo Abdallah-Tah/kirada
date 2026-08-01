@@ -15,7 +15,23 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->get(route('login'));
 
-        $response->assertOk();
+        $response
+            ->assertOk()
+            ->assertSee('name="csrf-token"', false);
+    }
+
+    public function test_passkey_login_validation_returns_json_instead_of_an_html_redirect(): void
+    {
+        $response = $this
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'X-Requested-With' => 'XMLHttpRequest',
+            ])
+            ->postJson(route('passkey.login'), []);
+
+        $response
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.credential.0', 'The credential field is required.');
     }
 
     public function test_users_can_authenticate_using_the_login_screen(): void
