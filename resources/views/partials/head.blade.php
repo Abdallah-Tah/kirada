@@ -2,8 +2,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-{{-- Apply the stored appearance before first paint. Flux then promotes this
-     bootstrap object to its reactive Alpine store when its scripts load. --}}
+{{-- Apply Kirada's appearance preference before first paint. New browsers start
+     in Light mode; users can still choose Dark or System in Appearance. --}}
+<script>
+(() => {
+    const preference = window.localStorage.getItem('kirada.appearance-preference');
+    const fluxPreference = window.localStorage.getItem('flux.appearance');
+
+    if (preference === 'system') {
+        window.localStorage.removeItem('flux.appearance');
+    } else if (preference === 'dark' || preference === 'light') {
+        window.localStorage.setItem('flux.appearance', preference);
+    } else if (fluxPreference === null) {
+        window.localStorage.setItem('flux.appearance', 'light');
+    }
+})();
+</script>
+
+{{-- Flux applies the stored appearance and promotes it to its reactive Alpine
+     store when its scripts load. --}}
 @fluxAppearance
 
 <title>
@@ -47,6 +64,6 @@ window.KIRADA_GOOGLE_MAPS_API_KEY = @js(env('VITE_GOOGLE_MAPS_API_KEY'));
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 <style>
     :root.dark { color-scheme: dark; }
-    :root { color-scheme: light; }
+    :root:not(.dark) { color-scheme: light; }
     [x-cloak] { display: none !important; }
 </style>

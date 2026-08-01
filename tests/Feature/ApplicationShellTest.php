@@ -32,4 +32,17 @@ class ApplicationShellTest extends TestCase
             $css,
         );
     }
+
+    public function test_light_is_the_default_appearance_without_overriding_explicit_choices(): void
+    {
+        $head = file_get_contents(resource_path('views/partials/head.blade.php'));
+
+        $this->assertIsString($head);
+        $this->assertStringContainsString('@fluxAppearance', $head);
+        $this->assertStringContainsString("window.localStorage.setItem('flux.appearance', 'light');", $head);
+        $this->assertStringContainsString('kirada.appearance-preference', $head);
+        $this->assertStringContainsString(':root:not(.dark) { color-scheme: light; }', $head);
+        $this->assertStringContainsString(':root.dark { color-scheme: dark; }', $head);
+        $this->assertStringNotContainsString(':root { color-scheme: light; }', $head);
+    }
 }
