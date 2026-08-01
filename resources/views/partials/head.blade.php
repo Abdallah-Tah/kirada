@@ -2,20 +2,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-{{-- Apply Kirada's appearance preference before first paint. New browsers start
-     in Light mode; users can still choose Dark or System in Appearance. --}}
+@php
+    $appearanceStorageKey = auth()->check()
+        ? 'kirada.appearance-preference.user.'.auth()->id()
+        : 'kirada.appearance-preference.guest';
+@endphp
+
+{{-- Apply each user's appearance preference before first paint. New users start
+     in Light mode without inheriting another user's browser preference. --}}
 <script>
 (() => {
-    const preference = window.localStorage.getItem('kirada.appearance-preference');
-    const fluxPreference = window.localStorage.getItem('flux.appearance');
+    const preferenceKey = @js($appearanceStorageKey);
+    const preference = window.localStorage.getItem(preferenceKey);
 
     if (preference === 'system') {
         window.localStorage.removeItem('flux.appearance');
     } else if (preference === 'dark' || preference === 'light') {
         window.localStorage.setItem('flux.appearance', preference);
-    } else if (fluxPreference === null) {
+    } else {
         window.localStorage.setItem('flux.appearance', 'light');
     }
+
+    window.KIRADA_APPEARANCE_KEY = preferenceKey;
 })();
 </script>
 

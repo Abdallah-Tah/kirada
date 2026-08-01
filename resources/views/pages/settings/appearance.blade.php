@@ -15,7 +15,7 @@ new #[Title('Appearance settings')] class extends Component {
     <x-pages::settings.layout :heading="__('Appearance')" :subheading="__('Update the appearance settings for your account')">
         <flux:radio.group
             x-data
-            x-init="localStorage.setItem('kirada.appearance-preference', $flux.appearance); $watch('$flux.appearance', value => localStorage.setItem('kirada.appearance-preference', value))"
+            x-init="localStorage.setItem(window.KIRADA_APPEARANCE_KEY, $flux.appearance); $watch('$flux.appearance', value => localStorage.setItem(window.KIRADA_APPEARANCE_KEY, value))"
             variant="segmented"
             x-model="$flux.appearance"
         >

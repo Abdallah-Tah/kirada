@@ -124,7 +124,7 @@
         <button
             type="button"
             x-data
-            @click="let next = $flux.dark ? 'light' : 'dark'; $flux.appearance = next; localStorage.setItem('kirada.appearance-preference', next)"
+            @click="let next = $flux.dark ? 'light' : 'dark'; $flux.appearance = next; localStorage.setItem(window.KIRADA_APPEARANCE_KEY, next)"
             class="kirada-header-btn"
             :aria-label="$flux.dark ? '{{ __('Switch to light mode') }}' : '{{ __('Switch to dark mode') }}'"
             :title="$flux.dark ? '{{ __('Switch to light mode') }}' : '{{ __('Switch to dark mode') }}'"

@@ -40,7 +40,8 @@ class ApplicationShellTest extends TestCase
         $this->assertIsString($head);
         $this->assertStringContainsString('@fluxAppearance', $head);
         $this->assertStringContainsString("window.localStorage.setItem('flux.appearance', 'light');", $head);
-        $this->assertStringContainsString('kirada.appearance-preference', $head);
+        $this->assertStringContainsString('kirada.appearance-preference.user.', $head);
+        $this->assertStringContainsString('window.KIRADA_APPEARANCE_KEY', $head);
         $this->assertStringContainsString(':root:not(.dark) { color-scheme: light; }', $head);
         $this->assertStringContainsString(':root.dark { color-scheme: dark; }', $head);
         $this->assertStringNotContainsString(':root { color-scheme: light; }', $head);
