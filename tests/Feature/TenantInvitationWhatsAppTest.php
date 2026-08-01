@@ -68,7 +68,8 @@ class TenantInvitationWhatsAppTest extends TestCase
         Queue::assertPushed(
             SendTenantInvitationWhatsApp::class,
             fn (SendTenantInvitationWhatsApp $job): bool => $job->invitationId === $invitation->id
-                && $job->token === $invitation->token,
+                && $job->token === $invitation->token
+                && $job->requestId === $invitation->whatsapp_request_id,
         );
         Mail::assertNothingSent();
     }
@@ -90,7 +91,11 @@ class TenantInvitationWhatsAppTest extends TestCase
             [TenantInvitationService::CHANNEL_WHATSAPP],
         );
 
-        (new SendTenantInvitationWhatsApp($invitation->id, $invitation->token))
+        (new SendTenantInvitationWhatsApp(
+            $invitation->id,
+            $invitation->token,
+            $invitation->whatsapp_request_id,
+        ))
             ->handle(app(BwaMessagingApi::class));
 
         $invitation->refresh();
@@ -282,6 +287,59 @@ class TenantInvitationWhatsAppTest extends TestCase
             $invitation->fresh()->delivery_channels,
         );
         Queue::assertPushed(SendTenantInvitationWhatsApp::class);
+    }
+
+    public function test_each_explicit_whatsapp_resend_creates_a_new_delivery_attempt(): void
+    {
+        $this->configureBwa();
+        Queue::fake();
+
+        $invitation = app(TenantInvitationService::class)->createInvitation(
+            $this->landlord->id,
+            $this->tenant->id,
+            null,
+            $this->tenant->phone,
+            [TenantInvitationService::CHANNEL_WHATSAPP],
+        );
+        $firstRequestId = $invitation->fresh()->whatsapp_request_id;
+
+        app(TenantInvitationService::class)->resendWhatsApp($invitation->fresh());
+        $secondRequestId = $invitation->fresh()->whatsapp_request_id;
+
+        $this->assertNotSame($firstRequestId, $secondRequestId);
+        Queue::assertPushed(
+            SendTenantInvitationWhatsApp::class,
+            fn (SendTenantInvitationWhatsApp $job): bool => $job->requestId === $firstRequestId,
+        );
+        Queue::assertPushed(
+            SendTenantInvitationWhatsApp::class,
+            fn (SendTenantInvitationWhatsApp $job): bool => $job->requestId === $secondRequestId,
+        );
+    }
+
+    public function test_a_stale_whatsapp_attempt_cannot_send_after_an_explicit_resend(): void
+    {
+        $this->configureBwa();
+        Queue::fake();
+        Http::fake();
+
+        $invitation = app(TenantInvitationService::class)->createInvitation(
+            $this->landlord->id,
+            $this->tenant->id,
+            null,
+            $this->tenant->phone,
+            [TenantInvitationService::CHANNEL_WHATSAPP],
+        )->fresh();
+        $staleJob = new SendTenantInvitationWhatsApp(
+            $invitation->id,
+            $invitation->token,
+            $invitation->whatsapp_request_id,
+        );
+
+        app(TenantInvitationService::class)->resendWhatsApp($invitation);
+        $staleJob->handle(app(BwaMessagingApi::class));
+
+        Http::assertNothingSent();
     }
 
     private function configureBwa(): void

@@ -21,6 +21,7 @@ class SendTenantInvitationWhatsApp implements ShouldQueue
     public function __construct(
         public int $invitationId,
         public string $token,
+        public string $requestId,
     ) {
         $this->afterCommit();
     }
@@ -33,7 +34,9 @@ class SendTenantInvitationWhatsApp implements ShouldQueue
 
         // A resend replaces the token. An older queued job must never send a
         // stale invitation link after the newer invitation has been created.
-        if ($invitation->token !== $this->token || ! $invitation->isPending()) {
+        if ($invitation->token !== $this->token
+            || $invitation->whatsapp_request_id !== $this->requestId
+            || ! $invitation->isPending()) {
             return;
         }
 
@@ -83,6 +86,7 @@ class SendTenantInvitationWhatsApp implements ShouldQueue
         TenantInvitation::query()
             ->whereKey($this->invitationId)
             ->where('token', $this->token)
+            ->where('whatsapp_request_id', $this->requestId)
             ->update([
                 'whatsapp_status' => 'failed',
                 'whatsapp_failed_at' => now(),
@@ -103,6 +107,7 @@ class SendTenantInvitationWhatsApp implements ShouldQueue
             'tenant-invitation',
             $invitation->id,
             $invitation->token,
+            $this->requestId,
             'whatsapp',
         ]));
     }

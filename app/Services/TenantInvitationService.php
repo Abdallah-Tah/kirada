@@ -94,7 +94,12 @@ class TenantInvitationService
             'token' => $this->generateToken(),
             'expires_at' => now()->addDays(self::DEFAULT_EXPIRY_DAYS),
             'whatsapp_message_id' => null,
+            'whatsapp_request_id' => null,
+            'whatsapp_status' => null,
             'whatsapp_sent_at' => null,
+            'whatsapp_delivered_at' => null,
+            'whatsapp_read_at' => null,
+            'whatsapp_failed_at' => null,
             'whatsapp_error' => null,
         ]);
 
@@ -136,7 +141,12 @@ class TenantInvitationService
                 self::CHANNEL_WHATSAPP,
             ])),
             'whatsapp_message_id' => null,
+            'whatsapp_request_id' => null,
+            'whatsapp_status' => null,
             'whatsapp_sent_at' => null,
+            'whatsapp_delivered_at' => null,
+            'whatsapp_read_at' => null,
+            'whatsapp_failed_at' => null,
             'whatsapp_error' => null,
         ]);
 
@@ -197,7 +207,18 @@ class TenantInvitationService
 
     protected function queueWhatsApp(TenantInvitation $invitation): void
     {
-        SendTenantInvitationWhatsApp::dispatch($invitation->id, $invitation->token);
+        if (blank($invitation->whatsapp_request_id)) {
+            $invitation->update([
+                'whatsapp_request_id' => (string) Str::uuid(),
+                'whatsapp_status' => 'queued',
+            ]);
+        }
+
+        SendTenantInvitationWhatsApp::dispatch(
+            $invitation->id,
+            $invitation->token,
+            $invitation->whatsapp_request_id,
+        );
     }
 
     /**
