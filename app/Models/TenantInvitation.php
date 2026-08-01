@@ -17,16 +17,29 @@ class TenantInvitation extends Model
         'tenant_id',
         'email',
         'phone',
+        'delivery_channels',
         'token',
         'status',
         'expires_at',
         'accepted_at',
         'accepted_user_id',
+        'whatsapp_message_id',
+        'whatsapp_status',
+        'whatsapp_sent_at',
+        'whatsapp_delivered_at',
+        'whatsapp_read_at',
+        'whatsapp_failed_at',
+        'whatsapp_error',
     ];
 
     protected $casts = [
         'expires_at' => 'datetime',
         'accepted_at' => 'datetime',
+        'delivery_channels' => 'array',
+        'whatsapp_sent_at' => 'datetime',
+        'whatsapp_delivered_at' => 'datetime',
+        'whatsapp_read_at' => 'datetime',
+        'whatsapp_failed_at' => 'datetime',
     ];
 
     // ── Relationships ──────────────────────────────────

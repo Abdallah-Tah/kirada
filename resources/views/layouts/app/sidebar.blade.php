@@ -231,6 +231,12 @@
             </flux:toast.group>
         @endpersist
 
+        @auth
+            @if(auth()->user()->needsOnboarding())
+                <x-onboarding-guide :user="auth()->user()" />
+            @endif
+        @endauth
+
         @fluxScripts
     </body>
 </html>

@@ -37,8 +37,9 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $phone_country_code
  * @property Carbon|null $terms_accepted_at
  * @property Carbon|null $privacy_accepted_at
+ * @property Carbon|null $onboarding_completed_at
  */
-#[Fillable(['name', 'email', 'password', 'country_id', 'preferred_language', 'phone_country_code', 'address', 'city', 'postal_code', 'terms_accepted_at', 'privacy_accepted_at', 'stripe_customer_id', 'stripe_id', 'pm_type', 'pm_last_four', 'trial_ends_at'])]
+#[Fillable(['name', 'email', 'password', 'country_id', 'preferred_language', 'phone_country_code', 'address', 'city', 'postal_code', 'terms_accepted_at', 'privacy_accepted_at', 'onboarding_completed_at', 'stripe_customer_id', 'stripe_id', 'pm_type', 'pm_last_four', 'trial_ends_at'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -57,8 +58,19 @@ class User extends Authenticatable implements PasskeyUser
             'password' => 'hashed',
             'terms_accepted_at' => 'datetime',
             'privacy_accepted_at' => 'datetime',
+            'onboarding_completed_at' => 'datetime',
             'trial_ends_at' => 'datetime',
         ];
+    }
+
+    public function needsOnboarding(): bool
+    {
+        return $this->onboarding_completed_at === null;
+    }
+
+    public function completeOnboarding(): bool
+    {
+        return $this->forceFill(['onboarding_completed_at' => now()])->save();
     }
 
     /**

@@ -74,9 +74,15 @@ tenant, agree the new terms, and update the lease before creating the next invoi
 
 ## 3. Tenant onboarding and daily use
 
-1. Open the invitation link sent by the landlord.
-2. Create or link your account using the invited email address.
+1. Open the private invitation link sent by the landlord by email, WhatsApp, or
+   both. A WhatsApp invitation uses the phone number saved on the tenant record
+   and the approved BWA invitation template.
+2. Create or link your account using the invited email address. If the invitation
+   was sent only by WhatsApp, use the email address shown on the invitation or
+   contact the landlord to confirm it before accepting.
 3. Set a strong password and complete your profile.
+   The invitation itself is not ongoing WhatsApp consent; choose the WhatsApp
+   notification preference during onboarding or later in **Settings**.
 4. Open the tenant dashboard to review your lease, invoices, payment history, and
    documents.
 5. Pay rent directly using the landlord's instructions, then submit payment proof.
@@ -174,8 +180,10 @@ WhatsApp, email, or in-app messages.
 
 **The tenant did not receive an invitation**
 
-Check the email address, resend the invitation, and confirm the queue/mail
-worker is running. The tenant can use the invitation link directly.
+Check the selected delivery channel, contact details, approved WhatsApp template,
+and BWA/queue worker status. Resend the invitation or use **Send via WhatsApp**
+from the invitation actions. The tenant can use the private invitation link
+directly when a delivery is delayed.
 
 **A payment is still pending**
 

@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\BwaEvent;
 use App\Models\NotificationDelivery;
+use App\Models\TenantInvitation;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -83,14 +84,27 @@ class ProcessBwaEvent implements ShouldQueue
             return;
         }
 
+        $timestamp = $this->statusTimestamp($payload) ?? now();
         $delivery = NotificationDelivery::where('provider_message_id', $messageId)->first();
 
-        if (! $delivery) {
-            return;
+        if ($delivery && $this->canAdvance($delivery->status, $status)) {
+            $this->updateNotificationDelivery($delivery, $status, $payload, $timestamp);
         }
 
-        $timestamp = $this->statusTimestamp($payload) ?? now();
+        $invitation = TenantInvitation::where('whatsapp_message_id', $messageId)->first();
 
+        if ($invitation && $this->canAdvance($invitation->whatsapp_status, $status)) {
+            $this->updateTenantInvitation($invitation, $status, $payload, $timestamp);
+        }
+    }
+
+    /** @param array<string, mixed> $payload */
+    private function updateNotificationDelivery(
+        NotificationDelivery $delivery,
+        string $status,
+        array $payload,
+        CarbonImmutable $timestamp,
+    ): void {
         match ($status) {
             'accepted', 'queued', 'sent' => $delivery->update([
                 'status' => NotificationDelivery::STATUS_SENT,
@@ -115,6 +129,58 @@ class ProcessBwaEvent implements ShouldQueue
                 'failed_at' => $timestamp,
             ]),
             default => null,
+        };
+    }
+
+    /** @param array<string, mixed> $payload */
+    private function updateTenantInvitation(
+        TenantInvitation $invitation,
+        string $status,
+        array $payload,
+        CarbonImmutable $timestamp,
+    ): void {
+        $attributes = [
+            'whatsapp_status' => $status,
+            'whatsapp_error' => null,
+        ];
+
+        match ($status) {
+            'sent' => $attributes['whatsapp_sent_at'] = $timestamp,
+            'delivered' => $attributes['whatsapp_delivered_at'] = $timestamp,
+            'read' => $attributes['whatsapp_read_at'] = $timestamp,
+            'failed' => $attributes = array_merge($attributes, [
+                'whatsapp_failed_at' => $timestamp,
+                'whatsapp_error' => mb_substr(
+                    (string) (data_get($payload, 'data.error.message') ?? 'The messaging provider rejected the invitation.'),
+                    0,
+                    1000,
+                ),
+            ]),
+            default => null,
+        };
+
+        $invitation->update($attributes);
+    }
+
+    private function canAdvance(?string $currentStatus, string $nextStatus): bool
+    {
+        if ($nextStatus === 'failed') {
+            return true;
+        }
+
+        return $this->statusRank($nextStatus) >= $this->statusRank($currentStatus);
+    }
+
+    private function statusRank(?string $status): int
+    {
+        return match ($status) {
+            'queued' => 0,
+            'accepted' => 1,
+            'sent' => 2,
+            'delivered' => 3,
+            'read' => 4,
+            'failed' => 5,
+            default => -1,
         };
     }
 

@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Jobs\SendTenantInvitationWhatsApp;
 use App\Mail\TenantInvitationMail;
 use App\Models\Tenant;
 use App\Models\TenantInvitation;
 use App\Models\User;
+use App\Services\Bwa\BwaMessagingApi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -14,6 +16,13 @@ use Illuminate\Support\Str;
 class TenantInvitationService
 {
     public const DEFAULT_EXPIRY_DAYS = 7;
+
+    public const CHANNEL_EMAIL = 'email';
+
+    public const CHANNEL_WHATSAPP = 'whatsapp';
+
+    /** @var array<int, string> */
+    public const CHANNELS = [self::CHANNEL_EMAIL, self::CHANNEL_WHATSAPP];
 
     /**
      * Generate a secure random token.
@@ -25,9 +34,16 @@ class TenantInvitationService
 
     /**
      * Create a new invitation for a tenant.
+     *
+     * @param  array<int, string>|null  $deliveryChannels
      */
-    public function createInvitation(int $landlordId, int $tenantId, ?string $email, ?string $phone): TenantInvitation
-    {
+    public function createInvitation(
+        int $landlordId,
+        int $tenantId,
+        ?string $email,
+        ?string $phone,
+        ?array $deliveryChannels = null,
+    ): TenantInvitation {
         $tenant = Tenant::findOrFail($tenantId);
 
         abort_if($tenant->landlord_id !== $landlordId, 403);
@@ -38,6 +54,7 @@ class TenantInvitationService
 
         $email = $email ? Str::lower(trim($email)) : null;
         $phone = $phone ? trim($phone) : null;
+        $deliveryChannels = $this->normalizeChannels($deliveryChannels, $email, $phone);
 
         // Check for existing pending invitation
         $existing = TenantInvitation::where('tenant_id', $tenantId)
@@ -53,12 +70,13 @@ class TenantInvitationService
             'tenant_id' => $tenantId,
             'email' => $email,
             'phone' => $phone,
+            'delivery_channels' => $deliveryChannels,
             'token' => $this->generateToken(),
             'status' => 'pending',
             'expires_at' => now()->addDays(self::DEFAULT_EXPIRY_DAYS),
         ]);
 
-        $this->sendInvitationEmail($invitation);
+        $this->dispatchDelivery($invitation);
 
         return $invitation;
     }
@@ -75,9 +93,55 @@ class TenantInvitationService
         $invitation->update([
             'token' => $this->generateToken(),
             'expires_at' => now()->addDays(self::DEFAULT_EXPIRY_DAYS),
+            'whatsapp_message_id' => null,
+            'whatsapp_sent_at' => null,
+            'whatsapp_error' => null,
         ]);
 
-        $this->sendInvitationEmail($invitation->fresh());
+        $invitation = $invitation->fresh();
+        $invitation->update([
+            'delivery_channels' => $this->normalizeChannels(
+                $invitation->delivery_channels,
+                $invitation->email,
+                $invitation->phone,
+            ),
+        ]);
+
+        $this->dispatchDelivery($invitation->fresh());
+
+        return $invitation->fresh();
+    }
+
+    /**
+     * Queue a WhatsApp delivery for an existing pending invitation. This gives
+     * landlords a way to add WhatsApp when an older invitation was email-only.
+     */
+    public function resendWhatsApp(TenantInvitation $invitation): TenantInvitation
+    {
+        if (! $invitation->isPending()) {
+            throw new \DomainException('Only pending invitations can be sent by WhatsApp.');
+        }
+
+        if (blank($invitation->phone)) {
+            throw new \DomainException('A phone number is required for WhatsApp invitation delivery.');
+        }
+
+        if (! app(BwaMessagingApi::class)->isConfigured()) {
+            throw new \DomainException('Configure the BWA Messaging API before sending a WhatsApp invitation.');
+        }
+
+        $invitation->update([
+            'delivery_channels' => array_values(array_unique([
+                ...($invitation->delivery_channels ?? []),
+                self::CHANNEL_WHATSAPP,
+            ])),
+            'whatsapp_message_id' => null,
+            'whatsapp_sent_at' => null,
+            'whatsapp_error' => null,
+        ]);
+
+        $invitation = $invitation->fresh();
+        $this->queueWhatsApp($invitation);
 
         return $invitation->fresh();
     }
@@ -97,7 +161,21 @@ class TenantInvitationService
     }
 
     /**
-     * Send the invitation email to the tenant (if email is set).
+     * Deliver an invitation through each channel selected by the landlord.
+     */
+    protected function dispatchDelivery(TenantInvitation $invitation): void
+    {
+        if (in_array(self::CHANNEL_EMAIL, $invitation->delivery_channels ?? [], true)) {
+            $this->sendInvitationEmail($invitation);
+        }
+
+        if (in_array(self::CHANNEL_WHATSAPP, $invitation->delivery_channels ?? [], true)) {
+            $this->queueWhatsApp($invitation);
+        }
+    }
+
+    /**
+     * Send the invitation email to the tenant (if selected and configured).
      */
     protected function sendInvitationEmail(TenantInvitation $invitation): void
     {
@@ -115,6 +193,44 @@ class TenantInvitationService
             $tenantName,
             $landlordName,
         ));
+    }
+
+    protected function queueWhatsApp(TenantInvitation $invitation): void
+    {
+        SendTenantInvitationWhatsApp::dispatch($invitation->id, $invitation->token);
+    }
+
+    /**
+     * @param  array<int, string>|null  $channels
+     * @return array<int, string>
+     */
+    protected function normalizeChannels(?array $channels, ?string $email, ?string $phone): array
+    {
+        $channels = $channels === null
+            ? ($email ? [self::CHANNEL_EMAIL] : [self::CHANNEL_WHATSAPP])
+            : array_values(array_unique(array_filter($channels, 'is_string')));
+
+        $channels = array_values(array_intersect(self::CHANNELS, $channels));
+
+        if ($channels === []) {
+            throw new \DomainException('Select at least one invitation delivery channel.');
+        }
+
+        if (in_array(self::CHANNEL_EMAIL, $channels, true) && blank($email)) {
+            throw new \DomainException('An email address is required for email invitation delivery.');
+        }
+
+        if (in_array(self::CHANNEL_WHATSAPP, $channels, true)) {
+            if (blank($phone)) {
+                throw new \DomainException('A phone number is required for WhatsApp invitation delivery.');
+            }
+
+            if (! app(BwaMessagingApi::class)->isConfigured()) {
+                throw new \DomainException('Configure the BWA Messaging API before sending a WhatsApp invitation.');
+            }
+        }
+
+        return $channels;
     }
 
     /**

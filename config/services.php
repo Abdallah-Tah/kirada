@@ -44,6 +44,7 @@ return [
         'signature_max_age_seconds' => (int) env('BWA_SIGNATURE_MAX_AGE_SECONDS', 300),
         'invoice_template' => env('BWA_WHATSAPP_INVOICE_TEMPLATE', 'kirada_rent_invoice'),
         'reminder_template' => env('BWA_WHATSAPP_REMINDER_TEMPLATE', 'kirada_rent_reminder'),
+        'invitation_template' => env('BWA_WHATSAPP_INVITATION_TEMPLATE', 'kirada_tenant_invitation'),
         'template_language' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE', 'fr'),
     ],
 

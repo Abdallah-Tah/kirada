@@ -6,6 +6,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MaintenanceAttachmentController;
 use App\Http\Controllers\MaintenancePdfController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SubscriptionCheckoutController;
@@ -74,6 +75,10 @@ Route::view('/offline', 'offline')->name('offline');
 Route::middleware(['kirada-auth'])
     ->get('/dashboard', DashboardController::class)
     ->name('dashboard');
+
+Route::middleware(['kirada-auth', 'throttle:kirada-authenticated-actions'])
+    ->post('/onboarding/complete', [OnboardingController::class, 'complete'])
+    ->name('onboarding.complete');
 
 // Role-specific dashboards
 Route::middleware(['kirada-auth'])->group(function () {

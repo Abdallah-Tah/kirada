@@ -118,6 +118,8 @@ class DashboardMetricsService
                 'active_lease' => null,
                 'dashboard_currency' => null,
                 'current_invoice' => null,
+                'next_due_date' => null,
+                'overdue_amount' => 0.0,
                 'payment_history_count' => 0,
                 'open_maintenance' => 0,
                 'unread_messages' => 0,

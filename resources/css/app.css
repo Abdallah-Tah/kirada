@@ -785,20 +785,26 @@ select:focus[data-flux-control] {
         background: rgb(39 39 42);
     }
 
-    /* ── Global: all buttons get cursor pointer ── */
-    button,
-    [type="button"],
-    [type="submit"],
-    .flux-button,
-    [data-flux-button] {
+    /* ── Global: interactive buttons get a clear pointer affordance ── */
+    button:not(:disabled),
+    [type="button"]:not(:disabled),
+    [type="submit"]:not(:disabled),
+    [type="reset"]:not(:disabled),
+    [role="button"]:not([aria-disabled="true"]),
+    .flux-button:not(:disabled),
+    [data-flux-button]:not([disabled]),
+    ui-button:not([disabled]) {
         cursor: pointer !important;
     }
     button:disabled,
     [type="button"]:disabled,
     [type="submit"]:disabled,
+    [type="reset"]:disabled,
+    [role="button"][aria-disabled="true"],
     .flux-button:disabled,
-    [data-flux-button]:disabled {
-        cursor: default !important;
+    [data-flux-button]:disabled,
+    ui-button[disabled] {
+        cursor: not-allowed !important;
     }
 
     .kirada-shell {
@@ -2367,6 +2373,155 @@ select:focus[data-flux-control] {
 
         .kirada-global-search-form button {
             width: 100%;
+        }
+    }
+}
+
+/* --------------------------------------------------------------------------
+   First-login onboarding guide
+   Keep the guide on semantic Kirada tokens so it follows the Flux appearance
+   store immediately, including before utility CSS or Alpine finishes loading.
+---------------------------------------------------------------------------- */
+@layer components {
+    .kirada-onboarding-root {
+        color: var(--kirada-text);
+    }
+
+    .kirada-onboarding-backdrop {
+        background-color: rgba(2, 11, 29, 0.72);
+    }
+
+    .kirada-onboarding-panel {
+        background: var(--kirada-surface);
+        border-color: var(--kirada-border-strong);
+        color: var(--kirada-text);
+        box-shadow: var(--kirada-shadow-raised);
+    }
+
+    .kirada-onboarding-icon {
+        background: var(--color-kirada-teal-soft);
+        color: var(--color-kirada-teal);
+    }
+
+    .kirada-onboarding-role,
+    .kirada-onboarding-path-label {
+        color: var(--color-kirada-teal);
+    }
+
+    .kirada-onboarding-title,
+    .kirada-onboarding-step-title,
+    .kirada-onboarding-path-value {
+        color: var(--kirada-text);
+    }
+
+    .kirada-onboarding-intro,
+    .kirada-onboarding-step-description {
+        color: var(--kirada-text-muted);
+    }
+
+    .kirada-onboarding-counter {
+        color: color-mix(in srgb, var(--kirada-text-muted) 82%, var(--kirada-surface));
+    }
+
+    .kirada-onboarding-close,
+    .kirada-onboarding-later {
+        color: var(--kirada-text-muted);
+    }
+
+    .kirada-onboarding-close:hover,
+    .kirada-onboarding-later:hover {
+        background: var(--kirada-surface-muted);
+        color: var(--kirada-text);
+    }
+
+    .kirada-onboarding-progress-active {
+        background: var(--color-kirada-teal);
+    }
+
+    .kirada-onboarding-progress-idle {
+        background: var(--kirada-border);
+    }
+
+    .kirada-onboarding-step-number {
+        background: var(--color-kirada-teal-soft);
+        color: var(--color-kirada-teal);
+    }
+
+    .kirada-onboarding-path {
+        border-color: color-mix(in srgb, var(--color-kirada-cyan) 32%, var(--kirada-border));
+        background: color-mix(in srgb, var(--color-kirada-cyan) 9%, var(--kirada-surface));
+    }
+
+    .kirada-onboarding-footer {
+        border-color: var(--kirada-border);
+    }
+
+    .kirada-onboarding-back {
+        border-color: var(--kirada-border-strong);
+        color: var(--kirada-text);
+    }
+
+    .kirada-onboarding-back:hover {
+        border-color: var(--color-kirada-teal);
+        background: var(--color-kirada-teal-soft);
+    }
+
+    .kirada-onboarding-primary {
+        background: var(--color-kirada-teal);
+    }
+
+    .kirada-onboarding-primary:hover {
+        background: color-mix(in srgb, var(--color-kirada-teal) 82%, var(--color-kirada-ink));
+    }
+
+    .kirada-onboarding-close:focus-visible,
+    .kirada-onboarding-later:focus-visible,
+    .kirada-onboarding-back:focus-visible,
+    .kirada-onboarding-primary:focus-visible {
+        outline: 2px solid var(--kirada-focus);
+        outline-offset: 2px;
+    }
+
+    .dark .kirada-onboarding-backdrop {
+        background-color: rgba(0, 4, 14, 0.82);
+    }
+
+    .dark .kirada-onboarding-icon,
+    .dark .kirada-onboarding-step-number {
+        background: rgba(85, 184, 255, 0.14);
+        color: var(--color-kirada-teal-bright);
+    }
+
+    .dark .kirada-onboarding-role,
+    .dark .kirada-onboarding-path-label {
+        color: var(--color-kirada-teal-bright);
+    }
+
+    .dark .kirada-onboarding-progress-active {
+        background: var(--color-kirada-teal-bright);
+    }
+
+    .dark .kirada-onboarding-path {
+        border-color: rgba(85, 184, 255, 0.28);
+        background: rgba(22, 182, 207, 0.1);
+    }
+
+    .dark .kirada-onboarding-back:hover {
+        background: rgba(85, 184, 255, 0.12);
+    }
+
+    .dark .kirada-onboarding-primary {
+        background: var(--color-kirada-teal);
+    }
+
+    .dark .kirada-onboarding-primary:hover {
+        background: var(--color-kirada-teal-bright);
+        color: var(--color-kirada-night);
+    }
+
+    @media (max-width: 639px) {
+        .kirada-onboarding-panel {
+            border-radius: 1.5rem;
         }
     }
 }

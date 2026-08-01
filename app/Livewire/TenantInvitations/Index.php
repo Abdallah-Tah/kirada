@@ -6,6 +6,7 @@ use App\Models\Tenant;
 use App\Models\TenantInvitation;
 use App\Services\TenantInvitationService;
 use Flux\Flux;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -25,6 +26,9 @@ class Index extends Component
 
     public ?string $phone = null;
 
+    /** @var array<int, string> */
+    public array $deliveryChannels = [];
+
     // Copied link feedback
     public ?int $copiedId = null;
 
@@ -38,12 +42,36 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function updatedEmail(?string $value): void
+    {
+        if (blank($value)) {
+            $this->deliveryChannels = array_values(array_diff(
+                $this->deliveryChannels,
+                [TenantInvitationService::CHANNEL_EMAIL],
+            ));
+        } elseif (! in_array(TenantInvitationService::CHANNEL_EMAIL, $this->deliveryChannels, true)) {
+            $this->deliveryChannels[] = TenantInvitationService::CHANNEL_EMAIL;
+        }
+    }
+
+    public function updatedPhone(?string $value): void
+    {
+        if (blank($value)) {
+            $this->deliveryChannels = array_values(array_diff(
+                $this->deliveryChannels,
+                [TenantInvitationService::CHANNEL_WHATSAPP],
+            ));
+        }
+    }
+
     protected function rules(): array
     {
         return [
             'tenant_id' => 'required|exists:tenants,id',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:30',
+            'deliveryChannels' => ['required', 'array', 'min:1'],
+            'deliveryChannels.*' => ['string', Rule::in(TenantInvitationService::CHANNELS)],
         ];
     }
 
@@ -116,6 +144,7 @@ class Index extends Component
                 $validated['tenant_id'],
                 $validated['email'],
                 $validated['phone'],
+                $validated['deliveryChannels'],
             );
         } catch (\DomainException $e) {
             $this->addError('tenant_id', $e->getMessage());
@@ -123,9 +152,10 @@ class Index extends Component
             return;
         }
 
-        Flux::toast('Invitation created and email sent to the tenant.', 'success');
+        Flux::toast(__('Invitation created and delivery queued.'), 'success');
 
-        $this->reset(['tenant_id', 'email', 'phone']);
+        $this->reset(['tenant_id', 'email', 'phone', 'deliveryChannels']);
+        $this->deliveryChannels = [];
         unset($this->invitations);
         unset($this->availableTenants);
     }
@@ -143,7 +173,24 @@ class Index extends Component
             return;
         }
 
-        Flux::toast('Invitation resent and email sent to the tenant.', 'success');
+        Flux::toast(__('Invitation resent and delivery queued.'), 'success');
+        unset($this->invitations);
+    }
+
+    public function resendWhatsApp(int $id): void
+    {
+        $invitation = TenantInvitation::findOrFail($id);
+        $this->authorize('update', $invitation);
+
+        try {
+            app(TenantInvitationService::class)->resendWhatsApp($invitation);
+        } catch (\DomainException $e) {
+            Flux::toast($e->getMessage(), 'error');
+
+            return;
+        }
+
+        Flux::toast(__('WhatsApp invitation queued.'), 'success');
         unset($this->invitations);
     }
 

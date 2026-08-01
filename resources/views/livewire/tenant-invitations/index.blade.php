@@ -12,7 +12,7 @@
             <p class="mt-1 text-slate-600 dark:text-slate-400">{{ __('Select a tenant record and send a private seven-day link. The tenant creates a new account or securely links an existing account, then receives access only to their own lease, invoices, payment proofs, maintenance requests, messages, and documents.') }}</p>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-3">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
                 <flux:label>{{ __('Tenant') }}</flux:label>
                 <flux:select wire:model="tenant_id" class="mt-1">
@@ -32,18 +32,40 @@
 
             <div>
                 <flux:label>{{ __('Email') }}</flux:label>
-                <flux:input wire:model="email" type="email" class="mt-1" :placeholder="__('Optional')" />
+                <flux:input wire:model.live="email" type="email" class="mt-1" :placeholder="__('Optional')" />
                 <flux:error name="email" />
             </div>
 
             <div>
                 <flux:label>{{ __('Phone') }}</flux:label>
-                <flux:input wire:model="phone" type="text" class="mt-1" :placeholder="__('Optional')" />
+                <flux:input wire:model.live="phone" type="text" class="mt-1" :placeholder="__('Optional')" />
                 <flux:error name="phone" />
+            </div>
+
+            <div>
+                <flux:label>{{ __('Send invitation via') }}</flux:label>
+                <div class="mt-2 space-y-2">
+                    <flux:checkbox
+                        wire:model="deliveryChannels"
+                        value="email"
+                        :disabled="blank($email)"
+                        :label="__('Email')"
+                    />
+                    <flux:checkbox
+                        wire:model="deliveryChannels"
+                        value="whatsapp"
+                        :disabled="blank($phone) || ! app(\App\Services\Bwa\BwaMessagingApi::class)->isConfigured()"
+                        :label="__('WhatsApp')"
+                    />
+                </div>
+                <p class="mt-2 text-xs text-zinc-400">
+                    {{ __('Choose one or both channels. WhatsApp requires a phone number, BWA, and an approved invitation template.') }}
+                </p>
+                <flux:error name="deliveryChannels" />
             </div>
         </div>
 
-        <p class="text-xs text-zinc-400">{{ __('Either email or phone is required. If email is provided, an invitation email will be sent automatically.') }}</p>
+        <p class="text-xs text-zinc-400">{{ __('Provide at least one contact method and select how the private invitation link should be delivered.') }}</p>
 
         <div>
             <flux:button
@@ -86,6 +108,7 @@
                 <tr>
                     <th class="px-4 py-3 font-medium">{{ __('Tenant') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Contact') }}</th>
+                    <th class="px-4 py-3 font-medium">{{ __('Delivery') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Status') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Expires') }}</th>
                     <th class="px-4 py-3 font-medium">{{ __('Accepted By') }}</th>
@@ -106,6 +129,29 @@
                                 {{ $invitation->email }}
                             @else
                                 {{ $invitation->phone }}
+                            @endif
+                        </td>
+                        <td data-label="{{ __('Delivery') }}" class="px-4 py-3">
+                            <div class="flex flex-wrap gap-1">
+                                @foreach ($invitation->delivery_channels ?? [] as $channel)
+                                    <flux:badge color="{{ $channel === 'whatsapp' ? 'green' : 'sky' }}" size="sm">
+                                        {{ __($channel === 'whatsapp' ? 'WhatsApp' : 'Email') }}
+                                    </flux:badge>
+                                @endforeach
+                            </div>
+                            @if ($invitation->whatsapp_error)
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ __('WhatsApp delivery failed') }}</p>
+                            @elseif ($invitation->whatsapp_status)
+                                <p class="mt-1 text-xs text-emerald-600 dark:text-emerald-400">
+                                    {{ match ($invitation->whatsapp_status) {
+                                        'queued' => __('WhatsApp queued'),
+                                        'accepted' => __('WhatsApp accepted'),
+                                        'sent' => __('WhatsApp sent'),
+                                        'delivered' => __('WhatsApp delivered'),
+                                        'read' => __('WhatsApp read'),
+                                        default => __('WhatsApp queued'),
+                                    } }}
+                                </p>
                             @endif
                         </td>
                         <td data-label="{{ __('Status') }}" class="px-4 py-3">
@@ -151,6 +197,16 @@
                                         >
                                             {{ __('Resend') }}
                                         </flux:menu.item>
+                                        @if ($invitation->phone && app(\App\Services\Bwa\BwaMessagingApi::class)->isConfigured())
+                                            <flux:menu.item
+                                                wire:click="resendWhatsApp({{ $invitation->id }})"
+                                                data-confirm="{{ __('Send this invitation through WhatsApp? A new delivery request will be queued.') }}"
+                                                data-confirm-variant="primary"
+                                                icon="chat-bubble-left-right"
+                                            >
+                                                {{ __('Send via WhatsApp') }}
+                                            </flux:menu.item>
+                                        @endif
                                         <flux:menu.separator />
                                         <flux:menu.item
                                             wire:click="cancelInvitation({{ $invitation->id }})"
@@ -176,7 +232,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-12 text-center text-zinc-500">
+                        <td colspan="7" class="px-4 py-12 text-center text-zinc-500">
                             {{ __('No invitations found.') }}
                         </td>
                     </tr>
