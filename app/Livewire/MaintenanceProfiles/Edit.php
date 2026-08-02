@@ -197,10 +197,10 @@ class Edit extends Component
         unset($this->profile);
 
         Flux::toast(
-            $this->is_published
+            text: $this->is_published
                 ? __('Profile saved and listed in the directory.')
                 : __('Profile saved. Publish it to appear in the directory.'),
-            'success',
+            variant: 'success',
         );
     }
 

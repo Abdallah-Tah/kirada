@@ -49,7 +49,7 @@ class Show extends Component
         $this->conversation->refresh();
         unset($this->messages);
 
-        Flux::toast('Message sent.', 'success');
+        Flux::toast(text: 'Message sent.', variant: 'success');
     }
 
     public function closeConversation(): void
@@ -59,7 +59,7 @@ class Show extends Component
         app(MessagingService::class)->closeConversation($this->conversation);
         $this->conversation->refresh();
 
-        Flux::toast('Conversation closed.', 'success');
+        Flux::toast(text: 'Conversation closed.', variant: 'success');
     }
 
     public function reopenConversation(): void
@@ -69,7 +69,7 @@ class Show extends Component
         app(MessagingService::class)->reopenConversation($this->conversation);
         $this->conversation->refresh();
 
-        Flux::toast('Conversation reopened.', 'success');
+        Flux::toast(text: 'Conversation reopened.', variant: 'success');
     }
 
     public function render()

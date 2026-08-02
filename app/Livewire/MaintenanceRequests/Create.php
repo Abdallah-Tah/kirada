@@ -250,7 +250,7 @@ class Create extends Component
             return;
         }
 
-        Flux::toast('Maintenance request submitted.', 'success');
+        Flux::toast(text: 'Maintenance request submitted.', variant: 'success');
 
         $this->redirect(route('maintenance-requests.show', $request), navigate: true);
     }

@@ -124,7 +124,7 @@ class Submit extends Component
 
         $this->rentInvoice->landlord?->notify(new TenantPaymentSubmitted($payment));
 
-        Flux::toast(__('Payment reported. Your landlord will confirm it shortly.'), 'success');
+        Flux::toast(text: __('Payment reported. Your landlord will confirm it shortly.'), variant: 'success');
 
         $this->redirect(route('rent-invoices.index'), navigate: true);
     }

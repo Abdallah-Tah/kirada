@@ -104,7 +104,7 @@ class Edit extends Component
 
         $this->unit->update($validated);
 
-        Flux::toast('Unit updated successfully.', 'success');
+        Flux::toast(text: 'Unit updated successfully.', variant: 'success');
 
         $this->redirect(route('units.index'), navigate: true);
     }

@@ -130,7 +130,7 @@ class Create extends Component
             );
         }
 
-        Flux::toast(__('Contract generated. Review it, then send for signature.'), 'success');
+        Flux::toast(text: __('Contract generated. Review it, then send for signature.'), variant: 'success');
 
         $this->redirect(route('contracts.show', $contract), navigate: true);
     }

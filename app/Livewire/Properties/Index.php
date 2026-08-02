@@ -69,7 +69,7 @@ class Index extends Component
 
         unset($this->properties);
 
-        Flux::toast('Property deleted.', 'success');
+        Flux::toast(text: 'Property deleted.', variant: 'success');
     }
 
     public function render()

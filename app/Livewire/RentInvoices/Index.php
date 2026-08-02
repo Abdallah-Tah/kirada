@@ -70,7 +70,7 @@ class Index extends Component
 
         unset($this->invoices);
 
-        Flux::toast("{$count} invoice(s) marked as overdue.", 'success');
+        Flux::toast(text: "{$count} invoice(s) marked as overdue.", variant: 'success');
     }
 
     public function delete(int $id): void
@@ -83,7 +83,7 @@ class Index extends Component
 
         unset($this->invoices);
 
-        Flux::toast('Invoice deleted.', 'success');
+        Flux::toast(text: 'Invoice deleted.', variant: 'success');
     }
 
     public function render()

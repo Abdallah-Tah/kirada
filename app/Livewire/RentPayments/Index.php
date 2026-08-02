@@ -72,7 +72,7 @@ class Index extends Component
 
         unset($this->payments);
 
-        Flux::toast('Payment confirmed. Invoice status updated.', 'success');
+        Flux::toast(text: 'Payment confirmed. Invoice status updated.', variant: 'success');
     }
 
     public function rejectPayment(int $id): void
@@ -85,7 +85,7 @@ class Index extends Component
 
         unset($this->payments);
 
-        Flux::toast('Payment rejected.', 'success');
+        Flux::toast(text: 'Payment rejected.', variant: 'success');
     }
 
     public function delete(int $id): void
@@ -98,7 +98,7 @@ class Index extends Component
 
         unset($this->payments);
 
-        Flux::toast('Payment deleted.', 'success');
+        Flux::toast(text: 'Payment deleted.', variant: 'success');
     }
 
     public function render()

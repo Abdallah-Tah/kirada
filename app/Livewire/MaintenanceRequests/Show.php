@@ -251,7 +251,7 @@ class Show extends Component
 
         unset($this->visibleComments);
 
-        Flux::toast('Comment added.', 'success');
+        Flux::toast(text: 'Comment added.', variant: 'success');
     }
 
     public function assign(): void
@@ -277,9 +277,9 @@ class Show extends Component
             ]);
 
             unset($this->allowedTransitions, $this->timeline);
-            Flux::toast('Request assigned.', 'success');
+            Flux::toast(text: 'Request assigned.', variant: 'success');
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
         }
     }
 
@@ -324,9 +324,9 @@ class Show extends Component
 
             unset($this->allowedTransitions, $this->visibleAttachments, $this->timeline);
 
-            Flux::toast('Status updated.', 'success');
+            Flux::toast(text: 'Status updated.', variant: 'success');
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
         }
     }
 
@@ -335,7 +335,7 @@ class Show extends Component
         $this->authorize('view', $this->maintenanceRequest);
 
         if (! $this->canMessage) {
-            Flux::toast('This request is missing tenant or landlord details.', 'error');
+            Flux::toast(text: 'This request is missing tenant or landlord details.', variant: 'danger');
 
             return;
         }
@@ -376,7 +376,7 @@ class Show extends Component
 
         $this->maintenanceRequest->load('review');
         unset($this->canReview);
-        Flux::toast(__('Review published.'), 'success');
+        Flux::toast(text: __('Review published.'), variant: 'success');
     }
 
     // ── Quote actions ────────────────────────────────────
@@ -409,7 +409,7 @@ class Show extends Component
         $this->authorize('view', $this->maintenanceRequest);
 
         if (! $this->isAssignedPro) {
-            Flux::toast('Only the assigned maintenance professional can submit a quote.', 'error');
+            Flux::toast(text: 'Only the assigned maintenance professional can submit a quote.', variant: 'danger');
 
             return;
         }
@@ -437,9 +437,9 @@ class Show extends Component
             $this->quoteItems = [];
             unset($this->quotes, $this->activeQuote);
 
-            Flux::toast('Quote submitted for landlord approval.', 'success');
+            Flux::toast(text: 'Quote submitted for landlord approval.', variant: 'success');
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
         }
     }
 
@@ -452,9 +452,9 @@ class Show extends Component
         try {
             app(MaintenanceQuoteService::class)->approve($quote);
             unset($this->quotes, $this->activeQuote);
-            Flux::toast('Quote approved.', 'success');
+            Flux::toast(text: 'Quote approved.', variant: 'success');
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
         }
     }
 
@@ -467,9 +467,9 @@ class Show extends Component
         try {
             app(MaintenanceQuoteService::class)->decline($quote);
             unset($this->quotes, $this->activeQuote);
-            Flux::toast('Quote declined.', 'success');
+            Flux::toast(text: 'Quote declined.', variant: 'success');
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
         }
     }
 
@@ -482,9 +482,9 @@ class Show extends Component
         try {
             app(MaintenanceQuoteService::class)->markInvoiced($quote);
             unset($this->quotes, $this->activeQuote);
-            Flux::toast('Quote converted to invoice.', 'success');
+            Flux::toast(text: 'Quote converted to invoice.', variant: 'success');
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
         }
     }
 
@@ -497,9 +497,9 @@ class Show extends Component
         try {
             app(MaintenanceQuoteService::class)->markPaid($quote);
             unset($this->quotes, $this->activeQuote);
-            Flux::toast('Invoice marked as paid.', 'success');
+            Flux::toast(text: 'Invoice marked as paid.', variant: 'success');
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
         }
     }
 

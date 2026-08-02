@@ -152,7 +152,7 @@ class Index extends Component
             return;
         }
 
-        Flux::toast(__('Invitation created and delivery queued.'), 'success');
+        Flux::toast(text: __('Invitation created and delivery queued.'), variant: 'success');
 
         $this->reset(['tenant_id', 'email', 'phone', 'deliveryChannels']);
         $this->deliveryChannels = [];
@@ -168,12 +168,12 @@ class Index extends Component
         try {
             app(TenantInvitationService::class)->resendInvitation($invitation);
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
 
             return;
         }
 
-        Flux::toast(__('Invitation resent and delivery queued.'), 'success');
+        Flux::toast(text: __('Invitation resent and delivery queued.'), variant: 'success');
         unset($this->invitations);
     }
 
@@ -185,12 +185,12 @@ class Index extends Component
         try {
             app(TenantInvitationService::class)->resendWhatsApp($invitation);
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
 
             return;
         }
 
-        Flux::toast(__('WhatsApp invitation queued.'), 'success');
+        Flux::toast(text: __('WhatsApp invitation queued.'), variant: 'success');
         unset($this->invitations);
     }
 
@@ -202,12 +202,12 @@ class Index extends Component
         try {
             app(TenantInvitationService::class)->cancelInvitation($invitation);
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'error');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
 
             return;
         }
 
-        Flux::toast('Invitation cancelled.', 'success');
+        Flux::toast(text: 'Invitation cancelled.', variant: 'success');
         unset($this->invitations);
     }
 
@@ -218,7 +218,7 @@ class Index extends Component
 
         $invitation->delete();
 
-        Flux::toast('Invitation deleted.', 'success');
+        Flux::toast(text: 'Invitation deleted.', variant: 'success');
         unset($this->invitations);
     }
 
@@ -228,7 +228,7 @@ class Index extends Component
         $this->authorize('view', $invitation);
 
         $this->copiedId = $id;
-        Flux::toast('Link: '.$invitation->accept_url, 'success');
+        Flux::toast(text: 'Link: '.$invitation->accept_url, variant: 'success');
     }
 
     public function render()

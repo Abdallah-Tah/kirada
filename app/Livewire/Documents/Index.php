@@ -59,7 +59,7 @@ class Index extends Component
 
         unset($this->documents);
 
-        Flux::toast('Document deleted.', 'success');
+        Flux::toast(text: 'Document deleted.', variant: 'success');
     }
 
     public function render()

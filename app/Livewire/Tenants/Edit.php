@@ -100,7 +100,7 @@ class Edit extends Component
 
         $this->tenant->update($updateData);
 
-        Flux::toast('Tenant updated successfully.', 'success');
+        Flux::toast(text: 'Tenant updated successfully.', variant: 'success');
 
         $this->redirect(route('tenants.index'), navigate: true);
     }
@@ -117,7 +117,7 @@ class Edit extends Component
                 'id_document_original_filename' => null,
             ]);
             $this->tenant->refresh();
-            Flux::toast('ID document removed.', 'success');
+            Flux::toast(text: 'ID document removed.', variant: 'success');
         }
     }
 

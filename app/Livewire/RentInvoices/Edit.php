@@ -89,7 +89,7 @@ class Edit extends Component
 
         app(RentInvoiceService::class)->updateInvoice($this->invoice, $validated);
 
-        Flux::toast('Invoice updated successfully.', 'success');
+        Flux::toast(text: 'Invoice updated successfully.', variant: 'success');
 
         $this->redirect(route('rent-invoices.index'), navigate: true);
     }

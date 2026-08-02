@@ -60,7 +60,7 @@ class Show extends Component
         $this->refreshContract();
         $this->cancelEditing();
 
-        Flux::toast(__('Contract saved.'), 'success');
+        Flux::toast(text: __('Contract saved.'), variant: 'success');
     }
 
     public function addArticle(): void
@@ -104,7 +104,7 @@ class Show extends Component
         app(ContractService::class)->send($this->contract);
         $this->refreshContract();
 
-        Flux::toast(__('Contract sent for signature.'), 'success');
+        Flux::toast(text: __('Contract sent for signature.'), variant: 'success');
     }
 
     public function cancel(): void
@@ -114,7 +114,7 @@ class Show extends Component
         app(ContractService::class)->cancel($this->contract);
         $this->refreshContract();
 
-        Flux::toast(__('Contract cancelled.'), 'success');
+        Flux::toast(text: __('Contract cancelled.'), variant: 'success');
     }
 
     public function resend(int $signatureId): void
@@ -133,7 +133,7 @@ class Show extends Component
 
         app(ContractService::class)->sendSignatureRequest($signature);
 
-        Flux::toast(__('Signing link emailed to :name.', ['name' => $signature->name]), 'success');
+        Flux::toast(text: __('Signing link emailed to :name.', ['name' => $signature->name]), variant: 'success');
     }
 
     public function signingUrl(string $token): string

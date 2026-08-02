@@ -89,7 +89,7 @@ class Index extends Component
 
         unset($this->units);
 
-        Flux::toast('Unit deleted.', 'success');
+        Flux::toast(text: 'Unit deleted.', variant: 'success');
     }
 
     public function render()

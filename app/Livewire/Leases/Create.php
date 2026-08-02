@@ -198,7 +198,7 @@ class Create extends Component
             return;
         }
 
-        Flux::toast('Lease created successfully. Unit marked as occupied.', 'success');
+        Flux::toast(text: 'Lease created successfully. Unit marked as occupied.', variant: 'success');
 
         $this->redirect(route('leases.index'), navigate: true);
     }

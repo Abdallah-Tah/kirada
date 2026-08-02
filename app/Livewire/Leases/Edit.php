@@ -214,7 +214,7 @@ class Edit extends Component
                 : $this->auto_send_invoice_override,
         ]);
 
-        Flux::toast('Lease updated successfully.', 'success');
+        Flux::toast(text: 'Lease updated successfully.', variant: 'success');
 
         $this->redirect(route('leases.index'), navigate: true);
     }

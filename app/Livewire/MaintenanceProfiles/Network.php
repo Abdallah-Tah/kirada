@@ -40,14 +40,14 @@ class Network extends Component
         try {
             app(MaintenanceProfileService::class)->revokeConnection(auth()->user()->landlordAccount(), $provider);
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'danger');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
 
             return;
         }
 
         unset($this->connections);
 
-        Flux::toast(__('Provider removed from your team.'), 'success');
+        Flux::toast(text: __('Provider removed from your team.'), variant: 'success');
     }
 
     public function render(): View

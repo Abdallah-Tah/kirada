@@ -2378,6 +2378,106 @@ select:focus[data-flux-control] {
 }
 
 /* --------------------------------------------------------------------------
+   Kirada feedback toaster
+   Uses the same semantic surfaces and dark-mode treatment as onboarding.
+---------------------------------------------------------------------------- */
+@layer components {
+    .kirada-toast-card {
+        border-color: var(--kirada-border-strong);
+        background: color-mix(in srgb, var(--kirada-surface) 96%, transparent);
+        color: var(--kirada-text);
+        box-shadow: var(--kirada-shadow-raised);
+        backdrop-filter: blur(18px);
+    }
+
+    .kirada-toast-accent {
+        background: linear-gradient(90deg, var(--color-kirada-teal), var(--color-kirada-cyan), var(--color-kirada-brand-green));
+    }
+
+    .kirada-toast-status {
+        display: none;
+    }
+
+    [data-flux-toast-dialog][data-variant='success'] .kirada-toast-status-success,
+    [data-flux-toast-dialog][data-variant='warning'] .kirada-toast-status-warning,
+    [data-flux-toast-dialog][data-variant='info'] .kirada-toast-status-info,
+    [data-flux-toast-dialog][data-variant='danger'] .kirada-toast-status-danger {
+        display: flex;
+    }
+
+    .kirada-toast-status-success {
+        background: color-mix(in srgb, var(--color-kirada-brand-green) 14%, var(--kirada-surface));
+        color: #078564;
+    }
+
+    .kirada-toast-status-warning {
+        background: color-mix(in srgb, #F59E0B 14%, var(--kirada-surface));
+        color: #B45309;
+    }
+
+    .kirada-toast-status-info {
+        background: color-mix(in srgb, var(--color-kirada-teal) 14%, var(--kirada-surface));
+        color: var(--color-kirada-teal);
+    }
+
+    .kirada-toast-status-danger {
+        background: color-mix(in srgb, #EF4444 13%, var(--kirada-surface));
+        color: #DC2626;
+    }
+
+    .kirada-toast-heading {
+        color: var(--kirada-text);
+    }
+
+    .kirada-toast-text {
+        color: var(--kirada-text-muted);
+    }
+
+    .kirada-toast-heading:empty + .kirada-toast-text {
+        color: var(--kirada-text);
+    }
+
+    .kirada-toast-link {
+        color: var(--color-kirada-teal);
+    }
+
+    .kirada-toast-close {
+        color: var(--kirada-text-muted);
+    }
+
+    .kirada-toast-close:hover {
+        background: var(--kirada-surface-muted);
+        color: var(--kirada-text);
+    }
+
+    .kirada-toast-close:focus-visible {
+        outline: 2px solid var(--kirada-focus);
+        outline-offset: 2px;
+    }
+
+    .dark .kirada-toast-card {
+        background: color-mix(in srgb, var(--kirada-surface) 94%, transparent);
+    }
+
+    .dark .kirada-toast-status-success {
+        color: #5EEBC2;
+    }
+
+    .dark .kirada-toast-status-warning {
+        color: #FBBF24;
+    }
+
+    .dark .kirada-toast-status-info,
+    .dark .kirada-toast-link {
+        color: var(--color-kirada-teal-bright);
+    }
+
+    .dark .kirada-toast-status-danger {
+        color: #FDA4AF;
+    }
+}
+
+/* --------------------------------------------------------------------------
    First-login onboarding guide
    Keep the guide on semantic Kirada tokens so it follows the Flux appearance
    store immediately, including before utility CSS or Alpine finishes loading.

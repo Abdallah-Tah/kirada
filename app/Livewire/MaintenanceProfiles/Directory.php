@@ -120,7 +120,7 @@ class Directory extends Component
                 $this->requestMessage ?: null,
             );
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'danger');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
 
             return;
         }
@@ -130,7 +130,7 @@ class Directory extends Component
         $this->reset('requestingProviderId', 'requestMessage');
 
         Flux::modal('connect-provider')->close();
-        Flux::toast(__('Invitation sent. They will appear in your team once they accept.'), 'success');
+        Flux::toast(text: __('Invitation sent. They will appear in your team once they accept.'), variant: 'success');
     }
 
     public function clearFilters(): void

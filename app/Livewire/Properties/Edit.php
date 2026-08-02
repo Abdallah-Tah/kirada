@@ -90,7 +90,7 @@ class Edit extends Component
 
         $this->property->update($validated);
 
-        Flux::toast('Property updated successfully.', 'success');
+        Flux::toast(text: 'Property updated successfully.', variant: 'success');
 
         $this->redirect(route('properties.index'), navigate: true);
     }

@@ -149,7 +149,7 @@ class Create extends Component
             return;
         }
 
-        Flux::toast('Payment recorded successfully.', 'success');
+        Flux::toast(text: 'Payment recorded successfully.', variant: 'success');
 
         $this->redirect(route('rent-payments.index'), navigate: true);
     }

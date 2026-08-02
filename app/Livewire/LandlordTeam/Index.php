@@ -50,7 +50,7 @@ class Index extends Component
 
         $this->reset('email');
         unset($this->members);
-        Flux::toast(__('Team invitation sent.'), 'success');
+        Flux::toast(text: __('Team invitation sent.'), variant: 'success');
     }
 
     public function updateRole(int $membershipId, string $role): void
@@ -60,7 +60,7 @@ class Index extends Component
         try {
             app(LandlordTeamService::class)->updateRole(auth()->user(), $membership, $role);
         } catch (\DomainException $exception) {
-            Flux::toast(__($exception->getMessage()), 'danger');
+            Flux::toast(text: __($exception->getMessage()), variant: 'danger');
         }
 
         unset($this->members);
@@ -73,13 +73,13 @@ class Index extends Component
         try {
             app(LandlordTeamService::class)->remove(auth()->user(), $membership);
         } catch (\DomainException $exception) {
-            Flux::toast(__($exception->getMessage()), 'danger');
+            Flux::toast(text: __($exception->getMessage()), variant: 'danger');
 
             return;
         }
 
         unset($this->members);
-        Flux::toast(__('Team member removed.'), 'success');
+        Flux::toast(text: __('Team member removed.'), variant: 'success');
     }
 
     private function membership(int $id): LandlordTeamMembership

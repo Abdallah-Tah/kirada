@@ -152,7 +152,7 @@ class Show extends Component
         app(ContractService::class)->send($contract);
         unset($this->contract);
 
-        Flux::toast(__('Contract sent for signature.'), 'success');
+        Flux::toast(text: __('Contract sent for signature.'), variant: 'success');
     }
 
     public function cancelContract(): void
@@ -164,7 +164,7 @@ class Show extends Component
         app(ContractService::class)->cancel($contract);
         unset($this->contract);
 
-        Flux::toast(__('Contract cancelled.'), 'success');
+        Flux::toast(text: __('Contract cancelled.'), variant: 'success');
     }
 
     public function resendSignature(int $signatureId): void
@@ -181,7 +181,7 @@ class Show extends Component
 
         app(ContractService::class)->sendSignatureRequest($sig);
 
-        Flux::toast(__('Signing link emailed to :name.', ['name' => $sig->name]), 'success');
+        Flux::toast(text: __('Signing link emailed to :name.', ['name' => $sig->name]), variant: 'success');
     }
 
     public function signingUrl(string $token): string
@@ -198,7 +198,7 @@ class Show extends Component
         app(LeaseService::class)->endLease($this->lease);
         $this->lease->refresh();
 
-        Flux::toast(__('Lease ended.'), 'success');
+        Flux::toast(text: __('Lease ended.'), variant: 'success');
     }
 
     public function cancelLease(): void
@@ -208,7 +208,7 @@ class Show extends Component
         app(LeaseService::class)->cancelLease($this->lease);
         $this->lease->refresh();
 
-        Flux::toast(__('Lease cancelled.'), 'success');
+        Flux::toast(text: __('Lease cancelled.'), variant: 'success');
     }
 
     public function render()

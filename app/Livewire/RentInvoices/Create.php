@@ -122,7 +122,7 @@ class Create extends Component
             return;
         }
 
-        Flux::toast('Invoice created successfully.', 'success');
+        Flux::toast(text: 'Invoice created successfully.', variant: 'success');
 
         $this->redirect(route('rent-invoices.index'), navigate: true);
     }

@@ -62,7 +62,7 @@ class Inbox extends Component
                 ? $service->approveConnection(auth()->user(), $landlord)
                 : $service->declineConnection(auth()->user(), $landlord);
         } catch (\DomainException $e) {
-            Flux::toast($e->getMessage(), 'danger');
+            Flux::toast(text: $e->getMessage(), variant: 'danger');
 
             return;
         }
@@ -70,10 +70,10 @@ class Inbox extends Component
         unset($this->pending, $this->active);
 
         Flux::toast(
-            $action === 'approve'
+            text: $action === 'approve'
                 ? __('You joined :landlord\'s maintenance team.', ['landlord' => $landlord->name])
                 : __('Invitation declined.'),
-            'success',
+            variant: 'success',
         );
     }
 

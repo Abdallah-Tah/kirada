@@ -201,7 +201,7 @@ class Create extends Component
             return;
         }
 
-        Flux::toast('Document uploaded successfully.', 'success');
+        Flux::toast(text: 'Document uploaded successfully.', variant: 'success');
 
         $this->redirect(route('documents.index'), navigate: true);
     }

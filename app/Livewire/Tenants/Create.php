@@ -84,7 +84,7 @@ class Create extends Component
             'landlord_id' => auth()->user()->landlordAccountId(),
         ]);
 
-        Flux::toast('Tenant created successfully.', 'success');
+        Flux::toast(text: 'Tenant created successfully.', variant: 'success');
 
         $this->redirect(route('tenants.index'), navigate: true);
     }

@@ -90,7 +90,7 @@ class Index extends Component
 
         unset($this->leases);
 
-        Flux::toast('Lease ended. Unit marked as vacant.', 'success');
+        Flux::toast(text: 'Lease ended. Unit marked as vacant.', variant: 'success');
     }
 
     public function cancelLease(int $id): void
@@ -103,7 +103,7 @@ class Index extends Component
 
         unset($this->leases);
 
-        Flux::toast('Lease cancelled. Unit marked as vacant.', 'success');
+        Flux::toast(text: 'Lease cancelled. Unit marked as vacant.', variant: 'success');
     }
 
     public function delete(int $id): void
@@ -116,7 +116,7 @@ class Index extends Component
 
         unset($this->leases);
 
-        Flux::toast('Lease deleted.', 'success');
+        Flux::toast(text: 'Lease deleted.', variant: 'success');
     }
 
     public function render()

@@ -92,7 +92,7 @@ class Create extends Component
             'landlord_id' => $landlordId,
         ]);
 
-        Flux::toast('Property created successfully.', 'success');
+        Flux::toast(text: 'Property created successfully.', variant: 'success');
 
         $this->redirect(route('properties.index'), navigate: true);
     }
