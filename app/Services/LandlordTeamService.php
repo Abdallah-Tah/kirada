@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Mail\LandlordTeamInvitationMail;
 use App\Models\LandlordTeamMembership;
 use App\Models\User;
+use App\Support\Locales;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -56,10 +57,12 @@ class LandlordTeamService
         );
 
         $membership->load('landlord');
-        Mail::to($email)->queue(new LandlordTeamInvitationMail(
-            $membership,
-            route('team-invitations.accept', $token),
-        ));
+        Mail::to($email)
+            ->locale(Locales::forLandlord($membership->landlord))
+            ->queue(new LandlordTeamInvitationMail(
+                $membership,
+                route('team-invitations.accept', $token),
+            ));
 
         return $membership;
     }

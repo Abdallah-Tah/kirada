@@ -170,6 +170,23 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasMany(LandlordTeamMembership::class, 'landlord_id');
     }
 
+    /**
+     * Tenant profiles this user occupies. A person can rent from more than one
+     * landlord, and each of those is a separate tenant record.
+     */
+    public function tenantProfiles(): HasMany
+    {
+        return $this->hasMany(Tenant::class);
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    public function tenantProfileIds(): array
+    {
+        return $this->tenantProfiles()->pluck('id')->all();
+    }
+
     public function isTenant(): bool
     {
         return $this->hasRole('tenant');

@@ -8,6 +8,7 @@ use App\Models\Tenant;
 use App\Notifications\TenantPaymentSubmitted;
 use App\Services\RentInvoiceService;
 use App\Services\RentPaymentService;
+use App\Support\Locales;
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
@@ -122,7 +123,9 @@ class Submit extends Component
             return;
         }
 
-        $this->rentInvoice->landlord?->notify(new TenantPaymentSubmitted($payment));
+        $this->rentInvoice->landlord?->notify(
+            (new TenantPaymentSubmitted($payment))->locale(Locales::forLandlord($this->rentInvoice->landlord)),
+        );
 
         Flux::toast(text: __('Payment reported. Your landlord will confirm it shortly.'), variant: 'success');
 

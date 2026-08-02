@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
+use App\Support\Locales;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -11,10 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LocaleMiddleware
 {
-    private const SUPPORTED_LOCALES = ['en', 'fr', 'ar', 'so', 'am'];
-
-    private const DEFAULT_LOCALE = 'en';
-
     private const SESSION_KEY = 'locale';
 
     public function handle(Request $request, Closure $next): Response
@@ -73,12 +69,12 @@ class LocaleMiddleware
         }
 
         // 6. Fallback
-        return self::DEFAULT_LOCALE;
+        return Locales::DEFAULT;
     }
 
     private function isSupported(?string $locale): bool
     {
-        return $locale !== null && in_array($locale, self::SUPPORTED_LOCALES, true);
+        return Locales::isSupported($locale);
     }
 
     private function detectBrowserLocale(Request $request): ?string

@@ -6,6 +6,7 @@ use App\Contracts\PaymentGateway;
 use App\Models\RentInvoice;
 use App\Notifications\TenantPaymentSubmitted;
 use App\Services\RentPaymentService;
+use App\Support\Locales;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -54,7 +55,9 @@ class PaymentWebhookController extends Controller
         }
 
         if ($payment->wasRecentlyCreated) {
-            $invoice->landlord?->notify(new TenantPaymentSubmitted($payment));
+            $invoice->landlord?->notify(
+                (new TenantPaymentSubmitted($payment))->locale(Locales::forLandlord($invoice->landlord)),
+            );
         }
 
         return response()->json([

@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 class ContractSignature extends Model
 {
@@ -45,6 +47,34 @@ class ContractSignature extends Model
     {
         return $this->belongsTo(Contract::class);
     }
+
+    // ── Scopes ──────────────────────────────────────────
+
+    /**
+     * Signatures the signer can still act on: pending, un-expired, and on a
+     * contract that has actually been sent (a draft's links are not live yet).
+     */
+    public function scopeActionable(Builder $query): Builder
+    {
+        return $query
+            ->where('status', 'pending')
+            ->where(fn (Builder $q) => $q
+                ->whereNull('expires_at')
+                ->orWhere('expires_at', '>', Carbon::now()))
+            ->whereHas('contract', fn (Builder $q) => $q->where('status', 'sent'));
+    }
+
+    /**
+     * The tenant-side signature slots on a given tenant's contracts.
+     */
+    public function scopeForTenant(Builder $query, int $tenantId): Builder
+    {
+        return $query
+            ->where('party_role', 'preneur')
+            ->whereHas('contract', fn (Builder $q) => $q->where('tenant_id', $tenantId));
+    }
+
+    // ── Helpers ─────────────────────────────────────────
 
     public function isSigned(): bool
     {

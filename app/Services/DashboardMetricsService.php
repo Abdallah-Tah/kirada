@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ContractSignature;
 use App\Models\Conversation;
 use App\Models\Document;
 use App\Models\Lease;
@@ -126,6 +127,7 @@ class DashboardMetricsService
                 'documents_count' => 0,
                 'recent_invoices' => collect(),
                 'recent_payments' => collect(),
+                'pending_signatures' => collect(),
             ];
         }
 
@@ -172,6 +174,11 @@ class DashboardMetricsService
             'recent_payments' => RentPayment::where('tenant_id', $tenant->id)
                 ->with(['rentInvoice:id,invoice_number'])
                 ->latest()->limit(5)->get(),
+            // Contracts still waiting on this tenant's signature. Previously the
+            // signing link only ever reached them by email.
+            'pending_signatures' => ContractSignature::forTenant($tenant->id)->actionable()
+                ->with('contract:id,title,reference')
+                ->oldest('id')->get(),
         ];
     }
 

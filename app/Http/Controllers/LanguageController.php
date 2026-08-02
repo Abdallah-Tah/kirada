@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\Locales;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class LanguageController extends Controller
 {
-    private const SUPPORTED = ['en', 'fr', 'ar', 'so', 'am'];
-
     public function switch(Request $request, string $locale): RedirectResponse
     {
-        if (! in_array($locale, self::SUPPORTED, true)) {
-            $locale = 'en';
-        }
+        $locale = Locales::normalize($locale);
 
         Session::put('locale', $locale);
 

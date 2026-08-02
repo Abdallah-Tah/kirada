@@ -8,6 +8,7 @@ use App\Models\Tenant;
 use App\Models\TenantInvitation;
 use App\Models\User;
 use App\Services\Bwa\BwaMessagingApi;
+use App\Support\Locales;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -198,11 +199,13 @@ class TenantInvitationService
         $tenantName = $tenant ? trim($tenant->first_name.' '.$tenant->last_name) : 'Tenant';
         $landlordName = $landlord?->name ?? 'Your Landlord';
 
-        Mail::to($invitation->email)->send(new TenantInvitationMail(
-            $invitation,
-            $tenantName,
-            $landlordName,
-        ));
+        Mail::to($invitation->email)
+            ->locale(Locales::forLandlord($landlord))
+            ->send(new TenantInvitationMail(
+                $invitation,
+                $tenantName,
+                $landlordName,
+            ));
     }
 
     protected function queueWhatsApp(TenantInvitation $invitation): void

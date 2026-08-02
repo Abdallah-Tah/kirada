@@ -46,6 +46,17 @@ return [
         'reminder_template' => env('BWA_WHATSAPP_REMINDER_TEMPLATE', 'kirada_rent_reminder'),
         'invitation_template' => env('BWA_WHATSAPP_INVITATION_TEMPLATE', 'kirada_tenant_invitation'),
         'template_language' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE', 'fr'),
+
+        // Meta approves a WhatsApp template per language, so a landlord's
+        // locale can only drive the template when an approved code exists for
+        // it. Anything left unset falls back to `template_language` above.
+        'template_languages' => array_filter([
+            'en' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_EN'),
+            'fr' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_FR'),
+            'ar' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_AR'),
+            'so' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_SO'),
+            'am' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_AM'),
+        ]),
     ],
 
     // Twilio SMS (tenant notifications). Channels no-op when empty.

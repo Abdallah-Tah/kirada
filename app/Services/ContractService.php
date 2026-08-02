@@ -2,16 +2,19 @@
 
 namespace App\Services;
 
+use App\Mail\ContractCompleted;
 use App\Mail\ContractSignatureRequest;
 use App\Models\Contract;
 use App\Models\ContractSignature;
 use App\Models\Document;
 use App\Models\Lease;
 use App\Models\User;
+use App\Support\Locales;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -135,7 +138,9 @@ class ContractService
             'expires_at' => Carbon::now()->addDays(self::SIGNATURE_LINK_TTL_DAYS),
         ]);
 
-        Mail::to($signature->email)->send(new ContractSignatureRequest($signature));
+        Mail::to($signature->email)
+            ->locale(Locales::forLandlord($signature->contract?->landlord))
+            ->send(new ContractSignatureRequest($signature));
     }
 
     public function cancel(Contract $contract): Contract
@@ -188,6 +193,45 @@ class ContractService
         return $signature->fresh();
     }
 
+    /**
+     * Where to send a signer once they have signed.
+     *
+     * The signing link is a public bearer token, so the visitor is usually
+     * anonymous — they stay on the confirmation card. Only when the logged-in
+     * user *is* that party do we hand them back to the app, and only to a page
+     * their role can already open: the contract itself for the landlord side,
+     * the role dashboard for a tenant (contract pages are landlord-only).
+     *
+     * Returns null whenever the visitor is not that party — including a
+     * different signed-in user opening someone else's link.
+     */
+    public function destinationAfterSigning(ContractSignature $signature, ?User $user): ?string
+    {
+        if (! $user) {
+            return null;
+        }
+
+        $contract = $signature->contract()->first();
+
+        if (! $contract) {
+            return null;
+        }
+
+        if ($signature->party_role === 'preneur') {
+            return $contract->tenant()->first()?->user_id === $user->id
+                ? route('dashboard')
+                : null;
+        }
+
+        if ($signature->party_role === 'bailleur') {
+            return $user->canAccessLandlordPortal() && $user->belongsToLandlordAccount($contract->landlord_id)
+                ? route('contracts.show', $contract)
+                : null;
+        }
+
+        return null;
+    }
+
     public function decline(ContractSignature $signature, ?string $reason = null): ContractSignature
     {
         $signature->update([
@@ -208,17 +252,17 @@ class ContractService
     {
         // Lock the contract row and re-check inside the transaction so two
         // signers completing concurrently cannot both generate a document.
-        DB::transaction(function () use ($contract) {
+        $finalized = DB::transaction(function () use ($contract): bool {
             $locked = Contract::whereKey($contract->id)->lockForUpdate()->first();
 
             if (! $locked || $locked->document_id) {
-                return;
+                return false;
             }
 
             $locked->loadMissing('signatures');
 
             if (! $locked->allSigned()) {
-                return;
+                return false;
             }
 
             $document = $this->generateSignedDocument($locked);
@@ -228,7 +272,49 @@ class ContractService
                 'completed_at' => Carbon::now(),
                 'document_id' => $document->id,
             ]);
+
+            return true;
         });
+
+        // Outside the transaction: the row lock is released and the document is
+        // committed, so a queued mail job is guaranteed to find both. The
+        // transaction returning true also makes this exactly-once.
+        if ($finalized) {
+            $this->dispatchCompletedCopies($contract->fresh(['signatures', 'document']));
+        }
+    }
+
+    /**
+     * Email every party their countersigned copy, with the signed PDF attached.
+     *
+     * One party failing (a bad address, a rejecting server) must not deny the
+     * others their copy, so each send is isolated and logged.
+     */
+    public function dispatchCompletedCopies(Contract $contract): int
+    {
+        $sent = 0;
+        $locale = Locales::forLandlord($contract->landlord);
+
+        foreach ($contract->signatures as $signature) {
+            if (blank($signature->email)) {
+                continue;
+            }
+
+            try {
+                Mail::to($signature->email)
+                    ->locale($locale)
+                    ->send(new ContractCompleted($contract, $signature));
+                $sent++;
+            } catch (\Throwable $e) {
+                Log::warning('Could not email the signed contract copy.', [
+                    'contract_id' => $contract->id,
+                    'signature_id' => $signature->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return $sent;
     }
 
     /**

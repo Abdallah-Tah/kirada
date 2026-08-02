@@ -9,6 +9,7 @@ use App\Notifications\RentReminderDue;
 use App\Services\Bwa\BwaMessagingApi;
 use App\Services\InvoicePdfFactory;
 use App\Services\NotificationChannelResolver;
+use App\Support\Locales;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Notification;
@@ -128,7 +129,8 @@ class DeliverInvoiceChannel implements ShouldQueue
             ? new RentReminderDue($delivery->invoice, $delivery->event, $attachPdf ? $pdf : null)
             : new RentInvoiceGenerated($delivery->invoice, $attachPdf ? $pdf : null);
 
-        Notification::route('mail', $recipient)->notify($notification);
+        Notification::route('mail', $recipient)
+            ->notify($notification->locale(Locales::forLandlord($delivery->invoice->landlord)));
 
         return null;
     }
@@ -150,7 +152,7 @@ class DeliverInvoiceChannel implements ShouldQueue
             $this->isReminder($delivery)
                 ? config('services.bwa.reminder_template')
                 : config('services.bwa.invoice_template'),
-            config('services.bwa.template_language', 'fr'),
+            $whatsApp->templateLanguageFor($delivery->invoice->landlord),
             $pdf,
             [
                 $delivery->invoice->invoice_number,

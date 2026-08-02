@@ -48,6 +48,8 @@ use App\Livewire\RentPayments\Submit as RentPaymentSubmit;
 use App\Livewire\Reports\Index as ReportsIndex;
 use App\Livewire\Search\Index as GlobalSearchIndex;
 use App\Livewire\Subscriptions\Status as SubscriptionStatus;
+use App\Livewire\Tenant\Contracts\Index as TenantContractIndex;
+use App\Livewire\Tenant\Contracts\Show as TenantContractShow;
 use App\Livewire\TenantInvitations\Accept as TenantInvitationAccept;
 use App\Livewire\TenantInvitations\Index as TenantInvitationIndex;
 use App\Livewire\Tenants\Create as TenantCreate;
@@ -166,6 +168,15 @@ Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-m
 // Tenant "I paid" submission — creates a pending payment for landlord confirmation
 Route::middleware(['kirada-auth', 'role:tenant'])->group(function () {
     Route::get('/rent-payments/submit/{rentInvoice}', RentPaymentSubmit::class)->name('rent-payments.submit');
+});
+
+// A renter's own contracts — read-only. Not the landlord's management screen:
+// every route here is gated by ContractPolicy::isCounterparty.
+Route::middleware(['kirada-auth', 'role:tenant'])->group(function () {
+    Route::get('/my-contracts', TenantContractIndex::class)->name('tenant.contracts.index');
+    Route::get('/my-contracts/{contract}', TenantContractShow::class)->name('tenant.contracts.show');
+    Route::get('/my-contracts/{contract}/print', [ContractController::class, 'print'])->name('tenant.contracts.print');
+    Route::get('/my-contracts/{contract}/download', [ContractController::class, 'download'])->name('tenant.contracts.download');
 });
 
 Route::middleware(['kirada-auth', 'role:admin|landlord|landlord-admin|property-manager|accountant', 'subscription'])->group(function () {

@@ -51,7 +51,7 @@ class SendTenantInvitationWhatsApp implements ShouldQueue
         $response = $whatsApp->sendTemplate(
             $invitation->phone,
             (string) config('services.bwa.invitation_template'),
-            (string) config('services.bwa.template_language', 'fr'),
+            $whatsApp->templateLanguageFor($invitation->landlord),
             [[
                 'type' => 'body',
                 'parameters' => array_map(

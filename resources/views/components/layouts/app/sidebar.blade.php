@@ -148,6 +148,9 @@
                     <flux:sidebar.item icon="receipt-percent" :href="route('rent-invoices.index')" :current="request()->routeIs('rent-invoices.*')" wire:navigate>
                         {{ __('My Rent') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="document-text" :href="route('tenant.contracts.index')" :current="request()->routeIs('tenant.contracts.*')" wire:navigate>
+                        {{ __('My Contracts') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>

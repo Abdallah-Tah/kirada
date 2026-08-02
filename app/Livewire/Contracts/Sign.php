@@ -60,7 +60,9 @@ class Sign extends Component
             'agreed.accepted' => __('You must consent to sign electronically.'),
         ]);
 
-        app(ContractService::class)->recordSignature(
+        $contracts = app(ContractService::class);
+
+        $contracts->recordSignature(
             $signature,
             $this->signatureData,
             request()->ip(),
@@ -73,6 +75,20 @@ class Sign extends Component
 
         // Drop the cached computed so the view re-reads the freshly updated state.
         unset($this->signature);
+
+        // A signed-in party is handed back to the app; an anonymous visitor
+        // stays on the public confirmation card.
+        $destination = $contracts->destinationAfterSigning($signature, auth()->user());
+
+        if ($destination !== null) {
+            session()->flash('status', __('Your signature for :ref has been recorded.', [
+                'ref' => $contract->reference,
+            ]));
+
+            // Full load, not SPA navigate: this leaves the public layout for
+            // the authenticated app shell.
+            $this->redirect($destination);
+        }
     }
 
     public function render()

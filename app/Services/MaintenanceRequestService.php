@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Notifications\MaintenanceCommentAdded;
 use App\Notifications\MaintenanceRequestCreated;
 use App\Notifications\MaintenanceStatusChanged;
+use App\Support\Locales;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 
@@ -40,9 +41,12 @@ class MaintenanceRequestService
         $request = MaintenanceRequest::create($data);
         $request->loadMissing(['landlord', 'tenant.user', 'property', 'reporter']);
 
-        // Notify all relevant parties about the new request
+        // Notify all relevant parties about the new request, in the
+        // language the landlord account communicates in.
+        $locale = Locales::forLandlord($request->landlord);
+
         foreach ($this->notificationRecipients($request, $reporter) as $recipient) {
-            $recipient->notify(new MaintenanceRequestCreated($request));
+            $recipient->notify((new MaintenanceRequestCreated($request))->locale($locale));
         }
 
         return $request;
@@ -268,19 +272,23 @@ class MaintenanceRequestService
 
     private function notifyStatusChanged(MaintenanceRequest $request, string $status, ?string $previousStatus = null): void
     {
+        $locale = Locales::forLandlord($request->landlord);
+
         foreach ($this->notificationRecipients($request) as $recipient) {
-            $recipient->notify(new MaintenanceStatusChanged($request, $status, $previousStatus));
+            $recipient->notify((new MaintenanceStatusChanged($request, $status, $previousStatus))->locale($locale));
         }
     }
 
     private function notifyCommentAdded(MaintenanceRequest $request, MaintenanceComment $comment, User $author): void
     {
+        $locale = Locales::forLandlord($request->landlord);
+
         foreach ($this->notificationRecipients($request, $author) as $recipient) {
             if ($comment->is_internal && ! $recipient->hasRole('admin') && $request->landlord_id !== $recipient->id) {
                 continue;
             }
 
-            $recipient->notify(new MaintenanceCommentAdded($request, $comment));
+            $recipient->notify((new MaintenanceCommentAdded($request, $comment))->locale($locale));
         }
     }
 

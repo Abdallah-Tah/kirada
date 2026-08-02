@@ -2,6 +2,8 @@
 
 namespace App\Services\Bwa;
 
+use App\Models\User;
+use App\Support\Locales;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -19,6 +21,24 @@ class BwaMessagingApi
         return filled(config('services.bwa.api_url'))
             && filled(config('services.bwa.app'))
             && filled(config('services.bwa.request_signing_secret'));
+    }
+
+    /**
+     * The template language to send a landlord's messages in.
+     *
+     * Unlike email, a WhatsApp template must be registered and approved with
+     * Meta per language — we cannot render an arbitrary locale on demand. So a
+     * locale only switches the template when an approved one is configured for
+     * it; anything else falls back to the account-wide default.
+     */
+    public function templateLanguageFor(?User $landlord): string
+    {
+        $default = (string) config('services.bwa.template_language', 'fr');
+        $approved = (array) config('services.bwa.template_languages', []);
+
+        $code = $approved[Locales::forLandlord($landlord)] ?? null;
+
+        return filled($code) ? (string) $code : $default;
     }
 
     /**

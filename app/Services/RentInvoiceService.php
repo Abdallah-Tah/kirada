@@ -7,6 +7,7 @@ use App\Models\Property;
 use App\Models\RentInvoice;
 use App\Models\RentInvoiceLineItem;
 use App\Notifications\LateFeeApplied;
+use App\Support\Locales;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -284,7 +285,9 @@ class RentInvoiceService
         // Notify tenant
         $tenantUser = $lease->tenant?->user;
         if ($tenantUser) {
-            $tenantUser->notify(new LateFeeApplied($invoice, $feeAmount));
+            $tenantUser->notify(
+                (new LateFeeApplied($invoice, $feeAmount))->locale(Locales::forLandlord($invoice->landlord)),
+            );
         }
 
         return true;

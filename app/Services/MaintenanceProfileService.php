@@ -6,6 +6,7 @@ use App\Models\MaintenanceProfile;
 use App\Models\User;
 use App\Notifications\MaintenanceConnectionRequested;
 use App\Notifications\MaintenanceConnectionResolved;
+use App\Support\Locales;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -132,7 +133,9 @@ class MaintenanceProfileService
             ? $landlord->maintenanceConnections()->updateExistingPivot($provider->id, $attributes)
             : $landlord->maintenanceConnections()->attach($provider->id, $attributes);
 
-        $provider->notify(new MaintenanceConnectionRequested($landlord, $message));
+        $provider->notify(
+            (new MaintenanceConnectionRequested($landlord, $message))->locale(Locales::forLandlord($landlord)),
+        );
 
         return 'pending';
     }
@@ -157,7 +160,9 @@ class MaintenanceProfileService
             'rejected_at' => null,
         ]);
 
-        $landlord->notify(new MaintenanceConnectionResolved($provider, 'approved'));
+        $landlord->notify(
+            (new MaintenanceConnectionResolved($provider, 'approved'))->locale(Locales::forLandlord($landlord)),
+        );
     }
 
     public function declineConnection(User $provider, User $landlord): void
@@ -176,7 +181,9 @@ class MaintenanceProfileService
             'rejected_at' => now(),
         ]);
 
-        $landlord->notify(new MaintenanceConnectionResolved($provider, 'rejected'));
+        $landlord->notify(
+            (new MaintenanceConnectionResolved($provider, 'rejected'))->locale(Locales::forLandlord($landlord)),
+        );
     }
 
     /**

@@ -18,7 +18,25 @@ class ContractPolicy
             return true;
         }
 
+        if ($this->isCounterparty($user, $contract)) {
+            return true;
+        }
+
         return $user->can('leases.view') && $user->belongsToLandlordAccount($contract->landlord_id);
+    }
+
+    /**
+     * The tenant named on a contract may read it — the terms bind them, so
+     * they are entitled to a copy. Read-only: management stays with the
+     * landlord, and a draft is not theirs to see until it is sent.
+     */
+    public function isCounterparty(User $user, Contract $contract): bool
+    {
+        if ($contract->isDraft()) {
+            return false;
+        }
+
+        return $contract->tenant()->first()?->user_id === $user->id;
     }
 
     public function create(User $user): bool

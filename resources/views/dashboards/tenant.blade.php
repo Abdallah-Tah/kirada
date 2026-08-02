@@ -18,6 +18,50 @@
             </div>
         </div>
 
+        <x-status-banner class="mt-6" />
+
+        {{-- Signature requests block everything else, so they lead the page. --}}
+        @if($pending_signatures->isNotEmpty())
+        <div class="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-500/30 dark:bg-emerald-500/10">
+            <div class="flex items-start gap-4">
+                <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300">
+                    <flux:icon.pencil-square class="size-5" />
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-emerald-800 dark:text-emerald-200">
+                        {{ trans_choice(':count contract awaiting your signature|:count contracts awaiting your signature', $pending_signatures->count()) }}
+                    </p>
+                    <p class="mt-0.5 text-xs text-emerald-600 dark:text-emerald-400">
+                        {{ __('Review the terms and sign online. We also emailed you the same secure link.') }}
+                    </p>
+
+                    <div class="mt-4 divide-y divide-emerald-200/70 dark:divide-emerald-500/20">
+                        @foreach($pending_signatures as $signature)
+                            <div class="flex flex-wrap items-center justify-between gap-3 py-2.5">
+                                <div class="min-w-0">
+                                    <p class="truncate text-sm font-medium text-emerald-900 dark:text-emerald-100">
+                                        {{ $signature->contract?->title }}
+                                    </p>
+                                    <p class="font-mono text-xs text-emerald-600 dark:text-emerald-400">
+                                        {{ $signature->contract?->reference }}
+                                        @if($signature->expires_at)
+                                            · {{ __('Expires :date', ['date' => $signature->expires_at->format('d M Y')]) }}
+                                        @endif
+                                    </p>
+                                </div>
+                                <a href="{{ route('contracts.sign', $signature->token) }}"
+                                    data-test="tenant-sign-contract"
+                                    class="shrink-0 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700">
+                                    {{ __('Review & sign the contract') }}
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         @if($active_lease)
             <div class="mt-6 kirada-card">
                 <h3 class="font-semibold text-kirada-navy">{{ __('Active Lease') }}</h3>

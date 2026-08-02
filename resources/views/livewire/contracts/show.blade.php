@@ -1,4 +1,6 @@
 <div class="kirada-shell">
+    <x-status-banner class="mb-4" />
+
     {{-- ─── Breadcrumb (shown when contract belongs to a lease) ─────────── --}}
     @if ($contract->lease_id && $contract->lease)
         <nav class="mb-4 flex items-center gap-1.5 text-sm text-zinc-400">

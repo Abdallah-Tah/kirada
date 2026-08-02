@@ -1,37 +1,4 @@
-@php
-    use App\Models\MaintenanceRequest;
-    use App\Models\RentInvoice;
-
-    $user = auth()->user();
-
-    // Notification counts are role-scoped: a landlord and a provider have
-    // nothing in common to be nudged about.
-    $pendingConnections = 0;
-    $openRequests = 0;
-    $overdueInvoices = 0;
-
-    if ($user?->canAccessLandlordPortal()) {
-        $landlord = $user->landlordAccount();
-        $pendingConnections = $landlord?->maintenanceConnections()->wherePivot('status', 'pending')->count() ?? 0;
-        $openRequests = MaintenanceRequest::forLandlord($user->landlordAccountId())->open()->count();
-        $overdueInvoices = RentInvoice::forLandlord($user->landlordAccountId())->overdue()->count();
-    } elseif ($user?->hasRole('maintenance')) {
-        $pendingConnections = $user->landlordConnections()->wherePivot('status', 'pending')->count();
-        $openRequests = MaintenanceRequest::assignedTo($user->id)->open()->count();
-    }
-
-    $attentionCount = $pendingConnections + $openRequests + $overdueInvoices;
-
-    $locales = [
-        'en' => 'English',
-        'fr' => 'Français',
-        'ar' => 'العربية',
-        'so' => 'Soomaali',
-        'am' => 'አማርኛ',
-    ];
-    $currentLocale = app()->getLocale();
-@endphp
-
+{{-- Counts, role scoping, and locale data come from App\View\Components\AppHeader. --}}
 <flux:header class="kirada-app-header">
     <a href="{{ route('dashboard') }}" wire:navigate class="kirada-header-brand">
         <span class="kirada-sidebar-logo" aria-hidden="true">
@@ -156,30 +123,17 @@
                         {{ __('All caught up. Nothing needs you right now.') }}
                     </div>
                 @else
-                    @if ($pendingConnections > 0)
+                    @foreach ($attentionItems as $item)
                         <flux:menu.item
-                            :href="$user->hasRole('maintenance') ? route('maintenance-network.inbox') : route('maintenance-network.index')"
-                            icon="user-group"
-                            wire:navigate
+                            :href="$item->url"
+                            :icon="$item->icon"
+                            :wire:navigate="$item->navigate"
+                            :data-test="'attention-'.$item->key"
                         >
-                            <span class="flex-1">{{ trans_choice(':count pending connection|:count pending connections', $pendingConnections) }}</span>
-                            <span class="font-mono text-xs text-sky-500">{{ $pendingConnections }}</span>
+                            <span class="flex-1">{{ $item->label }}</span>
+                            <span class="font-mono text-xs {{ $item->countClass }}">{{ $item->count }}</span>
                         </flux:menu.item>
-                    @endif
-
-                    @if ($openRequests > 0)
-                        <flux:menu.item :href="route('maintenance-requests.index')" icon="wrench-screwdriver" wire:navigate>
-                            <span class="flex-1">{{ trans_choice(':count open maintenance request|:count open maintenance requests', $openRequests) }}</span>
-                            <span class="font-mono text-xs text-amber-500">{{ $openRequests }}</span>
-                        </flux:menu.item>
-                    @endif
-
-                    @if ($overdueInvoices > 0)
-                        <flux:menu.item :href="route('rent-invoices.index')" icon="exclamation-triangle" wire:navigate>
-                            <span class="flex-1">{{ trans_choice(':count overdue invoice|:count overdue invoices', $overdueInvoices) }}</span>
-                            <span class="font-mono text-xs text-red-500">{{ $overdueInvoices }}</span>
-                        </flux:menu.item>
-                    @endif
+                    @endforeach
                 @endif
             </flux:menu>
         </flux:dropdown>
