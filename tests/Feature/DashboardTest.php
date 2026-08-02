@@ -62,6 +62,24 @@ class DashboardTest extends TestCase
             ], false);
     }
 
+    public function test_landlord_dashboard_surfaces_use_theme_aware_tokens(): void
+    {
+        $dashboard = file_get_contents(resource_path('views/dashboards/landlord.blade.php'));
+        $css = file_get_contents(resource_path('css/app.css'));
+
+        $this->assertIsString($dashboard);
+        $this->assertIsString($css);
+        $this->assertStringContainsString('kirada-quick-action', $dashboard);
+        $this->assertStringContainsString('kirada-dashboard-card-primary', $dashboard);
+        $this->assertStringContainsString('kirada-dashboard-card-muted', $dashboard);
+        $this->assertStringNotContainsString('bg-white/92', $dashboard);
+        $this->assertMatchesRegularExpression(
+            '/\.kirada-quick-action\s*\{[^}]*background:\s*var\(--kirada-surface\);[^}]*color:\s*var\(--kirada-text\);/s',
+            $css,
+        );
+        $this->assertStringContainsString('.dark .kirada-quick-action:hover', $css);
+    }
+
     public function test_tenant_user_is_redirected_to_tenant_dashboard(): void
     {
         $tenant = User::factory()->create(['email_verified_at' => now()]);

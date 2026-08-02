@@ -865,6 +865,65 @@ select:focus[data-flux-control] {
         @apply mt-2 text-3xl font-semibold tracking-tight text-kirada-navy;
     }
 
+    .kirada-dashboard-section-label {
+        color: var(--kirada-text-muted);
+    }
+
+    .kirada-dashboard-alert {
+        border-color: color-mix(in srgb, var(--color-kirada-teal) 34%, var(--kirada-border));
+        background: color-mix(in srgb, var(--color-kirada-teal) 7%, var(--kirada-surface));
+        color: var(--kirada-text);
+    }
+
+    .kirada-quick-action {
+        border: 1px solid var(--kirada-border);
+        background: var(--kirada-surface);
+        color: var(--kirada-text);
+        box-shadow: var(--kirada-shadow);
+    }
+
+    .kirada-quick-action:hover {
+        border-color: color-mix(in srgb, var(--color-kirada-teal) 42%, var(--kirada-border));
+        background: color-mix(in srgb, var(--color-kirada-teal) 4%, var(--kirada-surface));
+        box-shadow: var(--kirada-shadow-raised);
+    }
+
+    .kirada-quick-action:focus-visible {
+        outline: 2px solid var(--kirada-focus);
+        outline-offset: 2px;
+    }
+
+    .kirada-quick-action-label,
+    .kirada-dashboard-card-title,
+    .kirada-dashboard-card-primary {
+        color: var(--kirada-text);
+    }
+
+    .kirada-dashboard-card-muted {
+        color: var(--kirada-text-muted);
+    }
+
+    .kirada-dashboard-card-link {
+        color: var(--color-kirada-teal);
+    }
+
+    .kirada-dashboard-card-link:hover {
+        color: color-mix(in srgb, var(--color-kirada-teal) 74%, var(--kirada-text));
+    }
+
+    .kirada-dashboard-card-divide > :not([hidden]) ~ :not([hidden]) {
+        border-color: var(--kirada-border);
+    }
+
+    .dark .kirada-dashboard-card-link {
+        color: var(--color-kirada-teal-bright);
+    }
+
+    .dark .kirada-quick-action:hover {
+        border-color: var(--kirada-border-strong);
+        background: color-mix(in srgb, var(--color-kirada-teal) 8%, var(--kirada-surface));
+    }
+
     .kirada-pill {
         @apply inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold;
     }
@@ -1410,27 +1469,6 @@ select:focus[data-flux-control] {
     }
     .dark .kirada-shell .bg-red-100 {
         background-color: color-mix(in srgb, var(--color-red-700) 35%, transparent);
-    }
-
-    /* Inline "quick action" tiles (landlord dashboard) hard-code a white
-       surface: bg-white/92 + border-white/75 + ring-slate-900/3, with
-       text-kirada-navy on top. In dark mode the white tile + flipped light
-       text would clash, so flip the whole tile to the charcoal surface and
-       let the existing text-kirada-navy override render the label light.
-       Scoped to .kirada-shell so the marketing welcome page (which also
-       uses bg-white/92 but is explicitly light) is untouched. */
-    .dark .kirada-shell .bg-white\/92 {
-        background-color: color-mix(in srgb, var(--color-stone-800) 92%, transparent);
-        border-color: color-mix(in srgb, var(--color-stone-700) 60%, transparent);
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
-    }
-    .dark .kirada-shell .bg-white\/92:hover {
-        box-shadow: 0 22px 55px rgba(2, 132, 199, 0.16), 0 4px 16px rgba(0, 0, 0, 0.35);
-    }
-    /* ring-slate-900/3 left a near-invisible ring on light; on dark it's a
-       faint warm ring that reads as a hairline edge. */
-    .dark .kirada-shell .ring-slate-900\/3 {
-        --tw-ring-color: color-mix(in srgb, var(--color-stone-600) 35%, transparent);
     }
 
     /* Stat-value accents: text-kirada-ocean (#0F766E) is too dim on charcoal
