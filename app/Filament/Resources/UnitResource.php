@@ -8,6 +8,9 @@ use App\Models\Unit;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -26,7 +29,7 @@ class UnitResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make()
+                Section::make()
                     ->schema([
                         Forms\Components\Select::make('property_id')
                             ->label('Property')
@@ -35,10 +38,10 @@ class UnitResource extends Resource
                             ->preload()
                             ->required()
                             ->live()
-                            ->afterStateUpdated(fn (Forms\Set $set) => $set('building_id', null)),
+                            ->afterStateUpdated(fn (Set $set) => $set('building_id', null)),
                         Forms\Components\Select::make('building_id')
                             ->label('Building')
-                            ->options(fn (Forms\Get $get) => Building::query()
+                            ->options(fn (Get $get) => Building::query()
                                 ->where('property_id', $get('property_id'))
                                 ->pluck('name', 'id'))
                             ->searchable()

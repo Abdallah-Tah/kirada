@@ -7,6 +7,7 @@ use App\Models\Tenant;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -26,7 +27,7 @@ class TenantResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make('Contact')
+                Section::make('Contact')
                     ->schema([
                         Forms\Components\Select::make('landlord_id')
                             ->label('Landlord')
@@ -46,13 +47,13 @@ class TenantResource extends Resource
                         Forms\Components\TextInput::make('email')->email()->maxLength(255),
                     ])
                     ->columns(2),
-                Forms\Components\Section::make('Address')
+                Section::make('Address')
                     ->schema([
                         Forms\Components\TextInput::make('address')->maxLength(255),
                         Forms\Components\TextInput::make('city')->maxLength(255),
                     ])
                     ->columns(2),
-                Forms\Components\Section::make('ID Document')
+                Section::make('ID Document')
                     ->schema([
                         Forms\Components\Select::make('id_type')
                             ->options([
@@ -68,7 +69,7 @@ class TenantResource extends Resource
                             ->directory('tenant-docs'),
                     ])
                     ->columns(2),
-                Forms\Components\Section::make('Status')
+                Section::make('Status')
                     ->schema([
                         Forms\Components\Select::make('status')
                             ->options(['active' => 'Active', 'inactive' => 'Inactive'])
@@ -109,8 +110,10 @@ class TenantResource extends Resource
                     ->icon('heroicon-o-envelope')
                     ->requiresConfirmation()
                     ->visible(fn (Tenant $record) => $record->user && $record->user->email_verified_at === null)
-                    ->action(fn (Tenant $record) => $record->user->sendEmailVerificationNotification())
-                    ->successMessage('Verification email sent to linked user.'),
+                    ->action(function (Tenant $record): void {
+                        $record->user?->sendEmailVerificationNotification();
+                    })
+                    ->successNotificationTitle('Verification email sent to linked user.'),
                 Actions\EditAction::make(),
             ])
             ->bulkActions([

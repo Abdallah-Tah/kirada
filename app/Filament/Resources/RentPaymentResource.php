@@ -12,6 +12,7 @@ use Filament\Actions;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -32,7 +33,7 @@ class RentPaymentResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make()
+                Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('payment_number')->required()->maxLength(100),
                         Forms\Components\TextInput::make('amount')->numeric()->required(),
@@ -85,7 +86,7 @@ class RentPaymentResource extends Resource
                     ->requiresConfirmation()
                     ->visible(fn (RentPayment $record) => $record->isPending())
                     ->action(function (RentPayment $record, RentPaymentService $service) {
-                        $service->confirmPayment($record, Auth::id());
+                        $service->confirmPayment($record, Auth::user()?->id);
                         Notification::make()->title('Payment confirmed.')->success()->send();
                     }),
                 Actions\Action::make('reject')

@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -41,12 +42,12 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $privacy_accepted_at
  * @property Carbon|null $onboarding_completed_at
  */
-#[Fillable(['name', 'email', 'password', 'country_id', 'preferred_language', 'phone_country_code', 'address', 'city', 'postal_code', 'terms_accepted_at', 'privacy_accepted_at', 'onboarding_completed_at', 'stripe_customer_id', 'stripe_id', 'pm_type', 'pm_last_four', 'trial_ends_at'])]
+#[Fillable(['name', 'email', 'email_verified_at', 'password', 'country_id', 'preferred_language', 'phone_country_code', 'address', 'city', 'postal_code', 'terms_accepted_at', 'privacy_accepted_at', 'onboarding_completed_at', 'stripe_customer_id', 'stripe_id', 'pm_type', 'pm_last_four', 'trial_ends_at'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
-class User extends Authenticatable implements FilamentUser, PasskeyUser
+class User extends Authenticatable implements FilamentUser, MustVerifyEmailContract, PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use Billable, HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
+    use Billable, HasFactory, HasRoles, MustVerifyEmail, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.

@@ -44,6 +44,9 @@ class RentPayment extends Model
 
     // ── Relationships ──────────────────────────────────
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function landlord(): BelongsTo
     {
         return $this->belongsTo(User::class, 'landlord_id');
@@ -54,6 +57,9 @@ class RentPayment extends Model
         return $this->belongsTo(LandlordPayoutAccount::class, 'landlord_payout_account_id');
     }
 
+    /**
+     * @return BelongsTo<RentInvoice, $this>
+     */
     public function rentInvoice(): BelongsTo
     {
         return $this->belongsTo(RentInvoice::class);
@@ -64,6 +70,9 @@ class RentPayment extends Model
         return $this->belongsTo(Lease::class);
     }
 
+    /**
+     * @return BelongsTo<Property, $this>
+     */
     public function property(): BelongsTo
     {
         return $this->belongsTo(Property::class);
@@ -74,6 +83,9 @@ class RentPayment extends Model
         return $this->belongsTo(Unit::class);
     }
 
+    /**
+     * @return BelongsTo<Tenant, $this>
+     */
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
@@ -84,6 +96,9 @@ class RentPayment extends Model
         return $this->belongsTo(User::class, 'confirmed_by');
     }
 
+    /**
+     * @return BelongsTo<Currency, $this>
+     */
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);

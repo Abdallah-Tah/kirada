@@ -71,7 +71,7 @@
             "phpstan analyse"
         ],
         "test": [
-            "@php artisan optimize:clear --ansi",
+            "@php artisan optimize:clear --env=testing --ansi",
             "@lint:check",
             "@types:check",
             "@php artisan test"

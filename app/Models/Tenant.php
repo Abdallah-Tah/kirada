@@ -42,11 +42,17 @@ class Tenant extends Model
 
     // ── Relationships ──────────────────────────────────
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function landlord(): BelongsTo
     {
         return $this->belongsTo(User::class, 'landlord_id');
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

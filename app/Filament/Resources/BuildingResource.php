@@ -7,6 +7,7 @@ use App\Models\Building;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,7 +26,7 @@ class BuildingResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make()
+                Section::make()
                     ->schema([
                         Forms\Components\Select::make('property_id')
                             ->label('Property')

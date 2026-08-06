@@ -8,6 +8,7 @@ use App\Models\Contract;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -26,7 +27,7 @@ class ContractResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make()
+                Section::make()
                     ->schema([
                         Forms\Components\Select::make('landlord_id')
                             ->label('Landlord')

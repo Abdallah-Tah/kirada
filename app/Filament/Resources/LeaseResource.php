@@ -8,6 +8,8 @@ use App\Models\Lease;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -26,7 +28,7 @@ class LeaseResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make('Parties & Property')
+                Section::make('Parties & Property')
                     ->schema([
                         Forms\Components\Select::make('landlord_id')
                             ->label('Landlord')
@@ -41,7 +43,7 @@ class LeaseResource extends Resource
                             ->preload()
                             ->required()
                             ->live()
-                            ->afterStateUpdated(fn (Forms\Set $set) => $set('unit_id', null)),
+                            ->afterStateUpdated(fn (Set $set) => $set('unit_id', null)),
                         Forms\Components\Select::make('unit_id')
                             ->label('Unit')
                             ->relationship('unit', 'unit_number')
@@ -56,7 +58,7 @@ class LeaseResource extends Resource
                             ->required(),
                     ])
                     ->columns(2),
-                Forms\Components\Section::make('Term')
+                Section::make('Term')
                     ->schema([
                         Forms\Components\DatePicker::make('start_date')->required(),
                         Forms\Components\DatePicker::make('end_date')->required(),
@@ -69,7 +71,7 @@ class LeaseResource extends Resource
                             ->required(),
                     ])
                     ->columns(2),
-                Forms\Components\Section::make('Notes')
+                Section::make('Notes')
                     ->schema([
                         Forms\Components\Textarea::make('notes')->rows(3)->columnSpanFull(),
                     ]),

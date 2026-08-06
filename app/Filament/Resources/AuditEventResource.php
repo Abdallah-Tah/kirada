@@ -5,9 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AuditEventResource\Pages;
 use App\Models\AuditEvent;
 use Filament\Actions;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -62,8 +62,14 @@ class AuditEventResource extends Resource
                     ->columns(2),
                 Section::make('Values')
                     ->schema([
-                        TextEntry::make('old_values')->label('Old Values')->json()->columnSpanFull(),
-                        TextEntry::make('new_values')->label('New Values')->json()->columnSpanFull(),
+                        TextEntry::make('old_values')
+                            ->label('Old Values')
+                            ->formatStateUsing(fn ($state): string => json_encode($state, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) ?: '')
+                            ->columnSpanFull(),
+                        TextEntry::make('new_values')
+                            ->label('New Values')
+                            ->formatStateUsing(fn ($state): string => json_encode($state, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) ?: '')
+                            ->columnSpanFull(),
                     ]),
                 Section::make('Timestamp')
                     ->schema([

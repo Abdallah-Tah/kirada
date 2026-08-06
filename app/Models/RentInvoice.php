@@ -44,6 +44,9 @@ class RentInvoice extends Model
 
     // ── Relationships ──────────────────────────────────
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function landlord(): BelongsTo
     {
         return $this->belongsTo(User::class, 'landlord_id');
@@ -54,6 +57,9 @@ class RentInvoice extends Model
         return $this->belongsTo(Lease::class);
     }
 
+    /**
+     * @return BelongsTo<Property, $this>
+     */
     public function property(): BelongsTo
     {
         return $this->belongsTo(Property::class);
@@ -64,6 +70,9 @@ class RentInvoice extends Model
         return $this->belongsTo(Unit::class);
     }
 
+    /**
+     * @return BelongsTo<Tenant, $this>
+     */
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
@@ -74,6 +83,9 @@ class RentInvoice extends Model
         return $this->hasMany(RentInvoiceLineItem::class);
     }
 
+    /**
+     * @return BelongsTo<Currency, $this>
+     */
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);

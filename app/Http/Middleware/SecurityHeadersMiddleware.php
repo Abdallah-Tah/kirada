@@ -34,6 +34,7 @@ class SecurityHeadersMiddleware
             "'unsafe-inline'",
             'https://maps.googleapis.com',
             'https://js.stripe.com',
+            'https://static.cloudflareinsights.com',
         ];
 
         // Vite and framework debugging may evaluate generated JavaScript while
@@ -49,7 +50,7 @@ class SecurityHeadersMiddleware
             "img-src 'self' data: blob: https:",
             "font-src 'self' data: https://fonts.bunny.net",
             "media-src 'self'",
-            "connect-src 'self' https://maps.googleapis.com https://api.stripe.com",
+            "connect-src 'self' https://maps.googleapis.com https://api.stripe.com https://cloudflareinsights.com",
             'frame-src https://js.stripe.com https://hooks.stripe.com',
             "worker-src 'self' blob:",
             "manifest-src 'self'",

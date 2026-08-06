@@ -9,10 +9,10 @@ use Filament\Actions;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Auth;
 
 class LandlordTeamMembershipResource extends Resource
 {
@@ -28,7 +28,7 @@ class LandlordTeamMembershipResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make()
+                Section::make()
                     ->schema([
                         Forms\Components\Select::make('landlord_id')
                             ->label('Landlord')
@@ -72,7 +72,7 @@ class LandlordTeamMembershipResource extends Resource
                     ->icon('heroicon-o-paper-airplane')
                     ->requiresConfirmation()
                     ->action(function (LandlordTeamMembership $record, LandlordTeamService $service) {
-                        $service->invite($record->landlord_id, $record->email, $record->role, Auth::user(), $record->delivery_channels ?? ['email'], $record->phone);
+                        $service->invite($record->landlord, $record->email, $record->role, $record->phone, $record->delivery_channels ?? ['email']);
                         Notification::make()->title('Invitation resent.')->success()->send();
                     }),
                 Actions\EditAction::make(),

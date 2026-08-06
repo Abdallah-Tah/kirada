@@ -8,6 +8,7 @@ use App\Models\Property;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -27,7 +28,7 @@ class PropertyResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make('Details')
+                Section::make('Details')
                     ->schema([
                         Forms\Components\TextInput::make('name')->required()->maxLength(255),
                         Forms\Components\Select::make('landlord_id')

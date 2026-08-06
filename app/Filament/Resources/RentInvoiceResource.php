@@ -12,6 +12,7 @@ use Filament\Actions;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -31,7 +32,7 @@ class RentInvoiceResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make()
+                Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('invoice_number')->required()->maxLength(100),
                         Forms\Components\TextInput::make('payment_reference')->maxLength(100),

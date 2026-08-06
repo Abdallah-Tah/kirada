@@ -7,6 +7,7 @@ use App\Models\Plan;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,7 +26,7 @@ class PlanResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make()
+                Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')->required()->maxLength(255),
                         Forms\Components\TextInput::make('slug')->required()->maxLength(255)->unique(ignoreRecord: true),
