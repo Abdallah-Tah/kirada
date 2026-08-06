@@ -776,5 +776,10 @@
     "Completed on :date": "اكتمل في :date",
     "Party": "الطرف",
     "Signed on": "تاريخ التوقيع",
-    "Keep this email for your records. The same document is always available in Kirada.": "احتفظ بهذا البريد في سجلاتك. المستند نفسه متاح دائمًا في Kirada."
+    "Keep this email for your records. The same document is always available in Kirada.": "احتفظ بهذا البريد في سجلاتك. المستند نفسه متاح دائمًا في Kirada.",
+    "Invitation queued for WhatsApp delivery.": "تمت جدولة الدعوة للإرسال عبر واتساب.",
+    "Send this invitation through WhatsApp? A new link will be issued and the previous one will stop working.": "إرسال هذه الدعوة عبر واتساب؟ سيتم إصدار رابط جديد وسيتوقف الرابط السابق عن العمل.",
+    "WhatsApp needs the BWA Messaging API and an approved team invitation template before it can be selected.": "يحتاج واتساب إلى واجهة مراسلة BWA وقالب دعوة فريق معتمد قبل أن يمكن اختياره.",
+    "Only pending invitations can be sent by WhatsApp.": "يمكن إرسال الدعوات المعلقة فقط عبر واتساب.",
+    "Configure the BWA Messaging API and an approved team invitation template first.": "قم أولًا بإعداد واجهة مراسلة BWA وقالب دعوة فريق معتمد."
 }

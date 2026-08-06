@@ -72,6 +72,12 @@
                                         <flux:menu.item :href="route('rent-payments.receipt', $payment)" icon="arrow-down-tray">
                                             {{ __('Download Receipt') }}
                                         </flux:menu.item>
+                                        <flux:menu.item wire:click="sendReceipt({{ $payment->id }}, 'email')" icon="envelope">
+                                            {{ __('Email Receipt') }}
+                                        </flux:menu.item>
+                                        <flux:menu.item wire:click="sendReceipt({{ $payment->id }}, 'whatsapp')" icon="paper-airplane">
+                                            {{ __('WhatsApp Receipt') }}
+                                        </flux:menu.item>
                                     @endif
                                     @if ($payment->status === 'pending')
                                         <flux:menu.separator />

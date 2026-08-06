@@ -776,5 +776,10 @@
     "Completed on :date": "Waa la dhammeeyay :date",
     "Party": "Dhinaca",
     "Signed on": "Taariikhda saxiixa",
-    "Keep this email for your records. The same document is always available in Kirada.": "Emaylkan u hayso diiwaankaaga. Dukumeentiga isku midka ah had iyo jeer wuxuu ku jiraa Kirada."
+    "Keep this email for your records. The same document is always available in Kirada.": "Emaylkan u hayso diiwaankaaga. Dukumeentiga isku midka ah had iyo jeer wuxuu ku jiraa Kirada.",
+    "Invitation queued for WhatsApp delivery.": "Casuumaadda waxaa loo safay in lagu diro WhatsApp.",
+    "Send this invitation through WhatsApp? A new link will be issued and the previous one will stop working.": "Ma ku dirtaa casuumaaddan WhatsApp? Link cusub ayaa la bixin doonaa, kii horena wuu joogsan doonaa.",
+    "WhatsApp needs the BWA Messaging API and an approved team invitation template before it can be selected.": "WhatsApp wuxuu u baahan yahay BWA Messaging API iyo qaab casuumaad kooxeed oo la ansixiyay ka hor inta aan la dooran.",
+    "Only pending invitations can be sent by WhatsApp.": "Kaliya casuumaadaha sugaya ayaa lagu diri karaa WhatsApp.",
+    "Configure the BWA Messaging API and an approved team invitation template first.": "Marka hore samee BWA Messaging API iyo qaab casuumaad kooxeed oo la ansixiyay."
 }

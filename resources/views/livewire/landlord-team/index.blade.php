@@ -97,6 +97,40 @@
                 </flux:select>
             </div>
 
+            <div class="grid gap-4 md:grid-cols-2 md:items-start">
+                <div>
+                    <flux:label>{{ __('Phone') }}</flux:label>
+                    <flux:input wire:model.live="phone" type="text" class="mt-1" :placeholder="__('Optional')" />
+                    <flux:error name="phone" />
+                </div>
+
+                <div>
+                    <flux:label>{{ __('Send invitation via') }}</flux:label>
+                    <div class="mt-2 space-y-2">
+                        <flux:checkbox
+                            wire:model="deliveryChannels"
+                            value="email"
+                            :disabled="blank($email)"
+                            :label="__('Email')"
+                        />
+                        <flux:checkbox
+                            wire:model="deliveryChannels"
+                            value="whatsapp"
+                            :disabled="blank($phone) || ! $this->whatsAppAvailable()"
+                            :label="__('WhatsApp')"
+                        />
+                    </div>
+                    <p class="mt-2 text-xs text-zinc-400">
+                        @if ($this->whatsAppAvailable())
+                            {{ __('Choose one or both channels. WhatsApp requires a phone number, BWA, and an approved invitation template.') }}
+                        @else
+                            {{ __('WhatsApp needs the BWA Messaging API and an approved team invitation template before it can be selected.') }}
+                        @endif
+                    </p>
+                    <flux:error name="deliveryChannels" />
+                </div>
+            </div>
+
             <flux:button type="submit" variant="primary" icon="paper-airplane" class="w-full">{{ __('Send invitation') }}</flux:button>
 
             <p class="rounded-lg bg-zinc-50 px-4 py-3 text-sm text-zinc-600 dark:bg-zinc-800/70 dark:text-zinc-300">
@@ -138,9 +172,49 @@
                                 {{ $roleDefinitions[$member->role]['label'] ?? __(str($member->role)->replace('-', ' ')->title()->toString()) }}
                             @endif
                         </td>
-                        <td class="px-4 py-3"><flux:badge color="{{ $member->isActive() ? 'green' : ($member->isPending() ? 'amber' : 'zinc') }}">{{ __(ucfirst($member->status)) }}</flux:badge></td>
+                        <td class="px-4 py-3">
+                            <flux:badge color="{{ $member->isActive() ? 'green' : ($member->isPending() ? 'amber' : 'zinc') }}">{{ __(ucfirst($member->status)) }}</flux:badge>
+
+                            @if($member->isPending())
+                                <div class="mt-1.5 flex flex-wrap items-center gap-1">
+                                    @foreach($member->delivery_channels ?? ['email'] as $channel)
+                                        <flux:badge color="{{ $channel === 'whatsapp' ? 'green' : 'sky' }}" size="sm">
+                                            {{ __($channel === 'whatsapp' ? 'WhatsApp' : 'Email') }}
+                                        </flux:badge>
+                                    @endforeach
+                                </div>
+                                @if($member->whatsapp_error)
+                                    <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ __('WhatsApp delivery failed') }}</p>
+                                @elseif($member->whatsapp_status)
+                                    <p class="mt-1 text-xs text-zinc-500">
+                                        {{ match ($member->whatsapp_status) {
+                                            'queued' => __('WhatsApp queued'),
+                                            'accepted' => __('WhatsApp accepted'),
+                                            'sent' => __('WhatsApp sent'),
+                                            'delivered' => __('WhatsApp delivered'),
+                                            'read' => __('WhatsApp read'),
+                                            default => __('WhatsApp queued'),
+                                        } }}
+                                    </p>
+                                @endif
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-zinc-500">{{ $member->inviter?->name }}</td>
                         <td class="px-4 py-3 text-end">
+                            @if($member->isPending() && $this->whatsAppAvailable() && (auth()->user()->isLandlord() || auth()->user()->can('team.invite')))
+                                <flux:button
+                                    wire:click="resendWhatsApp({{ $member->id }})"
+                                    data-confirm="{{ __('Send this invitation through WhatsApp? A new link will be issued and the previous one will stop working.') }}"
+                                    data-confirm-title="{{ __('Send via WhatsApp') }}"
+                                    data-confirm-button="{{ __('Send via WhatsApp') }}"
+                                    data-confirm-variant="primary"
+                                    variant="ghost"
+                                    size="sm"
+                                    icon="chat-bubble-left-right"
+                                    data-test="team-resend-whatsapp"
+                                >{{ __('Send via WhatsApp') }}</flux:button>
+                            @endif
+
                             @if(!in_array($member->status, ['revoked'], true) && (auth()->user()->isLandlord() || auth()->user()->can('team.manage')))
                                 <flux:button
                                     wire:click="remove({{ $member->id }})"

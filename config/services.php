@@ -44,7 +44,13 @@ return [
         'signature_max_age_seconds' => (int) env('BWA_SIGNATURE_MAX_AGE_SECONDS', 300),
         'invoice_template' => env('BWA_WHATSAPP_INVOICE_TEMPLATE', 'kirada_rent_invoice'),
         'reminder_template' => env('BWA_WHATSAPP_REMINDER_TEMPLATE', 'kirada_rent_reminder'),
+        'receipt_template' => env('BWA_WHATSAPP_RECEIPT_TEMPLATE'),
         'invitation_template' => env('BWA_WHATSAPP_INVITATION_TEMPLATE', 'kirada_tenant_invitation'),
+
+        // Staff invitations. Left unset until a template is approved with Meta,
+        // which keeps the WhatsApp option off the team screen rather than
+        // queueing sends that the provider would reject.
+        'team_invitation_template' => env('BWA_WHATSAPP_TEAM_INVITATION_TEMPLATE'),
         'template_language' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE', 'fr'),
 
         // Meta approves a WhatsApp template per language, so a landlord's

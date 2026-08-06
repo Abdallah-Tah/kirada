@@ -5,9 +5,11 @@ namespace App\Services;
 use App\Models\LandlordPayoutAccount;
 use App\Models\RentInvoice;
 use App\Models\RentPayment;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class RentPaymentService
 {
@@ -157,7 +159,7 @@ class RentPaymentService
      */
     public function confirmPayment(RentPayment $payment, int $userId): RentPayment
     {
-        return DB::transaction(function () use ($payment, $userId): RentPayment {
+        $confirmed = DB::transaction(function () use ($payment, $userId): RentPayment {
             $locked = RentPayment::query()->lockForUpdate()->findOrFail($payment->id);
             $invoice = RentInvoice::query()->lockForUpdate()->findOrFail($locked->rent_invoice_id);
 
@@ -181,6 +183,18 @@ class RentPaymentService
 
             return $locked->fresh();
         });
+
+        try {
+            app(ReceiptDeliveryService::class)->dispatch(
+                $confirmed,
+                ReceiptDeliveryService::AUTOMATIC_EVENT,
+                User::find($userId),
+            );
+        } catch (Throwable $exception) {
+            report($exception);
+        }
+
+        return $confirmed;
     }
 
     /**

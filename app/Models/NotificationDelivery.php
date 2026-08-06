@@ -26,6 +26,7 @@ class NotificationDelivery extends Model
     protected $fillable = [
         'landlord_id',
         'rent_invoice_id',
+        'rent_payment_id',
         'tenant_id',
         'actor_id',
         'event',
@@ -61,6 +62,11 @@ class NotificationDelivery extends Model
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(RentInvoice::class, 'rent_invoice_id');
+    }
+
+    public function payment(): BelongsTo
+    {
+        return $this->belongsTo(RentPayment::class, 'rent_payment_id');
     }
 
     public function tenant(): BelongsTo

@@ -3,10 +3,12 @@
 namespace App\Jobs;
 
 use App\Models\BwaEvent;
+use App\Models\LandlordTeamMembership;
 use App\Models\NotificationDelivery;
 use App\Models\TenantInvitation;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Queue\Queueable;
 use JsonException;
 use Throwable;
@@ -94,7 +96,13 @@ class ProcessBwaEvent implements ShouldQueue
         $invitation = TenantInvitation::where('whatsapp_message_id', $messageId)->first();
 
         if ($invitation && $this->canAdvance($invitation->whatsapp_status, $status)) {
-            $this->updateTenantInvitation($invitation, $status, $payload, $timestamp);
+            $this->updateInvitationDelivery($invitation, $status, $payload, $timestamp);
+        }
+
+        $membership = LandlordTeamMembership::where('whatsapp_message_id', $messageId)->first();
+
+        if ($membership && $this->canAdvance($membership->whatsapp_status, $status)) {
+            $this->updateInvitationDelivery($membership, $status, $payload, $timestamp);
         }
     }
 
@@ -132,9 +140,15 @@ class ProcessBwaEvent implements ShouldQueue
         };
     }
 
-    /** @param array<string, mixed> $payload */
-    private function updateTenantInvitation(
-        TenantInvitation $invitation,
+    /**
+     * Tenant and team invitations carry the same WhatsApp delivery columns, so
+     * one writer keeps their status trails identical.
+     *
+     * @param  TenantInvitation|LandlordTeamMembership  $invitation
+     * @param  array<string, mixed>  $payload
+     */
+    private function updateInvitationDelivery(
+        Model $invitation,
         string $status,
         array $payload,
         CarbonImmutable $timestamp,

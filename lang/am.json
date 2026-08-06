@@ -776,5 +776,10 @@
     "Completed on :date": "በ:date ተጠናቋል",
     "Party": "ወገን",
     "Signed on": "የተፈረመበት",
-    "Keep this email for your records. The same document is always available in Kirada.": "ይህን ኢሜይል ለመዝገብዎ ያስቀምጡ። ተመሳሳዩ ሰነድ ሁልጊዜ በKirada ውስጥ ይገኛል።"
+    "Keep this email for your records. The same document is always available in Kirada.": "ይህን ኢሜይል ለመዝገብዎ ያስቀምጡ። ተመሳሳዩ ሰነድ ሁልጊዜ በKirada ውስጥ ይገኛል።",
+    "Invitation queued for WhatsApp delivery.": "ግብዣው በWhatsApp ለመላክ ተሰልፏል።",
+    "Send this invitation through WhatsApp? A new link will be issued and the previous one will stop working.": "ይህን ግብዣ በWhatsApp ይላኩ? አዲስ አገናኝ ይሰጣል፣ ቀዳሚው መስራት ያቆማል።",
+    "WhatsApp needs the BWA Messaging API and an approved team invitation template before it can be selected.": "WhatsApp ከመመረጡ በፊት የBWA መልእክት API እና የጸደቀ የቡድን ግብዣ ቅንብር ያስፈልገዋል።",
+    "Only pending invitations can be sent by WhatsApp.": "በWhatsApp መላክ የሚቻለው በመጠባበቅ ላይ ያሉ ግብዣዎችን ብቻ ነው።",
+    "Configure the BWA Messaging API and an approved team invitation template first.": "መጀመሪያ የBWA መልእክት API እና የጸደቀ የቡድን ግብዣ ቅንብር ያዘጋጁ።"
 }

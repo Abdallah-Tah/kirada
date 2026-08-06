@@ -12,7 +12,12 @@ class Index extends Component
 {
     public string $email = '';
 
+    public string $phone = '';
+
     public string $role = 'property-manager';
+
+    /** @var array<int, string> */
+    public array $deliveryChannels = [LandlordTeamMembership::CHANNEL_EMAIL];
 
     public function mount(): void
     {
@@ -38,19 +43,63 @@ class Index extends Component
         $validated = $this->validate([
             'email' => 'required|email|max:255',
             'role' => 'required|in:'.implode(',', LandlordTeamMembership::ROLES),
+            'phone' => 'nullable|string|max:32',
+            'deliveryChannels' => 'array',
+            'deliveryChannels.*' => 'in:'.implode(',', LandlordTeamMembership::CHANNELS),
         ]);
 
+        if (in_array(LandlordTeamMembership::CHANNEL_WHATSAPP, $this->deliveryChannels, true)
+            && blank($validated['phone'] ?? null)) {
+            $this->addError('phone', __('A phone number is required for WhatsApp invitation delivery.'));
+
+            return;
+        }
+
         try {
-            app(LandlordTeamService::class)->invite(auth()->user(), $validated['email'], $validated['role']);
+            app(LandlordTeamService::class)->invite(
+                auth()->user(),
+                $validated['email'],
+                $validated['role'],
+                $validated['phone'] ?? null,
+                $this->deliveryChannels,
+            );
         } catch (\DomainException $exception) {
             $this->addError('email', __($exception->getMessage()));
 
             return;
         }
 
-        $this->reset('email');
+        $this->reset('email', 'phone');
+        $this->deliveryChannels = [LandlordTeamMembership::CHANNEL_EMAIL];
         unset($this->members);
         Flux::toast(text: __('Team invitation sent.'), variant: 'success');
+    }
+
+    public function whatsAppAvailable(): bool
+    {
+        return app(LandlordTeamService::class)->whatsAppAvailable();
+    }
+
+    /**
+     * Re-deliver a pending invitation over WhatsApp. This mints a fresh link,
+     * so the previously emailed one stops working.
+     */
+    public function resendWhatsApp(int $membershipId): void
+    {
+        abort_unless(auth()->user()->isLandlord() || auth()->user()->can('team.invite'), 403);
+
+        $membership = $this->membership($membershipId);
+
+        try {
+            app(LandlordTeamService::class)->resendWhatsApp($membership);
+        } catch (\DomainException $exception) {
+            Flux::toast(text: __($exception->getMessage()), variant: 'danger');
+
+            return;
+        }
+
+        unset($this->members);
+        Flux::toast(text: __('Invitation queued for WhatsApp delivery.'), variant: 'success');
     }
 
     public function updateRole(int $membershipId, string $role): void

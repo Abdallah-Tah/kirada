@@ -3,8 +3,10 @@
 namespace App\Livewire\RentPayments;
 
 use App\Models\RentPayment;
+use App\Services\ReceiptDeliveryService;
 use App\Services\RentPaymentService;
 use Flux\Flux;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -72,7 +74,37 @@ class Index extends Component
 
         unset($this->payments);
 
-        Flux::toast(text: 'Payment confirmed. Invoice status updated.', variant: 'success');
+        Flux::toast(text: 'Payment confirmed. Receipt delivery queued.', variant: 'success');
+    }
+
+    public function sendReceipt(int $id, string $channel): void
+    {
+        abort_unless(in_array($channel, ['email', 'whatsapp'], true), 422);
+
+        $payment = RentPayment::findOrFail($id);
+
+        $this->authorize('update', $payment);
+        abort_unless($payment->isConfirmed(), 404);
+
+        $delivery = app(ReceiptDeliveryService::class)
+            ->dispatch(
+                $payment,
+                'receipt_manual_'.Str::uuid(),
+                auth()->user(),
+                [$channel],
+            )
+            ->first();
+
+        if ($delivery?->status === 'skipped') {
+            Flux::toast(
+                text: $delivery->error_message ?: 'That receipt channel is unavailable.',
+                variant: 'warning',
+            );
+
+            return;
+        }
+
+        Flux::toast(text: ucfirst($channel).' receipt queued.', variant: 'success');
     }
 
     public function rejectPayment(int $id): void

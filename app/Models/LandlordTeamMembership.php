@@ -15,16 +15,33 @@ class LandlordTeamMembership extends Model
         'viewer',
     ];
 
+    public const CHANNEL_EMAIL = 'email';
+
+    public const CHANNEL_WHATSAPP = 'whatsapp';
+
+    /** @var array<int, string> */
+    public const CHANNELS = [self::CHANNEL_EMAIL, self::CHANNEL_WHATSAPP];
+
     protected $fillable = [
         'landlord_id',
         'user_id',
         'invited_by',
         'email',
+        'phone',
+        'delivery_channels',
         'role',
         'token_hash',
         'status',
         'expires_at',
         'accepted_at',
+        'whatsapp_message_id',
+        'whatsapp_request_id',
+        'whatsapp_status',
+        'whatsapp_sent_at',
+        'whatsapp_delivered_at',
+        'whatsapp_read_at',
+        'whatsapp_failed_at',
+        'whatsapp_error',
     ];
 
     protected $hidden = ['token_hash'];
@@ -32,6 +49,11 @@ class LandlordTeamMembership extends Model
     protected $casts = [
         'expires_at' => 'datetime',
         'accepted_at' => 'datetime',
+        'delivery_channels' => 'array',
+        'whatsapp_sent_at' => 'datetime',
+        'whatsapp_delivered_at' => 'datetime',
+        'whatsapp_read_at' => 'datetime',
+        'whatsapp_failed_at' => 'datetime',
     ];
 
     public function landlord(): BelongsTo
@@ -62,5 +84,10 @@ class LandlordTeamMembership extends Model
     public function isActive(): bool
     {
         return $this->status === 'active' && $this->accepted_at !== null;
+    }
+
+    public function usesChannel(string $channel): bool
+    {
+        return in_array($channel, $this->delivery_channels ?? [self::CHANNEL_EMAIL], true);
     }
 }

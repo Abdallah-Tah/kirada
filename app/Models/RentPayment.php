@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RentPayment extends Model
@@ -86,6 +87,11 @@ class RentPayment extends Model
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function deliveries(): HasMany
+    {
+        return $this->hasMany(NotificationDelivery::class, 'rent_payment_id');
     }
 
     // ── Scopes ──────────────────────────────────────────
