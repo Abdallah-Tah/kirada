@@ -303,6 +303,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmailContr
         return $this->landlordConnections()->wherePivotNotNull('approved_at');
     }
 
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'landlord_id');
+    }
+
     /**
      * @return HasOne<MaintenanceProfile, $this>
      */

@@ -69,6 +69,11 @@ class Property extends Model
         return $this->hasMany(RentInvoice::class);
     }
 
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
     // ── Scopes ──────────────────────────────────────────
 
     public function scopeActive(Builder $query): Builder

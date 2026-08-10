@@ -4,6 +4,9 @@
         @include('partials.head')
     </head>
     <body class="kirada-app-body text-slate-900 antialiased lg:min-h-screen dark:text-slate-100">
+        <div class="kirada-app-shell">
+            <x-app-header />
+            <div class="kirada-app-body-region">
         <flux:sidebar sticky collapsible="true" class="kirada-sidebar">
             {{-- ── Sidebar header: toggle row above logo ── --}}
             <div class="kirada-sidebar-header">
@@ -254,6 +257,8 @@
         </flux:header>
 
         {{ $slot }}
+            </div>
+        </div>
 
         <x-confirmation-modal />
 

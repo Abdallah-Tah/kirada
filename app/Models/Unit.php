@@ -56,6 +56,11 @@ class Unit extends Model
         return $this->hasMany(Lease::class);
     }
 
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
     // ── Scopes ──────────────────────────────────────────
 
     public function scopeActive(Builder $query): Builder

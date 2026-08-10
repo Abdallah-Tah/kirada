@@ -15,61 +15,67 @@
             ['title' => 'Messaging', 'desc' => 'Landlord and tenant communication.', 'tone' => 'blue'],
         ];
 
+        // Ten cards so the grid fills evenly at every breakpoint: 5 x 2 on xl, 2 x 5 on sm.
         $featureCards = [
             [
                 'title' => 'Property Management',
                 'desc' => 'Add properties, buildings, and units. Track vacancies and occupancy in real time.',
                 'tone' => 'blue',
+                'icon' => 'PM',
             ],
             [
                 'title' => 'Tenant Management',
                 'desc' => 'Store tenant profiles, contacts, lease history, and invitation status.',
                 'tone' => 'green',
+                'icon' => 'TEN',
             ],
             [
-                'title' => 'Lease Management',
-                'desc' => 'Create leases, set terms, track renewals, deposits, and important dates.',
+                'title' => 'Leases & Contracts',
+                'desc' => 'Create leases, set terms, and track renewals and deposits. Generate contracts, send secure signing links, and archive signed PDFs.',
                 'tone' => 'purple',
+                'icon' => 'LSE',
             ],
             [
-                'title' => 'Manual Rent Payments',
-                'desc' => 'Publish Waafi, D-Money, CAC Bank, cash, or custom landlord accounts. Tenants pay directly and upload proof for review.',
-                'tone' => 'blue',
-            ],
-            [
-                'title' => 'Digital Contracts',
-                'desc' => 'Generate contracts, send secure signing links, and archive signed PDFs.',
+                'title' => 'Payments & Invoicing',
+                'desc' => 'Generate rent invoices on a schedule, send reminders, and apply late fees. Publish Waafi, D-Money, CAC Bank, cash, or custom accounts and review uploaded payment proof.',
                 'tone' => 'red',
+                'icon' => 'PAY',
             ],
             [
                 'title' => 'Maintenance Requests',
                 'desc' => 'Find provider profiles, compare verified job reviews, assign work, approve quotes, and track repairs.',
                 'tone' => 'orange',
-            ],
-            [
-                'title' => 'Property Team Access',
-                'desc' => 'Invite administrators, property managers, accountants, and viewers with role-based permissions.',
-                'tone' => 'purple',
-            ],
-            [
-                'title' => 'Tenant Account Invitations',
-                'desc' => 'Send secure, expiring links so tenants can create or link an account and access only their own tenancy.',
-                'tone' => 'green',
+                'icon' => 'FIX',
             ],
             [
                 'title' => 'Messaging',
                 'desc' => 'Built-in conversations keep landlords, tenants, and teams connected.',
                 'tone' => 'blue',
+                'icon' => 'MSG',
+            ],
+            [
+                'title' => 'Tenant Invitations',
+                'desc' => 'Send secure, expiring links so tenants can create or link an account and access only their own tenancy.',
+                'tone' => 'green',
+                'icon' => 'INV',
             ],
             [
                 'title' => 'Documents & Receipts',
                 'desc' => 'Store leases, receipts, IDs, payment proofs, and important files securely.',
-                'tone' => 'green',
+                'tone' => 'purple',
+                'icon' => 'DOC',
             ],
             [
                 'title' => 'Reports & Analytics',
                 'desc' => 'Financial summaries, occupancy, and collection insights at a glance.',
-                'tone' => 'purple',
+                'tone' => 'red',
+                'icon' => 'RPT',
+            ],
+            [
+                'title' => 'Team & Permissions',
+                'desc' => 'Invite administrators, property managers, accountants, and viewers with role-based permissions.',
+                'tone' => 'orange',
+                'icon' => 'TEAM',
             ],
         ];
 
@@ -364,27 +370,7 @@
                             class="kirada-feature-card kirada-reveal {{ $index > 0 ? 'kirada-reveal-delay-' . min($index, 5) : '' }} min-h-60 rounded-[1.6rem] border border-slate-200/80 bg-white/92 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] backdrop-blur-sm">
                             <div
                                 class="mb-5 flex size-12 items-center justify-center rounded-2xl {{ $toneClasses[$feature['tone']] }}">
-                                <span class="text-lg font-bold">
-                                    @if ($feature['title'] === 'Reports & Analytics')
-                                        RPT
-                                    @elseif ($feature['title'] === 'Documents & Receipts')
-                                        DOC
-                                    @elseif ($feature['title'] === 'Tenant Management')
-                                        TEN
-                                    @elseif ($feature['title'] === 'Lease Management')
-                                        LSE
-                                    @elseif ($feature['title'] === 'Manual Rent Payments')
-                                        PAY
-                                    @elseif ($feature['title'] === 'Maintenance Requests')
-                                        FIX
-                                    @elseif ($feature['title'] === 'Messaging')
-                                        MSG
-                                    @elseif ($feature['title'] === 'Property Management')
-                                        PM
-                                    @else
-                                        SIGN
-                                    @endif
-                                </span>
+                                <span class="text-lg font-bold">{{ $feature['icon'] }}</span>
                             </div>
                             <h3 class="text-lg font-semibold text-kirada-navy">{{ __($feature['title']) }}</h3>
                             <p class="mt-3 text-sm leading-7 text-slate-600">{{ __($feature['desc']) }}</p>

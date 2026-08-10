@@ -781,5 +781,7 @@
     "Send this invitation through WhatsApp? A new link will be issued and the previous one will stop working.": "ይህን ግብዣ በWhatsApp ይላኩ? አዲስ አገናኝ ይሰጣል፣ ቀዳሚው መስራት ያቆማል።",
     "WhatsApp needs the BWA Messaging API and an approved team invitation template before it can be selected.": "WhatsApp ከመመረጡ በፊት የBWA መልእክት API እና የጸደቀ የቡድን ግብዣ ቅንብር ያስፈልገዋል።",
     "Only pending invitations can be sent by WhatsApp.": "በWhatsApp መላክ የሚቻለው በመጠባበቅ ላይ ያሉ ግብዣዎችን ብቻ ነው።",
-    "Configure the BWA Messaging API and an approved team invitation template first.": "መጀመሪያ የBWA መልእክት API እና የጸደቀ የቡድን ግብዣ ቅንብር ያዘጋጁ።"
+    "Configure the BWA Messaging API and an approved team invitation template first.": "መጀመሪያ የBWA መልእክት API እና የጸደቀ የቡድን ግብዣ ቅንብር ያዘጋጁ።",
+    "Leases & Contracts": "ውሎች እና ስምምነቶች",
+    "Create leases, set terms, and track renewals and deposits. Generate contracts, send secure signing links, and archive signed PDFs.": "ውሎችን ይፍጠሩ፣ ሁኔታዎችን ያዘጋጁ፣ እድሳቶችን እና ተቀማጭዎችን ይከታተሉ። ውሎችን ይፍጠሩ፣ ደህንነቱ የተጠበቀ የፊርማ አገናኞችን ይላኩ እና የተፈረሙ PDF ፋይሎችን ያስቀምጡ።"
 }

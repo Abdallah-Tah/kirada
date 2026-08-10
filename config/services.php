@@ -35,34 +35,27 @@ return [
         ],
     ],
 
-    // BWA owns Meta credentials. Kirada authenticates with HMAC signatures only.
+    // WhatsApp Cloud API (tenant notifications). Channels no-op when empty.
+    'whatsapp' => [
+        'token' => env('WHATSAPP_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'webhook_verify_token' => env('WHATSAPP_WEBHOOK_VERIFY_TOKEN'),
+        'app_secret' => env('WHATSAPP_APP_SECRET'),
+    ],
+
+    // Build With Abdallah messaging gateway (signed WhatsApp delivery).
     'bwa' => [
         'api_url' => env('BWA_MESSAGING_API_URL'),
         'app' => env('BWA_APP_ID', 'kirada'),
         'request_signing_secret' => env('BWA_REQUEST_SIGNING_SECRET'),
         'event_signing_secret' => env('BWA_EVENT_SIGNING_SECRET'),
-        'signature_max_age_seconds' => (int) env('BWA_SIGNATURE_MAX_AGE_SECONDS', 300),
+        'signature_max_age_seconds' => env('BWA_SIGNATURE_MAX_AGE_SECONDS', 300),
+        'invitation_template' => env('BWA_WHATSAPP_INVITATION_TEMPLATE', 'kirada_tenant_invitation'),
         'invoice_template' => env('BWA_WHATSAPP_INVOICE_TEMPLATE', 'kirada_rent_invoice'),
         'reminder_template' => env('BWA_WHATSAPP_REMINDER_TEMPLATE', 'kirada_rent_reminder'),
-        'receipt_template' => env('BWA_WHATSAPP_RECEIPT_TEMPLATE'),
-        'invitation_template' => env('BWA_WHATSAPP_INVITATION_TEMPLATE', 'kirada_tenant_invitation'),
-
-        // Staff invitations. Left unset until a template is approved with Meta,
-        // which keeps the WhatsApp option off the team screen rather than
-        // queueing sends that the provider would reject.
-        'team_invitation_template' => env('BWA_WHATSAPP_TEAM_INVITATION_TEMPLATE'),
+        'receipt_template' => env('BWA_WHATSAPP_RECEIPT_TEMPLATE', 'kirada_payment_receipt'),
         'template_language' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE', 'fr'),
-
-        // Meta approves a WhatsApp template per language, so a landlord's
-        // locale can only drive the template when an approved code exists for
-        // it. Anything left unset falls back to `template_language` above.
-        'template_languages' => array_filter([
-            'en' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_EN'),
-            'fr' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_FR'),
-            'ar' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_AR'),
-            'so' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_SO'),
-            'am' => env('BWA_WHATSAPP_TEMPLATE_LANGUAGE_AM'),
-        ]),
+        'template_languages' => [],
     ],
 
     // Twilio SMS (tenant notifications). Channels no-op when empty.
@@ -72,14 +65,34 @@ return [
         'from' => env('TWILIO_FROM'),
     ],
 
-    // Stripe card billing for the landlord's Kirada software subscription.
-    // Tenant rent remains a separate proof-based payment workflow.
+    // ── Subscription billing gateways ────────────────────────────────────────
+
+    // Stripe (international card payments)
     // After adding keys, run: php artisan stripe:sync-plans
-    // Get webhook secret from: stripe listen --forward-to localhost/stripe/webhook
+    // Get webhook secret from: stripe listen --forward-to localhost/webhooks/stripe
     'stripe' => [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+
+    // WaafiPay (Hormuud/Telesom mobile money — Somalia & Djibouti)
+    // Credentials from: https://merchant.waafipay.net
+    'waafi' => [
+        'merchant_uid' => env('WAAFI_MERCHANT_UID'),
+        'api_user_id' => env('WAAFI_API_USER_ID'),
+        'api_key' => env('WAAFI_API_KEY'),
+        'webhook_secret' => env('WAAFI_WEBHOOK_SECRET'),
+        'djf_usd_rate' => env('WAAFI_DJF_USD_RATE', 177),
+    ],
+
+    // CAC Bank (Djibouti bank transfer — reference-based, no API yet)
+    'cacbank' => [
+        'account_name' => env('CAC_BANK_ACCOUNT_NAME', 'Kirada Technologies'),
+        'account_number' => env('CAC_BANK_ACCOUNT_NUMBER'),
+        'iban' => env('CAC_BANK_IBAN'),
+        'swift' => env('CAC_BANK_SWIFT'),
+        'webhook_secret' => env('CAC_BANK_WEBHOOK_SECRET'),
     ],
 
 ];

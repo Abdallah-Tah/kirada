@@ -781,5 +781,7 @@
     "Send this invitation through WhatsApp? A new link will be issued and the previous one will stop working.": "Ma ku dirtaa casuumaaddan WhatsApp? Link cusub ayaa la bixin doonaa, kii horena wuu joogsan doonaa.",
     "WhatsApp needs the BWA Messaging API and an approved team invitation template before it can be selected.": "WhatsApp wuxuu u baahan yahay BWA Messaging API iyo qaab casuumaad kooxeed oo la ansixiyay ka hor inta aan la dooran.",
     "Only pending invitations can be sent by WhatsApp.": "Kaliya casuumaadaha sugaya ayaa lagu diri karaa WhatsApp.",
-    "Configure the BWA Messaging API and an approved team invitation template first.": "Marka hore samee BWA Messaging API iyo qaab casuumaad kooxeed oo la ansixiyay."
+    "Configure the BWA Messaging API and an approved team invitation template first.": "Marka hore samee BWA Messaging API iyo qaab casuumaad kooxeed oo la ansixiyay.",
+    "Leases & Contracts": "Heshiisyo iyo Qandaraasyo",
+    "Create leases, set terms, and track renewals and deposits. Generate contracts, send secure signing links, and archive signed PDFs.": "Abuur heshiisyo, deji shuruudo, la soco cusboonaysiinta iyo dhamaanka. Abuur qandaraasyo, dir xiriiriyayaasha saxiixa amaan ah, iyo kaydi PDF-yada la saxiixay."
 }

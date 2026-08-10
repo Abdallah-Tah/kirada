@@ -15,7 +15,7 @@
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
                 <flux:label>{{ __('Tenant') }}</flux:label>
-                <flux:select wire:model="tenant_id" class="mt-1">
+                <flux:select wire:model.live="tenant_id" class="mt-1">
                     <option value="">{{ __('Select tenant...') }}</option>
                     @foreach ($this->availableTenants as $t)
                         <option value="{{ $t->id }}">
@@ -46,13 +46,13 @@
                 <flux:label>{{ __('Send invitation via') }}</flux:label>
                 <div class="mt-2 space-y-2">
                     <flux:checkbox
-                        wire:model="deliveryChannels"
+                        wire:model.live="deliveryChannels"
                         value="email"
                         :disabled="blank($email)"
                         :label="__('Email')"
                     />
                     <flux:checkbox
-                        wire:model="deliveryChannels"
+                        wire:model.live="deliveryChannels"
                         value="whatsapp"
                         :disabled="blank($phone) || ! app(\App\Services\Bwa\BwaMessagingApi::class)->isConfigured()"
                         :label="__('WhatsApp')"

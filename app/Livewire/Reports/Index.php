@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Reports;
 
+use App\Models\Expense;
 use App\Models\Lease;
 use App\Models\MaintenanceRequest;
 use App\Models\Property;
@@ -35,14 +36,23 @@ class Index extends Component
             ->occupied()->count();
         $tenantCount = Tenant::forLandlord($landlordId)->count();
         $activeLeases = Lease::forLandlord($landlordId)->active()->count();
-        $leasesExpiring30 = Lease::forLandlord($landlordId)->expiringWithin(30)->count();
-        $leasesExpiring90 = Lease::forLandlord($landlordId)->expiringWithin(90)->count();
-        $leasesExpired = Lease::forLandlord($landlordId)->expired()->count();
+        $supportsRenewalReporting = method_exists(Lease::class, 'scopeExpiringWithin')
+            && method_exists(Lease::class, 'scopeExpired');
+        $leasesExpiring30 = $supportsRenewalReporting
+            ? Lease::forLandlord($landlordId)->expiringWithin(30)->count()
+            : 0;
+        $leasesExpiring90 = $supportsRenewalReporting
+            ? Lease::forLandlord($landlordId)->expiringWithin(90)->count()
+            : 0;
+        $leasesExpired = $supportsRenewalReporting
+            ? Lease::forLandlord($landlordId)->expired()->count()
+            : 0;
 
         $invoices = RentInvoice::forLandlord($landlordId);
         $totalInvoiced = (clone $invoices)->sum('amount');
         $totalCollected = RentPayment::whereHas('rentInvoice', fn ($q) => $q->forLandlord($landlordId))
             ->sum('amount');
+        $totalExpenses = Expense::forLandlord($landlordId)->sum('amount');
         $outstanding = (clone $invoices)->unpaid()->sum('amount');
         $overdue = (clone $invoices)->overdue()->sum('amount');
 
@@ -65,6 +75,8 @@ class Index extends Component
             'leases_expired' => $leasesExpired,
             'total_invoiced' => $totalInvoiced,
             'total_collected' => $totalCollected,
+            'total_expenses' => $totalExpenses,
+            'net_income' => $totalCollected - $totalExpenses,
             'outstanding' => $outstanding,
             'overdue' => $overdue,
             'collection_rate' => $collectionRate,
@@ -94,14 +106,36 @@ class Index extends Component
                 ->whereMonth('created_at', $month->month)
                 ->sum('amount');
 
+            $expenses = Expense::forLandlord($landlordId)
+                ->whereYear('expense_date', $month->year)
+                ->whereMonth('expense_date', $month->month)
+                ->sum('amount');
+
             $data[] = [
                 'label' => $month->format('M'),
                 'invoiced' => (float) $invoiced,
                 'collected' => (float) $collected,
+                'expenses' => (float) $expenses,
+                'net_income' => (float) $collected - (float) $expenses,
             ];
         }
 
         return $data;
+    }
+
+    #[Computed]
+    public function expenseBreakdown(): array
+    {
+        return Expense::forLandlord($this->reportLandlordId())
+            ->select('category', DB::raw('sum(amount) as total'))
+            ->groupBy('category')
+            ->orderByDesc('total')
+            ->get()
+            ->map(fn (Expense $expense) => [
+                'category' => $expense->category_label,
+                'total' => (float) $expense->total,
+            ])
+            ->all();
     }
 
     #[Computed]
@@ -137,6 +171,10 @@ class Index extends Component
     {
         $user = auth()->user();
 
-        return $user->landlordAccountId() ?? $user->id;
+        if (method_exists($user, 'landlordAccountId')) {
+            return $user->landlordAccountId() ?? $user->id;
+        }
+
+        return $user->id;
     }
 }

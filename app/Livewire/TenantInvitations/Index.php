@@ -64,6 +64,23 @@ class Index extends Component
         }
     }
 
+    public function updatedTenantId(?int $tenantId): void
+    {
+        $tenant = $tenantId ? Tenant::find($tenantId) : null;
+        $this->email = $tenant?->email;
+        $this->phone = $tenant?->phone;
+        $this->deliveryChannels = [];
+
+        if (filled($this->email)) {
+            $this->deliveryChannels[] = TenantInvitationService::CHANNEL_EMAIL;
+        }
+
+        if (filled($this->phone) && app(\App\Services\Bwa\BwaMessagingApi::class)->isConfigured()) {
+            $this->deliveryChannels[] = TenantInvitationService::CHANNEL_WHATSAPP;
+        }
+    }
+
+
     protected function rules(): array
     {
         return [

@@ -74,6 +74,18 @@
                     <span class="font-semibold text-green-600">{{ number_format($this->summary['total_collected'], 2) }}</span>
                 </div>
                 <div class="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
+                    <span class="text-sm text-zinc-500">{{ __('Total Expenses') }}</span>
+                    <span class="font-semibold text-red-600 dark:text-red-400">{{ number_format($this->summary['total_expenses'], 2) }}</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
+                    <span class="text-sm text-zinc-500">{{ __('Net Income') }}</span>
+                    <span @class([
+                        'font-semibold',
+                        'text-green-600 dark:text-green-400' => $this->summary['net_income'] >= 0,
+                        'text-red-600 dark:text-red-400' => $this->summary['net_income'] < 0,
+                    ])>{{ number_format($this->summary['net_income'], 2) }}</span>
+                </div>
+                <div class="flex items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800">
                     <span class="text-sm text-zinc-500">{{ __('Outstanding') }}</span>
                     <span class="font-semibold text-orange-600">{{ number_format($this->summary['outstanding'], 2) }}</span>
                 </div>
@@ -120,19 +132,32 @@
         </div>
     </div>
 
-    {{-- Rent Collection Chart --}}
+    {{-- Financial Performance Chart --}}
     <div class="mt-6 kirada-card">
-        <h3 class="mb-4 font-semibold text-zinc-900 dark:text-white">{{ __('Rent Collection (Last 6 Months)') }}</h3>
+        <h3 class="mb-1 font-semibold text-zinc-900 dark:text-white">{{ __('Financial Performance (Last 6 Months)') }}</h3>
+        <p class="mb-4 text-sm text-zinc-500 dark:text-zinc-400">{{ __('Compare invoiced rent, collected rent, and expenses by month.') }}</p>
         <div class="flex items-end gap-3" style="height: 200px;">
             @foreach ($this->rentChart as $bar)
                 <div class="flex flex-1 flex-col items-center gap-2">
                     <div class="flex w-full flex-col gap-1" style="height: 160px;">
-                        @php $maxVal = max(array_column($this->rentChart, 'invoiced') ?: [1]); @endphp
+                        @php
+                            $maxVal = max(
+                                array_merge(
+                                    array_column($this->rentChart, 'invoiced'),
+                                    array_column($this->rentChart, 'collected'),
+                                    array_column($this->rentChart, 'expenses'),
+                                    [1],
+                                )
+                            );
+                        @endphp
                         <div class="flex w-full flex-1 items-end">
                             <div class="w-full rounded-t bg-kirada-ocean/40" style="height: {{ $maxVal > 0 ? ($bar['invoiced'] / $maxVal) * 100 : 0 }}%"></div>
                         </div>
                         <div class="flex w-full flex-1 items-end">
                             <div class="w-full rounded-t bg-kirada-green" style="height: {{ $maxVal > 0 ? ($bar['collected'] / $maxVal) * 100 : 0 }}%"></div>
+                        </div>
+                        <div class="flex w-full flex-1 items-end">
+                            <div class="w-full rounded-t bg-red-500 dark:bg-red-400" style="height: {{ $maxVal > 0 ? ($bar['expenses'] / $maxVal) * 100 : 0 }}%"></div>
                         </div>
                     </div>
                     <span class="text-xs text-zinc-500">{{ $bar['label'] }}</span>
@@ -148,7 +173,38 @@
                 <div class="h-3 w-3 rounded bg-kirada-green"></div>
                 <span class="text-xs text-zinc-500">{{ __('Collected') }}</span>
             </div>
+            <div class="flex items-center gap-2">
+                <div class="h-3 w-3 rounded bg-red-500 dark:bg-red-400"></div>
+                <span class="text-xs text-zinc-500">{{ __('Expenses') }}</span>
+            </div>
         </div>
+    </div>
+
+    {{-- Expense Breakdown --}}
+    <div class="mt-6 kirada-card">
+        <h3 class="mb-1 font-semibold text-zinc-900 dark:text-white">{{ __('Expenses by Category') }}</h3>
+        <p class="mb-4 text-sm text-zinc-500 dark:text-zinc-400">{{ __('All recorded expenses, grouped by category.') }}</p>
+
+        @if (!empty($this->expenseBreakdown))
+            @php $totalExpenses = max(array_sum(array_column($this->expenseBreakdown, 'total')), 1); @endphp
+            <div class="space-y-4">
+                @foreach ($this->expenseBreakdown as $category)
+                    <div>
+                        <div class="mb-1.5 flex items-center justify-between gap-4">
+                            <span class="text-sm text-zinc-600 dark:text-zinc-300">{{ $category['category'] }}</span>
+                            <span class="text-sm font-semibold text-zinc-900 dark:text-white">{{ number_format($category['total'], 2) }}</span>
+                        </div>
+                        <div class="h-2 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                            <div class="h-full rounded-full bg-red-500 dark:bg-red-400" style="width: {{ ($category['total'] / $totalExpenses) * 100 }}%"></div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="rounded-xl border border-dashed border-zinc-200 px-4 py-8 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+                {{ __('No expenses have been recorded yet.') }}
+            </div>
+        @endif
     </div>
 
     {{-- Maintenance Breakdown --}}

@@ -10,6 +10,10 @@
 .env
 .env.backup
 .env.production
+# Timestamped .env copies made before edits — these hold live credentials.
+.env.bak-*
+# macOS AppleDouble sidecars from copying the tree off a Mac.
+._*
 .phpactor.json
 .phpunit.result.cache
 Homestead.json

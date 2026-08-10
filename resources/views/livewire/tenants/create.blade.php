@@ -79,7 +79,7 @@
 
                     @if ($id_document)
                         <div class="mt-3 flex items-center gap-3 rounded-lg bg-zinc-50 dark:bg-zinc-800 p-3">
-                            @if (str_starts_with($id_document->getMimeType(), 'image/'))
+                            @if (in_array(strtolower($id_document->getClientOriginalExtension()), ['jpg', 'jpeg', 'png', 'webp'], true))
                                 <img src="{{ $id_document->temporaryUrl() }}" alt="{{ __('ID preview') }}" class="h-16 w-16 rounded-lg object-cover" />
                             @else
                                 <flux:icon.document class="h-8 w-8 text-zinc-400" />
@@ -93,7 +93,7 @@
                     @endif
                 </div>
                 <flux:error name="id_document" />
-                <p class="mt-1 text-xs text-zinc-400">{{ __('Accepted: JPG, PNG, WebP, PDF. Max 10MB.') }}</p>
+                <p class="mt-1 text-xs text-zinc-400">{{ __('Accepted: JPG, PNG, WebP, HEIC, HEIF, PDF. Max 10MB.') }}</p>
             </div>
         </div>
 
