@@ -2,6 +2,7 @@
 
 namespace App\Livewire\RentInvoices;
 
+use App\Models\LandlordNotificationSetting;
 use App\Models\RentInvoice;
 use App\Services\InvoiceDeliveryService;
 use App\Services\NotificationChannelResolver;
@@ -12,6 +13,14 @@ use Livewire\Component;
 class DeliveryHistory extends Component
 {
     public RentInvoice $invoice;
+
+    /**
+     * Channels the landlord picked for this send. Pre-checked with whatever the
+     * lease/landlord settings resolve to, but overridable per send.
+     *
+     * @var array<int, string>
+     */
+    public array $channels = [];
 
     public function mount(RentInvoice $rentInvoice): void
     {
@@ -24,6 +33,8 @@ class DeliveryHistory extends Component
             'lease',
             'landlord.notificationSetting',
         ]);
+
+        $this->channels = $this->resolvedChannels;
     }
 
     #[Computed]
@@ -40,6 +51,38 @@ class DeliveryHistory extends Component
         return app(NotificationChannelResolver::class)->channels($this->invoice);
     }
 
+    /**
+     * Every channel the landlord may pick, with the reason it cannot be used.
+     *
+     * @return array<int, array{value: string, label: string, available: bool, hint: string|null}>
+     */
+    #[Computed]
+    public function channelOptions(): array
+    {
+        $resolver = app(NotificationChannelResolver::class);
+
+        return [
+            [
+                'value' => LandlordNotificationSetting::CHANNEL_EMAIL,
+                'label' => __('Email'),
+                'available' => (bool) $resolver->emailRecipient($this->invoice),
+                'hint' => $resolver->emailRecipient($this->invoice)
+                    ? null
+                    : __('No email address on file for this tenant.'),
+            ],
+            [
+                'value' => LandlordNotificationSetting::CHANNEL_WHATSAPP,
+                'label' => __('WhatsApp'),
+                'available' => (bool) $resolver->whatsAppRecipient($this->invoice),
+                'hint' => $resolver->whatsAppRecipient($this->invoice)
+                    ? null
+                    : ($this->invoice->tenant?->hasWhatsAppConsent()
+                        ? __('No WhatsApp number on file for this tenant.')
+                        : __('Tenant has not opted in to WhatsApp.')),
+            ],
+        ];
+    }
+
     public function send(InvoiceDeliveryService $delivery): void
     {
         $this->authorize('update', $this->invoice);
@@ -50,7 +93,20 @@ class DeliveryHistory extends Component
             return;
         }
 
-        $records = $delivery->dispatch($this->invoice, 'manual_send', auth()->user());
+        // Keep only channels the app actually knows how to send on; an empty
+        // selection would otherwise silently fall back to the resolved defaults.
+        $selected = array_values(array_intersect(
+            LandlordNotificationSetting::CHANNELS,
+            array_filter($this->channels, 'is_string'),
+        ));
+
+        if ($selected === []) {
+            $this->addError('delivery', __('Select at least one channel to send on.'));
+
+            return;
+        }
+
+        $records = $delivery->dispatch($this->invoice, 'manual_send', auth()->user(), $selected);
         unset($this->deliveries);
 
         if ($records->every(fn ($record) => $record->status === 'skipped')) {

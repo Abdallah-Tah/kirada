@@ -119,7 +119,7 @@
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 @foreach ($this->plans as $plan)
                     @php $isCurrentPlan = $summary['plan']?->id === $plan->id; @endphp
-                    <article class="kirada-stat-card flex flex-col gap-4 {{ $isCurrentPlan ? 'ring-2 ring-kirada-ocean' : '' }}">
+                    <article class="kirada-plan-card kirada-stat-card flex flex-col gap-4 {{ $isCurrentPlan ? 'is-current ring-2 ring-kirada-ocean' : '' }}">
                         <div class="flex items-start justify-between gap-3">
                             <div>
                                 <h3 class="text-lg font-semibold text-slate-950 dark:text-white">{{ $plan->name }}</h3>
@@ -131,7 +131,12 @@
                         </div>
                         <div>
                             <p class="text-3xl font-bold tracking-tight text-slate-950 dark:text-white">{{ $plan->formattedPrice }}</p>
-                            <p class="text-xs text-slate-500">{{ __('per month') }} · {{ $plan->limitsLabel }}</p>
+                            @if($plan->formattedUsdPrice)
+                                <p class="mt-0.5 text-sm font-medium text-slate-500">
+                                    ≈ {{ $plan->formattedUsdPrice }} <span class="text-xs font-normal">{{ __('per month') }}</span>
+                                </p>
+                            @endif
+                            <p class="mt-1 text-xs text-slate-500">{{ __('per month') }} · {{ $plan->limitsLabel }}</p>
                         </div>
                         <div class="mt-auto">
                             @if(in_array($summary['state'], ['none', 'trialing'], true))

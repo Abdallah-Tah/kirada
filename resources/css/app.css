@@ -290,6 +290,16 @@ select:focus[data-flux-control] {
         overflow: hidden;
     }
 
+    .kirada-app-body-region .kirada-app-main,
+    .kirada-app-body-region main.kirada-app-main {
+        min-height: 0 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior-y: contain;
+    }
+
     @media (max-width: 1023px) {
         .kirada-app-body {
             background: var(--kirada-canvas) !important;
@@ -855,6 +865,29 @@ select:focus[data-flux-control] {
         transform: translateY(-2px);
         border-color: color-mix(in srgb, var(--color-kirada-teal) 36%, var(--kirada-border));
         box-shadow: var(--kirada-shadow-raised);
+    }
+
+    /* Pricing cards on the subscription page: same surface as a stat card, but
+       they sit in a grid and must stay the same height as their neighbours. */
+    .kirada-plan-card {
+        height: 100%;
+    }
+
+    .kirada-plan-card:hover {
+        transform: translateY(-3px);
+    }
+
+    /* The selected plan already carries a ring; keep it visually settled. */
+    .kirada-plan-card.is-current:hover {
+        transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .kirada-plan-card,
+        .kirada-plan-card:hover {
+            transform: none;
+            transition: none;
+        }
     }
 
     .kirada-stat-label {

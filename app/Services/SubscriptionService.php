@@ -141,7 +141,13 @@ class SubscriptionService
      */
     public function getAvailablePlans()
     {
-        return Plan::active()->orderBy('monthly_price')->get();
+        // Only self-serve plans belong in the picker. Custom-priced plans such as
+        // Enterprise are stored with a zero price and negotiated directly, so
+        // they are excluded rather than offered as something to click.
+        return Plan::active()
+            ->where('monthly_price', '>', 0)
+            ->orderBy('monthly_price')
+            ->get();
     }
 
     /**

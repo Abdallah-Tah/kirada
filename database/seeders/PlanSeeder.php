@@ -40,15 +40,9 @@ class PlanSeeder extends Seeder
                 'max_active_units' => 200,
                 'max_active_leases' => 200,
             ],
-            [
-                'name' => 'Enterprise',
-                'slug' => 'enterprise',
-                'description' => 'Unlimited units. Custom pricing for large portfolios.',
-                'monthly_price' => 0,
-                'currency_id' => $djf?->id,
-                'max_active_units' => null,
-                'max_active_leases' => null,
-            ],
+            // Enterprise is negotiated directly rather than self-served, so it is
+            // deliberately absent here: the three plans above are the ones the
+            // public pricing table and the in-app plan picker offer.
         ];
 
         foreach ($plans as $plan) {

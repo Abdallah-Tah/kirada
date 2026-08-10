@@ -3,32 +3,28 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="kirada-app-body bg-white text-slate-900 antialiased dark:bg-slate-900 dark:text-slate-100">
+    <body class="kirada-app-body text-slate-900 antialiased lg:min-h-screen">
         <div class="kirada-app-shell">
-            {{-- ── Fixed-height application header ─────────────────────── --}}
             <x-app-header />
-
-            {{-- ── Independent sidebar + main scrolling region ────────── --}}
             <div class="kirada-app-body-region">
-                <flux:sidebar collapsible="mobile" class="kirada-sidebar">
-            <flux:sidebar.header class="kirada-sidebar-header">
-                <a href="{{ route('dashboard') }}" wire:navigate class="kirada-sidebar-brand">
-                    <span class="kirada-sidebar-logo">
-                        <img
-                            src="{{ asset('brand/kirada-icon.webp') }}?v=kirada-brand-20260730"
-                            alt=""
-                            decoding="async"
-                        >
-                    </span>
-                    <span class="min-w-0">
-                        <span class="block truncate text-[15px] font-bold leading-tight text-slate-950 dark:text-white">Kirada</span>
-                        <span class="mt-0.5 block truncate text-[10px] font-medium text-slate-500 dark:text-slate-400">
-                            {{ __('Smart Rent Management') }}
-                        </span>
-                    </span>
+        <flux:sidebar sticky collapsible="true" class="kirada-sidebar">
+            {{-- ── Sidebar header: toggle row above logo ── --}}
+            <div class="kirada-sidebar-header">
+                <div class="kirada-sidebar-toggle-row">
+                    <flux:sidebar.collapse class="kirada-sidebar-collapse-btn" />
+                </div>
+                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center justify-center px-2 pb-2">
+                    <div class="flex items-center justify-center px-2 py-2 w-full max-w-[185px]">
+                        <picture>
+                            <source srcset="{{ asset('brand/kirada-logo-transparent.webp') }}?v=20260713" type="image/webp">
+                            <img src="{{ asset('brand/kirada-logo-transparent.png') }}?v=20260713"
+                                 alt="Kirada"
+                                 class="h-12 w-full object-contain"
+                                 decoding="async">
+                        </picture>
+                    </div>
                 </a>
-                <flux:sidebar.collapse class="kirada-sidebar-collapse-btn lg:hidden" />
-            </flux:sidebar.header>
+            </div>
             <flux:sidebar.nav class="kirada-sidebar-nav">
 
 
@@ -69,14 +65,17 @@
                     <flux:sidebar.item icon="banknotes" :href="route('rent-payments.index')" :current="request()->routeIs('rent-payments.*')" wire:navigate>
                         {{ __('Rent Payments') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="calculator" :href="route('expenses.index')" :current="request()->routeIs('expenses.*')" wire:navigate>
+                        {{ __('Expenses') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="user-group" :href="route('maintenance-directory.index')" :current="request()->routeIs('maintenance-directory.*', 'maintenance-network.index')" wire:navigate>
-                        {{ __('Find Maintenance') }}
-                    </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        {{ __('Messages') }}
+                        Messages
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="device-phone-mobile" :href="route('whatsapp.index')" :current="request()->routeIs('whatsapp.*')" wire:navigate>
+                        WhatsApp Inbox
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
@@ -88,15 +87,10 @@
                     <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
                         {{ __('Reports') }}
                     </flux:sidebar.item>
-                    @can('audit.view')
-                        <flux:sidebar.item icon="shield-check" :href="route('audit.index')" :current="request()->routeIs('audit.*')" wire:navigate>
-                            {{ __('Audit Center') }}
-                        </flux:sidebar.item>
-                    @endcan
                 </flux:sidebar.group>
                 @endhasrole
 
-                @hasanyrole('landlord|landlord-admin|property-manager|accountant|viewer')
+                @hasrole('landlord')
                 {{-- MANAGEMENT --}}
                 <flux:sidebar.group :heading="__('MANAGEMENT')" class="kirada-sidebar-section">
                     <flux:sidebar.item icon="building-office" :href="route('properties.index')" :current="request()->routeIs('properties.*')" wire:navigate>
@@ -111,11 +105,6 @@
                     <flux:sidebar.item icon="envelope" :href="route('tenant-invitations.index')" :current="request()->routeIs('tenant-invitations.index')" wire:navigate>
                         {{ __('Invitations') }}
                     </flux:sidebar.item>
-                    @if(auth()->user()->isLandlord() || auth()->user()->can('team.view'))
-                        <flux:sidebar.item icon="user-group" :href="route('property-team.index')" :current="request()->routeIs('property-team.*')" wire:navigate>
-                            {{ __('Property Team') }}
-                        </flux:sidebar.item>
-                    @endif
                 </flux:sidebar.group>
 
                 {{-- OPERATIONS --}}
@@ -130,14 +119,17 @@
                     <flux:sidebar.item icon="banknotes" :href="route('rent-payments.index')" :current="request()->routeIs('rent-payments.*')" wire:navigate>
                         {{ __('Rent Payments') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="calculator" :href="route('expenses.index')" :current="request()->routeIs('expenses.*')" wire:navigate>
+                        {{ __('Expenses') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="wrench-screwdriver" :href="route('maintenance-requests.index')" :current="request()->routeIs('maintenance-requests.*')" wire:navigate>
                         {{ __('Maintenance') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="user-group" :href="route('maintenance-directory.index')" :current="request()->routeIs('maintenance-directory.*', 'maintenance-network.index')" wire:navigate>
-                        {{ __('Find Maintenance') }}
-                    </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        {{ __('Messages') }}
+                        Messages
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="device-phone-mobile" :href="route('whatsapp.index')" :current="request()->routeIs('whatsapp.*')" wire:navigate>
+                        WhatsApp Inbox
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="document" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
                         {{ __('Documents') }}
@@ -149,25 +141,18 @@
                     <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
                         {{ __('Reports') }}
                     </flux:sidebar.item>
-                    @can('audit.view')
-                        <flux:sidebar.item icon="shield-check" :href="route('audit.index')" :current="request()->routeIs('audit.*')" wire:navigate>
-                            {{ __('Audit Center') }}
-                        </flux:sidebar.item>
-                    @endcan
                 </flux:sidebar.group>
 
                 {{-- ADMIN --}}
                 <flux:sidebar.group :heading="__('ADMIN')" class="kirada-sidebar-section">
-                    @role('landlord')
                     <flux:sidebar.item icon="credit-card" :href="route('subscription.status')" :current="request()->routeIs('subscription.*')" wire:navigate>
                         {{ __('Subscription') }}
                     </flux:sidebar.item>
-                    @endrole
                     <flux:sidebar.item icon="cog-6-tooth" :href="route('profile.edit')" :current="request()->routeIs('profile.edit', 'security.edit', 'appearance.edit')" wire:navigate>
                         {{ __('Settings') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
-                @endhasanyrole
+                @endhasrole
 
                 @hasrole('tenant')
                 {{-- MAIN --}}
@@ -182,7 +167,7 @@
                         {{ __('Documents') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        {{ __('Messages') }}
+                        Messages
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole
@@ -194,20 +179,7 @@
                         {{ __('Assigned Requests') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chat-bubble-left-right" :href="route('messages.index')" :current="request()->routeIs('messages.*')" wire:navigate>
-                        {{ __('Messages') }}
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
-
-                {{-- MY BUSINESS --}}
-                <flux:sidebar.group :heading="__('MY BUSINESS')" class="kirada-sidebar-section">
-                    <flux:sidebar.item icon="identification" :href="route('maintenance-profile.edit')" :current="request()->routeIs('maintenance-profile.*')" wire:navigate>
-                        {{ __('My Profile') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item icon="inbox" :href="route('maintenance-network.inbox')" :current="request()->routeIs('maintenance-network.inbox')" :badge="auth()->user()->landlordConnections()->wherePivot('status', 'pending')->count() ?: null" wire:navigate>
-                        {{ __('Invitations') }}
-                    </flux:sidebar.item>
-                    <flux:sidebar.item icon="cog-6-tooth" :href="route('profile.edit')" :current="request()->routeIs('profile.edit', 'security.edit', 'appearance.edit')" wire:navigate>
-                        {{ __('Settings') }}
+                        Messages
                     </flux:sidebar.item>
                 </flux:sidebar.group>
                 @endhasrole
@@ -215,11 +187,66 @@
 
             {{-- ── Bottom user profile (desktop) ── --}}
             <div class="kirada-sidebar-user-section">
-                <x-desktop-user-menu :name="auth()?->user()?->name" />
+                <x-desktop-user-menu :name="auth()->user()->name" />
             </div>
-                </flux:sidebar>
+        </flux:sidebar>
 
-                {{ $slot }}
+        {{-- ── Mobile top bar ── --}}
+        <flux:header class="kirada-mobile-header lg:hidden">
+            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+            <flux:spacer />
+
+            <flux:dropdown position="top" align="end">
+                <flux:profile
+                    :initials="auth()->user()->initials()"
+                    icon-trailing="chevron-down"
+                />
+
+                <flux:menu>
+                    <flux:menu.radio.group>
+                        <div class="p-0 text-sm font-normal">
+                            <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+                                <flux:avatar
+                                    :name="auth()->user()->name"
+                                    :initials="auth()->user()->initials()"
+                                />
+
+                                <div class="grid flex-1 text-start text-sm leading-tight">
+                                    <flux:heading class="truncate">{{ auth()->user()->name }}</flux:heading>
+                                    <flux:text class="truncate">{{ auth()->user()->email }}</flux:text>
+                                </div>
+                            </div>
+                        </div>
+                    </flux:menu.radio.group>
+
+                    <flux:menu.separator />
+
+                    <flux:menu.radio.group>
+                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
+                            {{ __('Settings') }}
+                        </flux:menu.item>
+                    </flux:menu.radio.group>
+
+                    <flux:menu.separator />
+
+                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                        @csrf
+                        <flux:menu.item
+                            as="button"
+                            type="submit"
+                            icon="arrow-right-start-on-rectangle"
+                            class="w-full cursor-pointer"
+                            data-test="logout-button"
+                        >
+                            {{ __('Log out') }}
+                        </flux:menu.item>
+                    </form>
+                </flux:menu>
+            </flux:dropdown>
+        </flux:header>
+
+        {{ $slot }}
             </div>
         </div>
 
@@ -230,12 +257,6 @@
                 <flux:toast />
             </flux:toast.group>
         @endpersist
-
-        @auth
-            @if(auth()->user()->needsOnboarding())
-                <x-onboarding-guide :user="auth()->user()" />
-            @endif
-        @endauth
 
         @fluxScripts
     </body>

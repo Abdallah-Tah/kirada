@@ -13,7 +13,7 @@
                     wire:click="send"
                     variant="primary"
                     icon="paper-airplane"
-                    data-confirm="{{ __('Send this invoice through the configured channels?') }}"
+                    data-confirm="{{ __('Send this invoice on the selected channels?') }}"
                     data-confirm-title="{{ __('Send invoice') }}"
                     data-confirm-button="{{ __('Send invoice') }}"
                 >
@@ -27,14 +27,38 @@
 
     <div class="mt-6 grid gap-4 lg:grid-cols-3">
         <div class="kirada-form-card">
-            <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ __('Resolved channels') }}</div>
-            <div class="mt-3 flex flex-wrap gap-2">
-                @foreach ($this->resolvedChannels as $channel)
-                    <flux:badge color="{{ $channel === 'whatsapp' ? 'green' : 'sky' }}">
-                        {{ __(ucfirst($channel)) }}
-                    </flux:badge>
-                @endforeach
-            </div>
+            <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ __('Send on') }}</div>
+            @can('update', $invoice)
+                <div class="mt-3 space-y-3">
+                    @foreach ($this->channelOptions as $option)
+                        <label class="flex items-start gap-3">
+                            <input
+                                type="checkbox"
+                                value="{{ $option['value'] }}"
+                                wire:model="channels"
+                                class="mt-0.5 size-4 rounded border-slate-300 text-kirada-ocean focus:ring-kirada-ocean dark:border-slate-600 dark:bg-slate-800"
+                            />
+                            <span>
+                                <span class="text-sm font-medium text-slate-900 dark:text-white">{{ $option['label'] }}</span>
+                                @if ($option['hint'])
+                                    <span class="mt-0.5 block text-xs text-amber-600 dark:text-amber-400">{{ $option['hint'] }}</span>
+                                @endif
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+                <p class="mt-3 text-xs text-slate-500">
+                    {{ __('Pre-selected from this lease’s delivery settings. Change it for this send only.') }}
+                </p>
+            @else
+                <div class="mt-3 flex flex-wrap gap-2">
+                    @foreach ($this->resolvedChannels as $channel)
+                        <flux:badge color="{{ $channel === 'whatsapp' ? 'green' : 'sky' }}">
+                            {{ __(ucfirst($channel)) }}
+                        </flux:badge>
+                    @endforeach
+                </div>
+            @endcan
         </div>
         <div class="kirada-form-card">
             <div class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ __('WhatsApp consent') }}</div>

@@ -56,6 +56,21 @@ class Plan extends Model
         return $currency->format($this->monthly_price);
     }
 
+    /**
+     * Indicative USD equivalent of the DJF charge, or null when the plan has
+     * no published USD price (custom-priced plans).
+     */
+    public function getFormattedUsdPriceAttribute(): ?string
+    {
+        $usd = config("plans.usd_prices.{$this->slug}");
+
+        if ($usd === null) {
+            return null;
+        }
+
+        return '$'.number_format($usd).' USD';
+    }
+
     public function getLimitsLabelAttribute(): string
     {
         if ($this->max_active_units === null) {
