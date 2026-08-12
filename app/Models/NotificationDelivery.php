@@ -34,6 +34,7 @@ class NotificationDelivery extends Model
         'status',
         'recipient_masked',
         'provider_message_id',
+        'provider_wamid',
         'provider_media_id',
         'attempts',
         'error_code',

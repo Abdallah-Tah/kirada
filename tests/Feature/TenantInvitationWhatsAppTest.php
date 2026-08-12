@@ -214,7 +214,9 @@ class TenantInvitationWhatsAppTest extends TestCase
 
         $invitation->refresh();
         $this->assertSame('failed', $invitation->whatsapp_status);
-        $this->assertSame('Template name does not exist.', $invitation->whatsapp_error);
+        // The provider code is retained alongside the text so an operator can
+        // look the failure up with Meta without digging through raw payloads.
+        $this->assertSame('(132001) Template name does not exist.', $invitation->whatsapp_error);
         $this->assertNotNull($invitation->whatsapp_failed_at);
     }
 

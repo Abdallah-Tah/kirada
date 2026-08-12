@@ -3,13 +3,10 @@
 namespace App\Jobs;
 
 use App\Models\BwaEvent;
-use App\Models\LandlordTeamMembership;
-use App\Models\NotificationDelivery;
-use App\Models\TenantInvitation;
+use App\Services\WhatsApp\DeliveryStatusUpdater;
 use App\Services\WhatsApp\InboundMessageRecorder;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Queue\Queueable;
 use JsonException;
 use Throwable;
@@ -117,125 +114,29 @@ class ProcessBwaEvent implements ShouldQueue
     private function applyDeliveryStatus(array $payload): void
     {
         $messageId = data_get($payload, 'data.message_id')
-            ?? data_get($payload, 'data.provider_message_id')
             ?? data_get($payload, 'data.message.id')
             ?? data_get($payload, 'message_id');
+        $wamid = data_get($payload, 'data.provider_message_id');
         $status = data_get($payload, 'data.status') ?? data_get($payload, 'status');
 
-        if (! is_string($messageId) || ! is_string($status)) {
+        if (! is_string($status) || (! is_string($messageId) && ! is_string($wamid))) {
             return;
         }
 
-        $timestamp = $this->statusTimestamp($payload) ?? now();
-        $delivery = NotificationDelivery::where('provider_message_id', $messageId)->first();
-
-        if ($delivery && $this->canAdvance($delivery->status, $status)) {
-            $this->updateNotificationDelivery($delivery, $status, $payload, $timestamp);
-        }
-
-        $invitation = TenantInvitation::where('whatsapp_message_id', $messageId)->first();
-
-        if ($invitation && $this->canAdvance($invitation->whatsapp_status, $status)) {
-            $this->updateInvitationDelivery($invitation, $status, $payload, $timestamp);
-        }
-
-        $membership = LandlordTeamMembership::where('whatsapp_message_id', $messageId)->first();
-
-        if ($membership && $this->canAdvance($membership->whatsapp_status, $status)) {
-            $this->updateInvitationDelivery($membership, $status, $payload, $timestamp);
-        }
-    }
-
-    /** @param array<string, mixed> $payload */
-    private function updateNotificationDelivery(
-        NotificationDelivery $delivery,
-        string $status,
-        array $payload,
-        CarbonImmutable $timestamp,
-    ): void {
-        match ($status) {
-            'accepted', 'queued', 'sent' => $delivery->update([
-                'status' => NotificationDelivery::STATUS_SENT,
-                'sent_at' => $delivery->sent_at ?? $timestamp,
-            ]),
-            'delivered' => $delivery->update([
-                'status' => NotificationDelivery::STATUS_DELIVERED,
-                'delivered_at' => $timestamp,
-            ]),
-            'read' => $delivery->update([
-                'status' => NotificationDelivery::STATUS_READ,
-                'read_at' => $timestamp,
-            ]),
-            'failed' => $delivery->update([
-                'status' => NotificationDelivery::STATUS_FAILED,
-                'error_code' => (string) (data_get($payload, 'data.error.code') ?? 'bwa_failed'),
-                'error_message' => mb_substr(
-                    (string) (data_get($payload, 'data.error.message') ?? 'The messaging provider rejected the request.'),
-                    0,
-                    1000,
-                ),
-                'failed_at' => $timestamp,
-            ]),
-            default => null,
-        };
-    }
-
-    /**
-     * Tenant and team invitations carry the same WhatsApp delivery columns, so
-     * one writer keeps their status trails identical.
-     *
-     * @param  TenantInvitation|LandlordTeamMembership  $invitation
-     * @param  array<string, mixed>  $payload
-     */
-    private function updateInvitationDelivery(
-        Model $invitation,
-        string $status,
-        array $payload,
-        CarbonImmutable $timestamp,
-    ): void {
-        $attributes = [
-            'whatsapp_status' => $status,
-            'whatsapp_error' => null,
-        ];
-
-        match ($status) {
-            'sent' => $attributes['whatsapp_sent_at'] = $timestamp,
-            'delivered' => $attributes['whatsapp_delivered_at'] = $timestamp,
-            'read' => $attributes['whatsapp_read_at'] = $timestamp,
-            'failed' => $attributes = array_merge($attributes, [
-                'whatsapp_failed_at' => $timestamp,
-                'whatsapp_error' => mb_substr(
-                    (string) (data_get($payload, 'data.error.message') ?? 'The messaging provider rejected the invitation.'),
-                    0,
-                    1000,
-                ),
-            ]),
-            default => null,
-        };
-
-        $invitation->update($attributes);
-    }
-
-    private function canAdvance(?string $currentStatus, string $nextStatus): bool
-    {
-        if ($nextStatus === 'failed') {
-            return true;
-        }
-
-        return $this->statusRank($nextStatus) >= $this->statusRank($currentStatus);
-    }
-
-    private function statusRank(?string $status): int
-    {
-        return match ($status) {
-            'queued' => 0,
-            'accepted' => 1,
-            'sent' => 2,
-            'delivered' => 3,
-            'read' => 4,
-            'failed' => 5,
-            default => -1,
-        };
+        // The gateway's status event is the only place both identifiers appear
+        // together, so this is where the wamid gets recorded. Without it Meta's
+        // own callbacks, which carry only the wamid, cannot be matched.
+        app(DeliveryStatusUpdater::class)->apply(
+            status: $status,
+            occurredAt: $this->statusTimestamp($payload) ?? CarbonImmutable::now(),
+            error: [
+                'code' => data_get($payload, 'data.error.code'),
+                'title' => data_get($payload, 'data.error.title'),
+                'details' => data_get($payload, 'data.error.message'),
+            ],
+            gatewayMessageId: is_string($messageId) ? $messageId : null,
+            wamid: is_string($wamid) ? $wamid : null,
+        );
     }
 
     /**

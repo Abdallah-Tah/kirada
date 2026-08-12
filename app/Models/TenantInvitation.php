@@ -24,6 +24,7 @@ class TenantInvitation extends Model
         'accepted_at',
         'accepted_user_id',
         'whatsapp_message_id',
+        'whatsapp_wamid',
         'whatsapp_request_id',
         'whatsapp_status',
         'whatsapp_sent_at',

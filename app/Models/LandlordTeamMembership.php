@@ -35,6 +35,7 @@ class LandlordTeamMembership extends Model
         'expires_at',
         'accepted_at',
         'whatsapp_message_id',
+        'whatsapp_wamid',
         'whatsapp_request_id',
         'whatsapp_status',
         'whatsapp_sent_at',

@@ -139,18 +139,38 @@
                                     </flux:badge>
                                 @endforeach
                             </div>
-                            @if ($invitation->whatsapp_error)
-                                <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ __('WhatsApp delivery failed') }}</p>
-                            @elseif ($invitation->whatsapp_status)
-                                <p class="mt-1 text-xs text-emerald-600 dark:text-emerald-400">
-                                    {{ match ($invitation->whatsapp_status) {
+                            @php
+                                // Status is the single source of truth here. Keying off the
+                                // presence of whatsapp_error would keep showing a failure for a
+                                // message Meta later reported as delivered.
+                                $waStatus = $invitation->whatsapp_status;
+                                $waAt = match ($waStatus) {
+                                    'read' => $invitation->whatsapp_read_at,
+                                    'delivered' => $invitation->whatsapp_delivered_at,
+                                    'sent' => $invitation->whatsapp_sent_at,
+                                    'failed' => $invitation->whatsapp_failed_at,
+                                    default => null,
+                                };
+                            @endphp
+                            @if ($waStatus)
+                                <p @class([
+                                    'mt-1 text-xs',
+                                    'text-red-600 dark:text-red-400' => $waStatus === 'failed',
+                                    'text-emerald-600 dark:text-emerald-400' => in_array($waStatus, ['delivered', 'read'], true),
+                                    'text-zinc-500 dark:text-zinc-400' => in_array($waStatus, ['queued', 'accepted', 'sent'], true),
+                                ]) @if ($waStatus === 'failed' && $invitation->whatsapp_error) title="{{ $invitation->whatsapp_error }}" @endif>
+                                    {{ match ($waStatus) {
                                         'queued' => __('WhatsApp queued'),
                                         'accepted' => __('WhatsApp accepted'),
                                         'sent' => __('WhatsApp sent'),
                                         'delivered' => __('WhatsApp delivered'),
                                         'read' => __('WhatsApp read'),
+                                        'failed' => __('WhatsApp failed'),
                                         default => __('WhatsApp queued'),
                                     } }}
+                                    @if ($waAt)
+                                        <span class="text-zinc-400">{{ $waAt->timezone(config('app.timezone'))->format('g:i A') }}</span>
+                                    @endif
                                 </p>
                             @endif
                         </td>
