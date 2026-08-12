@@ -41,6 +41,38 @@ class InboundWhatsAppEventTest extends TestCase
         $this->assertSame($tenant->landlord_id, WhatsAppMessage::firstOrFail()->landlord_id);
     }
 
+    public function test_a_tenant_stored_without_a_country_code_is_still_matched(): void
+    {
+        // Meta always sends the full international number; landlords often omit
+        // the country code when entering a tenant.
+        $tenant = $this->tenantWithPhone('(207) 409-7887');
+
+        $this->processInboundEvent('evt_cc', 'wamid.CC', '12074097887', 'Test reply');
+
+        $this->assertSame($tenant->landlord_id, WhatsAppMessage::firstOrFail()->landlord_id);
+    }
+
+    public function test_an_ambiguous_suffix_match_is_left_unattributed(): void
+    {
+        // The same local number recorded under two different landlords:
+        // guessing would leak the message into the wrong portfolio.
+        $this->tenantWithPhone('(207) 409-7887');
+        $this->tenantWithPhone('207-409-7887');
+
+        $this->processInboundEvent('evt_amb', 'wamid.AMB', '12074097887', 'hello');
+
+        $this->assertNull(WhatsAppMessage::firstOrFail()->landlord_id);
+    }
+
+    public function test_a_short_shared_tail_does_not_attribute(): void
+    {
+        $this->tenantWithPhone('7887');
+
+        $this->processInboundEvent('evt_short', 'wamid.SHORT', '12074097887', 'hi');
+
+        $this->assertNull(WhatsAppMessage::firstOrFail()->landlord_id);
+    }
+
     public function test_a_duplicate_event_does_not_create_a_second_message(): void
     {
         $this->tenantWithPhone('+253 77 85 20 37');
