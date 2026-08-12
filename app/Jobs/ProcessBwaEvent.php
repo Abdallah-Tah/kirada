@@ -6,6 +6,7 @@ use App\Models\BwaEvent;
 use App\Models\LandlordTeamMembership;
 use App\Models\NotificationDelivery;
 use App\Models\TenantInvitation;
+use App\Services\WhatsApp\InboundMessageRecorder;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
@@ -44,7 +45,10 @@ class ProcessBwaEvent implements ShouldQueue
             $payload = json_decode($event->raw_body, true, flags: JSON_THROW_ON_ERROR);
 
             if (is_array($payload)) {
-                $this->applyDeliveryStatus($payload);
+                match ($this->eventType($payload)) {
+                    'whatsapp.message.received' => $this->storeInboundMessage($payload),
+                    default => $this->applyDeliveryStatus($payload),
+                };
             }
 
             $event->update([
@@ -67,6 +71,42 @@ class ProcessBwaEvent implements ShouldQueue
             'status' => BwaEvent::STATUS_FAILED,
             'error_message' => $exception ? mb_substr($exception->getMessage(), 0, 1000) : null,
         ]);
+    }
+
+    /** @param array<string, mixed> $payload */
+    private function eventType(array $payload): ?string
+    {
+        $type = data_get($payload, 'event_type') ?? data_get($payload, 'type');
+
+        return is_string($type) ? $type : null;
+    }
+
+    /**
+     * Inbound messages relayed by the gateway. The gateway only includes the
+     * sender's number when the connected application opts in via its
+     * include_phone_number metadata; without it there is nothing to attribute
+     * the message to, so it is recorded unattributed rather than dropped.
+     *
+     * @param  array<string, mixed>  $payload
+     */
+    private function storeInboundMessage(array $payload): void
+    {
+        $data = (array) data_get($payload, 'data', []);
+
+        $providerMessageId = data_get($data, 'provider_message_id')
+            ?? data_get($data, 'meta_message_id')
+            ?? data_get($data, 'message_id');
+
+        app(InboundMessageRecorder::class)->record(
+            providerMessageId: is_string($providerMessageId) ? $providerMessageId : null,
+            fromNumber: is_string($phone = data_get($data, 'phone_number')) ? $phone : null,
+            messageType: (string) (data_get($data, 'message_type') ?? 'unknown'),
+            body: is_string($text = data_get($data, 'text')) ? $text : null,
+            mediaId: is_string($media = data_get($data, 'media_id')) ? $media : null,
+            profileName: is_string($name = data_get($data, 'profile_name')) ? $name : null,
+            payload: $data,
+            receivedAt: $this->statusTimestamp($payload),
+        );
     }
 
     /**

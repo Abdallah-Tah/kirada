@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tenant;
-use App\Models\WhatsAppMessage;
+use App\Services\WhatsApp\InboundMessageRecorder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,35 +61,19 @@ class WhatsAppWebhookController extends Controller
 
     private function storeMessage(array $message, array $value): void
     {
-        $providerId = $message['id'] ?? null;
-        $from = $message['from'] ?? null;
-
-        if (! $providerId || ! $from || WhatsAppMessage::where('provider_message_id', $providerId)->exists()) {
-            return;
-        }
-
-        $tenant = Tenant::query()->get(['landlord_id', 'phone'])
-            ->first(fn (Tenant $candidate): bool => $this->normalisePhone($candidate->phone) === $this->normalisePhone($from));
-
         $type = (string) ($message['type'] ?? 'unknown');
         $content = $message[$type] ?? [];
         $body = $content['body'] ?? $content['text'] ?? $content['caption'] ?? null;
 
-        WhatsAppMessage::create([
-            'landlord_id' => $tenant?->landlord_id,
-            'provider_message_id' => $providerId,
-            'from_number' => $from,
-            'profile_name' => data_get($value, 'contacts.0.profile.name'),
-            'message_type' => $type,
-            'body' => is_string($body) ? $body : null,
-            'media_id' => is_array($content) ? ($content['id'] ?? null) : null,
-            'payload' => $message,
-            'received_at' => now()->setTimestamp((int) ($message['timestamp'] ?? now()->timestamp)),
-        ]);
-    }
-
-    private function normalisePhone(?string $phone): string
-    {
-        return preg_replace('/\D+/', '', (string) $phone) ?? '';
+        app(InboundMessageRecorder::class)->record(
+            providerMessageId: $message['id'] ?? null,
+            fromNumber: $message['from'] ?? null,
+            messageType: $type,
+            body: is_string($body) ? $body : null,
+            mediaId: is_array($content) ? ($content['id'] ?? null) : null,
+            profileName: data_get($value, 'contacts.0.profile.name'),
+            payload: $message,
+            receivedAt: now()->setTimestamp((int) ($message['timestamp'] ?? now()->timestamp)),
+        );
     }
 }
