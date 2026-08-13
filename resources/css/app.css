@@ -307,6 +307,10 @@ select:focus[data-flux-control] {
         .dark .kirada-app-body {
             background: var(--kirada-canvas) !important;
         }
+
+        .kirada-app-header {
+            z-index: 10;
+        }
     }
     .kirada-sidebar {
         width: 14.25rem !important;
@@ -336,7 +340,14 @@ select:focus[data-flux-control] {
         .kirada-sidebar {
             width: min(18rem, calc(100vw - 2rem)) !important;
             max-width: calc(100vw - 2rem) !important;
+            height: 100dvh !important;
+            max-height: 100dvh !important;
+            flex-basis: auto !important;
             box-shadow: 14px 0 48px rgba(2, 6, 23, 0.5);
+        }
+
+        .kirada-sidebar-header {
+            padding-top: max(0.5rem, env(safe-area-inset-top, 0px)) !important;
         }
     }
     /* Desktop: the sidebar is an in-flow column inside the bounded app body.
@@ -748,6 +759,26 @@ select:focus[data-flux-control] {
         }
         .kirada-header-btn-wide span {
             display: none;
+        }
+    }
+
+    @media (max-width: 479px) {
+        .kirada-app-header {
+            padding-inline: max(0.375rem, env(safe-area-inset-left, 0px)) max(0.375rem, env(safe-area-inset-right, 0px)) !important;
+        }
+
+        .kirada-header-secondary-action {
+            display: none !important;
+        }
+
+        .kirada-header-actions {
+            min-width: 0;
+        }
+
+        .kirada-header-actions [data-flux-profile] {
+            max-width: 2.5rem;
+            padding-inline: 0.375rem !important;
+            overflow: hidden;
         }
     }
 

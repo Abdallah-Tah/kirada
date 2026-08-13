@@ -50,7 +50,7 @@
             <flux:icon.magnifying-glass class="size-5" />
         </a>
         {{-- Language switcher --}}
-        <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">
+        <div class="kirada-header-secondary-action relative" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">
             <button
                 type="button"
                 @click="open = !open"
@@ -92,7 +92,7 @@
             type="button"
             x-data
             @click="let next = $flux.dark ? 'light' : 'dark'; $flux.appearance = next; localStorage.setItem(window.KIRADA_APPEARANCE_KEY, next)"
-            class="kirada-header-btn"
+            class="kirada-header-btn kirada-header-secondary-action"
             :aria-label="$flux.dark ? '{{ __('Switch to light mode') }}' : '{{ __('Switch to dark mode') }}'"
             :title="$flux.dark ? '{{ __('Switch to light mode') }}' : '{{ __('Switch to dark mode') }}'"
         >
