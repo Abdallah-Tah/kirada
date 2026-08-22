@@ -783,5 +783,8 @@
     "Only pending invitations can be sent by WhatsApp.": "يمكن إرسال الدعوات المعلقة فقط عبر واتساب.",
     "Configure the BWA Messaging API and an approved team invitation template first.": "قم أولًا بإعداد واجهة مراسلة BWA وقالب دعوة فريق معتمد.",
     "Leases & Contracts": "الإيجارات والعقود",
-    "Create leases, set terms, and track renewals and deposits. Generate contracts, send secure signing links, and archive signed PDFs.": "أنشئ عقود الإيجار وحدد الشروط وتتبع التجديدات والودائع. أنشئ العقود وأرسل روابط توقيع آمنة وأرشفة ملفات PDF الموقّعة."
+    "Create leases, set terms, and track renewals and deposits. Generate contracts, send secure signing links, and archive signed PDFs.": "أنشئ عقود الإيجار وحدد الشروط وتتبع التجديدات والودائع. أنشئ العقود وأرسل روابط توقيع آمنة وأرشفة ملفات PDF الموقّعة.",
+    ":count inbound message(s) matched no tenant phone number, so no landlord can see them.": "لم تطابق :count رسالة واردة أي رقم هاتف مستأجر، لذا لا يمكن لأي مالك رؤيتها.",
+    "Unmatched": "غير مطابق",
+    "Unmatched only": "غير المطابقة فقط"
 }

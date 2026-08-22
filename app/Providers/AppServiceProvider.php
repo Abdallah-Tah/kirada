@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Listeners\SyncCashierSubscription;
 use App\Models\Building;
 use App\Models\Contract;
 use App\Models\Document;
@@ -15,25 +14,25 @@ use App\Models\RentPayment;
 use App\Models\Tenant;
 use App\Models\Unit;
 use App\Observers\PortfolioAuditObserver;
+use App\Observers\TenantPhoneObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
-use Laravel\Cashier\Events\WebhookHandled;
+use Laravel\Cashier\Cashier;
 use Livewire\Volt\Volt;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        Cashier::ignoreRoutes();
     }
 
     public function boot(): void
@@ -43,7 +42,6 @@ class AppServiceProvider extends ServiceProvider
         $this->configureViewNamespaces();
         $this->configureVolt();
         $this->configurePortfolioAuditing();
-        Event::listen(WebhookHandled::class, SyncCashierSubscription::class);
     }
 
     protected function configureDefaults(): void
@@ -120,5 +118,7 @@ class AppServiceProvider extends ServiceProvider
         ] as $model) {
             $model::observe(PortfolioAuditObserver::class);
         }
+
+        Tenant::observe(TenantPhoneObserver::class);
     }
 }

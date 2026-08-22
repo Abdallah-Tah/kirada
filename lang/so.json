@@ -783,5 +783,8 @@
     "Only pending invitations can be sent by WhatsApp.": "Kaliya casuumaadaha sugaya ayaa lagu diri karaa WhatsApp.",
     "Configure the BWA Messaging API and an approved team invitation template first.": "Marka hore samee BWA Messaging API iyo qaab casuumaad kooxeed oo la ansixiyay.",
     "Leases & Contracts": "Heshiisyo iyo Qandaraasyo",
-    "Create leases, set terms, and track renewals and deposits. Generate contracts, send secure signing links, and archive signed PDFs.": "Abuur heshiisyo, deji shuruudo, la soco cusboonaysiinta iyo dhamaanka. Abuur qandaraasyo, dir xiriiriyayaasha saxiixa amaan ah, iyo kaydi PDF-yada la saxiixay."
+    "Create leases, set terms, and track renewals and deposits. Generate contracts, send secure signing links, and archive signed PDFs.": "Abuur heshiisyo, deji shuruudo, la soco cusboonaysiinta iyo dhamaanka. Abuur qandaraasyo, dir xiriiriyayaasha saxiixa amaan ah, iyo kaydi PDF-yada la saxiixay.",
+    ":count inbound message(s) matched no tenant phone number, so no landlord can see them.": ":count fariin oo soo gashay lama waafajin lambar taleefan kirayste, sidaas darteed milkiile ma arki karo.",
+    "Unmatched": "Aan la waafajin",
+    "Unmatched only": "Kuwa aan la waafajin oo kaliya"
 }

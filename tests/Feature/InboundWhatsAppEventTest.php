@@ -141,6 +141,89 @@ class InboundWhatsAppEventTest extends TestCase
         $this->assertSame(BwaEvent::STATUS_PROCESSED, $event->refresh()->status);
     }
 
+    public function test_a_matched_message_records_the_tenant_not_just_the_landlord(): void
+    {
+        $tenant = $this->tenantWithPhone('(207) 409-7887');
+
+        $this->processInboundEvent('evt_tenant', 'wamid.TENANT', '12074097887', 'ok');
+
+        $message = WhatsAppMessage::firstOrFail();
+
+        $this->assertSame($tenant->id, $message->tenant_id);
+        $this->assertSame($tenant->landlord_id, $message->landlord_id);
+    }
+
+    public function test_correcting_a_tenant_phone_number_re_attributes_orphaned_messages(): void
+    {
+        // The number was entered wrong, so the reply landed unmatched and no
+        // landlord could see it. Fixing the tenant record must recover it.
+        $tenant = $this->tenantWithPhone('207-000-0000');
+
+        $this->processInboundEvent('evt_orphan', 'wamid.ORPHAN', '12074097887', 'This is me');
+        $this->assertNull(WhatsAppMessage::firstOrFail()->landlord_id);
+
+        $tenant->update(['phone' => '(207) 409-7887']);
+
+        $message = WhatsAppMessage::firstOrFail();
+        $this->assertSame($tenant->id, $message->tenant_id);
+        $this->assertSame($tenant->landlord_id, $message->landlord_id);
+    }
+
+    public function test_changing_a_phone_number_away_releases_messages_it_no_longer_matches(): void
+    {
+        $tenant = $this->tenantWithPhone('(207) 409-7887');
+
+        $this->processInboundEvent('evt_moved', 'wamid.MOVED', '12074097887', 'hello');
+        $this->assertSame($tenant->landlord_id, WhatsAppMessage::firstOrFail()->landlord_id);
+
+        $tenant->update(['phone' => '253 77 11 22 33']);
+
+        $message = WhatsAppMessage::firstOrFail();
+        $this->assertNull($message->landlord_id);
+        $this->assertNull($message->tenant_id);
+    }
+
+    public function test_editing_an_unrelated_tenant_field_does_not_re_run_attribution(): void
+    {
+        $tenant = $this->tenantWithPhone('(207) 409-7887');
+        $this->processInboundEvent('evt_keep', 'wamid.KEEP', '12074097887', 'hi');
+
+        // Attribution is deliberately pinned to the phone number; a name change
+        // must not quietly reshuffle who owns which message.
+        WhatsAppMessage::query()->update(['landlord_id' => null, 'tenant_id' => null]);
+        $tenant->update(['first_name' => 'Renamed']);
+
+        $this->assertNull(WhatsAppMessage::firstOrFail()->landlord_id);
+    }
+
+    public function test_the_relayed_profile_name_and_media_id_are_recorded(): void
+    {
+        $this->tenantWithPhone('(207) 409-7887');
+
+        $event = $this->makeEvent('evt_media', [
+            'id' => 'evt_media',
+            'type' => 'whatsapp.message.received',
+            'event_type' => 'whatsapp.message.received',
+            'occurred_at' => now()->toIso8601String(),
+            'data' => [
+                'provider_message_id' => 'wamid.MEDIA',
+                'provider' => 'meta',
+                'message_type' => 'image',
+                'text' => null,
+                'phone_number' => '12074097887',
+                'profile_name' => 'Abdallah Mohamed',
+                'media_id' => 'media-123',
+            ],
+        ]);
+
+        (new ProcessBwaEvent($event->id))->handle();
+
+        $message = WhatsAppMessage::firstOrFail();
+
+        $this->assertSame('Abdallah Mohamed', $message->profile_name);
+        $this->assertSame('media-123', $message->media_id);
+    }
+
     private function tenantWithPhone(string $phone): Tenant
     {
         $landlord = User::factory()->create();

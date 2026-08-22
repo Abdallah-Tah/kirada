@@ -38,8 +38,11 @@ class InboundMessageRecorder
             return null;
         }
 
+        $tenant = $this->resolveTenant($fromNumber);
+
         return WhatsAppMessage::create([
-            'landlord_id' => $this->resolveLandlordId($fromNumber),
+            'landlord_id' => $tenant?->landlord_id,
+            'tenant_id' => $tenant?->id,
             'provider_message_id' => $providerMessageId,
             'from_number' => $fromNumber,
             'profile_name' => $profileName,
@@ -71,6 +74,11 @@ class InboundMessageRecorder
      */
     public function resolveLandlordId(string $fromNumber): ?int
     {
+        return $this->resolveTenant($fromNumber)?->landlord_id;
+    }
+
+    public function resolveTenant(string $fromNumber): ?Tenant
+    {
         $normalised = $this->normalisePhone($fromNumber);
 
         if ($normalised === '') {
@@ -79,25 +87,63 @@ class InboundMessageRecorder
 
         $candidates = Tenant::query()
             ->whereNotNull('phone')
-            ->get(['landlord_id', 'phone'])
-            ->map(fn (Tenant $tenant) => [
-                'landlord_id' => $tenant->landlord_id,
-                'phone' => $this->normalisePhone($tenant->phone),
-            ])
-            ->filter(fn (array $row) => $row['phone'] !== '');
+            ->get(['id', 'landlord_id', 'phone'])
+            ->filter(fn (Tenant $tenant) => $this->normalisePhone($tenant->phone) !== '');
 
-        $exact = $candidates->firstWhere('phone', $normalised);
+        $exact = $candidates->first(
+            fn (Tenant $tenant) => $this->normalisePhone($tenant->phone) === $normalised,
+        );
 
         if ($exact) {
-            return $exact['landlord_id'];
+            return $exact;
         }
 
         $suffixMatches = $candidates
-            ->filter(fn (array $row) => $this->sharesSignificantSuffix($row['phone'], $normalised))
+            ->filter(fn (Tenant $tenant) => $this->sharesSignificantSuffix(
+                $this->normalisePhone($tenant->phone),
+                $normalised,
+            ))
             ->unique('landlord_id')
             ->values();
 
-        return $suffixMatches->count() === 1 ? $suffixMatches->first()['landlord_id'] : null;
+        return $suffixMatches->count() === 1 ? $suffixMatches->first() : null;
+    }
+
+    /**
+     * Re-run attribution over messages a phone-number change affects.
+     *
+     * Attribution is computed once, at receipt. A landlord correcting a typo in
+     * a tenant's number therefore orphans every message that used to match it
+     * and leaves the newly matching ones stranded as unmatched — invisible to
+     * that landlord, since the inbox scopes on landlord_id. Both directions are
+     * re-checked here so the correction repairs history instead of splitting it.
+     *
+     * @return int the number of messages whose attribution changed
+     */
+    public function reattribute(Tenant $tenant): int
+    {
+        $affected = WhatsAppMessage::query()
+            ->where('tenant_id', $tenant->id)
+            ->orWhereNull('landlord_id')
+            ->get();
+
+        $changed = 0;
+
+        foreach ($affected as $message) {
+            $match = $this->resolveTenant($message->from_number);
+
+            if ($message->tenant_id === $match?->id && $message->landlord_id === $match?->landlord_id) {
+                continue;
+            }
+
+            $message->update([
+                'tenant_id' => $match?->id,
+                'landlord_id' => $match?->landlord_id,
+            ]);
+            $changed++;
+        }
+
+        return $changed;
     }
 
     /**

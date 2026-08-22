@@ -783,5 +783,8 @@
     "Only pending invitations can be sent by WhatsApp.": "በWhatsApp መላክ የሚቻለው በመጠባበቅ ላይ ያሉ ግብዣዎችን ብቻ ነው።",
     "Configure the BWA Messaging API and an approved team invitation template first.": "መጀመሪያ የBWA መልእክት API እና የጸደቀ የቡድን ግብዣ ቅንብር ያዘጋጁ።",
     "Leases & Contracts": "ውሎች እና ስምምነቶች",
-    "Create leases, set terms, and track renewals and deposits. Generate contracts, send secure signing links, and archive signed PDFs.": "ውሎችን ይፍጠሩ፣ ሁኔታዎችን ያዘጋጁ፣ እድሳቶችን እና ተቀማጭዎችን ይከታተሉ። ውሎችን ይፍጠሩ፣ ደህንነቱ የተጠበቀ የፊርማ አገናኞችን ይላኩ እና የተፈረሙ PDF ፋይሎችን ያስቀምጡ።"
+    "Create leases, set terms, and track renewals and deposits. Generate contracts, send secure signing links, and archive signed PDFs.": "ውሎችን ይፍጠሩ፣ ሁኔታዎችን ያዘጋጁ፣ እድሳቶችን እና ተቀማጭዎችን ይከታተሉ። ውሎችን ይፍጠሩ፣ ደህንነቱ የተጠበቀ የፊርማ አገናኞችን ይላኩ እና የተፈረሙ PDF ፋይሎችን ያስቀምጡ።",
+    ":count inbound message(s) matched no tenant phone number, so no landlord can see them.": ":count ገቢ መልእክት(ዎች) ከማንኛውም ተከራይ ስልክ ቁጥር ጋር አልተዛመዱም፣ ስለዚህ ማንም አከራይ ሊያያቸው አይችልም።",
+    "Unmatched": "ያልተዛመደ",
+    "Unmatched only": "ያልተዛመዱ ብቻ"
 }

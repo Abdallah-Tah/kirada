@@ -4,9 +4,22 @@
         <flux:subheading>{{ __('Replies received by the Kirada WhatsApp number') }}</flux:subheading>
     </div>
 
-    <div class="kirada-toolbar mt-6">
+    <div class="kirada-toolbar mt-6 flex flex-wrap items-center gap-3">
         <flux:input wire:model.live="search" type="search" :placeholder="__('Search sender or message...')" class="w-72" icon="magnifying-glass" />
+        @if ($this->isAdmin())
+            <label class="flex items-center gap-2 text-sm">
+                <input type="checkbox" wire:model.live="unmatchedOnly" class="size-4 rounded border-slate-300 text-kirada-ocean focus:ring-kirada-ocean dark:border-slate-600 dark:bg-slate-800" />
+                <span>{{ __('Unmatched only') }}</span>
+                @if ($this->unmatchedCount > 0)
+                    <flux:badge color="amber" size="sm">{{ $this->unmatchedCount }}</flux:badge>
+                @endif
+            </label>
+        @endif
     </div>
+
+    @if ($this->isAdmin() && $this->unmatchedCount > 0 && ! $unmatchedOnly)
+        <flux:callout class="mt-4" variant="warning" icon="exclamation-triangle" :heading="__(':count inbound message(s) matched no tenant phone number, so no landlord can see them.', ['count' => $this->unmatchedCount])" />
+    @endif
 
     <div class="kirada-table-card mt-4">
         <table class="w-full text-left text-sm">
@@ -28,7 +41,13 @@
                         <td class="max-w-xl px-4 py-3">
                             <div>{{ $message->body ?: __('Received :type message', ['type' => $message->message_type]) }}</div>
                             @if($message->landlord)
-                                <div class="mt-1 text-xs text-zinc-500">{{ $message->landlord->name }}</div>
+                                <div class="mt-1 text-xs text-zinc-500">
+                                    {{ $message->landlord->name }}@if($message->tenant) — {{ $message->tenant->full_name }}@endif
+                                </div>
+                            @elseif($this->isAdmin())
+                                <div class="mt-1">
+                                    <flux:badge color="amber" size="sm">{{ __('Unmatched') }}</flux:badge>
+                                </div>
                             @endif
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-zinc-500">{{ $message->received_at->diffForHumans() }}</td>
