@@ -12,6 +12,13 @@ use Illuminate\Support\Str;
 
 class InvoiceDeliveryService
 {
+    /**
+     * A landlord pressing "Send invoice", as opposed to a scheduled reminder.
+     *
+     * @see self::idempotencyKey() for why this event is treated differently.
+     */
+    public const MANUAL_EVENT = 'manual_send';
+
     public function __construct(private NotificationChannelResolver $resolver) {}
 
     /**
@@ -35,7 +42,7 @@ class InvoiceDeliveryService
                 $recipient = $channel === LandlordNotificationSetting::CHANNEL_WHATSAPP
                     ? $this->resolver->whatsAppRecipient($invoice)
                     : $this->resolver->emailRecipient($invoice);
-                $key = hash('sha256', implode('|', [$invoice->id, $event, $channel]));
+                $key = $this->idempotencyKey($invoice, $event, $channel);
 
                 $delivery = NotificationDelivery::query()->createOrFirst(
                     ['idempotency_key' => $key],
@@ -81,6 +88,31 @@ class InvoiceDeliveryService
                 return $delivery;
             })
             ->values();
+    }
+
+    /**
+     * Automated events fire once per invoice and channel. A scheduler that runs
+     * twice, or a job that retries, must not put a second copy of the same
+     * reminder in front of the tenant, so the key is derived purely from what
+     * the event is about.
+     *
+     * A manual send is the opposite. The landlord pressed the button precisely
+     * because they want it sent again — the first one was read a week ago, or
+     * the tenant says it never arrived. Reusing the key there finds the
+     * completed record, which is neither new nor retryable, so nothing is
+     * dispatched and nothing changes while the UI still reports success. Each
+     * manual send therefore gets its own record, and its own line in the
+     * delivery history.
+     */
+    private function idempotencyKey(RentInvoice $invoice, string $event, string $channel): string
+    {
+        $parts = [$invoice->id, $event, $channel];
+
+        if ($event === self::MANUAL_EVENT) {
+            $parts[] = (string) Str::ulid();
+        }
+
+        return hash('sha256', implode('|', $parts));
     }
 
     private function unavailableReason(RentInvoice $invoice, string $channel): string

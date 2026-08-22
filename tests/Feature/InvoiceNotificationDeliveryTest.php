@@ -157,15 +157,49 @@ class InvoiceNotificationDeliveryTest extends TestCase
         Queue::fake();
         $this->tenant->update(['whatsapp_consented_at' => now()]);
 
+        // A scheduler that runs twice in the same window must not send the
+        // reminder twice.
         $service = app(InvoiceDeliveryService::class);
-        $first = $service->dispatch($this->invoice, 'manual_send', $this->landlord, ['email', 'whatsapp']);
-        $second = $service->dispatch($this->invoice, 'manual_send', $this->landlord, ['email', 'whatsapp']);
+        $first = $service->dispatch($this->invoice, 'overdue_7', $this->landlord, ['email', 'whatsapp']);
+        $second = $service->dispatch($this->invoice, 'overdue_7', $this->landlord, ['email', 'whatsapp']);
 
         $this->assertCount(2, $first);
         $this->assertCount(2, $second);
         $this->assertSame(2, NotificationDelivery::count());
         Queue::assertPushed(DeliverInvoiceChannel::class, 2);
         $this->assertStringEndsWith('3456', NotificationDelivery::where('channel', 'whatsapp')->value('recipient_masked'));
+    }
+
+    public function test_manual_send_queues_a_fresh_delivery_after_an_earlier_one_succeeded(): void
+    {
+        Queue::fake();
+        $this->tenant->update(['whatsapp_consented_at' => now()]);
+        $service = app(InvoiceDeliveryService::class);
+
+        $first = $service->dispatch(
+            $this->invoice,
+            InvoiceDeliveryService::MANUAL_EVENT,
+            $this->landlord,
+            ['email', 'whatsapp'],
+        );
+        // The tenant received and read the first send a week ago; the landlord
+        // is sending again because they were asked to, not by accident.
+        NotificationDelivery::query()->update(['status' => NotificationDelivery::STATUS_READ]);
+
+        $second = $service->dispatch(
+            $this->invoice->fresh(),
+            InvoiceDeliveryService::MANUAL_EVENT,
+            $this->landlord,
+            ['email', 'whatsapp'],
+        );
+
+        $this->assertSame(4, NotificationDelivery::count());
+        $this->assertEmpty($first->pluck('id')->intersect($second->pluck('id')));
+        $this->assertSame(
+            ['queued', 'queued'],
+            $second->pluck('status')->all(),
+        );
+        Queue::assertPushed(DeliverInvoiceChannel::class, 4);
     }
 
     public function test_missing_whatsapp_consent_is_logged_as_skipped_without_a_job(): void
@@ -192,9 +226,9 @@ class InvoiceNotificationDeliveryTest extends TestCase
         Queue::fake();
         $service = app(InvoiceDeliveryService::class);
 
-        $service->dispatch($this->invoice, 'manual_send', $this->landlord, ['whatsapp']);
+        $service->dispatch($this->invoice, 'overdue_7', $this->landlord, ['whatsapp']);
         $this->tenant->update(['whatsapp_consented_at' => now()]);
-        $service->dispatch($this->invoice->fresh(), 'manual_send', $this->landlord, ['whatsapp']);
+        $service->dispatch($this->invoice->fresh(), 'overdue_7', $this->landlord, ['whatsapp']);
 
         $this->assertSame(1, NotificationDelivery::count());
         $this->assertDatabaseHas('notification_deliveries', [

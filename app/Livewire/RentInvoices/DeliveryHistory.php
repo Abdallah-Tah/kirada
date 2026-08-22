@@ -106,7 +106,12 @@ class DeliveryHistory extends Component
             return;
         }
 
-        $records = $delivery->dispatch($this->invoice, 'manual_send', auth()->user(), $selected);
+        $records = $delivery->dispatch(
+            $this->invoice,
+            InvoiceDeliveryService::MANUAL_EVENT,
+            auth()->user(),
+            $selected,
+        );
         unset($this->deliveries);
 
         if ($records->every(fn ($record) => $record->status === 'skipped')) {
